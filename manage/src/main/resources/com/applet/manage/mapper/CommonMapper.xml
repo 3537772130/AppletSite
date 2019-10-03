@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.applet.manage.mapper.CommonMapper">
+    <select id="selectSingleLine" resultType="java.util.Map" parameterType="String">
+        <![CDATA[
+
+                  ${_parameter}
+
+        ]]>
+    </select>
+    <insert id="insertBatch" parameterType="String">
+        <![CDATA[
+
+                  ${_parameter}
+
+        ]]>
+    </insert>
+    <select id="selectListMap" resultType="java.util.Map" parameterType="String">
+        <![CDATA[
+
+                  ${_parameter}
+
+        ]]>
+    </select>
+    <select id="selectCount" resultType="java.lang.Integer" parameterType="String">
+        <![CDATA[
+
+                  SELECT count(0) from ( ${_parameter}) as tb1
+
+        ]]>
+    </select>
+
+    <update id="updateBatch" parameterType="String">
+        <![CDATA[
+
+                  ${_parameter}
+
+        ]]>
+    </update>
+
+    <select id="selectSingleValue" resultType="java.lang.Object" parameterType="java.lang.String">
+        <![CDATA[
+
+
+
+
+                  ${_parameter}
+
+
+
+
+        ]]>
+    </select>
+</mapper>
