@@ -7,15 +7,24 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class AppletPageElement implements Serializable {
-    private static final long serialVersionUID = 1L;
     private Integer id;
+
     private Integer pageId;
-    private String elementIcon;
+
+    private Integer typeId;
+
     private String elementLogo;
+
     private String elementName;
+
+    private Integer elementIndex;
+
     @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
     private Date updateTime;
+
     private Boolean elementStatus;
+
+    private static final long serialVersionUID = 1L;
 
     public Integer getId() {
         return id;
@@ -33,12 +42,12 @@ public class AppletPageElement implements Serializable {
         this.pageId = pageId;
     }
 
-    public String getElementIcon() {
-        return elementIcon;
+    public Integer getTypeId() {
+        return typeId;
     }
 
-    public void setElementIcon(String elementIcon) {
-        this.elementIcon = elementIcon == null ? null : elementIcon.trim();
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
     }
 
     public String getElementLogo() {
@@ -55,6 +64,14 @@ public class AppletPageElement implements Serializable {
 
     public void setElementName(String elementName) {
         this.elementName = elementName == null ? null : elementName.trim();
+    }
+
+    public Integer getElementIndex() {
+        return elementIndex;
+    }
+
+    public void setElementIndex(Integer elementIndex) {
+        this.elementIndex = elementIndex;
     }
 
     public Date getUpdateTime() {

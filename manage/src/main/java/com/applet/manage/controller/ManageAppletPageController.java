@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,15 +41,30 @@ public class ManageAppletPageController {
      * @param fileId
      * @return
      */
-    @RequestMapping(value = "queryAppletPageList")
-    public Object queryAppletPageList(Integer fileId) {
-        AppletFile file = appletService.selectAppletFileById(fileId);
-        List<AppletFile> fileList = appletService.selectAppletFileList(file.getId(), file.getTypeId());
-        List<AppletPage> pageList = appletPageService.selectAppletPageList(fileId);
-        Map map = new HashMap<>();
-        map.put("fileList", fileList);
-        map.put("pageList", pageList);
-        return AjaxResponse.success(map);
+    @RequestMapping(value = "loadAppletPageList")
+    public Object loadAppletPageList(Integer fileId) {
+        if (NullUtil.isNotNullOrEmpty(fileId)){
+            AppletFile file = appletService.selectAppletFileById(fileId);
+            List<AppletFile> fileList = appletService.selectAppletFileList(file.getId(), file.getTypeId());
+            Map map = new HashMap();
+            map.put("fileTypeId", file.getTypeId());
+            map.put("fileList", fileList);
+            return AjaxResponse.success(map);
+        }
+        return AjaxResponse.error("参数错误");
+    }
+
+    /**
+     * 分页查询页面
+     * @param appletPage
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "queryAppletPage")
+    public Object queryAppletPage(AppletPage appletPage, HttpServletRequest request){
+        Page page = PageUtil.initPage(request);
+        page = appletPageService.selectAppletPage(appletPage, page);
+        return AjaxResponse.success(page);
     }
 
     /**
@@ -103,16 +119,123 @@ public class ManageAppletPageController {
     }
 
     /**
+     * 页面元素类型分页查询
+     * @param type
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "queryElementTypePage")
+    public Object queryElementTypePage(AppletPageElementType type, HttpServletRequest request){
+        Page page = PageUtil.initPage(request);
+        page = appletPageService.selectElementTypePage(type, page);
+        return AjaxResponse.success(page);
+    }
+
+    /**
+     * 加载页面元素类型
+     * @param id
+     * @param pageId
+     * @return
+     */
+    @RequestMapping(value = "loadElementType")
+    public Object loadElementType(Integer id, Integer pageId){
+        AppletPageElementType type = appletPageService.selectElementType(id, pageId);
+        if (null == type){
+            return AjaxResponse.error("未找到相关记录");
+        }
+        return AjaxResponse.success(type);
+    }
+
+    /**
+     * 更新页面元素类型
+     * @param type
+     * @return
+     */
+    @RequestMapping(value = "updateElementType")
+    public Object updateElementType(AppletPageElementType type){
+        try {
+            if (null == type){
+                return AjaxResponse.error("参数有误");
+            }
+            if (NullUtil.isNullOrEmpty(type.getPageId())){
+                return AjaxResponse.error("参数丢失");
+            }
+            if (NullUtil.isNullOrEmpty(type.getTypeName())){
+                return AjaxResponse.error("类型名称不能为空");
+            }
+            if (type.getTypeName().trim().length() > 30){
+                return AjaxResponse.error("类型名称长度过长");
+            }
+            if (NullUtil.isNullOrEmpty(type.getId())){
+                int count = appletPageService.countElementTypeByPageId(type.getPageId());
+                type.setTypeIndex(count + 1);
+            }
+            appletPageService.updateElementType(type);
+            return AjaxResponse.success("提交成功");
+        } catch (Exception e) {
+            log.error("更新页面元素信息出错{}", e);
+            return AjaxResponse.error("提交失败");
+        }
+    }
+
+    /**
+     * 更新页面元素类型排序
+     * @param typeId
+     * @param pageId
+     * @param sort
+     * @return
+     */
+    @RequestMapping(value = "updateElementTypeIndex")
+    public Object updateElementTypeIndex(Integer typeId, Integer pageId, String sort) {
+        try {
+            if (NullUtil.isNullOrEmpty(typeId) || NullUtil.isNullOrEmpty(sort)) {
+                return AjaxResponse.error("参数错误");
+            }
+            int count = appletPageService.countElementTypeByPageId(pageId);
+            if (count > 1) {
+                AppletPageElementType type = appletPageService.selectElementType(typeId, pageId);
+                if (null == type) {
+                    return AjaxResponse.error("未找到相关记录");
+                }
+                Integer num = null;
+                if (sort.equals("top") && type.getTypeIndex() - 1 > 0) {
+                    num = -1;
+                } else if (sort.equals("bot") && type.getTypeIndex() + 1 <= count) {
+                    num = 1;
+                } else {
+                    return AjaxResponse.success("参数错误");
+                }
+                appletPageService.updateElementTypeIndex(type, num);
+            }
+            return AjaxResponse.success();
+        } catch (Exception e) {
+            log.error("更新页面元素类型排序出错{}", e);
+            return AjaxResponse.error("操作失败");
+        }
+    }
+
+    /**
+     * 加载页面元素列表信息
+     * @param pageId
+     * @return
+     */
+    @RequestMapping(value = "loadAppletPageElementPage")
+    public Object loadAppletPageElementPage(Integer pageId){
+        List<AppletPageElementType> list = appletPageService.selectElementTypeList(pageId);
+        return AjaxResponse.success(list);
+    }
+
+    /**
      * 分页查询页面元素列表
      *
      * @param element
      * @param request
      * @return
      */
-    @RequestMapping(value = "queryAppletPageElementDefaultPage")
-    public Object queryAppletPageElementDefaultPage(ViewAppletPageElementDefault element, HttpServletRequest request) {
+    @RequestMapping(value = "queryAppletPageElementPage")
+    public Object queryAppletPageElementPage(AppletPageElement element, HttpServletRequest request) {
         Page page = PageUtil.initPage(request);
-        page = appletPageService.selectAppletPageElementPage(element, page);
+        page = appletPageService.selectElementPage(element, page);
         return AjaxResponse.success(page);
     }
 
@@ -122,59 +245,55 @@ public class ManageAppletPageController {
      * @param id
      * @return
      */
-    @RequestMapping(value = "loadAppletPageElementDefault")
-    public Object loadAppletPageElementDefault(Integer id) {
-        ViewAppletPageElementDefault elementDefault = appletPageService.selectAppletPageElementById(id);
-        return AjaxResponse.success(elementDefault);
+    @RequestMapping(value = "loadAppletPageElement")
+    public Object loadAppletPageElement(Integer id, Integer pageId) {
+        Map map = new HashMap();
+        map.put("typeList", appletPageService.selectElementTypeList(pageId));
+        if (NullUtil.isNotNullOrEmpty(id) && id.intValue() != 0){
+            AppletPageElement element = appletPageService.selectElementById(id, pageId);
+            if (null != element){
+                map.put("info", element);
+                return AjaxResponse.success(map);
+            }
+        }
+        return AjaxResponse.msg("-1", map);
     }
 
     /**
      * 更新页面元素信息
      *
-     * @param elementDefault
+     * @param element
      * @return
      */
-    @RequestMapping(value = "updateAppletPageElementDefault")
-    public Object updateAppletPageElementDefault(ViewAppletPageElementDefault elementDefault) {
+    @RequestMapping(value = "updateAppletPageElement")
+    public Object updateAppletPageElement(AppletPageElement element) {
         try {
-            if (null == elementDefault) {
+            if (null == element) {
                 return AjaxResponse.error("参数错误");
             }
-            if (NullUtil.isNullOrEmpty(elementDefault.getPageId())) {
+            if (NullUtil.isNullOrEmpty(element.getPageId())) {
                 return AjaxResponse.error("参数丢失");
             }
-            if (NullUtil.isNullOrEmpty(elementDefault.getElementLogo())) {
+            if (NullUtil.isNullOrEmpty(element.getElementLogo())) {
                 return AjaxResponse.error("元素标识不能为空");
             }
-            if (elementDefault.getElementLogo().trim().length() > 30) {
+            if (element.getElementLogo().trim().length() > 30) {
                 return AjaxResponse.error("元素标识长度过长");
             } else {
-                elementDefault.setElementLogo(elementDefault.getElementLogo().trim().toUpperCase());
+                element.setElementLogo(element.getElementLogo().trim().toUpperCase());
             }
-            if (NullUtil.isNullOrEmpty(elementDefault.getElementName())) {
+            if (NullUtil.isNullOrEmpty(element.getElementName())) {
                 return AjaxResponse.error("元素名称不能为空");
             }
-            if (elementDefault.getElementName().trim().length() > 30) {
+            if (element.getElementName().trim().getBytes().length > 36) {
                 return AjaxResponse.error("元素名称长度过长");
             } else {
-                elementDefault.setElementName(elementDefault.getElementName().trim());
+                element.setElementName(element.getElementName().trim());
             }
-            boolean bool = false;
-            if (NullUtil.isNullOrEmpty(elementDefault.getElementIcon())) {
-                return AjaxResponse.error("请上传元素图标");
-            } else if (NullUtil.isNotNullOrEmpty(elementDefault.getId())) {
-                ViewAppletPageElementDefault oldInfo = appletPageService.selectAppletPageElementById(elementDefault.getId());
-                elementDefault = this.setPageElementIcon(oldInfo.getElementIcon(), elementDefault);
-            } else {
-                bool = true;
+            if (NullUtil.isNullOrEmpty(element.getTypeId())){
+                return AjaxResponse.error("元素类型不能为空");
             }
-            appletPageService.updateAppletPageElementDefault(elementDefault);
-            if (bool) {
-                AppletPageElement element = new AppletPageElement();
-                element.setId(elementDefault.getId());
-                elementDefault = this.setPageElementIcon(elementDefault.getElementIcon(), elementDefault);
-                appletPageService.updateAppletPageElement(element);
-            }
+            appletPageService.updateElement(element);
             return AjaxResponse.success("提交成功");
         } catch (Exception e) {
             log.error("更新小程序页面元素及默认内容出错{}", e);
@@ -182,11 +301,47 @@ public class ManageAppletPageController {
         }
     }
 
-    public ViewAppletPageElementDefault setPageElementIcon(String oldElementIcon, ViewAppletPageElementDefault newInfo) {
-        // 更新页面元素图标地址
-        newInfo.setElementIcon(newInfo.getElementIcon().replace("api\\", ""));
-        String newPath = FileUtil.copyPageElementIcon(newInfo.getId(), newInfo.getElementIcon(), oldElementIcon);
-        newInfo.setElementIcon(newPath);
-        return newInfo;
+    /**
+     * 加载页面默认信息
+     * @param fileId
+     * @return
+     */
+    @RequestMapping(value = "loadPageDefault")
+    public Object loadPageDefault(Integer fileId){
+        List<AppletPage> list = appletPageService.selectAppletPageList(fileId);
+        if (NullUtil.isNotNullOrEmpty(list)){
+            return AjaxResponse.success(list);
+        }
+        return AjaxResponse.error("未找到相关记录");
+    }
+
+    /**
+     * 加载页面元素
+     * @param pageId
+     * @return
+     */
+    @RequestMapping(value = "loadPageElement")
+    public Object loadPageElement(Integer pageId){
+        List<AppletPageElementType> list1 = appletPageService.selectElementTypeList(pageId);
+        List<AppletPageElement> list2 = appletPageService.selectElementList(pageId);
+        List<Map> mapList = new ArrayList<>();
+        for (AppletPageElementType type: list1) {
+            Map map1 = new HashMap();
+            map1.put("id", type.getId());
+            map1.put("name", type.getTypeName());
+            List<Map> list3 = new ArrayList<>();
+            for (AppletPageElement element:list2) {
+                if (element.getTypeId() == type.getId()){
+                    Map map2 = new HashMap();
+                    map2.put("id", element.getId());
+                    map2.put("logo", element.getElementLogo());
+                    map2.put("name", element.getElementName());
+                    list3.add(map2);
+                }
+            }
+            map1.put("list", list3);
+            mapList.add(map1);
+        }
+        return AjaxResponse.success(mapList);
     }
 }

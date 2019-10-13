@@ -55,7 +55,7 @@ public class MySQLPagePlugin extends PluginAdapter {
 
 	private void addPage(TopLevelClass topLevelClass,
 			IntrospectedTable introspectedTable, String name) {
-		String pageClass = "com.applet.manage.util.Page";
+		String pageClass = "com.applet.apply.util.Page";
 		topLevelClass.addImportedType(new FullyQualifiedJavaType(pageClass));
 		CommentGenerator commentGenerator = context.getCommentGenerator();
 		Field field = new Field();

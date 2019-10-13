@@ -21,7 +21,7 @@ public class MBGRunner {
 	public static void main(String[] args) {
 		List<String> warnings = new ArrayList<String>();
 		boolean overwrite = true;
-		File configFile = new File(System.getProperty("user.dir") + "/src/test/resources/generatorConfig.xml");
+		File configFile = new File(System.getProperty("user.dir") + "/user/src/test/resources/generatorConfig.xml");
 		ConfigurationParser cp = new ConfigurationParser(warnings);
 		Configuration config = null;
 		try {

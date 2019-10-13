@@ -7,22 +7,42 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class ViewAppletPageElementContent implements Serializable {
-    private static final long serialVersionUID = 1L;
     private Integer id;
+
     private Integer appletId;
+
     private String appletCode;
+
     private String appletName;
+
     private Integer fileId;
+
     private String versionNumber;
+
     private Integer pageId;
+
     private String pageLogo;
+
     private String pageName;
+
     private Integer elementId;
+
+    private Integer typeId;
+
+    private String typeName;
+
     private String elementLogo;
+
     private String elementName;
+
+    private Integer elementIndex;
+
     private String elementJson;
+
     @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
     private Date updateTime;
+
+    private static final long serialVersionUID = 1L;
 
     public Integer getId() {
         return id;
@@ -104,6 +124,22 @@ public class ViewAppletPageElementContent implements Serializable {
         this.elementId = elementId;
     }
 
+    public Integer getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName == null ? null : typeName.trim();
+    }
+
     public String getElementLogo() {
         return elementLogo;
     }
@@ -118,6 +154,14 @@ public class ViewAppletPageElementContent implements Serializable {
 
     public void setElementName(String elementName) {
         this.elementName = elementName == null ? null : elementName.trim();
+    }
+
+    public Integer getElementIndex() {
+        return elementIndex;
+    }
+
+    public void setElementIndex(Integer elementIndex) {
+        this.elementIndex = elementIndex;
     }
 
     public String getElementJson() {

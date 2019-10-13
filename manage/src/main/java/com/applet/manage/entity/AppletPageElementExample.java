@@ -1,8 +1,6 @@
 package com.applet.manage.entity;
 
-
 import com.applet.manage.util.Page;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,20 +18,20 @@ public class AppletPageElementExample {
         oredCriteria = new ArrayList<Criteria>();
     }
 
-    public String getOrderByClause() {
-        return orderByClause;
-    }
-
     public void setOrderByClause(String orderByClause) {
         this.orderByClause = orderByClause;
     }
 
-    public boolean isDistinct() {
-        return distinct;
+    public String getOrderByClause() {
+        return orderByClause;
     }
 
     public void setDistinct(boolean distinct) {
         this.distinct = distinct;
+    }
+
+    public boolean isDistinct() {
+        return distinct;
     }
 
     public List<Criteria> getOredCriteria() {
@@ -69,12 +67,12 @@ public class AppletPageElementExample {
         distinct = false;
     }
 
-    public Page getPage() {
-        return page;
+    public void setPage(Page page) {
+        this.page=page;
     }
 
-    public void setPage(Page page) {
-        this.page = page;
+    public Page getPage() {
+        return page;
     }
 
     protected abstract static class GeneratedCriteria {
@@ -238,73 +236,63 @@ public class AppletPageElementExample {
             return (Criteria) this;
         }
 
-        public Criteria andElementIconIsNull() {
-            addCriterion("element_icon is null");
+        public Criteria andTypeIdIsNull() {
+            addCriterion("type_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andElementIconIsNotNull() {
-            addCriterion("element_icon is not null");
+        public Criteria andTypeIdIsNotNull() {
+            addCriterion("type_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andElementIconEqualTo(String value) {
-            addCriterion("element_icon =", value, "elementIcon");
+        public Criteria andTypeIdEqualTo(Integer value) {
+            addCriterion("type_id =", value, "typeId");
             return (Criteria) this;
         }
 
-        public Criteria andElementIconNotEqualTo(String value) {
-            addCriterion("element_icon <>", value, "elementIcon");
+        public Criteria andTypeIdNotEqualTo(Integer value) {
+            addCriterion("type_id <>", value, "typeId");
             return (Criteria) this;
         }
 
-        public Criteria andElementIconGreaterThan(String value) {
-            addCriterion("element_icon >", value, "elementIcon");
+        public Criteria andTypeIdGreaterThan(Integer value) {
+            addCriterion("type_id >", value, "typeId");
             return (Criteria) this;
         }
 
-        public Criteria andElementIconGreaterThanOrEqualTo(String value) {
-            addCriterion("element_icon >=", value, "elementIcon");
+        public Criteria andTypeIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("type_id >=", value, "typeId");
             return (Criteria) this;
         }
 
-        public Criteria andElementIconLessThan(String value) {
-            addCriterion("element_icon <", value, "elementIcon");
+        public Criteria andTypeIdLessThan(Integer value) {
+            addCriterion("type_id <", value, "typeId");
             return (Criteria) this;
         }
 
-        public Criteria andElementIconLessThanOrEqualTo(String value) {
-            addCriterion("element_icon <=", value, "elementIcon");
+        public Criteria andTypeIdLessThanOrEqualTo(Integer value) {
+            addCriterion("type_id <=", value, "typeId");
             return (Criteria) this;
         }
 
-        public Criteria andElementIconLike(String value) {
-            addCriterion("element_icon like", value, "elementIcon");
+        public Criteria andTypeIdIn(List<Integer> values) {
+            addCriterion("type_id in", values, "typeId");
             return (Criteria) this;
         }
 
-        public Criteria andElementIconNotLike(String value) {
-            addCriterion("element_icon not like", value, "elementIcon");
+        public Criteria andTypeIdNotIn(List<Integer> values) {
+            addCriterion("type_id not in", values, "typeId");
             return (Criteria) this;
         }
 
-        public Criteria andElementIconIn(List<String> values) {
-            addCriterion("element_icon in", values, "elementIcon");
+        public Criteria andTypeIdBetween(Integer value1, Integer value2) {
+            addCriterion("type_id between", value1, value2, "typeId");
             return (Criteria) this;
         }
 
-        public Criteria andElementIconNotIn(List<String> values) {
-            addCriterion("element_icon not in", values, "elementIcon");
-            return (Criteria) this;
-        }
-
-        public Criteria andElementIconBetween(String value1, String value2) {
-            addCriterion("element_icon between", value1, value2, "elementIcon");
-            return (Criteria) this;
-        }
-
-        public Criteria andElementIconNotBetween(String value1, String value2) {
-            addCriterion("element_icon not between", value1, value2, "elementIcon");
+        public Criteria andTypeIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("type_id not between", value1, value2, "typeId");
             return (Criteria) this;
         }
 
@@ -445,6 +433,66 @@ public class AppletPageElementExample {
 
         public Criteria andElementNameNotBetween(String value1, String value2) {
             addCriterion("element_name not between", value1, value2, "elementName");
+            return (Criteria) this;
+        }
+
+        public Criteria andElementIndexIsNull() {
+            addCriterion("element_index is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andElementIndexIsNotNull() {
+            addCriterion("element_index is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andElementIndexEqualTo(Integer value) {
+            addCriterion("element_index =", value, "elementIndex");
+            return (Criteria) this;
+        }
+
+        public Criteria andElementIndexNotEqualTo(Integer value) {
+            addCriterion("element_index <>", value, "elementIndex");
+            return (Criteria) this;
+        }
+
+        public Criteria andElementIndexGreaterThan(Integer value) {
+            addCriterion("element_index >", value, "elementIndex");
+            return (Criteria) this;
+        }
+
+        public Criteria andElementIndexGreaterThanOrEqualTo(Integer value) {
+            addCriterion("element_index >=", value, "elementIndex");
+            return (Criteria) this;
+        }
+
+        public Criteria andElementIndexLessThan(Integer value) {
+            addCriterion("element_index <", value, "elementIndex");
+            return (Criteria) this;
+        }
+
+        public Criteria andElementIndexLessThanOrEqualTo(Integer value) {
+            addCriterion("element_index <=", value, "elementIndex");
+            return (Criteria) this;
+        }
+
+        public Criteria andElementIndexIn(List<Integer> values) {
+            addCriterion("element_index in", values, "elementIndex");
+            return (Criteria) this;
+        }
+
+        public Criteria andElementIndexNotIn(List<Integer> values) {
+            addCriterion("element_index not in", values, "elementIndex");
+            return (Criteria) this;
+        }
+
+        public Criteria andElementIndexBetween(Integer value1, Integer value2) {
+            addCriterion("element_index between", value1, value2, "elementIndex");
+            return (Criteria) this;
+        }
+
+        public Criteria andElementIndexNotBetween(Integer value1, Integer value2) {
+            addCriterion("element_index not between", value1, value2, "elementIndex");
             return (Criteria) this;
         }
 
@@ -593,6 +641,38 @@ public class AppletPageElementExample {
 
         private String typeHandler;
 
+        public String getCondition() {
+            return condition;
+        }
+
+        public Object getValue() {
+            return value;
+        }
+
+        public Object getSecondValue() {
+            return secondValue;
+        }
+
+        public boolean isNoValue() {
+            return noValue;
+        }
+
+        public boolean isSingleValue() {
+            return singleValue;
+        }
+
+        public boolean isBetweenValue() {
+            return betweenValue;
+        }
+
+        public boolean isListValue() {
+            return listValue;
+        }
+
+        public String getTypeHandler() {
+            return typeHandler;
+        }
+
         protected Criterion(String condition) {
             super();
             this.condition = condition;
@@ -627,38 +707,6 @@ public class AppletPageElementExample {
 
         protected Criterion(String condition, Object value, Object secondValue) {
             this(condition, value, secondValue, null);
-        }
-
-        public String getCondition() {
-            return condition;
-        }
-
-        public Object getValue() {
-            return value;
-        }
-
-        public Object getSecondValue() {
-            return secondValue;
-        }
-
-        public boolean isNoValue() {
-            return noValue;
-        }
-
-        public boolean isSingleValue() {
-            return singleValue;
-        }
-
-        public boolean isBetweenValue() {
-            return betweenValue;
-        }
-
-        public boolean isListValue() {
-            return listValue;
-        }
-
-        public String getTypeHandler() {
-            return typeHandler;
         }
     }
 }

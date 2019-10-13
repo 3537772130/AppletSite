@@ -6,6 +6,7 @@ import com.applet.manage.util.NullUtil;
 import com.applet.manage.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -23,11 +24,34 @@ public class AppletPageService {
     @Autowired
     private AppletPageElementMapper appletPageElementMapper;
     @Autowired
+    private AppletPageElementTypeMapper appletPageElementTypeMapper;
+    @Autowired
     private AppletPageElementContentMapper appletPageElementContentMapper;
     @Autowired
     private ViewAppletPageElementContentMapper viewAppletPageElementContentMapper;
     @Autowired
     private ViewAppletPageElementDefaultMapper viewAppletPageElementDefaultMapper;
+
+    /**
+     * 分页查询页面
+     * @param appletPage
+     * @param page
+     * @return
+     */
+    public Page selectAppletPage(AppletPage appletPage, Page page){
+        AppletPageExample example = new AppletPageExample();
+        example.setOrderByClause("id desc");
+        AppletPageExample.Criteria c = example.createCriteria().andFileIdEqualTo(appletPage.getFileId());
+        if (NullUtil.isNotNullOrEmpty(appletPage.getPageName())){
+            c.andPageNameLike("%" + appletPage.getPageName() + "%");
+        }
+        long count = appletPageMapper.countByExample(example);
+        if (count > 0){
+            page.setTotalCount(count);
+            page.setDataSource(appletPageMapper.selectByExample(example));
+        }
+        return page;
+    }
 
     /**
      * 查询页面集合
@@ -38,7 +62,7 @@ public class AppletPageService {
     public List<AppletPage> selectAppletPageList(Integer fileId) {
         AppletPageExample example = new AppletPageExample();
         example.setOrderByClause("id desc");
-        example.createCriteria().andFileIdEqualTo(fileId);
+        example.createCriteria().andFileIdEqualTo(fileId).andPageStatusEqualTo(true);
         return appletPageMapper.selectByExample(example);
     }
 
@@ -67,32 +91,139 @@ public class AppletPageService {
     }
 
     /**
+     * 分页查询页面元素类型
+     * @param type
+     * @param page
+     * @return
+     */
+    public Page selectElementTypePage(AppletPageElementType type, Page page) {
+        AppletPageElementTypeExample example = new AppletPageElementTypeExample();
+        example.setPage(page);
+        example.setOrderByClause("type_index asc");
+        AppletPageElementTypeExample.Criteria c = example.createCriteria();
+        c.andPageIdEqualTo(type.getPageId());
+        if (NullUtil.isNotNullOrEmpty(type.getTypeName())) {
+            c.andTypeNameLike("%" + type.getTypeName() + "%");
+        }
+        if (NullUtil.isNotNullOrEmpty(type.getTypeStatus())) {
+            c.andTypeStatusEqualTo(type.getTypeStatus());
+        }
+        long count = appletPageElementTypeMapper.countByExample(example);
+        if (count > 0) {
+            page.setTotalCount(count);
+            page.setDataSource(appletPageElementTypeMapper.selectByExample(example));
+        }
+        return page;
+    }
+
+    /**
+     * 查询页面元素类型总数
+     * @param pageId
+     * @return
+     */
+    public int countElementTypeByPageId(Integer pageId) {
+        AppletPageElementTypeExample example = new AppletPageElementTypeExample();
+        example.createCriteria().andPageIdEqualTo(pageId);
+        return (int)appletPageElementTypeMapper.countByExample(example);
+    }
+
+    /**
+     * 查询页面元素类型集合
+     * @param pageId
+     * @return
+     */
+    public List<AppletPageElementType> selectElementTypeList(Integer pageId){
+        AppletPageElementTypeExample example = new AppletPageElementTypeExample();
+        example.createCriteria().andPageIdEqualTo(pageId).andTypeStatusEqualTo(true);
+        return appletPageElementTypeMapper.selectByExample(example);
+    }
+
+    /**
+     * 查询页面元素类型信息
+     * @param id
+     * @param pageId
+     * @return
+     */
+    public AppletPageElementType selectElementType(Integer id, Integer pageId) {
+        AppletPageElementTypeExample example = new AppletPageElementTypeExample();
+        example.createCriteria().andIdEqualTo(id).andPageIdEqualTo(pageId);
+        List<AppletPageElementType> list = appletPageElementTypeMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+    }
+
+    /**
+     * 更新页面元素类型
+     * @param type
+     */
+    public void updateElementType(AppletPageElementType type){
+        if (NullUtil.isNotNullOrEmpty(type.getId())){
+            appletPageElementTypeMapper.updateByPrimaryKeySelective(type);
+        } else {
+            appletPageElementTypeMapper.insertSelective(type);
+        }
+    }
+
+    /**
+     * 页面元素类型排序
+     * @param type
+     * @param num
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void updateElementTypeIndex(AppletPageElementType type, Integer num) {
+        AppletPageElementType record1 = new AppletPageElementType();
+        record1.setTypeIndex(type.getTypeIndex());
+        AppletPageElementTypeExample example = new AppletPageElementTypeExample();
+        example.createCriteria().andPageIdEqualTo(type.getPageId()).andTypeIndexEqualTo(type.getTypeIndex() + num);
+        appletPageElementTypeMapper.updateByExampleSelective(record1, example);
+
+        AppletPageElementType record2 = new AppletPageElementType();
+        record2.setId(type.getId());
+        record2.setTypeIndex(type.getTypeIndex() + num);
+        appletPageElementTypeMapper.updateByPrimaryKeySelective(record2);
+    }
+
+
+    /**
      * 分页查询页面元素
      *
      * @param element
      * @param page
      * @return
      */
-    public Page selectAppletPageElementPage(ViewAppletPageElementDefault element, Page page) {
-        ViewAppletPageElementDefaultExample example = new ViewAppletPageElementDefaultExample();
+    public Page selectElementPage(AppletPageElement element, Page page) {
+        AppletPageElementExample example = new AppletPageElementExample();
         example.setPage(page);
         example.setOrderByClause("id desc");
-        ViewAppletPageElementDefaultExample.Criteria c = example.createCriteria().andPageIdEqualTo(element.getPageId());
+        AppletPageElementExample.Criteria c = example.createCriteria().andPageIdEqualTo(element.getPageId());
         if (NullUtil.isNotNullOrEmpty(element.getElementLogo())) {
             c.andElementLogoLike(element.getElementLogo() + "%");
         }
         if (NullUtil.isNotNullOrEmpty(element.getElementName())) {
             c.andElementNameLike("%" + element.getElementName() + "%");
         }
+        if (NullUtil.isNotNullOrEmpty(element.getTypeId())){
+            c.andTypeIdEqualTo(element.getTypeId());
+        }
         if (NullUtil.isNotNullOrEmpty(element.getElementStatus())) {
             c.andElementStatusEqualTo(element.getElementStatus());
         }
-        long count = viewAppletPageElementDefaultMapper.countByExample(example);
+        long count = appletPageElementMapper.countByExample(example);
         if (count > 0) {
             page.setTotalCount(count);
-            page.setDataSource(viewAppletPageElementDefaultMapper.selectByExample(example));
+            page.setDataSource(appletPageElementMapper.selectByExample(example));
         }
         return page;
+    }
+
+    /**
+     * 查询页面元素集合
+     * @param pageId
+     * @return
+     */
+    public List<AppletPageElement> selectElementList(Integer pageId){
+        AppletPageElementExample example = new AppletPageElementExample();
+        example.createCriteria().andPageIdEqualTo(pageId).andElementStatusEqualTo(true);
+        return appletPageElementMapper.selectByExample(example);
     }
 
     /**
@@ -101,37 +232,11 @@ public class AppletPageService {
      * @param id
      * @return
      */
-    public ViewAppletPageElementDefault selectAppletPageElementById(Integer id) {
-        ViewAppletPageElementDefaultExample example = new ViewAppletPageElementDefaultExample();
-        example.createCriteria().andIdEqualTo(id);
-        List<ViewAppletPageElementDefault> list = viewAppletPageElementDefaultMapper.selectByExample(example);
+    public AppletPageElement selectElementById(Integer id, Integer pageId) {
+        AppletPageElementExample example = new AppletPageElementExample();
+        example.createCriteria().andIdEqualTo(id).andPageIdEqualTo(pageId);
+        List<AppletPageElement> list = appletPageElementMapper.selectByExample(example);
         return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
-    }
-
-    /**
-     * 更新页面元素及默认内容
-     *
-     * @param elementDefault
-     */
-    public void updateAppletPageElementDefault(ViewAppletPageElementDefault elementDefault) {
-        AppletPageElement element = new AppletPageElement();
-        element.setId(elementDefault.getId());
-        element.setPageId(elementDefault.getPageId());
-        element.setElementIcon(elementDefault.getElementIcon());
-        element.setElementLogo(elementDefault.getElementLogo());
-        element.setElementName(elementDefault.getElementName());
-        element.setElementStatus(elementDefault.getElementStatus());
-        this.updateAppletPageElement(element);
-
-        AppletPage page = this.selectAppletPageById(element.getPageId());
-        AppletPageElementContent content = new AppletPageElementContent();
-        content.setId(elementDefault.getContentId());
-        content.setAppletId(0);
-        content.setFileId(page.getFileId());
-        content.setPageId(page.getId());
-        content.setElementId(element.getId());
-        content.setElementJson(elementDefault.getElementJson());
-        this.updateAppletPageElementContent(content);
     }
 
     /**
@@ -139,7 +244,7 @@ public class AppletPageService {
      *
      * @param element
      */
-    public void updateAppletPageElement(AppletPageElement element) {
+    public void updateElement(AppletPageElement element) {
         element.setUpdateTime(new Date());
         if (NullUtil.isNotNullOrEmpty(element.getId())) {
             appletPageElementMapper.updateByPrimaryKeySelective(element);

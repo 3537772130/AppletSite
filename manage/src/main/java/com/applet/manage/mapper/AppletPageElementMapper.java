@@ -2,10 +2,10 @@ package com.applet.manage.mapper;
 
 import com.applet.manage.entity.AppletPageElement;
 import com.applet.manage.entity.AppletPageElementExample;
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 @Mapper
 public interface AppletPageElementMapper {

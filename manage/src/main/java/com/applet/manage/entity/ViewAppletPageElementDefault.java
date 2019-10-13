@@ -7,17 +7,28 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class ViewAppletPageElementDefault implements Serializable {
-    private static final long serialVersionUID = 1L;
     private Integer id;
+
     private Integer pageId;
+
+    private Integer typeId;
+
+    private String typeName;
+
     private String elementLogo;
-    private String elementIcon;
+
     private String elementName;
+
     private Integer contentId;
+
     private String elementJson;
+
     @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
     private Date updateTime;
+
     private Boolean elementStatus;
+
+    private static final long serialVersionUID = 1L;
 
     public Integer getId() {
         return id;
@@ -35,20 +46,28 @@ public class ViewAppletPageElementDefault implements Serializable {
         this.pageId = pageId;
     }
 
+    public Integer getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName == null ? null : typeName.trim();
+    }
+
     public String getElementLogo() {
         return elementLogo;
     }
 
     public void setElementLogo(String elementLogo) {
         this.elementLogo = elementLogo == null ? null : elementLogo.trim();
-    }
-
-    public String getElementIcon() {
-        return elementIcon;
-    }
-
-    public void setElementIcon(String elementIcon) {
-        this.elementIcon = elementIcon == null ? null : elementIcon.trim();
     }
 
     public String getElementName() {
