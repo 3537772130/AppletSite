@@ -7,12 +7,16 @@
     <groupId>com.applet</groupId>
     <artifactId>AppletStie</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>pom</packaging>
+    <name>appletSite</name>
     <modules>
         <module>apply</module>
         <module>manage</module>
         <module>user</module>
     </modules>
+    <properties>
+        <skipTests>true</skipTests>
+    </properties>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
