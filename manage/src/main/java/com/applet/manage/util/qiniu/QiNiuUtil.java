@@ -294,7 +294,7 @@ public class QiNiuUtil {
 
     public static String getImageDownURL(String requestfileName, Long expires) {
         Auth auth = Auth.create(QiNiuConfig.AK, QiNiuConfig.SK);
-        String downloadRUL = auth.privateDownloadUrl(QiNiuConfig.downURLAppletImageUrl + requestfileName, (null == expires) ? 60 : expires);
+        String downloadRUL = auth.privateDownloadUrl(QiNiuConfig.downURLAppletImageUrl + requestfileName, (null == expires) ? 60*30 : expires);
         return downloadRUL;
     }
 
@@ -492,7 +492,7 @@ public class QiNiuUtil {
 
     public static void main(String[] args) {
         try {
-            String key = "upload/20180614091442256512/cbada7d8e2704fc1acae57a861889af5.jpg";
+            String key = "/api/image/M1-A20191003000711304300";
 //            if (existsFile(QiNiuConfig.bucketAppletPrivate, key)){
 //                System.out.println("七牛云图片路径：" + QiniuUtil.generateQiniuPrivateDownURLByQuality(key));
 //            } else {

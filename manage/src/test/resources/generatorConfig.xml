@@ -43,8 +43,8 @@
             <property name="enableSubPackages" value="false" />
         </javaClientGenerator>
 
-        <table tableName="applet_page_element"
-               domainObjectName="AppletPageElement"
+        <table tableName="applet_page_content"
+               domainObjectName="AppletPageContent"
                enableCountByExample="true"
                enableDeleteByExample="true"
                enableDeleteByPrimaryKey="true"
@@ -55,17 +55,17 @@
                enableUpdateByPrimaryKey="true">
         </table>
 
-<!--        <table tableName="view_applet_page_element_default"-->
-<!--               domainObjectName="ViewAppletPageElementDefault"-->
-<!--               enableCountByExample="true"-->
-<!--               enableDeleteByExample="false"-->
-<!--               enableDeleteByPrimaryKey="false"-->
-<!--               enableInsert="false"-->
-<!--               enableSelectByExample="true"-->
-<!--               enableSelectByPrimaryKey="true"-->
-<!--               enableUpdateByExample="false"-->
-<!--               enableUpdateByPrimaryKey="false">-->
-<!--        </table>-->
+        <table tableName="view_applet_page_content"
+               domainObjectName="ViewAppletPageContent"
+               enableCountByExample="true"
+               enableDeleteByExample="false"
+               enableDeleteByPrimaryKey="false"
+               enableInsert="false"
+               enableSelectByExample="true"
+               enableSelectByPrimaryKey="true"
+               enableUpdateByExample="false"
+               enableUpdateByPrimaryKey="false">
+        </table>
 
     </context>
 </generatorConfiguration>

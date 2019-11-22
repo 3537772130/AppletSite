@@ -233,7 +233,7 @@ public class ManageAppletPageController {
      * @return
      */
     @RequestMapping(value = "queryAppletPageElementPage")
-    public Object queryAppletPageElementPage(AppletPageElement element, HttpServletRequest request) {
+    public Object queryAppletPageElementPage(ViewAppletPageElement element, HttpServletRequest request) {
         Page page = PageUtil.initPage(request);
         page = appletPageService.selectElementPage(element, page);
         return AjaxResponse.success(page);
@@ -280,7 +280,7 @@ public class ManageAppletPageController {
             if (element.getElementLogo().trim().length() > 30) {
                 return AjaxResponse.error("元素标识长度过长");
             } else {
-                element.setElementLogo(element.getElementLogo().trim().toUpperCase());
+                element.setElementLogo(element.getElementLogo().trim());
             }
             if (NullUtil.isNullOrEmpty(element.getElementName())) {
                 return AjaxResponse.error("元素名称不能为空");
@@ -342,6 +342,44 @@ public class ManageAppletPageController {
             map1.put("list", list3);
             mapList.add(map1);
         }
-        return AjaxResponse.success(mapList);
+        AppletPageContent content = appletPageService.selectAppletPageContent(pageId);
+        Map map = new HashMap();
+        map.put("typeList" , mapList);
+        if (null != content && NullUtil.isNotNullOrEmpty(content.getContentJson())){
+            map.put("contentJson", content.getContentJson());
+            return AjaxResponse.success(map);
+        } else {
+            return AjaxResponse.msg("-1", map);
+        }
+    }
+
+
+    /**
+     * 保存页面配置
+     * @param pageId
+     * @param json
+     * @return
+     */
+    @RequestMapping(value = "savePageContent")
+    public Object savePageContent(Integer pageId, String json){
+        try {
+            AppletPageContent content = appletPageService.selectAppletPageContent(pageId);
+            if (null == content){
+                AppletPage page = appletPageService.selectAppletPageById(pageId);
+                if (null == page){
+                    return AjaxResponse.error("未找到相关记录");
+                }
+                content = new AppletPageContent();
+                content.setAppletId(0);
+                content.setPageId(page.getId());
+                content.setFileId(page.getFileId());
+            }
+            content.setContentJson(json);
+            appletPageService.updateAppletPageContent(content);
+            return AjaxResponse.success("保存配置成功");
+        } catch (Exception e) {
+            log.error("保存页面配置出错{}", e);
+            return AjaxResponse.error("保存配置失败");
+        }
     }
 }

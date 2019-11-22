@@ -43,8 +43,8 @@
             <property name="enableSubPackages" value="false" />
         </javaClientGenerator>
 
-        <table tableName="menu_info"
-               domainObjectName="MenuInfo"
+        <table tableName="applet_audit"
+               domainObjectName="AppletAudit"
                enableCountByExample="true"
                enableDeleteByExample="true"
                enableDeleteByPrimaryKey="true"
@@ -55,17 +55,17 @@
                enableUpdateByPrimaryKey="true">
         </table>
 
-        <!--        <table tableName="view_role_menu_first"-->
-        <!--               domainObjectName="ViewRoleMenuFirst"-->
-        <!--               enableCountByExample="true"-->
-        <!--               enableDeleteByExample="false"-->
-        <!--               enableDeleteByPrimaryKey="false"-->
-        <!--               enableInsert="false"-->
-        <!--               enableSelectByExample="true"-->
-        <!--               enableSelectByPrimaryKey="true"-->
-        <!--               enableUpdateByExample="false"-->
-        <!--               enableUpdateByPrimaryKey="false">-->
-        <!--        </table>-->
+<!--        <table tableName="view_applet_info"-->
+<!--               domainObjectName="ViewAppletInfo"-->
+<!--               enableCountByExample="true"-->
+<!--               enableDeleteByExample="false"-->
+<!--               enableDeleteByPrimaryKey="false"-->
+<!--               enableInsert="false"-->
+<!--               enableSelectByExample="true"-->
+<!--               enableSelectByPrimaryKey="true"-->
+<!--               enableUpdateByExample="false"-->
+<!--               enableUpdateByPrimaryKey="false">-->
+<!--        </table>-->
 
     </context>
 </generatorConfiguration>

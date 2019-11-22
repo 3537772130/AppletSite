@@ -2,10 +2,10 @@ package com.applet.user.mapper;
 
 import com.applet.user.entity.AppletAudit;
 import com.applet.user.entity.AppletAuditExample;
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 @Mapper
 public interface AppletAuditMapper {

@@ -4,14 +4,21 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class AppletAudit implements Serializable {
-    private static final long serialVersionUID = 1L;
     private Integer id;
+
     private Integer appletId;
+
     private String appletCode;
+
     private Integer result;
+
     private String remark;
+
     private Integer auditorId;
+
     private Date auditTime;
+
+    private static final long serialVersionUID = 1L;
 
     public Integer getId() {
         return id;

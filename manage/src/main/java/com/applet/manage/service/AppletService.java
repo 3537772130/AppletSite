@@ -23,6 +23,8 @@ public class AppletService {
     @Autowired
     private AppletTypeMapper appletTypeMapper;
     @Autowired
+    private ViewAppletTypeMapper viewAppletTypeMapper;
+    @Autowired
     private AppletInfoMapper appletInfoMapper;
     @Autowired
     private ViewAppletInfoMapper viewAppletInfoMapper;
@@ -64,20 +66,20 @@ public class AppletService {
      * @return
      */
     public Page selectAppletTypePage(AppletType type, Page page) {
-        AppletTypeExample example = new AppletTypeExample();
+        ViewAppletTypeExample example = new ViewAppletTypeExample();
         example.setPage(page);
         example.setOrderByClause("id desc");
-        AppletTypeExample.Criteria c = example.createCriteria();
+        ViewAppletTypeExample.Criteria c = example.createCriteria();
         if (NullUtil.isNotNullOrEmpty(type.getTypeName())) {
             c.andTypeNameLike("%" + type.getTypeName() + "%");
         }
         if (NullUtil.isNotNullOrEmpty(type.getTypeStatus())) {
             c.andTypeStatusEqualTo(type.getTypeStatus());
         }
-        long count = appletTypeMapper.countByExample(example);
+        long count = viewAppletTypeMapper.countByExample(example);
         if (count > 0) {
             page.setTotalCount(count);
-            page.setDataSource(appletTypeMapper.selectByExample(example));
+            page.setDataSource(viewAppletTypeMapper.selectByExample(example));
         }
         return page;
     }

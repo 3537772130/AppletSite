@@ -266,10 +266,10 @@ public class ManagerInfoController {
                 managerService.updateManagerInfo(manager, manager.getId(), request);
                 request.getSession().setAttribute(Constants.WEB_MANAGER_INFO, SerializeUtil.serialize(manager.getManagerInfo(manager)));
             }
-            return AjaxResponse.success("1");
+            return AjaxResponse.success(manager.getAvatarUrl() + "&token=" + RandomUtil.getRandomStr32());
         } catch (Exception e) {
             log.error("管理员上传头像出错{}", e);
-            return AjaxResponse.success("-1");
+            return AjaxResponse.error("上传失败");
         }
     }
 

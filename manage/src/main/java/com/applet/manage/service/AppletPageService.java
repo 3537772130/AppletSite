@@ -26,11 +26,11 @@ public class AppletPageService {
     @Autowired
     private AppletPageElementTypeMapper appletPageElementTypeMapper;
     @Autowired
-    private AppletPageElementContentMapper appletPageElementContentMapper;
+    private ViewAppletPageElementMapper viewAppletPageElementMapper;
     @Autowired
-    private ViewAppletPageElementContentMapper viewAppletPageElementContentMapper;
+    private AppletPageContentMapper appletPageContentMapper;
     @Autowired
-    private ViewAppletPageElementDefaultMapper viewAppletPageElementDefaultMapper;
+    private ViewAppletPageContentMapper viewAppletPageContentMapper;
 
     /**
      * 分页查询页面
@@ -190,11 +190,11 @@ public class AppletPageService {
      * @param page
      * @return
      */
-    public Page selectElementPage(AppletPageElement element, Page page) {
-        AppletPageElementExample example = new AppletPageElementExample();
+    public Page selectElementPage(ViewAppletPageElement element, Page page) {
+        ViewAppletPageElementExample example = new ViewAppletPageElementExample();
         example.setPage(page);
         example.setOrderByClause("id desc");
-        AppletPageElementExample.Criteria c = example.createCriteria().andPageIdEqualTo(element.getPageId());
+        ViewAppletPageElementExample.Criteria c = example.createCriteria().andPageIdEqualTo(element.getPageId());
         if (NullUtil.isNotNullOrEmpty(element.getElementLogo())) {
             c.andElementLogoLike(element.getElementLogo() + "%");
         }
@@ -207,10 +207,10 @@ public class AppletPageService {
         if (NullUtil.isNotNullOrEmpty(element.getElementStatus())) {
             c.andElementStatusEqualTo(element.getElementStatus());
         }
-        long count = appletPageElementMapper.countByExample(example);
+        long count = viewAppletPageElementMapper.countByExample(example);
         if (count > 0) {
             page.setTotalCount(count);
-            page.setDataSource(appletPageElementMapper.selectByExample(example));
+            page.setDataSource(viewAppletPageElementMapper.selectByExample(example));
         }
         return page;
     }
@@ -253,17 +253,30 @@ public class AppletPageService {
         }
     }
 
+
+    /**
+     * 获取页面默认内容
+     * @param pageId
+     * @return
+     */
+    public AppletPageContent selectAppletPageContent(Integer pageId){
+        AppletPageContentExample example = new AppletPageContentExample();
+        example.createCriteria().andPageIdEqualTo(pageId).andAppletIdEqualTo(0);
+        List<AppletPageContent> list = appletPageContentMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+    }
+
     /**
      * 更新页面元素内容
      *
      * @param content
      */
-    public void updateAppletPageElementContent(AppletPageElementContent content) {
+    public void updateAppletPageContent(AppletPageContent content) {
         content.setUpdateTime(new Date());
         if (NullUtil.isNotNullOrEmpty(content.getId())) {
-            appletPageElementContentMapper.updateByPrimaryKeySelective(content);
+            appletPageContentMapper.updateByPrimaryKeySelective(content);
         } else {
-            appletPageElementContentMapper.insertSelective(content);
+            appletPageContentMapper.insertSelective(content);
         }
     }
 
