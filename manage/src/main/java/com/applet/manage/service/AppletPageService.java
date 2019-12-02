@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @program: SpringBootDemo
@@ -30,7 +31,7 @@ public class AppletPageService {
     @Autowired
     private AppletPageContentMapper appletPageContentMapper;
     @Autowired
-    private ViewAppletPageContentMapper viewAppletPageContentMapper;
+    private CommonMapper commonMapper;
 
     /**
      * 分页查询页面
@@ -193,7 +194,7 @@ public class AppletPageService {
     public Page selectElementPage(ViewAppletPageElement element, Page page) {
         ViewAppletPageElementExample example = new ViewAppletPageElementExample();
         example.setPage(page);
-        example.setOrderByClause("id desc");
+        example.setOrderByClause("element_index asc");
         ViewAppletPageElementExample.Criteria c = example.createCriteria().andPageIdEqualTo(element.getPageId());
         if (NullUtil.isNotNullOrEmpty(element.getElementLogo())) {
             c.andElementLogoLike(element.getElementLogo() + "%");
@@ -222,6 +223,7 @@ public class AppletPageService {
      */
     public List<AppletPageElement> selectElementList(Integer pageId){
         AppletPageElementExample example = new AppletPageElementExample();
+        example.setOrderByClause("element_index asc");
         example.createCriteria().andPageIdEqualTo(pageId).andElementStatusEqualTo(true);
         return appletPageElementMapper.selectByExample(example);
     }
@@ -237,6 +239,36 @@ public class AppletPageService {
         example.createCriteria().andIdEqualTo(id).andPageIdEqualTo(pageId);
         List<AppletPageElement> list = appletPageElementMapper.selectByExample(example);
         return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+    }
+
+    /**
+     * 查询页面元素总数
+     * @param pageId
+     * @return
+     */
+    public int countElementByPageId(Integer pageId){
+        AppletPageElementExample example = new AppletPageElementExample();
+        example.createCriteria().andPageIdEqualTo(pageId);
+        return (int) appletPageElementMapper.countByExample(example);
+    }
+
+    /**
+     * 页面元素排序
+     * @param element
+     * @param num
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void updateElementIndex(AppletPageElement element, Integer num) {
+        AppletPageElement record1 = new AppletPageElement();
+        record1.setElementIndex(element.getElementIndex());
+        AppletPageElementExample example = new AppletPageElementExample();
+        example.createCriteria().andPageIdEqualTo(element.getPageId()).andElementIndexEqualTo(element.getElementIndex() + num);
+        appletPageElementMapper.updateByExampleSelective(record1, example);
+
+        AppletPageElement record2 = new AppletPageElement();
+        record2.setId(element.getId());
+        record2.setElementIndex(element.getElementIndex() + num);
+        appletPageElementMapper.updateByPrimaryKeySelective(record2);
     }
 
     /**
@@ -278,6 +310,34 @@ public class AppletPageService {
         } else {
             appletPageContentMapper.insertSelective(content);
         }
+    }
+
+    /**
+     * 查询测试商品列表
+     * @param userId
+     * @return
+     */
+    public List<Map> selectGoodsInfoList(Integer userId, String goodsName) {
+        String sql = "SELECT id,goods_name,cover_src AS icon FROM goods_info WHERE user_id = " + userId + " AND `status` = 1";
+        if (NullUtil.isNotNullOrEmpty(goodsName)){
+            sql +=  " AND goods_name LIKE '%" + goodsName + "%'";
+        }
+        sql +=  " ORDER BY goods_index ASC;";
+        return commonMapper.selectListMap(sql);
+    }
+
+    /**
+     * 查询测试商品类型列表
+     * @param userId
+     * @return
+     */
+    public List<Map> selectGoodsTypeList(Integer userId, String typeName) {
+        String sql = "SELECT id,type_name,type_logo AS icon FROM goods_type WHERE user_id = " + userId + " AND type_status = 1";
+        if (NullUtil.isNotNullOrEmpty(typeName)){
+            sql +=  " AND type_name LIKE '%" + typeName + "%'";
+        }
+        sql +=  " ORDER BY type_index ASC;";
+        return commonMapper.selectListMap(sql);
     }
 
 }

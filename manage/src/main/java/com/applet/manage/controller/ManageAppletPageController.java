@@ -1,18 +1,19 @@
 package com.applet.manage.controller;
 
+import com.applet.manage.config.annotation.SessionScope;
 import com.applet.manage.entity.*;
 import com.applet.manage.service.AppletPageService;
 import com.applet.manage.service.AppletService;
-import com.applet.manage.util.AjaxResponse;
-import com.applet.manage.util.NullUtil;
-import com.applet.manage.util.Page;
-import com.applet.manage.util.PageUtil;
+import com.applet.manage.util.*;
 import com.applet.manage.util.file.FileUtil;
+import com.applet.manage.util.qiniu.QiNiuUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -240,6 +241,42 @@ public class ManageAppletPageController {
     }
 
     /**
+     * 更新页面元素排序
+     * @param elementId
+     * @param pageId
+     * @param sort
+     * @return
+     */
+    @RequestMapping(value = "updateElementIndex")
+    public Object updateElementIndex(Integer elementId, Integer pageId, String sort) {
+        try {
+            if (NullUtil.isNullOrEmpty(elementId) || NullUtil.isNullOrEmpty(sort)) {
+                return AjaxResponse.error("参数错误");
+            }
+            int count = appletPageService.countElementByPageId(pageId);
+            if (count > 1) {
+                AppletPageElement element = appletPageService.selectElementById(elementId, pageId);
+                if (null == element) {
+                    return AjaxResponse.error("未找到相关记录");
+                }
+                Integer num = null;
+                if (sort.equals("top") && element.getElementIndex() - 1 > 0) {
+                    num = -1;
+                } else if (sort.equals("bot") && element.getElementIndex() + 1 <= count) {
+                    num = 1;
+                } else {
+                    return AjaxResponse.success("参数错误");
+                }
+                appletPageService.updateElementIndex(element, num);
+            }
+            return AjaxResponse.success();
+        } catch (Exception e) {
+            log.error("更新页面元素类型排序出错{}", e);
+            return AjaxResponse.error("操作失败");
+        }
+    }
+
+    /**
      * 加载页面元素信息
      *
      * @param id
@@ -292,6 +329,10 @@ public class ManageAppletPageController {
             }
             if (NullUtil.isNullOrEmpty(element.getTypeId())){
                 return AjaxResponse.error("元素类型不能为空");
+            }
+            if (NullUtil.isNullOrEmpty(element.getId())){
+                int count = appletPageService.countElementByPageId(element.getPageId());
+                element.setElementIndex(count + 1);
             }
             appletPageService.updateElement(element);
             return AjaxResponse.success("提交成功");
@@ -381,5 +422,70 @@ public class ManageAppletPageController {
             log.error("保存页面配置出错{}", e);
             return AjaxResponse.error("保存配置失败");
         }
+    }
+
+    /**
+     * 上传小程序页面图片
+     *
+     * @param manager
+     * @param multipartFile
+     * @return
+     */
+    @RequestMapping(value = "uploadAppletPageImage")
+    public Object uploadAppletPageImage(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo manager,
+                                        @RequestParam("image") MultipartFile multipartFile,
+                                        Integer pIndex, Integer index, String icon) {
+        try {
+            //校验文件信息
+            CheckResult result = CheckFileUtil.checkImageFile(multipartFile);
+            if (!result.getBool()) {
+                return AjaxResponse.error(result.getMsg());
+            }
+            String fileKey = "/api/public/PAGE-IMG-" + RandomUtil.getTimeStamp();
+            QiNiuUtil.uploadFile(multipartFile, fileKey);
+            if (NullUtil.isNotNullOrEmpty(icon)){
+                QiNiuUtil.deleteFile(icon);
+            }
+            Map map = new HashMap();
+            map.put("pIndex", pIndex);
+            map.put("index", index);
+            map.put("icon", fileKey);
+            return AjaxResponse.success(map);
+        } catch (Exception e) {
+            log.error("上传小程序页面图片出错{}", e);
+            return AjaxResponse.error("上传失败");
+        }
+    }
+
+    /**
+     * 删除小程序页面图片
+     * @param manager
+     * @param icon
+     */
+    @RequestMapping(value = "deleteAppletPageImage")
+    public void deleteAppletPageImage(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo manager, String icon){
+        if (NullUtil.isNotNullOrEmpty(icon)){
+            QiNiuUtil.deleteFile(icon);
+        }
+    }
+
+    /**
+     * 查询测试商品列表
+     * @param manager
+     * @return
+     */
+    @RequestMapping(value = "queryGoodsInfoList")
+    public Object queryGoodsInfoList(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo manager, String name){
+        return AjaxResponse.success(appletPageService.selectGoodsInfoList(1, name));
+    }
+
+    /**
+     * 查询测试商品类型列表
+     * @param manager
+     * @return
+     */
+    @RequestMapping(value = "queryGoodsTypeList")
+    public Object queryGoodsTypeList(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo manager, String name){
+        return AjaxResponse.success(appletPageService.selectGoodsTypeList(1, name));
     }
 }
