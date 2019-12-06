@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,8 @@ public class GoodsService {
     @Autowired
     private GoodsSpecsMapper goodsSpecsMapper;
     @Autowired
+    private ViewGoodsTypeMapper viewGoodsTypeMapper;
+    @Autowired
     private ViewGoodsInfoMapper viewGoodsInfoMapper;
     @Autowired
     private ViewGoodsFileMapper viewGoodsFileMapper;
@@ -42,16 +45,20 @@ public class GoodsService {
     /**
      * 分页查询商品类型
      *
+     * @param appletId
      * @param userId
      * @param name
      * @param page
      * @return
      */
-    public Page selectTypePage(Integer userId, String name, Integer status, Page page) {
-        GoodsTypeExample example = new GoodsTypeExample();
+    public Page selectTypePage(Integer appletId, Integer userId, String name, Integer status, Page page) {
+        ViewGoodsTypeExample example = new ViewGoodsTypeExample();
         example.setPage(page);
         example.setOrderByClause("type_index asc");
-        GoodsTypeExample.Criteria c = example.createCriteria();
+        ViewGoodsTypeExample.Criteria c = example.createCriteria();
+        if (NullUtil.isNotNullOrEmpty(appletId)){
+            c.andAppletIdEqualTo(appletId);
+        }
         if (NullUtil.isNotNullOrEmpty(name)) {
             c.andTypeNameLike("%" + name + "%");
         }
@@ -59,10 +66,10 @@ public class GoodsService {
             c.andTypeStatusEqualTo(status.intValue() == 1);
         }
         c.andUserIdEqualTo(userId);
-        long count = goodsTypeMapper.countByExample(example);
+        long count = viewGoodsTypeMapper.countByExample(example);
         if (count > 0) {
             page.setTotalCount(count);
-            page.setDataSource(goodsTypeMapper.selectByExample(example));
+            page.setDataSource(viewGoodsTypeMapper.selectByExample(example));
         }
         return page;
     }
@@ -129,14 +136,23 @@ public class GoodsService {
     /**
      * 查询正常的商品类型集合
      *
+     * @param appletId
      * @param userId
      * @return
      */
-    public List<GoodsType> selectTypeList(Integer userId) {
+    public List<GoodsType> selectTypeList(Integer appletId, Integer userId) {
         GoodsTypeExample example = new GoodsTypeExample();
         example.setOrderByClause("type_index asc");
-        example.createCriteria().andUserIdEqualTo(userId).andTypeStatusEqualTo(true);
+        GoodsTypeExample.Criteria c = example.createCriteria();
+        if (NullUtil.isNotNullOrEmpty(appletId)){
+            c.andAppletIdEqualTo(appletId);
+        }
+        c.andUserIdEqualTo(userId).andTypeStatusEqualTo(true);
         return goodsTypeMapper.selectByExample(example);
+    }
+
+    public List<GoodsType> selectTypeList(Integer userId) {
+        return selectTypeList(null, userId);
     }
 
     /**
@@ -216,7 +232,7 @@ public class GoodsService {
      * @param record
      */
     @Transactional(rollbackFor = Exception.class)
-    public void updateGoodsInfo(GoodsInfo record) {
+    public void updateGoodsInfo(GoodsInfo record) throws SQLIntegrityConstraintViolationException {
         record.setUpdateTime(new Date());
         if (NullUtil.isNotNullOrEmpty(record.getId())) {
             goodsInfoMapper.updateByPrimaryKeySelective(record);
@@ -224,7 +240,11 @@ public class GoodsService {
             int count = this.selectGoodsCount(record.getTypeId(), record.getUserId());
             record.setGoodsIndex(count + 1);
             record.setStatus(false);
-            goodsInfoMapper.insertSelective(record);
+            try {
+                goodsInfoMapper.insertSelective(record);
+            } catch (Exception e) {
+                throw new SQLIntegrityConstraintViolationException();
+            }
             // 设置商品文件(每个商品只允许有5个图片文件，1个视频文件)
             for (int i = 0; i < 5; i++) {
                 GoodsFile file = new GoodsFile();
@@ -457,5 +477,15 @@ public class GoodsService {
             goods.setStatus(false);
         }
         goodsInfoMapper.updateByPrimaryKeySelective(goods);
+    }
+
+    /**
+     * 查询用户审核通过小程序Map集合
+     * @param userId
+     * @return
+     */
+    public List<Map> selectAppletToMap(Integer userId){
+        String sql = "SELECT id,applet_name AS name FROM applet_info WHERE user_id = "+ userId + " AND `status` <> 0;";
+        return commonMapper.selectListMap(sql);
     }
 }

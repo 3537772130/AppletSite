@@ -476,7 +476,35 @@ public class ManageAppletPageController {
      */
     @RequestMapping(value = "queryGoodsInfoList")
     public Object queryGoodsInfoList(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo manager, String name){
-        return AjaxResponse.success(appletPageService.selectGoodsInfoList(1, name));
+        Map map = new HashMap();
+        map.put("goodsList", appletPageService.selectGoodsInfoList(1, name));
+        map.put("typeList", appletPageService.selectGoodsTypeList(1, null));
+        return AjaxResponse.success(map);
+    }
+
+    /**
+     * 查询测试商品详情列表
+     * @param manager
+     * @return
+     */
+    @RequestMapping(value = "queryGoodsDetailsList")
+    public Object queryGoodsDetailsList(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo manager, String name){
+        Map map = new HashMap();
+        map.put("goodsList", appletPageService.selectGoodsDetailsList(1, name));
+        map.put("typeList", appletPageService.selectGoodsTypeList(1, null));
+        return AjaxResponse.success(map);
+    }
+
+    /**
+     * 查询测试商品折扣列表
+     * @param manager
+     * @return
+     */
+    @RequestMapping(value = "queryGoodsDiscountList")
+    public Object queryGoodsDiscountList(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo manager, String name){
+        Map map = new HashMap();
+        map.put("goodsList", appletPageService.selectGoodsDiscountList(1, name));
+        return AjaxResponse.success(map);
     }
 
     /**
@@ -486,6 +514,8 @@ public class ManageAppletPageController {
      */
     @RequestMapping(value = "queryGoodsTypeList")
     public Object queryGoodsTypeList(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo manager, String name){
-        return AjaxResponse.success(appletPageService.selectGoodsTypeList(1, name));
+        Map map = new HashMap();
+        map.put("typeList", appletPageService.selectGoodsTypeList(1, name));
+        return AjaxResponse.success(map);
     }
 }

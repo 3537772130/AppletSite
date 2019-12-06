@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,9 +96,9 @@ public class UserGoodsController {
      * @return
      */
     @RequestMapping(value = "queryTypePage")
-    public Object queryTypePage(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, String name, Integer status, HttpServletRequest request) {
+    public Object queryTypePage(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer appletId, String name, Integer status, HttpServletRequest request) {
         Page page = PageUtil.initPage(request);
-        page = goodsService.selectTypePage(user.getId(), name, status, page);
+        page = goodsService.selectTypePage(appletId, user.getId(), name, status, page);
         return AjaxResponse.success(page);
     }
 
@@ -214,8 +215,8 @@ public class UserGoodsController {
      * @return
      */
     @RequestMapping(value = "queryTypeList")
-    public Object queryTypeList(@SessionScope(Constants.VUE_USER_INFO) UserInfo user) {
-        List<GoodsType> list = goodsService.selectTypeList(user.getId());
+    public Object queryTypeList(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer appletId) {
+        List<GoodsType> list = goodsService.selectTypeList(appletId, user.getId());
         return AjaxResponse.success(list);
     }
 
@@ -294,6 +295,9 @@ public class UserGoodsController {
                 if (null == record){
                     return AjaxResponse.error("信息不符");
                 }
+                if (record.getStatus()){
+                    return AjaxResponse.error("未下架商品禁止修改信息");
+                }
                 if (NullUtil.isNotNullOrEmpty(goods.getCoverSrc())) {
                     coverSrc = goods.getCoverSrc().equals(record.getCoverSrc()) ? null : record.getCoverSrc();
                 }
@@ -306,7 +310,12 @@ public class UserGoodsController {
             goods.setUserId(user.getId());
             goods.setMinPrice(null);
             goods.setMaxPrice(null);
-            goodsService.updateGoodsInfo(goods);
+            try {
+                goodsService.updateGoodsInfo(goods);
+            } catch (SQLIntegrityConstraintViolationException e) {
+                log.error("更新商品信息出错{}", e);
+                return AjaxResponse.error("提交失败（商品名称已存在！）");
+            }
             return AjaxResponse.success("提交成功");
         } catch (Exception e) {
             log.error("更新商品信息出错{}", e);
@@ -433,6 +442,13 @@ public class UserGoodsController {
             if (NullUtil.isNullOrEmpty(goodsId) || NullUtil.isNullOrEmpty(fileId)) {
                 return AjaxResponse.error("参数错误");
             }
+            GoodsInfo goodsInfo = goodsService.selectGoodsInfo(goodsId, user.getId());
+            if (null == goodsInfo){
+                return AjaxResponse.error("信息不符");
+            }
+            if (goodsInfo.getStatus()){
+                return AjaxResponse.error("未下架商品禁止上传图片");
+            }
             ViewGoodsFile record = goodsService.selectFileInfo(fileId, goodsId, user.getId());
             if (null == record) {
                 return AjaxResponse.error("未找到相关记录");
@@ -452,7 +468,7 @@ public class UserGoodsController {
     }
 
     /**
-     * 上传商品图片文件
+     * 上传商品视频文件
      *
      * @param user
      * @param goodsId
@@ -471,6 +487,13 @@ public class UserGoodsController {
             }
             if (NullUtil.isNullOrEmpty(goodsId) || NullUtil.isNullOrEmpty(fileId)) {
                 return AjaxResponse.error("参数错误");
+            }
+            GoodsInfo goodsInfo = goodsService.selectGoodsInfo(goodsId, user.getId());
+            if (null == goodsInfo){
+                return AjaxResponse.error("信息不符");
+            }
+            if (goodsInfo.getStatus()){
+                return AjaxResponse.error("未下架商品禁止上传视频");
             }
             ViewGoodsFile record = goodsService.selectFileInfo(fileId, goodsId, user.getId());
             if (null == record) {
@@ -584,6 +607,13 @@ public class UserGoodsController {
             if (NullUtil.isNullOrEmpty(specs.getGoodsId())) {
                 return AjaxResponse.error("参数丢失");
             }
+            GoodsInfo goodsInfo = goodsService.selectGoodsInfo(specs.getGoodsId(), user.getId());
+            if (null == goodsInfo){
+                return AjaxResponse.error("信息不符");
+            }
+            if (goodsInfo.getStatus()){
+                return AjaxResponse.error("未下架商品禁止修改信息");
+            }
             if (NullUtil.isNotNullOrEmpty(specs.getSpecsText()) && specs.getSpecsText().length() > 100) {
                 return AjaxResponse.error("商品规格长度过长");
             }
@@ -670,5 +700,19 @@ public class UserGoodsController {
             log.error("更新商品排序出错{}", e);
             return AjaxResponse.error("操作失败");
         }
+    }
+
+    /**
+     * 查询摇号小程序Map信息集合
+     * @param user
+     * @return
+     */
+    @RequestMapping(value = "queryAppletToMap")
+    public Object queryAppletToMap(@SessionScope(Constants.VUE_USER_INFO) UserInfo user){
+        List<Map> list = goodsService.selectAppletToMap(user.getId());
+        if (NullUtil.isNullOrEmpty(list)) {
+            return AjaxResponse.error("未找到相关记录");
+        }
+        return AjaxResponse.success(list);
     }
 }

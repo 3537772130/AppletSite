@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -295,5 +296,4 @@ public class UserAppletController {
             return AjaxResponse.error("提交失败");
         }
     }
-
 }

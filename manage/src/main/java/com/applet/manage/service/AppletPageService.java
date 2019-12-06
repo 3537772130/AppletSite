@@ -318,7 +318,35 @@ public class AppletPageService {
      * @return
      */
     public List<Map> selectGoodsInfoList(Integer userId, String goodsName) {
-        String sql = "SELECT id,goods_name,cover_src AS icon FROM goods_info WHERE user_id = " + userId + " AND `status` = 1";
+        String sql = "SELECT id,type_id AS typeId,goods_name AS name,cover_src AS icon FROM goods_info WHERE user_id = " + userId + " AND `status` = 1";
+        if (NullUtil.isNotNullOrEmpty(goodsName)){
+            sql +=  " AND goods_name LIKE '%" + goodsName + "%'";
+        }
+        sql +=  " ORDER BY goods_index ASC;";
+        return commonMapper.selectListMap(sql);
+    }
+
+    /**
+     * 查询测试商品详情列表
+     * @param userId
+     * @return
+     */
+    public List<Map> selectGoodsDetailsList(Integer userId, String goodsName) {
+        String sql = "SELECT id,type_id AS typeId,goods_name AS name,cover_src AS icon,min_price AS minPrice,max_price AS maxPrice FROM goods_info WHERE user_id = " + userId + " AND `status` = 1";
+        if (NullUtil.isNotNullOrEmpty(goodsName)){
+            sql +=  " AND goods_name LIKE '%" + goodsName + "%'";
+        }
+        sql +=  " ORDER BY goods_index ASC;";
+        return commonMapper.selectListMap(sql);
+    }
+
+    /**
+     * 查询测试商品折扣列表
+     * @param userId
+     * @return
+     */
+    public List<Map> selectGoodsDiscountList(Integer userId, String goodsName) {
+        String sql = "SELECT id,goods_name AS name,specs_src AS icon,actual_price AS minPrice,sell_price AS maxPrice FROM view_goods_specs_summary WHERE user_id = " + userId;
         if (NullUtil.isNotNullOrEmpty(goodsName)){
             sql +=  " AND goods_name LIKE '%" + goodsName + "%'";
         }
@@ -332,7 +360,7 @@ public class AppletPageService {
      * @return
      */
     public List<Map> selectGoodsTypeList(Integer userId, String typeName) {
-        String sql = "SELECT id,type_name,type_logo AS icon FROM goods_type WHERE user_id = " + userId + " AND type_status = 1";
+        String sql = "SELECT id,type_name AS name,type_logo AS icon FROM goods_type WHERE user_id = " + userId + " AND type_status = 1";
         if (NullUtil.isNotNullOrEmpty(typeName)){
             sql +=  " AND type_name LIKE '%" + typeName + "%'";
         }

@@ -4,7 +4,7 @@ import com.applet.user.util.Page;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GoodsTypeExample {
+public class ViewGoodsTypeExample {
     protected String orderByClause;
 
     protected boolean distinct;
@@ -13,7 +13,7 @@ public class GoodsTypeExample {
 
     protected Page page;
 
-    public GoodsTypeExample() {
+    public ViewGoodsTypeExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
 
@@ -552,6 +552,76 @@ public class GoodsTypeExample {
 
         public Criteria andTypeStatusNotBetween(Boolean value1, Boolean value2) {
             addCriterion("type_status not between", value1, value2, "typeStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletNameIsNull() {
+            addCriterion("applet_name is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletNameIsNotNull() {
+            addCriterion("applet_name is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletNameEqualTo(String value) {
+            addCriterion("applet_name =", value, "appletName");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletNameNotEqualTo(String value) {
+            addCriterion("applet_name <>", value, "appletName");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletNameGreaterThan(String value) {
+            addCriterion("applet_name >", value, "appletName");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletNameGreaterThanOrEqualTo(String value) {
+            addCriterion("applet_name >=", value, "appletName");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletNameLessThan(String value) {
+            addCriterion("applet_name <", value, "appletName");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletNameLessThanOrEqualTo(String value) {
+            addCriterion("applet_name <=", value, "appletName");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletNameLike(String value) {
+            addCriterion("applet_name like", value, "appletName");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletNameNotLike(String value) {
+            addCriterion("applet_name not like", value, "appletName");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletNameIn(List<String> values) {
+            addCriterion("applet_name in", values, "appletName");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletNameNotIn(List<String> values) {
+            addCriterion("applet_name not in", values, "appletName");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletNameBetween(String value1, String value2) {
+            addCriterion("applet_name between", value1, value2, "appletName");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletNameNotBetween(String value1, String value2) {
+            addCriterion("applet_name not between", value1, value2, "appletName");
             return (Criteria) this;
         }
     }

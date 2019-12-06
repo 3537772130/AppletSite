@@ -2,7 +2,7 @@ package com.applet.user.entity;
 
 import java.io.Serializable;
 
-public class GoodsType implements Serializable {
+public class ViewGoodsType implements Serializable {
     private Integer id;
 
     private Integer appletId;
@@ -16,6 +16,8 @@ public class GoodsType implements Serializable {
     private Integer typeIndex;
 
     private Boolean typeStatus;
+
+    private String appletName;
 
     private static final long serialVersionUID = 1L;
 
@@ -73,5 +75,13 @@ public class GoodsType implements Serializable {
 
     public void setTypeStatus(Boolean typeStatus) {
         this.typeStatus = typeStatus;
+    }
+
+    public String getAppletName() {
+        return appletName;
+    }
+
+    public void setAppletName(String appletName) {
+        this.appletName = appletName == null ? null : appletName.trim();
     }
 }
