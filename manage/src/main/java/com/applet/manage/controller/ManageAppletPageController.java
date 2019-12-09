@@ -404,6 +404,10 @@ public class ManageAppletPageController {
     @RequestMapping(value = "savePageContent")
     public Object savePageContent(Integer pageId, String json){
         try {
+            log.info("配置的JSON长度为：" + json.getBytes().length + "个字节");
+            if (json.getBytes().length > 65000){
+                return AjaxResponse.error("展示的商品过多啦");
+            }
             AppletPageContent content = appletPageService.selectAppletPageContent(pageId);
             if (null == content){
                 AppletPage page = appletPageService.selectAppletPageById(pageId);
