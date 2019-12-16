@@ -245,19 +245,19 @@ public class GoodsService {
             } catch (Exception e) {
                 throw new SQLIntegrityConstraintViolationException();
             }
-            // 设置商品文件(每个商品只允许有5个图片文件，1个视频文件)
-            for (int i = 0; i < 5; i++) {
-                GoodsFile file = new GoodsFile();
-                file.setGoodsId(record.getId());
-                file.setFileType(1);
-                file.setFileStatus(false);
-                goodsFileMapper.insertSelective(file);
-            }
+            // 设置商品文件(每个商品只允许有1个视频文件，5个图片文件)
             GoodsFile file = new GoodsFile();
             file.setGoodsId(record.getId());
             file.setFileType(2);
             file.setFileStatus(false);
             goodsFileMapper.insertSelective(file);
+            for (int i = 0; i < 5; i++) {
+                file = new GoodsFile();
+                file.setGoodsId(record.getId());
+                file.setFileType(1);
+                file.setFileStatus(false);
+                goodsFileMapper.insertSelective(file);
+            }
         }
     }
 

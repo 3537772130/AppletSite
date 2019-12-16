@@ -57,6 +57,12 @@
     </if>
     <include refid="PageSuffix" />
   </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from applet_page
+    where id = #{id,jdbcType=INTEGER}
+  </select>
   <select id="countByExample" parameterType="com.applet.user.entity.AppletPageExample" resultType="java.lang.Long">
     select count(*) from applet_page
     <if test="_parameter != null">

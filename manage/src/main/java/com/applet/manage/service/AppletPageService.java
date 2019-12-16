@@ -68,7 +68,7 @@ public class AppletPageService {
     }
 
     /**
-     * 现场页面信息详情
+     * 小程序页面信息详情
      *
      * @param id
      * @return

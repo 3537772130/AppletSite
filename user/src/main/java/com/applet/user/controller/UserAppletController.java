@@ -2,6 +2,7 @@ package com.applet.user.controller;
 
 import com.applet.user.config.annotation.SessionScope;
 import com.applet.user.entity.*;
+import com.applet.user.service.AppletPageService;
 import com.applet.user.service.AppletService;
 import com.applet.user.service.ManagerService;
 import com.applet.user.util.*;
@@ -35,6 +36,8 @@ public class UserAppletController {
     private AppletService appletService;
     @Autowired
     private ManagerService managerService;
+    @Autowired
+    private AppletPageService appletPageService;
 
     /**
      * 查询用户小程序审核列表
@@ -82,7 +85,7 @@ public class UserAppletController {
         map.put("typeList", appletService.selectAppletTypeList(true));
         if (NullUtil.isNotNullOrEmpty(id) && id.intValue() != 0) {
             try {
-                ViewAppletInfo appletInfo = appletService.selectAppletInfo(id, user.getId());
+                ViewAppletInfo appletInfo = appletService.selectViewAppletInfo(id, user.getId());
                 if (null != appletInfo) {
                     appletInfo.setUserId(null);
                     appletInfo.setAddressSimple(null);
@@ -115,7 +118,7 @@ public class UserAppletController {
     @RequestMapping(value = "queryAppletDetails")
     public Object queryAppletDetails(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer id) {
         try {
-            ViewAppletInfo appletInfo = appletService.selectAppletInfo(id, user.getId());
+            ViewAppletInfo appletInfo = appletService.selectViewAppletInfo(id, user.getId());
             if (null != appletInfo) {
                 appletInfo.setUserId(null);
                 appletInfo.setManagerAccount(EncryptionUtil.decryptAppletRSA(appletInfo.getManagerAccount()));
@@ -194,7 +197,7 @@ public class UserAppletController {
                 return AjaxResponse.error("提交出错");
             }
             if (NullUtil.isNotNullOrEmpty(appletInfo.getId())) {
-                ViewAppletInfo info = appletService.selectAppletInfo(appletInfo.getId(), user.getId());
+                ViewAppletInfo info = appletService.selectViewAppletInfo(appletInfo.getId(), user.getId());
                 if (null == info) {
                     return AjaxResponse.success("您没有权限修改");
                 }
@@ -294,6 +297,37 @@ public class UserAppletController {
         } catch (Exception e) {
             log.error("提交小程序信息出错{}", e);
             return AjaxResponse.error("提交失败");
+        }
+    }
+
+
+    /**
+     * 更新小程序营业状态
+     * @param user
+     * @param appletId
+     * @return
+     */
+    @RequestMapping(value = "updateAppletSelling")
+    public Object updateAppletSelling(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer appletId){
+        try {
+            AppletInfo appletInfo = appletService.selectAppletInfo(appletId, user.getId());
+            if (null == appletInfo){
+                return AjaxResponse.error("未找到相关信息");
+            }
+            if (appletInfo.getStatus().intValue() != 1){
+                return AjaxResponse.error("小程序状态不符");
+            }
+            if (!appletInfo.getIfSelling()) {
+                List<ViewAppletPageContent> list = appletPageService.selectAppletPageContent(user.getId(), appletInfo.getId());
+                if (NullUtil.isNullOrEmpty(list)){
+                    return AjaxResponse.error("请先编辑页面并保存配置！");
+                }
+            }
+            appletService.updateAppletSelling(appletInfo.getId(), appletInfo.getUserId(), appletInfo.getIfSelling());
+            return AjaxResponse.success("更新成功");
+        } catch (Exception e) {
+            log.error("更新小程序营业状态出错{}", e);
+            return AjaxResponse.error("更新失败");
         }
     }
 }

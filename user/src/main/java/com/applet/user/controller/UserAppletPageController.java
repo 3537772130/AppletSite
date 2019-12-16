@@ -6,6 +6,8 @@ import com.applet.user.service.AppletPageService;
 import com.applet.user.util.AjaxResponse;
 import com.applet.user.util.Constants;
 import com.applet.user.util.NullUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +26,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/api/user/applet/page/")
 public class UserAppletPageController {
+    private final static Logger log = LoggerFactory.getLogger(UserAppletPageController.class);
     @Autowired
     private AppletPageService appletPageService;
 
@@ -35,15 +38,12 @@ public class UserAppletPageController {
      */
     @RequestMapping(value = "loadPageDefault")
     public Object loadPageDefault(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer appletId){
-        ViewAppletVersion version = appletPageService.selectAppletVersionInfo(user.getId(), appletId);
-        if (null != version){
+        List<ViewAppletPage> list = appletPageService.selectAppletPageList(user.getId(), appletId);
+        if (NullUtil.isNotNullOrEmpty(list)){
             Map map = new HashMap();
-            map.put("appletTypeId", version.getTypeId());
-            List<AppletPage> list = appletPageService.selectAppletPageList(version.getFileId());
-            if (NullUtil.isNotNullOrEmpty(list)){
-                map.put("pageList", list);
-                return AjaxResponse.success(map);
-            }
+            map.put("appletTypeId", list.get(0).getTypeId());
+            map.put("pageList", list);
+            return AjaxResponse.success(map);
         }
         return AjaxResponse.error("未找到相关记录");
     }
@@ -54,7 +54,7 @@ public class UserAppletPageController {
      * @return
      */
     @RequestMapping(value = "loadPageElement")
-    public Object loadPageElement(Integer appletId, Integer pageId){
+    public Object loadPageElement(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer appletId, Integer pageId){
         List<AppletPageElementType> list1 = appletPageService.selectElementTypeList(pageId);
         List<AppletPageElement> list2 = appletPageService.selectElementList(pageId);
         List<Map> mapList = new ArrayList<>();
@@ -75,18 +75,18 @@ public class UserAppletPageController {
             map1.put("list", list3);
             mapList.add(map1);
         }
-        AppletPageContent content = appletPageService.selectAppletPageContent(appletId, pageId);
+        String contentJson = null;
+        ViewAppletPageContent content = appletPageService.selectAppletPageContent(user.getId(), appletId, pageId);
         if (null == content){
-            content = appletPageService.selectAppletPageContent(0, pageId);
+            AppletPageContent content1 = appletPageService.selectAppletPageContent(pageId);
+            contentJson = content1.getContentJson();
+        } else {
+            contentJson = content.getContentJson();
         }
         Map map = new HashMap();
         map.put("typeList" , mapList);
-        if (null != content && NullUtil.isNotNullOrEmpty(content.getContentJson())){
-            map.put("contentJson", content.getContentJson());
-            return AjaxResponse.success(map);
-        } else {
-            return AjaxResponse.msg("-1", map);
-        }
+        map.put("contentJson", contentJson);
+        return AjaxResponse.success(map);
     }
 
     /**
@@ -141,5 +141,43 @@ public class UserAppletPageController {
         Map map = new HashMap();
         map.put("typeList", appletPageService.selectGoodsTypeList(user.getId(), name));
         return AjaxResponse.success(map);
+    }
+
+    /**
+     * 保存页面配置
+     * @param pageId
+     * @param json
+     * @return
+     */
+    @RequestMapping(value = "savePageContent")
+    public Object savePageContent(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer appletId, Integer pageId, String json){
+        try {
+            log.info("配置的JSON长度为：" + json.getBytes().length + "个字节");
+            if (json.getBytes().length > 65000){
+                return AjaxResponse.error("展示的商品过多啦");
+            }
+            ViewAppletPageContent content = appletPageService.selectAppletPageContent(user.getId(), appletId, pageId);
+            AppletPageContent content1 = new AppletPageContent();
+            if (null == content){
+                ViewAppletPage page = appletPageService.selectAppletPageById(user.getId(), appletId, pageId);
+                if (null == page){
+                    return AjaxResponse.error("未找到相关记录");
+                }
+                content1.setAppletId(page.getAppletId());
+                content1.setPageId(page.getPageId());
+                content1.setFileId(page.getFileId());
+            } else {
+                content1.setId(content.getId());
+                content1.setAppletId(content.getAppletId());
+                content1.setPageId(content.getPageId());
+                content1.setFileId(content.getAppletFileId());
+            }
+            content1.setContentJson(json);
+            appletPageService.updateAppletPageContent(content1);
+            return AjaxResponse.success("保存配置成功");
+        } catch (Exception e) {
+            log.error("保存页面配置出错{}", e);
+            return AjaxResponse.error("保存配置失败");
+        }
     }
 }

@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.applet.apply.mapper.AppletInfoMapper">
+  <resultMap id="BaseResultMap" type="com.applet.apply.entity.AppletInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="type_id" jdbcType="INTEGER" property="typeId" />
+    <result column="applet_logo" jdbcType="VARCHAR" property="appletLogo" />
+    <result column="applet_code" jdbcType="VARCHAR" property="appletCode" />
+    <result column="applet_name" jdbcType="VARCHAR" property="appletName" />
+    <result column="applet_simple" jdbcType="VARCHAR" property="appletSimple" />
+    <result column="license_code" jdbcType="VARCHAR" property="licenseCode" />
+    <result column="business_scope" jdbcType="VARCHAR" property="businessScope" />
+    <result column="license_src" jdbcType="VARCHAR" property="licenseSrc" />
+    <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+    <result column="manager_account" jdbcType="VARCHAR" property="managerAccount" />
+    <result column="manager_password" jdbcType="VARCHAR" property="managerPassword" />
+    <result column="app_id" jdbcType="VARCHAR" property="appId" />
+    <result column="app_secret" jdbcType="VARCHAR" property="appSecret" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="county" jdbcType="VARCHAR" property="county" />
+    <result column="address_simple" jdbcType="VARCHAR" property="addressSimple" />
+    <result column="address_details" jdbcType="VARCHAR" property="addressDetails" />
+    <result column="lon" jdbcType="DOUBLE" property="lon" />
+    <result column="lat" jdbcType="DOUBLE" property="lat" />
+    <result column="if_retail" jdbcType="BIT" property="ifRetail" />
+    <result column="if_selling" jdbcType="BIT" property="ifSelling" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, user_id, type_id, applet_logo, applet_code, applet_name, applet_simple, license_code, 
+    business_scope, license_src, telephone, manager_account, manager_password, app_id, 
+    app_secret, province, city, county, address_simple, address_details, lon, lat, if_retail, 
+    if_selling, update_time, status
+  </sql>
+  <select id="selectByExample" parameterType="com.applet.apply.entity.AppletInfoExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from applet_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <include refid="PageSuffix" />
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from applet_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from applet_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.applet.apply.entity.AppletInfoExample">
+    delete from applet_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.applet.apply.entity.AppletInfo">
+    insert into applet_info (id, user_id, type_id, 
+      applet_logo, applet_code, applet_name, 
+      applet_simple, license_code, business_scope, 
+      license_src, telephone, manager_account, 
+      manager_password, app_id, app_secret, 
+      province, city, county, 
+      address_simple, address_details, lon, 
+      lat, if_retail, if_selling, update_time, 
+      status)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{typeId,jdbcType=INTEGER}, 
+      #{appletLogo,jdbcType=VARCHAR}, #{appletCode,jdbcType=VARCHAR}, #{appletName,jdbcType=VARCHAR}, 
+      #{appletSimple,jdbcType=VARCHAR}, #{licenseCode,jdbcType=VARCHAR}, #{businessScope,jdbcType=VARCHAR}, 
+      #{licenseSrc,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, #{managerAccount,jdbcType=VARCHAR}, 
+      #{managerPassword,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, #{appSecret,jdbcType=VARCHAR}, 
+      #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{county,jdbcType=VARCHAR}, 
+      #{addressSimple,jdbcType=VARCHAR}, #{addressDetails,jdbcType=VARCHAR}, #{lon,jdbcType=DOUBLE}, 
+      #{lat,jdbcType=DOUBLE}, #{ifRetail,jdbcType=BIT}, #{ifSelling,jdbcType=BIT}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" keyProperty="id" parameterType="com.applet.apply.entity.AppletInfo" useGeneratedKeys="true">
+    insert into applet_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="typeId != null">
+        type_id,
+      </if>
+      <if test="appletLogo != null">
+        applet_logo,
+      </if>
+      <if test="appletCode != null">
+        applet_code,
+      </if>
+      <if test="appletName != null">
+        applet_name,
+      </if>
+      <if test="appletSimple != null">
+        applet_simple,
+      </if>
+      <if test="licenseCode != null">
+        license_code,
+      </if>
+      <if test="businessScope != null">
+        business_scope,
+      </if>
+      <if test="licenseSrc != null">
+        license_src,
+      </if>
+      <if test="telephone != null">
+        telephone,
+      </if>
+      <if test="managerAccount != null">
+        manager_account,
+      </if>
+      <if test="managerPassword != null">
+        manager_password,
+      </if>
+      <if test="appId != null">
+        app_id,
+      </if>
+      <if test="appSecret != null">
+        app_secret,
+      </if>
+      <if test="province != null">
+        province,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="county != null">
+        county,
+      </if>
+      <if test="addressSimple != null">
+        address_simple,
+      </if>
+      <if test="addressDetails != null">
+        address_details,
+      </if>
+      <if test="lon != null">
+        lon,
+      </if>
+      <if test="lat != null">
+        lat,
+      </if>
+      <if test="ifRetail != null">
+        if_retail,
+      </if>
+      <if test="ifSelling != null">
+        if_selling,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="typeId != null">
+        #{typeId,jdbcType=INTEGER},
+      </if>
+      <if test="appletLogo != null">
+        #{appletLogo,jdbcType=VARCHAR},
+      </if>
+      <if test="appletCode != null">
+        #{appletCode,jdbcType=VARCHAR},
+      </if>
+      <if test="appletName != null">
+        #{appletName,jdbcType=VARCHAR},
+      </if>
+      <if test="appletSimple != null">
+        #{appletSimple,jdbcType=VARCHAR},
+      </if>
+      <if test="licenseCode != null">
+        #{licenseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="businessScope != null">
+        #{businessScope,jdbcType=VARCHAR},
+      </if>
+      <if test="licenseSrc != null">
+        #{licenseSrc,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null">
+        #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="managerAccount != null">
+        #{managerAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="managerPassword != null">
+        #{managerPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null">
+        #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="appSecret != null">
+        #{appSecret,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="county != null">
+        #{county,jdbcType=VARCHAR},
+      </if>
+      <if test="addressSimple != null">
+        #{addressSimple,jdbcType=VARCHAR},
+      </if>
+      <if test="addressDetails != null">
+        #{addressDetails,jdbcType=VARCHAR},
+      </if>
+      <if test="lon != null">
+        #{lon,jdbcType=DOUBLE},
+      </if>
+      <if test="lat != null">
+        #{lat,jdbcType=DOUBLE},
+      </if>
+      <if test="ifRetail != null">
+        #{ifRetail,jdbcType=BIT},
+      </if>
+      <if test="ifSelling != null">
+        #{ifSelling,jdbcType=BIT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.applet.apply.entity.AppletInfoExample" resultType="java.lang.Long">
+    select count(*) from applet_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update applet_info
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.userId != null">
+        user_id = #{record.userId,jdbcType=INTEGER},
+      </if>
+      <if test="record.typeId != null">
+        type_id = #{record.typeId,jdbcType=INTEGER},
+      </if>
+      <if test="record.appletLogo != null">
+        applet_logo = #{record.appletLogo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.appletCode != null">
+        applet_code = #{record.appletCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.appletName != null">
+        applet_name = #{record.appletName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.appletSimple != null">
+        applet_simple = #{record.appletSimple,jdbcType=VARCHAR},
+      </if>
+      <if test="record.licenseCode != null">
+        license_code = #{record.licenseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.businessScope != null">
+        business_scope = #{record.businessScope,jdbcType=VARCHAR},
+      </if>
+      <if test="record.licenseSrc != null">
+        license_src = #{record.licenseSrc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.telephone != null">
+        telephone = #{record.telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.managerAccount != null">
+        manager_account = #{record.managerAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="record.managerPassword != null">
+        manager_password = #{record.managerPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="record.appId != null">
+        app_id = #{record.appId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.appSecret != null">
+        app_secret = #{record.appSecret,jdbcType=VARCHAR},
+      </if>
+      <if test="record.province != null">
+        province = #{record.province,jdbcType=VARCHAR},
+      </if>
+      <if test="record.city != null">
+        city = #{record.city,jdbcType=VARCHAR},
+      </if>
+      <if test="record.county != null">
+        county = #{record.county,jdbcType=VARCHAR},
+      </if>
+      <if test="record.addressSimple != null">
+        address_simple = #{record.addressSimple,jdbcType=VARCHAR},
+      </if>
+      <if test="record.addressDetails != null">
+        address_details = #{record.addressDetails,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lon != null">
+        lon = #{record.lon,jdbcType=DOUBLE},
+      </if>
+      <if test="record.lat != null">
+        lat = #{record.lat,jdbcType=DOUBLE},
+      </if>
+      <if test="record.ifRetail != null">
+        if_retail = #{record.ifRetail,jdbcType=BIT},
+      </if>
+      <if test="record.ifSelling != null">
+        if_selling = #{record.ifSelling,jdbcType=BIT},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update applet_info
+    set id = #{record.id,jdbcType=INTEGER},
+      user_id = #{record.userId,jdbcType=INTEGER},
+      type_id = #{record.typeId,jdbcType=INTEGER},
+      applet_logo = #{record.appletLogo,jdbcType=VARCHAR},
+      applet_code = #{record.appletCode,jdbcType=VARCHAR},
+      applet_name = #{record.appletName,jdbcType=VARCHAR},
+      applet_simple = #{record.appletSimple,jdbcType=VARCHAR},
+      license_code = #{record.licenseCode,jdbcType=VARCHAR},
+      business_scope = #{record.businessScope,jdbcType=VARCHAR},
+      license_src = #{record.licenseSrc,jdbcType=VARCHAR},
+      telephone = #{record.telephone,jdbcType=VARCHAR},
+      manager_account = #{record.managerAccount,jdbcType=VARCHAR},
+      manager_password = #{record.managerPassword,jdbcType=VARCHAR},
+      app_id = #{record.appId,jdbcType=VARCHAR},
+      app_secret = #{record.appSecret,jdbcType=VARCHAR},
+      province = #{record.province,jdbcType=VARCHAR},
+      city = #{record.city,jdbcType=VARCHAR},
+      county = #{record.county,jdbcType=VARCHAR},
+      address_simple = #{record.addressSimple,jdbcType=VARCHAR},
+      address_details = #{record.addressDetails,jdbcType=VARCHAR},
+      lon = #{record.lon,jdbcType=DOUBLE},
+      lat = #{record.lat,jdbcType=DOUBLE},
+      if_retail = #{record.ifRetail,jdbcType=BIT},
+      if_selling = #{record.ifSelling,jdbcType=BIT},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      status = #{record.status,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.applet.apply.entity.AppletInfo">
+    update applet_info
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="typeId != null">
+        type_id = #{typeId,jdbcType=INTEGER},
+      </if>
+      <if test="appletLogo != null">
+        applet_logo = #{appletLogo,jdbcType=VARCHAR},
+      </if>
+      <if test="appletCode != null">
+        applet_code = #{appletCode,jdbcType=VARCHAR},
+      </if>
+      <if test="appletName != null">
+        applet_name = #{appletName,jdbcType=VARCHAR},
+      </if>
+      <if test="appletSimple != null">
+        applet_simple = #{appletSimple,jdbcType=VARCHAR},
+      </if>
+      <if test="licenseCode != null">
+        license_code = #{licenseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="businessScope != null">
+        business_scope = #{businessScope,jdbcType=VARCHAR},
+      </if>
+      <if test="licenseSrc != null">
+        license_src = #{licenseSrc,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null">
+        telephone = #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="managerAccount != null">
+        manager_account = #{managerAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="managerPassword != null">
+        manager_password = #{managerPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null">
+        app_id = #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="appSecret != null">
+        app_secret = #{appSecret,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="county != null">
+        county = #{county,jdbcType=VARCHAR},
+      </if>
+      <if test="addressSimple != null">
+        address_simple = #{addressSimple,jdbcType=VARCHAR},
+      </if>
+      <if test="addressDetails != null">
+        address_details = #{addressDetails,jdbcType=VARCHAR},
+      </if>
+      <if test="lon != null">
+        lon = #{lon,jdbcType=DOUBLE},
+      </if>
+      <if test="lat != null">
+        lat = #{lat,jdbcType=DOUBLE},
+      </if>
+      <if test="ifRetail != null">
+        if_retail = #{ifRetail,jdbcType=BIT},
+      </if>
+      <if test="ifSelling != null">
+        if_selling = #{ifSelling,jdbcType=BIT},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.applet.apply.entity.AppletInfo">
+    update applet_info
+    set user_id = #{userId,jdbcType=INTEGER},
+      type_id = #{typeId,jdbcType=INTEGER},
+      applet_logo = #{appletLogo,jdbcType=VARCHAR},
+      applet_code = #{appletCode,jdbcType=VARCHAR},
+      applet_name = #{appletName,jdbcType=VARCHAR},
+      applet_simple = #{appletSimple,jdbcType=VARCHAR},
+      license_code = #{licenseCode,jdbcType=VARCHAR},
+      business_scope = #{businessScope,jdbcType=VARCHAR},
+      license_src = #{licenseSrc,jdbcType=VARCHAR},
+      telephone = #{telephone,jdbcType=VARCHAR},
+      manager_account = #{managerAccount,jdbcType=VARCHAR},
+      manager_password = #{managerPassword,jdbcType=VARCHAR},
+      app_id = #{appId,jdbcType=VARCHAR},
+      app_secret = #{appSecret,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      county = #{county,jdbcType=VARCHAR},
+      address_simple = #{addressSimple,jdbcType=VARCHAR},
+      address_details = #{addressDetails,jdbcType=VARCHAR},
+      lon = #{lon,jdbcType=DOUBLE},
+      lat = #{lat,jdbcType=DOUBLE},
+      if_retail = #{ifRetail,jdbcType=BIT},
+      if_selling = #{ifSelling,jdbcType=BIT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <sql id="PageSuffix">
+    <if test="page != null">
+      limit #{page.rowStart},#{page.pageSize}
+    </if>
+  </sql>
+</mapper>

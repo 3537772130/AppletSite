@@ -11,4 +11,6 @@ public interface AppletPageMapper {
     long countByExample(AppletPageExample example);
 
     List<AppletPage> selectByExample(AppletPageExample example);
+
+    AppletPage selectByPrimaryKey(Integer id);
 }

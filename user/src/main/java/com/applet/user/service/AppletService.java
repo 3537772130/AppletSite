@@ -31,6 +31,8 @@ public class AppletService {
     private AppletAuditMapper appletAuditMapper;
     @Autowired
     private ViewAppletAuditListMapper viewAppletAuditListMapper;
+    @Autowired
+    private CommonMapper commonMapper;
 
     /**
      * 查询小程序服务类型集合
@@ -63,7 +65,21 @@ public class AppletService {
      * @param userId
      * @return
      */
-    public ViewAppletInfo selectAppletInfo(Integer id, Integer userId) {
+    public AppletInfo selectAppletInfo(Integer id, Integer userId) {
+        AppletInfoExample example = new AppletInfoExample();
+        example.createCriteria().andIdEqualTo(id).andUserIdEqualTo(userId);
+        List<AppletInfo> list = appletInfoMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+    }
+
+    /**
+     * 查询小程序信息
+     *
+     * @param id
+     * @param userId
+     * @return
+     */
+    public ViewAppletInfo selectViewAppletInfo(Integer id, Integer userId) {
         ViewAppletInfoExample example = new ViewAppletInfoExample();
         ViewAppletInfoExample.Criteria c = example.createCriteria();
         c.andIdEqualTo(id);
@@ -220,5 +236,20 @@ public class AppletService {
             page.setDataSource(viewAppletAuditListMapper.selectByExample(example));
         }
         return page;
+    }
+
+    /**
+     * 更新小程序营业状态
+     * @param id
+     * @param userId
+     * @param ifSelling
+     * @throws Exception
+     */
+    public void updateAppletSelling(Integer id, Integer userId, boolean ifSelling) throws Exception {
+        String sql = "UPDATE applet_info SET if_selling = " + (ifSelling ? 0 : 1) + " WHERE id = " + id + " AND user_id = " + userId + " AND `status` = 1;";
+        int num = commonMapper.updateBatch(sql);
+        if (num < 1) {
+            throw new Exception();
+        }
     }
 }
