@@ -3,9 +3,9 @@ package com.applet.apply.service;
 import com.applet.apply.entity.AuthCode;
 import com.applet.apply.entity.AuthCodeExample;
 import com.applet.apply.entity.SmsTemplate;
-import com.applet.apply.entity.SmsTemplateExample;
 import com.applet.apply.mapper.AuthCodeMapper;
 import com.applet.apply.mapper.SmsTemplateMapper;
+import com.applet.apply.util.EnumUtil;
 import com.applet.apply.util.NullUtil;
 import com.applet.apply.util.Constants;
 import jodd.datetime.JDateTime;
@@ -32,13 +32,13 @@ public class AuthCodeService {
      * @param type
      * @return
      */
-    public SmsTemplate selectSmsTemplateByType(String type) {
-        SmsTemplateExample example = new SmsTemplateExample();
-        example.createCriteria().andTypeEqualTo(type).andStatusEqualTo(true);
-        List<SmsTemplate> list = smsTemplateMapper.selectByExample(example);
-        if (NullUtil.isNotNullOrEmpty(list)) {
-            return list.get(0);
-        }
+    public SmsTemplate selectSmsTemplateByType(String type, String channel) {
+//        SmsTemplateExample example = new SmsTemplateExample();
+//        example.createCriteria().andTypeEqualTo(type).andStatusEqualTo(true);
+//        List<SmsTemplate> list = smsTemplateMapper.selectByExample(example);
+//        if (NullUtil.isNotNullOrEmpty(list)) {
+//            return list.get(0);
+//        }
         return null;
     }
 
@@ -53,9 +53,9 @@ public class AuthCodeService {
         time.setMinute(-10);
         AuthCodeExample example = new AuthCodeExample();
         example.setOrderByClause("id desc");
-        example.createCriteria().andMobileEqualTo(mobile)
-                .andSendTimeGreaterThanOrEqualTo(time.convertToDate())
-                .andChannelEqualTo(Constants.BIND_MOBILE_TYPE);
+        example.createCriteria()
+                .andMobileEqualTo(mobile)
+                .andSendTimeGreaterThanOrEqualTo(time.convertToDate());
         List<AuthCode> list = authCodeMapper.selectByExample(example);
         if (NullUtil.isNotNullOrEmpty(list)) {
             return list.get(0);
@@ -76,11 +76,11 @@ public class AuthCodeService {
         JDateTime time2 = new JDateTime(new Date());
         time2.setHour(23).setMinute(59).setSecond(59);
         AuthCodeExample example = new AuthCodeExample();
-        example.createCriteria().andMobileEqualTo(mobile)
+        example.createCriteria()
+                .andMobileEqualTo(mobile)
                 .andAuthTypeEqualTo(type)
                 .andSendTimeGreaterThanOrEqualTo(time1.convertToDate())
-                .andSendTimeLessThanOrEqualTo(time2.convertToDate())
-                .andChannelEqualTo(Constants.BIND_MOBILE_TYPE);
+                .andSendTimeLessThanOrEqualTo(time2.convertToDate());
         return (int) authCodeMapper.countByExample(example);
     }
 
@@ -93,7 +93,7 @@ public class AuthCodeService {
      * @param code
      * @param ip
      */
-    public void addAuthCode(Integer id, String mobile, String type, String code, String ip) {
+    public void addAuthCode(Integer id, String mobile, String type, String code, String channel, String ip) {
         AuthCode authCode = new AuthCode();
         authCode.setUserId(id);
         authCode.setMobile(mobile);
@@ -102,7 +102,7 @@ public class AuthCodeService {
         JDateTime time = new JDateTime(new Date());
         authCode.setSendTime(time.convertToDate());
         authCode.setOverTime(time.addMinute(10).convertToDate());
-        authCode.setChannel(Constants.BIND_MOBILE_TYPE);
+        authCode.setChannel(channel);
         authCode.setIpAddress(ip);
         authCodeMapper.insertSelective(authCode);
     }

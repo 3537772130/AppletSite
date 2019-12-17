@@ -716,6 +716,76 @@ public class ViewAppletInfoExample {
             return (Criteria) this;
         }
 
+        public Criteria andAppletLogoIsNull() {
+            addCriterion("applet_logo is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletLogoIsNotNull() {
+            addCriterion("applet_logo is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletLogoEqualTo(String value) {
+            addCriterion("applet_logo =", value, "appletLogo");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletLogoNotEqualTo(String value) {
+            addCriterion("applet_logo <>", value, "appletLogo");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletLogoGreaterThan(String value) {
+            addCriterion("applet_logo >", value, "appletLogo");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletLogoGreaterThanOrEqualTo(String value) {
+            addCriterion("applet_logo >=", value, "appletLogo");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletLogoLessThan(String value) {
+            addCriterion("applet_logo <", value, "appletLogo");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletLogoLessThanOrEqualTo(String value) {
+            addCriterion("applet_logo <=", value, "appletLogo");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletLogoLike(String value) {
+            addCriterion("applet_logo like", value, "appletLogo");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletLogoNotLike(String value) {
+            addCriterion("applet_logo not like", value, "appletLogo");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletLogoIn(List<String> values) {
+            addCriterion("applet_logo in", values, "appletLogo");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletLogoNotIn(List<String> values) {
+            addCriterion("applet_logo not in", values, "appletLogo");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletLogoBetween(String value1, String value2) {
+            addCriterion("applet_logo between", value1, value2, "appletLogo");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletLogoNotBetween(String value1, String value2) {
+            addCriterion("applet_logo not between", value1, value2, "appletLogo");
+            return (Criteria) this;
+        }
+
         public Criteria andLicenseCodeIsNull() {
             addCriterion("license_code is null");
             return (Criteria) this;
@@ -1746,73 +1816,73 @@ public class ViewAppletInfoExample {
             return (Criteria) this;
         }
 
-        public Criteria andAppletLogoIsNull() {
-            addCriterion("applet_logo is null");
+        public Criteria andSystemColorIsNull() {
+            addCriterion("system_color is null");
             return (Criteria) this;
         }
 
-        public Criteria andAppletLogoIsNotNull() {
-            addCriterion("applet_logo is not null");
+        public Criteria andSystemColorIsNotNull() {
+            addCriterion("system_color is not null");
             return (Criteria) this;
         }
 
-        public Criteria andAppletLogoEqualTo(String value) {
-            addCriterion("applet_logo =", value, "appletLogo");
+        public Criteria andSystemColorEqualTo(String value) {
+            addCriterion("system_color =", value, "systemColor");
             return (Criteria) this;
         }
 
-        public Criteria andAppletLogoNotEqualTo(String value) {
-            addCriterion("applet_logo <>", value, "appletLogo");
+        public Criteria andSystemColorNotEqualTo(String value) {
+            addCriterion("system_color <>", value, "systemColor");
             return (Criteria) this;
         }
 
-        public Criteria andAppletLogoGreaterThan(String value) {
-            addCriterion("applet_logo >", value, "appletLogo");
+        public Criteria andSystemColorGreaterThan(String value) {
+            addCriterion("system_color >", value, "systemColor");
             return (Criteria) this;
         }
 
-        public Criteria andAppletLogoGreaterThanOrEqualTo(String value) {
-            addCriterion("applet_logo >=", value, "appletLogo");
+        public Criteria andSystemColorGreaterThanOrEqualTo(String value) {
+            addCriterion("system_color >=", value, "systemColor");
             return (Criteria) this;
         }
 
-        public Criteria andAppletLogoLessThan(String value) {
-            addCriterion("applet_logo <", value, "appletLogo");
+        public Criteria andSystemColorLessThan(String value) {
+            addCriterion("system_color <", value, "systemColor");
             return (Criteria) this;
         }
 
-        public Criteria andAppletLogoLessThanOrEqualTo(String value) {
-            addCriterion("applet_logo <=", value, "appletLogo");
+        public Criteria andSystemColorLessThanOrEqualTo(String value) {
+            addCriterion("system_color <=", value, "systemColor");
             return (Criteria) this;
         }
 
-        public Criteria andAppletLogoLike(String value) {
-            addCriterion("applet_logo like", value, "appletLogo");
+        public Criteria andSystemColorLike(String value) {
+            addCriterion("system_color like", value, "systemColor");
             return (Criteria) this;
         }
 
-        public Criteria andAppletLogoNotLike(String value) {
-            addCriterion("applet_logo not like", value, "appletLogo");
+        public Criteria andSystemColorNotLike(String value) {
+            addCriterion("system_color not like", value, "systemColor");
             return (Criteria) this;
         }
 
-        public Criteria andAppletLogoIn(List<String> values) {
-            addCriterion("applet_logo in", values, "appletLogo");
+        public Criteria andSystemColorIn(List<String> values) {
+            addCriterion("system_color in", values, "systemColor");
             return (Criteria) this;
         }
 
-        public Criteria andAppletLogoNotIn(List<String> values) {
-            addCriterion("applet_logo not in", values, "appletLogo");
+        public Criteria andSystemColorNotIn(List<String> values) {
+            addCriterion("system_color not in", values, "systemColor");
             return (Criteria) this;
         }
 
-        public Criteria andAppletLogoBetween(String value1, String value2) {
-            addCriterion("applet_logo between", value1, value2, "appletLogo");
+        public Criteria andSystemColorBetween(String value1, String value2) {
+            addCriterion("system_color between", value1, value2, "systemColor");
             return (Criteria) this;
         }
 
-        public Criteria andAppletLogoNotBetween(String value1, String value2) {
-            addCriterion("applet_logo not between", value1, value2, "appletLogo");
+        public Criteria andSystemColorNotBetween(String value1, String value2) {
+            addCriterion("system_color not between", value1, value2, "systemColor");
             return (Criteria) this;
         }
 

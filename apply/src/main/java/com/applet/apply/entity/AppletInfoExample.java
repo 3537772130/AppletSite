@@ -1606,6 +1606,76 @@ public class AppletInfoExample {
             return (Criteria) this;
         }
 
+        public Criteria andSystemColorIsNull() {
+            addCriterion("system_color is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSystemColorIsNotNull() {
+            addCriterion("system_color is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSystemColorEqualTo(String value) {
+            addCriterion("system_color =", value, "systemColor");
+            return (Criteria) this;
+        }
+
+        public Criteria andSystemColorNotEqualTo(String value) {
+            addCriterion("system_color <>", value, "systemColor");
+            return (Criteria) this;
+        }
+
+        public Criteria andSystemColorGreaterThan(String value) {
+            addCriterion("system_color >", value, "systemColor");
+            return (Criteria) this;
+        }
+
+        public Criteria andSystemColorGreaterThanOrEqualTo(String value) {
+            addCriterion("system_color >=", value, "systemColor");
+            return (Criteria) this;
+        }
+
+        public Criteria andSystemColorLessThan(String value) {
+            addCriterion("system_color <", value, "systemColor");
+            return (Criteria) this;
+        }
+
+        public Criteria andSystemColorLessThanOrEqualTo(String value) {
+            addCriterion("system_color <=", value, "systemColor");
+            return (Criteria) this;
+        }
+
+        public Criteria andSystemColorLike(String value) {
+            addCriterion("system_color like", value, "systemColor");
+            return (Criteria) this;
+        }
+
+        public Criteria andSystemColorNotLike(String value) {
+            addCriterion("system_color not like", value, "systemColor");
+            return (Criteria) this;
+        }
+
+        public Criteria andSystemColorIn(List<String> values) {
+            addCriterion("system_color in", values, "systemColor");
+            return (Criteria) this;
+        }
+
+        public Criteria andSystemColorNotIn(List<String> values) {
+            addCriterion("system_color not in", values, "systemColor");
+            return (Criteria) this;
+        }
+
+        public Criteria andSystemColorBetween(String value1, String value2) {
+            addCriterion("system_color between", value1, value2, "systemColor");
+            return (Criteria) this;
+        }
+
+        public Criteria andSystemColorNotBetween(String value1, String value2) {
+            addCriterion("system_color not between", value1, value2, "systemColor");
+            return (Criteria) this;
+        }
+
         public Criteria andIfRetailIsNull() {
             addCriterion("if_retail is null");
             return (Criteria) this;

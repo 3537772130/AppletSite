@@ -23,6 +23,8 @@ public class AuthCode implements Serializable {
     @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
     private Date overTime;
 
+    private String remark;
+
     private String channel;
 
     private String ipAddress;
@@ -83,6 +85,14 @@ public class AuthCode implements Serializable {
 
     public void setOverTime(Date overTime) {
         this.overTime = overTime;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark == null ? null : remark.trim();
     }
 
     public String getChannel() {

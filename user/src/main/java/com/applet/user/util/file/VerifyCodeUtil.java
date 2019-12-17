@@ -1,4 +1,4 @@
-package com.applet.user.util;
+package com.applet.user.util.file;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

@@ -4,7 +4,7 @@ import com.applet.apply.config.annotation.CancelAuthentication;
 import com.applet.apply.config.annotation.SessionScope;
 import com.applet.apply.entity.AppletInfo;
 import com.applet.apply.entity.ViewAppletInfo;
-import com.applet.apply.entity.WeChantApplet;
+import com.applet.apply.entity.WeChantInfo;
 import com.applet.apply.service.AppletService;
 import com.applet.apply.util.NullUtil;
 import com.applet.apply.util.AjaxResponse;
@@ -44,6 +44,15 @@ public class AppletController {
         Map map = new HashMap();
         map.put("appletName", NullUtil.isNotNullOrEmpty(appletInfo.getAppletSimple()) ? appletInfo.getAppletSimple() : appletInfo.getAppletName());
         map.put("appletLogo", appletInfo.getAppletLogo());
+        map.put("telephone", appletInfo.getTelephone());
+        map.put("province", appletInfo.getProvince());
+        map.put("city", appletInfo.getCity());
+        map.put("county", appletInfo.getCounty());
+        map.put("addressSimple", appletInfo.getAddressSimple());
+        map.put("addressDetails", appletInfo.getAddressDetails());
+        map.put("lon", appletInfo.getLon());
+        map.put("lat", appletInfo.getLat());
+        map.put("systemColor", appletInfo.getSystemColor());
         return AjaxResponse.success(map);
     }
 
@@ -74,7 +83,7 @@ public class AppletController {
     /**
      * 设置小程序微信信息
      * @param appletInfo
-     * @param weChantApplet
+     * @param weChantInfo
      * @param address
      * @param title
      * @param lat
@@ -82,13 +91,13 @@ public class AppletController {
      * @return
      */
     @RequestMapping(value = "/setAppletAddress")
-    public Object setAppletAddress(@SessionScope("appletInfo") ViewAppletInfo appletInfo, @SessionScope("weChantApplet") WeChantApplet weChantApplet,
+    public Object setAppletAddress(@SessionScope("appletInfo") ViewAppletInfo appletInfo, @SessionScope("weChantInfo") WeChantInfo weChantInfo,
                                    @RequestParam String address, @RequestParam String title, @RequestParam String lat, @RequestParam String lon){
         try {
-            if (!NullUtil.isNotNullOrEmpty(weChantApplet.getUserId())){
+            if (!NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())){
                 return AjaxResponse.error("未绑定账号");
             }
-            if (appletInfo.getUserId().intValue() != weChantApplet.getUserId()){
+            if (appletInfo.getUserId().intValue() != weChantInfo.getUserId()){
                 return AjaxResponse.error("您没有权限设置");
             }
             Map map = TencentLocationUtils.getLocation(lon, lat);
@@ -107,12 +116,12 @@ public class AppletController {
     /**
      * 获取小程序二维码
      * @param appletInfo
-     * @param weChantApplet
+     * @param weChantInfo
      * @return
      */
     @RequestMapping(value = "/getAppletQrCode")
-    public Object getAppletQrCode(@SessionScope("appletInfo") ViewAppletInfo appletInfo, @SessionScope("weChantApplet") WeChantApplet weChantApplet){
-        if (NullUtil.isNotNullOrEmpty(weChantApplet.getUserId()) && weChantApplet.getUserId().intValue() == appletInfo.getUserId()){
+    public Object getAppletQrCode(@SessionScope("appletInfo") ViewAppletInfo appletInfo, @SessionScope("weChantInfo") WeChantInfo weChantInfo){
+        if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId()) && weChantInfo.getUserId().intValue() == appletInfo.getUserId()){
             String path = "/upload/applet/qrCode/" + appletInfo.getAppletCode() + ".jpg";
             if (!QiNiuUtil.existsFile(QiNiuConfig.bucketAppletImage, path)){
                 try {

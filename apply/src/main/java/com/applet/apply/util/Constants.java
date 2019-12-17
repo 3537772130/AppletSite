@@ -45,16 +45,10 @@ public class Constants {
     // v-k：NAME => NAME
     public static final List<Map> REGION_MAP_TO_NAME = new ArrayList<>();
 
-    //绑定手机号图形验证码
+
+
+    //绑定手机号图形
     public static final String BIND_MOBILE_FIGURE_CODE = "bindMobile";
-    //添加绑定手机号
-    public static final String BIND_MOBILE_TO_ADD = "bindWx";
-    //修改绑定手机号
-    public static final String BIND_MOBILE_TO_UPDATE = "updateBindMobile";
-    //绑定微信短信模板类型
-    public static final String BIND_MOBILE_OPERATION = "bindWx";
-    //绑定微信短信验证码类型
-    public static final String BIND_MOBILE_TYPE = "APPLET";
     //短信每日发送次数
     public static final Integer SMS_CODE_AMOUNT = 3;
 }

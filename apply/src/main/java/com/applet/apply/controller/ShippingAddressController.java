@@ -2,7 +2,7 @@ package com.applet.apply.controller;
 
 import com.applet.apply.config.annotation.SessionScope;
 import com.applet.apply.entity.ShippingAddress;
-import com.applet.apply.entity.WeChantApplet;
+import com.applet.apply.entity.WeChantInfo;
 import com.applet.apply.service.ShippingAddressService;
 import com.applet.apply.util.NullUtil;
 import com.applet.apply.util.RegularUtil;
@@ -32,13 +32,13 @@ public class ShippingAddressController {
 
     /**
      * 查询收货人列表
-     * @param weChantApplet
+     * @param weChantInfo
      * @return
      */
     @RequestMapping(value = "/queryShippingAddressList")
-    public Object queryShippingAddressList(@SessionScope("weChantApplet") WeChantApplet weChantApplet){
-        if (NullUtil.isNotNullOrEmpty(weChantApplet.getUserId())){
-            List<ShippingAddress> list = shippingAddressService.selectShippingAddressList(weChantApplet.getUserId());
+    public Object queryShippingAddressList(@SessionScope("weChantInfo") WeChantInfo weChantInfo){
+        if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())){
+            List<ShippingAddress> list = shippingAddressService.selectShippingAddressList(weChantInfo.getUserId());
             return AjaxResponse.success(list);
         }
         return AjaxResponse.msg("0","未绑定账号");
@@ -46,14 +46,14 @@ public class ShippingAddressController {
 
     /**
      * 查询收货人信息
-     * @param weChantApplet
+     * @param weChantInfo
      * @param id
      * @return
      */
     @RequestMapping(value = "/queryShippingAddressInfo")
-    public Object queryShippingAddressInfo(@SessionScope("weChantApplet") WeChantApplet weChantApplet, @RequestParam Integer id){
-        if (NullUtil.isNotNullOrEmpty(weChantApplet.getUserId())){
-            ShippingAddress shippingAddress = shippingAddressService.selectShippingAddressInfo(id, weChantApplet.getUserId());
+    public Object queryShippingAddressInfo(@SessionScope("weChantInfo") WeChantInfo weChantInfo, @RequestParam Integer id){
+        if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())){
+            ShippingAddress shippingAddress = shippingAddressService.selectShippingAddressInfo(id, weChantInfo.getUserId());
             if (shippingAddress == null){
                 return AjaxResponse.error("未找到相关记录");
             }
@@ -64,14 +64,14 @@ public class ShippingAddressController {
 
     /**
      * 保存收货人信息
-     * @param weChantApplet
+     * @param weChantInfo
      * @param record
      * @return
      */
     @RequestMapping(value = "/addShippingAddress")
-    public Object addShippingAddress(@SessionScope("weChantApplet") WeChantApplet weChantApplet, ShippingAddress record){
+    public Object addShippingAddress(@SessionScope("weChantInfo") WeChantInfo weChantInfo, ShippingAddress record){
         try {
-            if (!NullUtil.isNotNullOrEmpty(weChantApplet.getUserId())){
+            if (!NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())){
                 return AjaxResponse.msg("0","未绑定账号");
             }
             if (record == null){
@@ -98,7 +98,7 @@ public class ShippingAddressController {
             if (NullUtil.isNullOrEmpty(record.getAddress())){
                 return AjaxResponse.error("详细地址不能为空");
             }
-            record.setUserId(weChantApplet.getUserId());
+            record.setUserId(weChantInfo.getUserId());
             shippingAddressService.saveShippingAddress(record);
             return AjaxResponse.success("保存成功");
         } catch (Exception e) {
@@ -109,21 +109,21 @@ public class ShippingAddressController {
 
     /**
      * 设置默认收货地址
-     * @param weChantApplet
+     * @param weChantInfo
      * @param id
      * @return
      */
     @RequestMapping(value = "/setShippingAddressByIsDefault")
-    public Object setShippingAddressByIsDefault(@SessionScope("weChantApplet") WeChantApplet weChantApplet, @RequestParam Integer id){
+    public Object setShippingAddressByIsDefault(@SessionScope("weChantInfo") WeChantInfo weChantInfo, @RequestParam Integer id){
         try {
-            if (!NullUtil.isNotNullOrEmpty(weChantApplet.getUserId())){
+            if (!NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())){
                 return AjaxResponse.msg("0","未绑定账号");
             }
-            ShippingAddress record = shippingAddressService.selectShippingAddressInfo(id, weChantApplet.getUserId());
+            ShippingAddress record = shippingAddressService.selectShippingAddressInfo(id, weChantInfo.getUserId());
             if (record == null){
                 return AjaxResponse.error("未找到相关记录");
             }
-            shippingAddressService.updateShippingAddressToDefault(id, weChantApplet.getUserId());
+            shippingAddressService.updateShippingAddressToDefault(id, weChantInfo.getUserId());
             return AjaxResponse.success();
         } catch (Exception e) {
             log.error("设置默认收货地址出错{}", e);
@@ -133,17 +133,17 @@ public class ShippingAddressController {
 
     /**
      * 删除收货地址
-     * @param weChantApplet
+     * @param weChantInfo
      * @param id
      * @return
      */
     @RequestMapping(value = "/deleteShippingAddress")
-    public Object deleteShippingAddress(@SessionScope("weChantApplet") WeChantApplet weChantApplet, @RequestParam Integer id){
+    public Object deleteShippingAddress(@SessionScope("weChantInfo") WeChantInfo weChantInfo, @RequestParam Integer id){
         try {
-            if (!NullUtil.isNotNullOrEmpty(weChantApplet.getUserId())){
+            if (!NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())){
                 return AjaxResponse.msg("0","未绑定账号");
             }
-            ShippingAddress record = shippingAddressService.selectShippingAddressInfo(id, weChantApplet.getUserId());
+            ShippingAddress record = shippingAddressService.selectShippingAddressInfo(id, weChantInfo.getUserId());
             if (record == null){
                 return AjaxResponse.error("未找到相关记录");
             }

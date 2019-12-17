@@ -11,6 +11,7 @@
     <result column="applet_code" jdbcType="VARCHAR" property="appletCode" />
     <result column="applet_name" jdbcType="VARCHAR" property="appletName" />
     <result column="applet_simple" jdbcType="VARCHAR" property="appletSimple" />
+    <result column="applet_logo" jdbcType="VARCHAR" property="appletLogo" />
     <result column="license_code" jdbcType="VARCHAR" property="licenseCode" />
     <result column="business_scope" jdbcType="VARCHAR" property="businessScope" />
     <result column="license_src" jdbcType="VARCHAR" property="licenseSrc" />
@@ -26,7 +27,7 @@
     <result column="address_details" jdbcType="VARCHAR" property="addressDetails" />
     <result column="lon" jdbcType="DOUBLE" property="lon" />
     <result column="lat" jdbcType="DOUBLE" property="lat" />
-    <result column="applet_logo" jdbcType="VARCHAR" property="appletLogo" />
+    <result column="system_color" jdbcType="VARCHAR" property="systemColor" />
     <result column="if_retail" jdbcType="BIT" property="ifRetail" />
     <result column="if_selling" jdbcType="BIT" property="ifSelling" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -63,9 +64,9 @@
   </sql>
   <sql id="Base_Column_List">
     id, user_id, mobile, nick_name, type_id, type_name, applet_code, applet_name, applet_simple, 
-    license_code, business_scope, license_src, telephone, manager_account, manager_password, 
-    app_id, app_secret, province, city, county, address_simple, address_details, lon, 
-    lat, applet_logo, if_retail, if_selling, update_time, status
+    applet_logo, license_code, business_scope, license_src, telephone, manager_account, 
+    manager_password, app_id, app_secret, province, city, county, address_simple, address_details, 
+    lon, lat, system_color, if_retail, if_selling, update_time, status
   </sql>
   <select id="selectByExample" parameterType="com.applet.apply.entity.ViewAppletInfoExample" resultMap="BaseResultMap">
     select

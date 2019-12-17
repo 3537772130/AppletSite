@@ -2,12 +2,11 @@ package com.applet.apply.config.interceptor;
 
 import com.applet.apply.config.annotation.CancelAuthentication;
 import com.applet.apply.entity.ViewAppletInfo;
-import com.applet.apply.entity.WeChantApplet;
+import com.applet.apply.entity.ViewWeChantInfo;
+import com.applet.apply.entity.WeChantInfo;
 import com.applet.apply.service.AppletService;
 import com.applet.apply.service.WeChantService;
-import com.applet.apply.util.AjaxResponse;
 import com.applet.apply.util.NullUtil;
-import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,17 +65,17 @@ public class AppletInterceptor extends HandlerInterceptorAdapter {
             }
 
             //检查登录用户信息
-            String wxLogo = request.getParameter("wxLogo");
-            if (NullUtil.isNullOrEmpty(wxLogo)){
+            String wxCode = request.getParameter("wxCode");
+            if (NullUtil.isNullOrEmpty(wxCode)){
                 request.getRequestDispatcher("/api/loginOverdue").forward(request, response);
                 return false;
             }
-            WeChantApplet weChantApplet = weChantService.selectWeChantApplet(appletInfo.getId(), wxLogo);
-            if (weChantApplet == null || !weChantApplet.getStatus()){
+            WeChantInfo weChantInfo = weChantService.selectWeChantInfo(appletInfo.getId(), wxCode);
+            if (weChantInfo == null || !weChantInfo.getStatus()){
                 request.getRequestDispatcher("/api/auth").forward(request, response);
                 return false;
             }
-            request.getSession().setAttribute("weChantApplet", weChantApplet);
+            request.getSession().setAttribute("weChantInfo", weChantInfo);
             return true;
         } catch (Exception e) {
             logger.error("访问出错{}", e);
@@ -88,6 +87,6 @@ public class AppletInterceptor extends HandlerInterceptorAdapter {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         logger.info("清除访问者信息...");
         request.getSession().removeAttribute("appletInfo");
-        request.getSession().removeAttribute("weChantApplet");
+        request.getSession().removeAttribute("weChantInfo");
     }
 }

@@ -24,6 +24,7 @@
     <result column="address_details" jdbcType="VARCHAR" property="addressDetails" />
     <result column="lon" jdbcType="DOUBLE" property="lon" />
     <result column="lat" jdbcType="DOUBLE" property="lat" />
+    <result column="system_color" jdbcType="VARCHAR" property="systemColor" />
     <result column="if_retail" jdbcType="BIT" property="ifRetail" />
     <result column="if_selling" jdbcType="BIT" property="ifSelling" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -90,8 +91,8 @@
   <sql id="Base_Column_List">
     id, user_id, type_id, applet_logo, applet_code, applet_name, applet_simple, license_code, 
     business_scope, license_src, telephone, manager_account, manager_password, app_id, 
-    app_secret, province, city, county, address_simple, address_details, lon, lat, if_retail, 
-    if_selling, update_time, status
+    app_secret, province, city, county, address_simple, address_details, lon, lat, system_color, 
+    if_retail, if_selling, update_time, status
   </sql>
   <select id="selectByExample" parameterType="com.applet.apply.entity.AppletInfoExample" resultMap="BaseResultMap">
     select
@@ -132,8 +133,9 @@
       manager_password, app_id, app_secret, 
       province, city, county, 
       address_simple, address_details, lon, 
-      lat, if_retail, if_selling, update_time, 
-      status)
+      lat, system_color, if_retail, 
+      if_selling, update_time, status
+      )
     values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{typeId,jdbcType=INTEGER}, 
       #{appletLogo,jdbcType=VARCHAR}, #{appletCode,jdbcType=VARCHAR}, #{appletName,jdbcType=VARCHAR}, 
       #{appletSimple,jdbcType=VARCHAR}, #{licenseCode,jdbcType=VARCHAR}, #{businessScope,jdbcType=VARCHAR}, 
@@ -141,8 +143,9 @@
       #{managerPassword,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, #{appSecret,jdbcType=VARCHAR}, 
       #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{county,jdbcType=VARCHAR}, 
       #{addressSimple,jdbcType=VARCHAR}, #{addressDetails,jdbcType=VARCHAR}, #{lon,jdbcType=DOUBLE}, 
-      #{lat,jdbcType=DOUBLE}, #{ifRetail,jdbcType=BIT}, #{ifSelling,jdbcType=BIT}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{status,jdbcType=INTEGER})
+      #{lat,jdbcType=DOUBLE}, #{systemColor,jdbcType=VARCHAR}, #{ifRetail,jdbcType=BIT}, 
+      #{ifSelling,jdbcType=BIT}, #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" keyProperty="id" parameterType="com.applet.apply.entity.AppletInfo" useGeneratedKeys="true">
     insert into applet_info
@@ -212,6 +215,9 @@
       </if>
       <if test="lat != null">
         lat,
+      </if>
+      <if test="systemColor != null">
+        system_color,
       </if>
       <if test="ifRetail != null">
         if_retail,
@@ -292,6 +298,9 @@
       </if>
       <if test="lat != null">
         #{lat,jdbcType=DOUBLE},
+      </if>
+      <if test="systemColor != null">
+        #{systemColor,jdbcType=VARCHAR},
       </if>
       <if test="ifRetail != null">
         #{ifRetail,jdbcType=BIT},
@@ -382,6 +391,9 @@
       <if test="record.lat != null">
         lat = #{record.lat,jdbcType=DOUBLE},
       </if>
+      <if test="record.systemColor != null">
+        system_color = #{record.systemColor,jdbcType=VARCHAR},
+      </if>
       <if test="record.ifRetail != null">
         if_retail = #{record.ifRetail,jdbcType=BIT},
       </if>
@@ -423,6 +435,7 @@
       address_details = #{record.addressDetails,jdbcType=VARCHAR},
       lon = #{record.lon,jdbcType=DOUBLE},
       lat = #{record.lat,jdbcType=DOUBLE},
+      system_color = #{record.systemColor,jdbcType=VARCHAR},
       if_retail = #{record.ifRetail,jdbcType=BIT},
       if_selling = #{record.ifSelling,jdbcType=BIT},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
@@ -497,6 +510,9 @@
       <if test="lat != null">
         lat = #{lat,jdbcType=DOUBLE},
       </if>
+      <if test="systemColor != null">
+        system_color = #{systemColor,jdbcType=VARCHAR},
+      </if>
       <if test="ifRetail != null">
         if_retail = #{ifRetail,jdbcType=BIT},
       </if>
@@ -535,6 +551,7 @@
       address_details = #{addressDetails,jdbcType=VARCHAR},
       lon = #{lon,jdbcType=DOUBLE},
       lat = #{lat,jdbcType=DOUBLE},
+      system_color = #{systemColor,jdbcType=VARCHAR},
       if_retail = #{ifRetail,jdbcType=BIT},
       if_selling = #{ifSelling,jdbcType=BIT},
       update_time = #{updateTime,jdbcType=TIMESTAMP},

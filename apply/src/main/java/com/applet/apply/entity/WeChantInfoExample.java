@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class WeChantAppletExample {
+public class WeChantInfoExample {
     protected String orderByClause;
 
     protected boolean distinct;
@@ -14,7 +14,7 @@ public class WeChantAppletExample {
 
     protected Page page;
 
-    public WeChantAppletExample() {
+    public WeChantInfoExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
 
@@ -173,6 +173,76 @@ public class WeChantAppletExample {
 
         public Criteria andIdNotBetween(Integer value1, Integer value2) {
             addCriterion("id not between", value1, value2, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxCodeIsNull() {
+            addCriterion("wx_code is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxCodeIsNotNull() {
+            addCriterion("wx_code is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxCodeEqualTo(String value) {
+            addCriterion("wx_code =", value, "wxCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxCodeNotEqualTo(String value) {
+            addCriterion("wx_code <>", value, "wxCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxCodeGreaterThan(String value) {
+            addCriterion("wx_code >", value, "wxCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxCodeGreaterThanOrEqualTo(String value) {
+            addCriterion("wx_code >=", value, "wxCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxCodeLessThan(String value) {
+            addCriterion("wx_code <", value, "wxCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxCodeLessThanOrEqualTo(String value) {
+            addCriterion("wx_code <=", value, "wxCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxCodeLike(String value) {
+            addCriterion("wx_code like", value, "wxCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxCodeNotLike(String value) {
+            addCriterion("wx_code not like", value, "wxCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxCodeIn(List<String> values) {
+            addCriterion("wx_code in", values, "wxCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxCodeNotIn(List<String> values) {
+            addCriterion("wx_code not in", values, "wxCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxCodeBetween(String value1, String value2) {
+            addCriterion("wx_code between", value1, value2, "wxCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxCodeNotBetween(String value1, String value2) {
+            addCriterion("wx_code not between", value1, value2, "wxCode");
             return (Criteria) this;
         }
 
@@ -366,76 +436,6 @@ public class WeChantAppletExample {
             return (Criteria) this;
         }
 
-        public Criteria andWxLogoIsNull() {
-            addCriterion("wx_logo is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andWxLogoIsNotNull() {
-            addCriterion("wx_logo is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andWxLogoEqualTo(String value) {
-            addCriterion("wx_logo =", value, "wxLogo");
-            return (Criteria) this;
-        }
-
-        public Criteria andWxLogoNotEqualTo(String value) {
-            addCriterion("wx_logo <>", value, "wxLogo");
-            return (Criteria) this;
-        }
-
-        public Criteria andWxLogoGreaterThan(String value) {
-            addCriterion("wx_logo >", value, "wxLogo");
-            return (Criteria) this;
-        }
-
-        public Criteria andWxLogoGreaterThanOrEqualTo(String value) {
-            addCriterion("wx_logo >=", value, "wxLogo");
-            return (Criteria) this;
-        }
-
-        public Criteria andWxLogoLessThan(String value) {
-            addCriterion("wx_logo <", value, "wxLogo");
-            return (Criteria) this;
-        }
-
-        public Criteria andWxLogoLessThanOrEqualTo(String value) {
-            addCriterion("wx_logo <=", value, "wxLogo");
-            return (Criteria) this;
-        }
-
-        public Criteria andWxLogoLike(String value) {
-            addCriterion("wx_logo like", value, "wxLogo");
-            return (Criteria) this;
-        }
-
-        public Criteria andWxLogoNotLike(String value) {
-            addCriterion("wx_logo not like", value, "wxLogo");
-            return (Criteria) this;
-        }
-
-        public Criteria andWxLogoIn(List<String> values) {
-            addCriterion("wx_logo in", values, "wxLogo");
-            return (Criteria) this;
-        }
-
-        public Criteria andWxLogoNotIn(List<String> values) {
-            addCriterion("wx_logo not in", values, "wxLogo");
-            return (Criteria) this;
-        }
-
-        public Criteria andWxLogoBetween(String value1, String value2) {
-            addCriterion("wx_logo between", value1, value2, "wxLogo");
-            return (Criteria) this;
-        }
-
-        public Criteria andWxLogoNotBetween(String value1, String value2) {
-            addCriterion("wx_logo not between", value1, value2, "wxLogo");
-            return (Criteria) this;
-        }
-
         public Criteria andNickNameIsNull() {
             addCriterion("nick_name is null");
             return (Criteria) this;
@@ -503,6 +503,276 @@ public class WeChantAppletExample {
 
         public Criteria andNickNameNotBetween(String value1, String value2) {
             addCriterion("nick_name not between", value1, value2, "nickName");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarUrlIsNull() {
+            addCriterion("avatar_url is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarUrlIsNotNull() {
+            addCriterion("avatar_url is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarUrlEqualTo(String value) {
+            addCriterion("avatar_url =", value, "avatarUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarUrlNotEqualTo(String value) {
+            addCriterion("avatar_url <>", value, "avatarUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarUrlGreaterThan(String value) {
+            addCriterion("avatar_url >", value, "avatarUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarUrlGreaterThanOrEqualTo(String value) {
+            addCriterion("avatar_url >=", value, "avatarUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarUrlLessThan(String value) {
+            addCriterion("avatar_url <", value, "avatarUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarUrlLessThanOrEqualTo(String value) {
+            addCriterion("avatar_url <=", value, "avatarUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarUrlLike(String value) {
+            addCriterion("avatar_url like", value, "avatarUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarUrlNotLike(String value) {
+            addCriterion("avatar_url not like", value, "avatarUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarUrlIn(List<String> values) {
+            addCriterion("avatar_url in", values, "avatarUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarUrlNotIn(List<String> values) {
+            addCriterion("avatar_url not in", values, "avatarUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarUrlBetween(String value1, String value2) {
+            addCriterion("avatar_url between", value1, value2, "avatarUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andAvatarUrlNotBetween(String value1, String value2) {
+            addCriterion("avatar_url not between", value1, value2, "avatarUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenderIsNull() {
+            addCriterion("gender is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenderIsNotNull() {
+            addCriterion("gender is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenderEqualTo(Boolean value) {
+            addCriterion("gender =", value, "gender");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenderNotEqualTo(Boolean value) {
+            addCriterion("gender <>", value, "gender");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenderGreaterThan(Boolean value) {
+            addCriterion("gender >", value, "gender");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenderGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("gender >=", value, "gender");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenderLessThan(Boolean value) {
+            addCriterion("gender <", value, "gender");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenderLessThanOrEqualTo(Boolean value) {
+            addCriterion("gender <=", value, "gender");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenderIn(List<Boolean> values) {
+            addCriterion("gender in", values, "gender");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenderNotIn(List<Boolean> values) {
+            addCriterion("gender not in", values, "gender");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenderBetween(Boolean value1, Boolean value2) {
+            addCriterion("gender between", value1, value2, "gender");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenderNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("gender not between", value1, value2, "gender");
+            return (Criteria) this;
+        }
+
+        public Criteria andBirthdayIsNull() {
+            addCriterion("birthday is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBirthdayIsNotNull() {
+            addCriterion("birthday is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBirthdayEqualTo(String value) {
+            addCriterion("birthday =", value, "birthday");
+            return (Criteria) this;
+        }
+
+        public Criteria andBirthdayNotEqualTo(String value) {
+            addCriterion("birthday <>", value, "birthday");
+            return (Criteria) this;
+        }
+
+        public Criteria andBirthdayGreaterThan(String value) {
+            addCriterion("birthday >", value, "birthday");
+            return (Criteria) this;
+        }
+
+        public Criteria andBirthdayGreaterThanOrEqualTo(String value) {
+            addCriterion("birthday >=", value, "birthday");
+            return (Criteria) this;
+        }
+
+        public Criteria andBirthdayLessThan(String value) {
+            addCriterion("birthday <", value, "birthday");
+            return (Criteria) this;
+        }
+
+        public Criteria andBirthdayLessThanOrEqualTo(String value) {
+            addCriterion("birthday <=", value, "birthday");
+            return (Criteria) this;
+        }
+
+        public Criteria andBirthdayLike(String value) {
+            addCriterion("birthday like", value, "birthday");
+            return (Criteria) this;
+        }
+
+        public Criteria andBirthdayNotLike(String value) {
+            addCriterion("birthday not like", value, "birthday");
+            return (Criteria) this;
+        }
+
+        public Criteria andBirthdayIn(List<String> values) {
+            addCriterion("birthday in", values, "birthday");
+            return (Criteria) this;
+        }
+
+        public Criteria andBirthdayNotIn(List<String> values) {
+            addCriterion("birthday not in", values, "birthday");
+            return (Criteria) this;
+        }
+
+        public Criteria andBirthdayBetween(String value1, String value2) {
+            addCriterion("birthday between", value1, value2, "birthday");
+            return (Criteria) this;
+        }
+
+        public Criteria andBirthdayNotBetween(String value1, String value2) {
+            addCriterion("birthday not between", value1, value2, "birthday");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailIsNull() {
+            addCriterion("email is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailIsNotNull() {
+            addCriterion("email is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailEqualTo(String value) {
+            addCriterion("email =", value, "email");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailNotEqualTo(String value) {
+            addCriterion("email <>", value, "email");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailGreaterThan(String value) {
+            addCriterion("email >", value, "email");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailGreaterThanOrEqualTo(String value) {
+            addCriterion("email >=", value, "email");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailLessThan(String value) {
+            addCriterion("email <", value, "email");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailLessThanOrEqualTo(String value) {
+            addCriterion("email <=", value, "email");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailLike(String value) {
+            addCriterion("email like", value, "email");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailNotLike(String value) {
+            addCriterion("email not like", value, "email");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailIn(List<String> values) {
+            addCriterion("email in", values, "email");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailNotIn(List<String> values) {
+            addCriterion("email not in", values, "email");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailBetween(String value1, String value2) {
+            addCriterion("email between", value1, value2, "email");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailNotBetween(String value1, String value2) {
+            addCriterion("email not between", value1, value2, "email");
             return (Criteria) this;
         }
 

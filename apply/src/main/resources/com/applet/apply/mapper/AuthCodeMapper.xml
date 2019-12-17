@@ -9,6 +9,7 @@
     <result column="auth_code" jdbcType="VARCHAR" property="authCode" />
     <result column="send_time" jdbcType="TIMESTAMP" property="sendTime" />
     <result column="over_time" jdbcType="TIMESTAMP" property="overTime" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="channel" jdbcType="VARCHAR" property="channel" />
     <result column="ip_address" jdbcType="VARCHAR" property="ipAddress" />
   </resultMap>
@@ -71,7 +72,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, user_id, mobile, auth_type, auth_code, send_time, over_time, channel, ip_address
+    id, user_id, mobile, auth_type, auth_code, send_time, over_time, remark, channel, 
+    ip_address
   </sql>
   <select id="selectByExample" parameterType="com.applet.apply.entity.AuthCodeExample" resultMap="BaseResultMap">
     select
@@ -107,12 +109,12 @@
   <insert id="insert" parameterType="com.applet.apply.entity.AuthCode">
     insert into auth_code (id, user_id, mobile, 
       auth_type, auth_code, send_time, 
-      over_time, channel, ip_address
-      )
+      over_time, remark, channel, 
+      ip_address)
     values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{mobile,jdbcType=VARCHAR}, 
       #{authType,jdbcType=VARCHAR}, #{authCode,jdbcType=VARCHAR}, #{sendTime,jdbcType=TIMESTAMP}, 
-      #{overTime,jdbcType=TIMESTAMP}, #{channel,jdbcType=VARCHAR}, #{ipAddress,jdbcType=VARCHAR}
-      )
+      #{overTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}, #{channel,jdbcType=VARCHAR}, 
+      #{ipAddress,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" keyProperty="id" parameterType="com.applet.apply.entity.AuthCode" useGeneratedKeys="true">
     insert into auth_code
@@ -137,6 +139,9 @@
       </if>
       <if test="overTime != null">
         over_time,
+      </if>
+      <if test="remark != null">
+        remark,
       </if>
       <if test="channel != null">
         channel,
@@ -166,6 +171,9 @@
       </if>
       <if test="overTime != null">
         #{overTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
       </if>
       <if test="channel != null">
         #{channel,jdbcType=VARCHAR},
@@ -205,6 +213,9 @@
       <if test="record.overTime != null">
         over_time = #{record.overTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.remark != null">
+        remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
       <if test="record.channel != null">
         channel = #{record.channel,jdbcType=VARCHAR},
       </if>
@@ -225,6 +236,7 @@
       auth_code = #{record.authCode,jdbcType=VARCHAR},
       send_time = #{record.sendTime,jdbcType=TIMESTAMP},
       over_time = #{record.overTime,jdbcType=TIMESTAMP},
+      remark = #{record.remark,jdbcType=VARCHAR},
       channel = #{record.channel,jdbcType=VARCHAR},
       ip_address = #{record.ipAddress,jdbcType=VARCHAR}
     <if test="_parameter != null">
@@ -252,6 +264,9 @@
       <if test="overTime != null">
         over_time = #{overTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
       <if test="channel != null">
         channel = #{channel,jdbcType=VARCHAR},
       </if>
@@ -269,6 +284,7 @@
       auth_code = #{authCode,jdbcType=VARCHAR},
       send_time = #{sendTime,jdbcType=TIMESTAMP},
       over_time = #{overTime,jdbcType=TIMESTAMP},
+      remark = #{remark,jdbcType=VARCHAR},
       channel = #{channel,jdbcType=VARCHAR},
       ip_address = #{ipAddress,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}

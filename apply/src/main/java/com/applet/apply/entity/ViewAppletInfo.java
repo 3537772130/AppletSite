@@ -25,6 +25,8 @@ public class ViewAppletInfo implements Serializable {
 
     private String appletSimple;
 
+    private String appletLogo;
+
     private String licenseCode;
 
     private String businessScope;
@@ -55,7 +57,7 @@ public class ViewAppletInfo implements Serializable {
 
     private Double lat;
 
-    private String appletLogo;
+    private String systemColor;
 
     private Boolean ifRetail;
 
@@ -138,6 +140,14 @@ public class ViewAppletInfo implements Serializable {
 
     public void setAppletSimple(String appletSimple) {
         this.appletSimple = appletSimple == null ? null : appletSimple.trim();
+    }
+
+    public String getAppletLogo() {
+        return appletLogo;
+    }
+
+    public void setAppletLogo(String appletLogo) {
+        this.appletLogo = appletLogo == null ? null : appletLogo.trim();
     }
 
     public String getLicenseCode() {
@@ -260,12 +270,12 @@ public class ViewAppletInfo implements Serializable {
         this.lat = lat;
     }
 
-    public String getAppletLogo() {
-        return appletLogo;
+    public String getSystemColor() {
+        return systemColor;
     }
 
-    public void setAppletLogo(String appletLogo) {
-        this.appletLogo = appletLogo == null ? null : appletLogo.trim();
+    public void setSystemColor(String systemColor) {
+        this.systemColor = systemColor == null ? null : systemColor.trim();
     }
 
     public Boolean getIfRetail() {

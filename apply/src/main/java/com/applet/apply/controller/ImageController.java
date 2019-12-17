@@ -1,10 +1,10 @@
-package com.applet.user.controller;
+package com.applet.apply.controller;
 
-import com.applet.user.entity.ImageInfo;
-import com.applet.user.util.Constants;
-import com.applet.user.util.NullUtil;
-import com.applet.user.util.file.VerifyCodeUtil;
-import com.applet.user.util.file.ImageUtil;
+import com.applet.apply.entity.ImageInfo;
+import com.applet.apply.util.Constants;
+import com.applet.apply.util.NullUtil;
+import com.applet.apply.util.file.ImageUtil;
+import com.applet.apply.util.file.VerifyCodeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -58,7 +58,7 @@ public class ImageController {
      *
      * @param request
      */
-    @RequestMapping("/image/loadFigureCode")
+    @RequestMapping("loadFigureCode")
     public void loadFigureCode(HttpServletRequest request, HttpServletResponse response) {
         try {
             VerifyCodeUtil imgUtil = new VerifyCodeUtil();
@@ -68,16 +68,6 @@ public class ImageController {
         } catch (Exception e) {
             log.info("图形验证码生成失败{}", e);
         }
-    }
-
-    /**
-     * 客户端加载图形验证码
-     *
-     * @return
-     */
-    @RequestMapping("/api/image/loadFigureCode")
-    public String loadFigureCode() {
-        return "redirect:/image/loadFigureCode";
     }
 
 }

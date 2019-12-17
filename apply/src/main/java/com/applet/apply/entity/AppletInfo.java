@@ -51,6 +51,8 @@ public class AppletInfo implements Serializable {
 
     private Double lat;
 
+    private String systemColor;
+
     private Boolean ifRetail;
 
     private Boolean ifSelling;
@@ -236,6 +238,14 @@ public class AppletInfo implements Serializable {
 
     public void setLat(Double lat) {
         this.lat = lat;
+    }
+
+    public String getSystemColor() {
+        return systemColor;
+    }
+
+    public void setSystemColor(String systemColor) {
+        this.systemColor = systemColor == null ? null : systemColor.trim();
     }
 
     public Boolean getIfRetail() {

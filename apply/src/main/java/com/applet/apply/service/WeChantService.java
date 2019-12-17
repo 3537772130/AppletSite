@@ -7,6 +7,7 @@ import com.applet.apply.util.RandomUtil;
 import com.applet.apply.util.encryption.DesUtil;
 import com.applet.apply.util.encryption.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +20,9 @@ import java.util.List;
 @Service
 public class WeChantService {
     @Autowired
-    private WeChantAppletMapper weChantAppletMapper;
+    private WeChantInfoMapper weChantInfoMapper;
+    @Autowired
+    private ViewWeChantInfoMapper viewWeChantInfoMapper;
     @Autowired
     private UserInfoMapper userInfoMapper;
     @Autowired
@@ -32,42 +35,68 @@ public class WeChantService {
      * @param nickName
      * @return
      */
-    public WeChantApplet selectWeChantApplet(Integer appletId, String openId, String nickName){
-        WeChantAppletExample example = new WeChantAppletExample();
+    public ViewWeChantInfo selectWeChantInfo(Integer appletId, String openId, String nickName, String avatarUrl, boolean gender){
+        ViewWeChantInfoExample example = new ViewWeChantInfoExample();
         example.createCriteria().andOpenIdEqualTo(openId).andAppletIdEqualTo(appletId);
-        List<WeChantApplet> list = weChantAppletMapper.selectByExample(example);
+        List<ViewWeChantInfo> list = viewWeChantInfoMapper.selectByExample(example);
         if (NullUtil.isNotNullOrEmpty(list)){
-            WeChantApplet info = list.get(0);
-            if (info.getStatus()){
-                return info;
-            }
-            return null;
+            ViewWeChantInfo info = list.get(0);
+            updateWeChantInfo(info.getId(), appletId, openId, nickName, avatarUrl, gender);
+            return info;
         } else {
-            WeChantApplet info = new WeChantApplet();
+            String wxCode = updateWeChantInfo(null, appletId, openId, nickName, avatarUrl, gender);
+            ViewWeChantInfo info = new ViewWeChantInfo();
+            info.setWxCode(wxCode);
             info.setAppletId(appletId);
-            info.setOpenId(openId);
-            String cipher = DesUtil.encrypt(openId, RandomUtil.getUUID());
-            cipher = MD5Util.MD5(cipher);
-            info.setWxLogo(cipher);
             info.setNickName(nickName);
-            info.setCreateTime(new Date());
-            info.setStatus(true);
-            weChantAppletMapper.insertSelective(info);
+            info.setAvatarUrl(avatarUrl);
+            info.setGender(gender ? 1 : 0);
             return info;
         }
     }
 
     /**
-     * 查询微信信息
-     * @param wxLogo
+     * 更新微信用户信息
+     * @param id
+     * @param appletId
+     * @param openId
+     * @param nickName
+     * @param avatarUrl
+     * @param gender
      * @return
      */
-    public WeChantApplet selectWeChantApplet(String wxLogo){
-        WeChantAppletExample example = new WeChantAppletExample();
-        example.createCriteria().andWxLogoEqualTo(wxLogo);
-        List<WeChantApplet> list = weChantAppletMapper.selectByExample(example);
+    public String updateWeChantInfo(Integer id, Integer appletId, String openId, String nickName, String avatarUrl, boolean gender){
+        WeChantInfo info = new WeChantInfo();
+        info.setId(id);
+        info.setNickName(nickName);
+        info.setAvatarUrl(avatarUrl);
+        info.setGender(gender);
+        info.setCreateTime(new Date());
+        if (NullUtil.isNotNullOrEmpty(id)){
+            weChantInfoMapper.updateByPrimaryKeySelective(info);
+        } else {
+            info.setAppletId(appletId);
+            info.setOpenId(openId);
+            String cipher = DesUtil.encrypt(openId, RandomUtil.getUUID());
+            cipher = MD5Util.MD5(cipher);
+            info.setWxCode(cipher);
+            info.setStatus(true);
+            weChantInfoMapper.insertSelective(info);
+        }
+        return info.getWxCode();
+    }
+
+    /**
+     * 查询微信信息
+     * @param wxCode
+     * @return
+     */
+    public WeChantInfo selectWeChantInfo(String wxCode){
+        WeChantInfoExample example = new WeChantInfoExample();
+        example.createCriteria().andWxCodeEqualTo(wxCode);
+        List<WeChantInfo> list = weChantInfoMapper.selectByExample(example);
         if (NullUtil.isNotNullOrEmpty(list)){
-            WeChantApplet info = list.get(0);
+            WeChantInfo info = list.get(0);
             if (info.getStatus()){
                 return info;
             }
@@ -78,32 +107,20 @@ public class WeChantService {
     /**
      * 查询微信信息
      * @param appletId
-     * @param wxLogo
+     * @param wxCode
      * @return
      */
-    public WeChantApplet selectWeChantApplet(Integer appletId, String wxLogo){
-        WeChantAppletExample example = new WeChantAppletExample();
-        example.createCriteria().andAppletIdEqualTo(appletId).andWxLogoEqualTo(wxLogo);
-        List<WeChantApplet> list = weChantAppletMapper.selectByExample(example);
+    public WeChantInfo selectWeChantInfo(Integer appletId, String wxCode){
+        WeChantInfoExample example = new WeChantInfoExample();
+        example.createCriteria().andAppletIdEqualTo(appletId).andWxCodeEqualTo(wxCode);
+        List<WeChantInfo> list = weChantInfoMapper.selectByExample(example);
         if (NullUtil.isNotNullOrEmpty(list)){
-            WeChantApplet info = list.get(0);
+            WeChantInfo info = list.get(0);
             if (info.getStatus()){
                 return info;
             }
         }
         return null;
-    }
-
-    /**
-     * 修改微信昵称
-     * @param id
-     * @param nickName
-     */
-    public void updateNickName(Integer id, String nickName){
-        WeChantApplet record = new WeChantApplet();
-        record.setId(id);
-        record.setNickName(nickName);
-        weChantAppletMapper.updateByPrimaryKeySelective(record);
     }
 
     /**
@@ -132,19 +149,19 @@ public class WeChantService {
 
     /**
      * 更新微信绑定用户
-     * @param weChantApplet
+     * @param WeChantInfo
      * @param mobile
      * @param code
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
-    public void updateWeChant(WeChantApplet weChantApplet, String mobile, String code){
+    public void updateWeChant(WeChantInfo WeChantInfo, String mobile, String code){
         UserInfo info = getUserInfo(mobile);
         if (info == null){
             //未注册手机号则自动完成注册
             info = new UserInfo();
             info.setMobile(mobile);
-            info.setNickName(weChantApplet.getNickName());
+            info.setNickName(WeChantInfo.getNickName());
             info.setEncrypted(RandomUtil.getRandomStr32());
             String cipher = DesUtil.encrypt(code, info.getEncrypted());
             cipher = MD5Util.MD5(cipher);
@@ -158,17 +175,25 @@ public class WeChantService {
             userInfoMapper.insertSelective(info);
         }
         if (info.getStatus()){
-            weChantApplet.setUserId(info.getId());
-            weChantAppletMapper.updateByPrimaryKeySelective(weChantApplet);
+            WeChantInfo.setUserId(info.getId());
+            weChantInfoMapper.updateByPrimaryKeySelective(WeChantInfo);
         }
     }
 
     /**
-     * 微信自动解绑账号
-     * @param weChantApplet
+     * 更新用户信息
+     * @param userInfo
      */
-    public void updateWeChant(WeChantApplet weChantApplet){
-        String sql = "UPDATE we_chant_applet SET user_id = NULL WHERE id = " + weChantApplet.getId();
+    public void updateUserInfo(UserInfo userInfo){
+        userInfoMapper.updateByPrimaryKeySelective(userInfo);
+    }
+
+    /**
+     * 微信自动解绑账号
+     * @param weChantInfo
+     */
+    public void updateWeChant(ViewWeChantInfo weChantInfo){
+        String sql = "UPDATE we_chant_applet SET user_id = NULL WHERE id = " + weChantInfo.getId();
         commonMapper.updateBatch(sql);
     }
 }
