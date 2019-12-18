@@ -31,7 +31,7 @@ public class ApplicationConfigurer extends WebMvcConfigurationSupport {
     private static final Logger log = LoggerFactory.getLogger(ApplicationConfigurer.class);
 
     public ApplicationConfigurer() {
-        log.info("ApplicationConfigurer容器初始化...");
+        log.info("user管理容器初始化...");
     }
 
     /**

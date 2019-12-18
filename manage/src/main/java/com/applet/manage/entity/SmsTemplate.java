@@ -1,6 +1,6 @@
-package com.applet.apply.entity;
+package com.applet.manage.entity;
 
-import com.applet.apply.util.Constants;
+import com.applet.manage.util.Constants;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.io.Serializable;
@@ -21,7 +21,7 @@ public class SmsTemplate implements Serializable {
 
     private String channel;
 
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_YMD)
     private Date createTime;
 
     private Boolean status;

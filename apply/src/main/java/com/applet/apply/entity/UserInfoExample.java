@@ -1096,6 +1096,66 @@ public class UserInfoExample {
             return (Criteria) this;
         }
 
+        public Criteria andRecommendIdIsNull() {
+            addCriterion("recommend_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andRecommendIdIsNotNull() {
+            addCriterion("recommend_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andRecommendIdEqualTo(Integer value) {
+            addCriterion("recommend_id =", value, "recommendId");
+            return (Criteria) this;
+        }
+
+        public Criteria andRecommendIdNotEqualTo(Integer value) {
+            addCriterion("recommend_id <>", value, "recommendId");
+            return (Criteria) this;
+        }
+
+        public Criteria andRecommendIdGreaterThan(Integer value) {
+            addCriterion("recommend_id >", value, "recommendId");
+            return (Criteria) this;
+        }
+
+        public Criteria andRecommendIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("recommend_id >=", value, "recommendId");
+            return (Criteria) this;
+        }
+
+        public Criteria andRecommendIdLessThan(Integer value) {
+            addCriterion("recommend_id <", value, "recommendId");
+            return (Criteria) this;
+        }
+
+        public Criteria andRecommendIdLessThanOrEqualTo(Integer value) {
+            addCriterion("recommend_id <=", value, "recommendId");
+            return (Criteria) this;
+        }
+
+        public Criteria andRecommendIdIn(List<Integer> values) {
+            addCriterion("recommend_id in", values, "recommendId");
+            return (Criteria) this;
+        }
+
+        public Criteria andRecommendIdNotIn(List<Integer> values) {
+            addCriterion("recommend_id not in", values, "recommendId");
+            return (Criteria) this;
+        }
+
+        public Criteria andRecommendIdBetween(Integer value1, Integer value2) {
+            addCriterion("recommend_id between", value1, value2, "recommendId");
+            return (Criteria) this;
+        }
+
+        public Criteria andRecommendIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("recommend_id not between", value1, value2, "recommendId");
+            return (Criteria) this;
+        }
+
         public Criteria andCreateDateIsNull() {
             addCriterion("create_date is null");
             return (Criteria) this;

@@ -1,6 +1,7 @@
-package com.applet.apply.mapper;
+package com.applet.manage.mapper;
 
-import com.applet.apply.entity.*;
+import com.applet.manage.entity.SmsTemplate;
+import com.applet.manage.entity.SmsTemplateExample;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

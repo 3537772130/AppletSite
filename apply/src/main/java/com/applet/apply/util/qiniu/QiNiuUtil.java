@@ -1,7 +1,7 @@
 package com.applet.apply.util.qiniu;
 
 import com.applet.apply.util.Constants;
-import com.applet.apply.util.GetImageUtil;
+import com.applet.apply.util.file.GetImageUtil;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
 import com.qiniu.processing.OperationManager;

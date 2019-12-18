@@ -1,7 +1,6 @@
-package com.applet.apply.entity;
+package com.applet.manage.entity;
 
-import com.applet.apply.util.Page;
-
+import com.applet.manage.util.Page;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

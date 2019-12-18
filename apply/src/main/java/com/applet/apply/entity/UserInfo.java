@@ -1,5 +1,8 @@
 package com.applet.apply.entity;
 
+import com.applet.apply.util.Constants;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -34,6 +37,9 @@ public class UserInfo implements Serializable {
 
     private String extensionCode;
 
+    private Integer recommendId;
+
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
     private Date createDate;
 
     private Boolean status;
@@ -160,6 +166,14 @@ public class UserInfo implements Serializable {
         this.extensionCode = extensionCode == null ? null : extensionCode.trim();
     }
 
+    public Integer getRecommendId() {
+        return recommendId;
+    }
+
+    public void setRecommendId(Integer recommendId) {
+        this.recommendId = recommendId;
+    }
+
     public Date getCreateDate() {
         return createDate;
     }
@@ -174,17 +188,5 @@ public class UserInfo implements Serializable {
 
     public void setStatus(Boolean status) {
         this.status = status;
-    }
-
-    public UserInfoResult getUserInfo(){
-        UserInfoResult result = new UserInfoResult();
-        result.setMobile(this.mobile);
-        result.setNickName(this.nickName);
-        result.setAvatarUrl(this.avatarUrl);
-        result.setGender(this.gender);
-        result.setBirthday(this.birthday);
-        result.setBalance(this.balance);
-        result.setIntegral(this.integral);
-        return result;
     }
 }

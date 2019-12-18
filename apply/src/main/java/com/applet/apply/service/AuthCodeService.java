@@ -1,13 +1,8 @@
 package com.applet.apply.service;
 
-import com.applet.apply.entity.AuthCode;
-import com.applet.apply.entity.AuthCodeExample;
-import com.applet.apply.entity.SmsTemplate;
-import com.applet.apply.mapper.AuthCodeMapper;
-import com.applet.apply.mapper.SmsTemplateMapper;
-import com.applet.apply.util.EnumUtil;
+import com.applet.apply.entity.*;
+import com.applet.apply.mapper.*;
 import com.applet.apply.util.NullUtil;
-import com.applet.apply.util.Constants;
 import jodd.datetime.JDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,24 +18,6 @@ import java.util.List;
 public class AuthCodeService {
     @Autowired
     private AuthCodeMapper authCodeMapper;
-    @Autowired
-    private SmsTemplateMapper smsTemplateMapper;
-
-    /**
-     * 查询短信模板
-     *
-     * @param type
-     * @return
-     */
-    public SmsTemplate selectSmsTemplateByType(String type, String channel) {
-//        SmsTemplateExample example = new SmsTemplateExample();
-//        example.createCriteria().andTypeEqualTo(type).andStatusEqualTo(true);
-//        List<SmsTemplate> list = smsTemplateMapper.selectByExample(example);
-//        if (NullUtil.isNotNullOrEmpty(list)) {
-//            return list.get(0);
-//        }
-        return null;
-    }
 
     /**
      * 查询10分钟内最新的验证码
@@ -48,14 +25,13 @@ public class AuthCodeService {
      * @param mobile
      * @return
      */
-    public AuthCode selectAuthCodeByMobile(String mobile) {
-        JDateTime time = new JDateTime(new Date());
-        time.setMinute(-10);
+    public AuthCode selectAuthCodeByMobile(String mobile, String type) {
         AuthCodeExample example = new AuthCodeExample();
         example.setOrderByClause("id desc");
         example.createCriteria()
                 .andMobileEqualTo(mobile)
-                .andSendTimeGreaterThanOrEqualTo(time.convertToDate());
+                .andAuthTypeEqualTo(type)
+                .andOverTimeGreaterThanOrEqualTo(new Date());
         List<AuthCode> list = authCodeMapper.selectByExample(example);
         if (NullUtil.isNotNullOrEmpty(list)) {
             return list.get(0);
@@ -85,25 +61,28 @@ public class AuthCodeService {
     }
 
     /**
-     * 添加验证码发送记录
-     *
-     * @param id
+     * 获取当前有效验证码数量
      * @param mobile
      * @param type
-     * @param code
-     * @param ip
+     * @return
      */
-    public void addAuthCode(Integer id, String mobile, String type, String code, String channel, String ip) {
-        AuthCode authCode = new AuthCode();
-        authCode.setUserId(id);
-        authCode.setMobile(mobile);
-        authCode.setAuthType(type);
-        authCode.setAuthCode(code);
-        JDateTime time = new JDateTime(new Date());
-        authCode.setSendTime(time.convertToDate());
-        authCode.setOverTime(time.addMinute(10).convertToDate());
-        authCode.setChannel(channel);
-        authCode.setIpAddress(ip);
+    public Integer selectVerifyCodeValidityCount(String mobile, String type){
+        Date date = new Date();
+        AuthCodeExample example = new AuthCodeExample();
+        example.createCriteria()
+                .andMobileEqualTo(mobile)
+                .andAuthTypeEqualTo(type)
+                .andSendTimeLessThanOrEqualTo(date)
+                .andOverTimeGreaterThanOrEqualTo(date);
+        return (int) authCodeMapper.countByExample(example);
+    }
+
+    /**
+     * 添加验证码发送记录
+     *
+     * @param authCode
+     */
+    public void addAuthCode(AuthCode authCode) {
         authCodeMapper.insertSelective(authCode);
     }
 

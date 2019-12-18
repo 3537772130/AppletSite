@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.applet.apply.mapper.FigureCodeMapper">
-  <resultMap id="BaseResultMap" type="com.applet.apply.entity.FigureCode">
+<mapper namespace="com.applet.apply.mapper.UserOperationLogMapper">
+  <resultMap id="BaseResultMap" type="com.applet.apply.entity.UserOperationLog">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="wx_id" jdbcType="INTEGER" property="wxId" />
-    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="type" jdbcType="VARCHAR" property="type" />
-    <result column="channel" jdbcType="VARCHAR" property="channel" />
+    <result column="describe_content" jdbcType="VARCHAR" property="describeContent" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -67,15 +67,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, wx_id, code, type, channel
+    id, user_id, type, describe_content, create_time
   </sql>
-  <select id="selectByExample" parameterType="com.applet.apply.entity.FigureCodeExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.applet.apply.entity.UserOperationLogExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from figure_code
+    from user_operation_log
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -87,85 +87,85 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from figure_code
+    from user_operation_log
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from figure_code
+    delete from user_operation_log
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.applet.apply.entity.FigureCodeExample">
-    delete from figure_code
+  <delete id="deleteByExample" parameterType="com.applet.apply.entity.UserOperationLogExample">
+    delete from user_operation_log
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.applet.apply.entity.FigureCode">
-    insert into figure_code (id, wx_id, code, 
-      type, channel)
-    values (#{id,jdbcType=INTEGER}, #{wxId,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, 
-      #{type,jdbcType=VARCHAR}, #{channel,jdbcType=VARCHAR})
+  <insert id="insert" parameterType="com.applet.apply.entity.UserOperationLog">
+    insert into user_operation_log (id, user_id, type, 
+      describe_content, create_time)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}, 
+      #{describeContent,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" keyProperty="id" parameterType="com.applet.apply.entity.FigureCode" useGeneratedKeys="true">
-    insert into figure_code
+  <insert id="insertSelective" keyProperty="id" parameterType="com.applet.apply.entity.UserOperationLog" useGeneratedKeys="true">
+    insert into user_operation_log
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
       </if>
-      <if test="wxId != null">
-        wx_id,
-      </if>
-      <if test="code != null">
-        code,
+      <if test="userId != null">
+        user_id,
       </if>
       <if test="type != null">
         type,
       </if>
-      <if test="channel != null">
-        channel,
+      <if test="describeContent != null">
+        describe_content,
+      </if>
+      <if test="createTime != null">
+        create_time,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="wxId != null">
-        #{wxId,jdbcType=INTEGER},
-      </if>
-      <if test="code != null">
-        #{code,jdbcType=VARCHAR},
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
       </if>
       <if test="type != null">
         #{type,jdbcType=VARCHAR},
       </if>
-      <if test="channel != null">
-        #{channel,jdbcType=VARCHAR},
+      <if test="describeContent != null">
+        #{describeContent,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.applet.apply.entity.FigureCodeExample" resultType="java.lang.Long">
-    select count(*) from figure_code
+  <select id="countByExample" parameterType="com.applet.apply.entity.UserOperationLogExample" resultType="java.lang.Long">
+    select count(*) from user_operation_log
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update figure_code
+    update user_operation_log
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.wxId != null">
-        wx_id = #{record.wxId,jdbcType=INTEGER},
-      </if>
-      <if test="record.code != null">
-        code = #{record.code,jdbcType=VARCHAR},
+      <if test="record.userId != null">
+        user_id = #{record.userId,jdbcType=INTEGER},
       </if>
       <if test="record.type != null">
         type = #{record.type,jdbcType=VARCHAR},
       </if>
-      <if test="record.channel != null">
-        channel = #{record.channel,jdbcType=VARCHAR},
+      <if test="record.describeContent != null">
+        describe_content = #{record.describeContent,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null">
@@ -173,40 +173,40 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update figure_code
+    update user_operation_log
     set id = #{record.id,jdbcType=INTEGER},
-      wx_id = #{record.wxId,jdbcType=INTEGER},
-      code = #{record.code,jdbcType=VARCHAR},
+      user_id = #{record.userId,jdbcType=INTEGER},
       type = #{record.type,jdbcType=VARCHAR},
-      channel = #{record.channel,jdbcType=VARCHAR}
+      describe_content = #{record.describeContent,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.applet.apply.entity.FigureCode">
-    update figure_code
+  <update id="updateByPrimaryKeySelective" parameterType="com.applet.apply.entity.UserOperationLog">
+    update user_operation_log
     <set>
-      <if test="wxId != null">
-        wx_id = #{wxId,jdbcType=INTEGER},
-      </if>
-      <if test="code != null">
-        code = #{code,jdbcType=VARCHAR},
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
       </if>
       <if test="type != null">
         type = #{type,jdbcType=VARCHAR},
       </if>
-      <if test="channel != null">
-        channel = #{channel,jdbcType=VARCHAR},
+      <if test="describeContent != null">
+        describe_content = #{describeContent,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.applet.apply.entity.FigureCode">
-    update figure_code
-    set wx_id = #{wxId,jdbcType=INTEGER},
-      code = #{code,jdbcType=VARCHAR},
+  <update id="updateByPrimaryKey" parameterType="com.applet.apply.entity.UserOperationLog">
+    update user_operation_log
+    set user_id = #{userId,jdbcType=INTEGER},
       type = #{type,jdbcType=VARCHAR},
-      channel = #{channel,jdbcType=VARCHAR}
+      describe_content = #{describeContent,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <sql id="PageSuffix">

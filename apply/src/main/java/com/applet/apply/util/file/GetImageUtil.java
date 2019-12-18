@@ -1,4 +1,4 @@
-package com.applet.apply.util;
+package com.applet.apply.util.file;
 
 import java.io.*;
 import java.net.HttpURLConnection;
