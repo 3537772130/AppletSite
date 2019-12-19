@@ -25,12 +25,21 @@ public class ShareController {
     private RegionService regionService;
 
     /**
-     * 请求拦截，返回错误码
+     * 错误拦截，返回错误码
      * @return
      */
     @RequestMapping(value = "error")
     public Object error() {
-        return AjaxResponse.error("非法请求！");
+        return AjaxResponse.error("请求出错");
+    }
+
+    /**
+     *
+     * @return
+     */
+    @RequestMapping(value = "illegal")
+    public Object illegal(){
+        return AjaxResponse.error("非法请求");
     }
 
     /**
@@ -39,7 +48,7 @@ public class ShareController {
      */
     @RequestMapping(value = "appletNull")
     public Object appletNull(){
-        return AjaxResponse.error("未找到相关小程序信息！");
+        return AjaxResponse.error("未找到相关小程序信息");
     }
 
     /**
@@ -48,7 +57,7 @@ public class ShareController {
      */
     @RequestMapping(value = "appletNotOpen")
     public Object appletNotOpen(){
-        return AjaxResponse.error("小程序尚未开通！");
+        return AjaxResponse.error("小程序尚未开通");
     }
 
     /**
@@ -57,7 +66,7 @@ public class ShareController {
      */
     @RequestMapping(value = "appletProhibit")
     public Object appletProhibit(){
-        return AjaxResponse.error("小程序已被禁用！");
+        return AjaxResponse.error("小程序已被禁用");
     }
 
     /**
@@ -66,7 +75,7 @@ public class ShareController {
      */
     @RequestMapping(value = "appletNotRelease")
     public Object appletNotRelease(){
-        return AjaxResponse.msg("0", "小程序正在整顿中，敬请期待哟！");
+        return AjaxResponse.msg("0", "小程序正在整顿中，敬请期待哟");
     }
 
     /**
@@ -75,7 +84,7 @@ public class ShareController {
      */
     @RequestMapping(value = "loginOverdue")
     public Object loginOverdue(){
-        return AjaxResponse.error("亲,登录过期啦！");
+        return AjaxResponse.error("亲,登录过期啦");
     }
 
     /**
@@ -84,7 +93,7 @@ public class ShareController {
      */
     @RequestMapping(value = "auth")
     public Object auth() {
-        return AjaxResponse.error("亲,账号未开通哦！");
+        return AjaxResponse.error("亲,账号未开通哦");
     }
 
 

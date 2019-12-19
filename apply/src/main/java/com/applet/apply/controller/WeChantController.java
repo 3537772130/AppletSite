@@ -1,6 +1,6 @@
 package com.applet.apply.controller;
 
-import com.applet.apply.config.annotation.CancelAuthentication;
+import com.applet.apply.config.annotation.CancelAuth;
 import com.applet.apply.config.annotation.SessionScope;
 import com.applet.apply.service.AuthCodeService;
 import com.applet.apply.service.SmsService;
@@ -8,11 +8,11 @@ import com.applet.apply.service.WeChantService;
 import com.applet.apply.util.*;
 import com.applet.apply.entity.*;
 import com.applet.apply.util.encryption.DesUtil;
-import com.applet.apply.util.encryption.EncryptionUtil;
 import com.applet.apply.util.encryption.MD5Util;
 import com.applet.apply.util.enums.SMSChannel;
 import com.applet.apply.util.enums.SMSType;
 import com.applet.apply.util.http.IpUtil;
+import com.applet.apply.util.qiniu.QiNiuUtil;
 import jodd.datetime.JDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -47,15 +48,31 @@ public class WeChantController {
      * @return
      */
     @RequestMapping(value = "login")
-    @CancelAuthentication
+    @CancelAuth
     public Object login(@SessionScope("appletInfo") ViewAppletInfo appletInfo, @RequestParam("code") String code,
                         @RequestParam("nickName") String nickName, @RequestParam("avatarUrl") String avatarUrl,
                         @RequestParam("gender") boolean gender) {
         try {
             String openId = WeChatAppletUtil.getOpenId(code, appletInfo.getAppId(), appletInfo.getAppSecret());
-            ViewWeChantInfo info = weChantService.selectWeChantInfo(appletInfo.getId(), openId, nickName, avatarUrl, gender);
+            ViewWeChantInfo info = weChantService.selectViewWeChantInfo(appletInfo.getId(), openId, nickName, avatarUrl, gender);
             if (info != null) {
-                return returnWeChantInfo(appletInfo, info);
+                if (info.getStatus().intValue() == 0) {
+                    return AjaxResponse.error("您的账户已经冻结，请联系客服进行处理");
+                }
+                info.setOpenId(null);
+                Map<String, Object> map = new HashMap<>();
+                map.put("userInfo", info);
+                map.put("isDealer", false);
+                if (NullUtil.isNotNullOrEmpty(info.getUserId()) && appletInfo.getUserId().intValue() == info.getUserId().intValue()) {
+                    map.put("isDealer", true);
+                }
+                if (NullUtil.isNotNullOrEmpty(info.getUserId())) {
+                    map.put("bindStatus", true);
+                    return AjaxResponse.success(map);
+                } else {
+                    map.put("bindStatus", false);
+                    return AjaxResponse.msg("0", map);
+                }
             }
         } catch (Exception e) {
             logger.info("授权登录出错{}", e);
@@ -63,24 +80,28 @@ public class WeChantController {
         return AjaxResponse.error("授权登录失败");
     }
 
-    public Object returnWeChantInfo(ViewAppletInfo appletInfo, ViewWeChantInfo info) {
-        if (info.getStatus().intValue() == 0) {
-            return AjaxResponse.error("您的账户已经冻结，请联系客服进行处理");
+    /**
+     * 检查手机号
+     * @param mobile
+     * @return
+     */
+    @RequestMapping(value = "checkMobile")
+    @CancelAuth
+    public Object checkMobile(@RequestParam("mobile") String mobile){
+        if (NullUtil.isNullOrEmpty(mobile)) {
+            return AjaxResponse.error("账号不能为空");
         }
-        info.setOpenId(null);
-        Map<String, Object> map = new HashMap<>();
-        map.put("userInfo", info);
-        map.put("isDealer", false);
-        if (NullUtil.isNotNullOrEmpty(info.getUserId()) && appletInfo.getUserId().intValue() == info.getUserId().intValue()) {
-            map.put("isDealer", true);
+        if (!RegularUtil.checkMobile(mobile)) {
+            return AjaxResponse.error("账号格式不正确");
         }
-        if (NullUtil.isNotNullOrEmpty(info.getUserId())) {
-            map.put("bindStatus", true);
-            return AjaxResponse.success(map);
-        } else {
-            map.put("bindStatus", false);
-            return AjaxResponse.msg("0", map);
+        UserInfo userInfo = weChantService.getUserInfo(mobile);
+        if (null == userInfo) {
+            return AjaxResponse.msg("0", "");
         }
+        if (!userInfo.getStatus()) {
+            return AjaxResponse.error("账号已禁用");
+        }
+        return AjaxResponse.success();
     }
 
 
@@ -103,16 +124,26 @@ public class WeChantController {
             }
             UserInfo userInfo = weChantService.getUserInfo(mobile);
             if (null == userInfo) {
-                return AjaxResponse.error("参数错误");
+                userInfo = new UserInfo();
+                userInfo.setMobile(mobile);
+                userInfo.setStatus(true);
             }
             if (!userInfo.getStatus()) {
                 return AjaxResponse.error("账号已禁用");
+            }
+            int senNum = authCodeService.getTodaySendCodeCount(userInfo.getMobile(), SMSType.BIND_APPLET.toString());
+            if (senNum >= Constants.SMS_CODE_AMOUNT.intValue()) {
+                return AjaxResponse.error("今日短信发送次数已达上限，请明日再试");
+            }
+            int validityNum = authCodeService.selectVerifyCodeValidityCount(userInfo.getMobile(), SMSType.BIND_APPLET.toString());
+            if (validityNum > 0) {
+                return AjaxResponse.error("操作频繁，请稍后再试");
             }
             String channel = SMSChannel.ALIYUN.toString();
             String remark = "绑定小程序";
             if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())) {
                 remark = "换绑小程序";
-                if (userInfo.getId().intValue() == weChantInfo.getUserId().intValue()){
+                if (NullUtil.isNotNullOrEmpty(userInfo.getId()) && userInfo.getId().intValue() == weChantInfo.getUserId().intValue()){
                     return AjaxResponse.error("已绑定该账户");
                 }
             }
@@ -125,6 +156,7 @@ public class WeChantController {
             authCode.setAuthCode(RandomUtil.getRandomStr(6));
             JDateTime time = new JDateTime(new Date());
             authCode.setSendTime(time.convertToDate());
+            logger.info("当前时间为： " + time.toString(Constants.DATE_TIME_JODD));
             authCode.setOverTime(time.addMinute(10).convertToDate());
             authCode.setRemark(remark);
             authCode.setChannel(channel);
@@ -152,45 +184,44 @@ public class WeChantController {
     @RequestMapping(value = "bindApplet")
     public Object bindApplet(@SessionScope("appletInfo") ViewAppletInfo appletInfo, @SessionScope("weChantInfo") WeChantInfo weChantInfo,
                              String code, String mobile, String rmdMobile) {
-        if (NullUtil.isNullOrEmpty(mobile)) {
-            return AjaxResponse.error("手机号不能为空");
-        }
-        if (!RegularUtil.checkMobile(mobile)) {
-            return AjaxResponse.error("手机号格式不正确");
-        }
-        UserInfo userInfo = weChantService.getUserInfo(mobile);
-        if (null == userInfo) {
-            return AjaxResponse.error("参数错误");
-        }
-        if (!userInfo.getStatus()) {
-            return AjaxResponse.error("账号已禁用");
-        }
-        UserInfo rmdInfo = null;
-        if (NullUtil.isNotNullOrEmpty(rmdMobile)) {
+        try {
+            if (NullUtil.isNullOrEmpty(mobile)) {
+                return AjaxResponse.error("手机号不能为空");
+            }
             if (!RegularUtil.checkMobile(mobile)) {
-                return AjaxResponse.error("推荐号码格式不正确");
+                return AjaxResponse.error("手机号格式不正确");
             }
-            rmdInfo = weChantService.getUserInfo(rmdMobile);
-            if (null == rmdInfo) {
-                return AjaxResponse.error("推荐号码不存在");
+            UserInfo userInfo = weChantService.getUserInfo(mobile);
+            if (null != userInfo && !userInfo.getStatus()) {
+                return AjaxResponse.error("账号已禁用");
             }
-            if (!userInfo.getStatus()) {
-                return AjaxResponse.error("推荐号码不可用");
+            UserInfo rmdInfo = null;
+            if (null == userInfo && NullUtil.isNotNullOrEmpty(rmdMobile)) {
+                if (!RegularUtil.checkMobile(mobile)) {
+                    return AjaxResponse.error("推荐号码格式不正确");
+                }
+                rmdInfo = weChantService.getUserInfo(rmdMobile);
+                if (null == rmdInfo) {
+                    return AjaxResponse.error("推荐号码不存在");
+                }
+                if (!rmdInfo.getStatus()) {
+                    return AjaxResponse.error("推荐号码不可用");
+                }
             }
+            AuthCode authCode = authCodeService.selectAuthCodeByMobile(mobile, SMSType.BIND_APPLET.toString());
+            if (null == authCode) {
+                return AjaxResponse.error("验证码已过期，请重新发送");
+            }
+            if (!authCode.getAuthCode().equals(code)) {
+                return AjaxResponse.error("验证码输入不匹配");
+            }
+            ViewWeChantInfo wxInfo = weChantService.selectViewWeChantInfo(weChantInfo.getId(), appletInfo.getId());
+            weChantService.updateWeChantUserId(appletInfo, wxInfo, userInfo, mobile, rmdInfo);
+            return AjaxResponse.success("绑定成功");
+        } catch (Exception e) {
+            logger.error("绑定手机号出错{}", e);
+            return AjaxResponse.error("绑定失败");
         }
-        AuthCode authCode = authCodeService.selectAuthCodeByMobile(mobile, SMSType.BIND_APPLET.toString());
-        if (null == authCode) {
-            return AjaxResponse.error("验证码已过期，请重新发送");
-        }
-        if (!authCode.equals(code)) {
-            return AjaxResponse.error("验证码输入不匹配");
-        }
-        weChantService.updateWeChantUserId(appletInfo, weChantInfo, userInfo, mobile, rmdInfo);
-        ViewWeChantInfo info = weChantService.selectWeChantInfo(weChantInfo.getId(), appletInfo.getId(), mobile);
-        if (null != info){
-            return returnWeChantInfo(appletInfo, info);
-        }
-        return AjaxResponse.error("获取用户信息失败");
     }
 
 
@@ -324,6 +355,77 @@ public class WeChantController {
         } catch (Exception e) {
             logger.error("PASS-更新用户密码出错{}", e);
             return AjaxResponse.error("修改失败");
+        }
+    }
+
+    /**
+     * 上传用户头像
+     * @param weChantInfo
+     * @param file
+     * @return
+     */
+    @RequestMapping(value = "uploadUserAvatar")
+    public Object uploadUserAvatar(@SessionScope("weChantInfo") WeChantInfo weChantInfo, @RequestParam("avatar") MultipartFile file){
+        try {
+
+            UserInfo userInfo = weChantService.getUserInfo(weChantInfo.getUserId());
+            if (null == userInfo){
+                return AjaxResponse.error("没有权限");
+            }
+            if (!userInfo.getStatus()) {
+                return AjaxResponse.error("账号已禁用");
+            }
+            if (null == file){
+                return AjaxResponse.error("参数错误");
+            }
+            if (NullUtil.isNullOrEmpty(userInfo.getAvatarUrl())){
+                userInfo.setAvatarUrl("/api/image/USER-A" + RandomUtil.getTimeStamp());
+            }
+            QiNiuUtil.uploadFile(file, userInfo.getAvatarUrl());
+            return AjaxResponse.success(userInfo.getAvatarUrl() + "?token=" + RandomUtil.getTimeStamp());
+        } catch (Exception e) {
+            logger.error("小程序上传用户头像出错{}", e);
+            return AjaxResponse.error("上传失败");
+        }
+    }
+
+    /**
+     * 更新用户信息
+     * @param weChantInfo
+     * @param nickName
+     * @param gender
+     * @param birthday
+     * @param email
+     * @return
+     */
+    @RequestMapping(value = "updateUserInfo")
+    public Object updateUserInfo(@SessionScope("weChantInfo") WeChantInfo weChantInfo, String nickName, Integer gender, String birthday, String email){
+        try {
+            if (NullUtil.isNullOrEmpty(nickName)){
+                return AjaxResponse.error("请输入昵称");
+            }
+            if (nickName.getBytes().length > 60){
+                return AjaxResponse.error("昵称长度为1-20个字符");
+            }
+            if (NullUtil.isNotNullOrEmpty(email) && !RegularUtil.checkEmail(email)){
+                return AjaxResponse.error("邮箱格式不正确");
+            }
+            UserInfo userInfo = weChantService.getUserInfo(weChantInfo.getUserId());
+            if (null == userInfo){
+                return AjaxResponse.error("没有权限");
+            }
+            if (!userInfo.getStatus()) {
+                return AjaxResponse.error("账号已禁用");
+            }
+            userInfo.setNickName(nickName);
+            userInfo.setGender(gender.intValue() == 1);
+            userInfo.setBirthday(birthday);
+            userInfo.setEmail(email);
+            weChantService.updateUserInfo(userInfo);
+            return AjaxResponse.success("提交成功");
+        } catch (Exception e) {
+            logger.error("小程序更新用户信息出错{}", e);
+            return AjaxResponse.error("提交失败");
         }
     }
 }

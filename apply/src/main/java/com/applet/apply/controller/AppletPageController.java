@@ -1,6 +1,6 @@
 package com.applet.apply.controller;
 
-import com.applet.apply.config.annotation.CancelAuthentication;
+import com.applet.apply.config.annotation.CancelAuth;
 import com.applet.apply.config.annotation.SessionScope;
 import com.applet.apply.entity.ViewAppletInfo;
 import com.applet.apply.entity.ViewAppletPageContent;
@@ -33,7 +33,7 @@ public class AppletPageController {
      * @return
      */
     @RequestMapping(value = "/queryAppletPageInfo")
-    @CancelAuthentication
+    @CancelAuth
     public Object queryAppletPageInfo(@SessionScope("appletInfo") ViewAppletInfo appletInfo, String pageLogo){
         try {
             ViewAppletPageContent content = appletPageService.selectViewAppletPageContent(appletInfo.getId(), pageLogo);

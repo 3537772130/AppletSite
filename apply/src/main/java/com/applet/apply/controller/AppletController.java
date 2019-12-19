@@ -1,6 +1,6 @@
 package com.applet.apply.controller;
 
-import com.applet.apply.config.annotation.CancelAuthentication;
+import com.applet.apply.config.annotation.CancelAuth;
 import com.applet.apply.config.annotation.SessionScope;
 import com.applet.apply.entity.AppletInfo;
 import com.applet.apply.entity.ViewAppletInfo;
@@ -39,7 +39,7 @@ public class AppletController {
      * @return
      */
     @RequestMapping(value = "/getAppletInfo")
-    @CancelAuthentication
+    @CancelAuth
     public Object getAppletInfo(@SessionScope("appletInfo") ViewAppletInfo appletInfo){
         Map map = new HashMap();
         map.put("appletName", NullUtil.isNotNullOrEmpty(appletInfo.getAppletSimple()) ? appletInfo.getAppletSimple() : appletInfo.getAppletName());
@@ -63,7 +63,7 @@ public class AppletController {
      * @return
      */
     @RequestMapping(value = "/getAppletAddress")
-    @CancelAuthentication
+    @CancelAuth
     public Object getAppletAddress(@SessionScope("appletInfo") ViewAppletInfo appletInfo){
         AppletInfo applet = appletService.selectAppletInfo(appletInfo.getId());
         if (NullUtil.isNotNullOrEmpty(applet.getProvince())){
@@ -135,5 +135,27 @@ public class AppletController {
             return AjaxResponse.success(path);
         }
         return AjaxResponse.error("您没有权限");
+    }
+
+    /**
+     * 设置小程序主题色彩
+     * @param appletInfo
+     * @param weChantInfo
+     * @param color
+     * @return
+     */
+    @RequestMapping(value = "setAppletColor")
+    public Object setAppletColor(@SessionScope("appletInfo") ViewAppletInfo appletInfo, @SessionScope("weChantInfo") WeChantInfo weChantInfo, String color){
+        try {
+            AppletInfo info = appletService.selectAppletInfo(appletInfo.getId(), weChantInfo.getUserId());
+            if (null == info){
+                return AjaxResponse.error("没有权限");
+            }
+            appletService.updateAppletColor(info.getId(), color);
+            return AjaxResponse.success("设置成功");
+        } catch (Exception e) {
+            log.error("设置小程序主题色彩出错{}", e);
+            return AjaxResponse.error("设置失败");
+        }
     }
 }

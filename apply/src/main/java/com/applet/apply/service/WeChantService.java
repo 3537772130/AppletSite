@@ -44,12 +44,39 @@ public class WeChantService {
 
     /**
      * 查询登录微信信息
+     * @param wxId
+     * @param appletId
+     * @return
+     */
+    public ViewWeChantInfo selectViewWeChantInfo(Integer wxId, Integer appletId){
+        ViewWeChantInfoExample example = new ViewWeChantInfoExample();
+        example.createCriteria().andIdEqualTo(wxId).andAppletIdEqualTo(appletId);
+        List<ViewWeChantInfo> list = viewWeChantInfoMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+    }
+
+    /**
+     * 查询登录微信信息
+     * @param wxId
+     * @param appletId
+     * @param mobile
+     * @return
+     */
+    public ViewWeChantInfo selectWeChantInfo(Integer wxId, Integer appletId, String mobile){
+        ViewWeChantInfoExample example = new ViewWeChantInfoExample();
+        example.createCriteria().andIdEqualTo(wxId).andAppletIdEqualTo(appletId).andMobileEqualTo(mobile);
+        List<ViewWeChantInfo> list = viewWeChantInfoMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+    }
+
+    /**
+     * 查询登录微信信息
      * @param appletId
      * @param openId
      * @param nickName
      * @return
      */
-    public ViewWeChantInfo selectWeChantInfo(Integer appletId, String openId, String nickName, String avatarUrl, boolean gender){
+    public ViewWeChantInfo selectViewWeChantInfo(Integer appletId, String openId, String nickName, String avatarUrl, boolean gender){
         ViewWeChantInfoExample example = new ViewWeChantInfoExample();
         example.createCriteria().andOpenIdEqualTo(openId).andAppletIdEqualTo(appletId);
         List<ViewWeChantInfo> list = viewWeChantInfoMapper.selectByExample(example);
@@ -68,21 +95,6 @@ public class WeChantService {
             return info;
         }
     }
-
-    /**
-     * 查询登录微信信息
-     * @param wxId
-     * @param appletId
-     * @param mobile
-     * @return
-     */
-    public ViewWeChantInfo selectWeChantInfo(Integer wxId, Integer appletId, String mobile){
-        ViewWeChantInfoExample example = new ViewWeChantInfoExample();
-        example.createCriteria().andIdEqualTo(wxId).andAppletIdEqualTo(appletId).andMobileEqualTo(mobile);
-        List<ViewWeChantInfo> list = viewWeChantInfoMapper.selectByExample(example);
-        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
-    }
-
 
     /**
      * 更新微信用户信息
@@ -206,7 +218,7 @@ public class WeChantService {
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
-    public void updateWeChantUserId(ViewAppletInfo appletInfo, WeChantInfo weChantInfo, UserInfo userInfo, String mobile, UserInfo rmdInfo){
+    public void updateWeChantUserId(ViewAppletInfo appletInfo, ViewWeChantInfo weChantInfo, UserInfo userInfo, String mobile, UserInfo rmdInfo){
         if (userInfo == null){
             //未注册手机号则自动完成注册
             userInfo = new UserInfo();
@@ -216,8 +228,10 @@ public class WeChantService {
             String cipher = DesUtil.encrypt(mobile.substring(5, 11), userInfo.getEncrypted());
             cipher = MD5Util.MD5(cipher);
             userInfo.setPassword(cipher);
-            userInfo.setAvatarUrl("/api/image/USER-A" + RandomUtil.getTimeStamp());
-            userInfo.setGender(weChantInfo.getGender());
+            String avatarUrl = NullUtil.isNotNullOrEmpty(weChantInfo.getUserId()) ?
+                    weChantInfo.getAvatarUrl() : updateUserAvatar(weChantInfo.getAvatarUrl(), "/api/image/USER-A" + RandomUtil.getTimeStamp());
+            userInfo.setAvatarUrl(avatarUrl);
+            userInfo.setGender(weChantInfo.getGender().intValue() == 1 ? true : false);
             userInfo.setBirthday(weChantInfo.getBirthday());
             userInfo.setEmail(weChantInfo.getEmail());
             userInfo.setIsDealer(false);
@@ -228,20 +242,30 @@ public class WeChantService {
             userInfo.setCreateDate(new Date());
             userInfo.setStatus(true);
             userInfoMapper.insertSelective(userInfo);
-            updateUserInfo(userInfo, weChantInfo.getAvatarUrl());
         }
 
-        //操作日志记录
+        //添加操作日志记录
+        addBindMobileLog(appletInfo, weChantInfo, userInfo);
+
+        //更新微信信息
+        WeChantInfo wxInfo = new WeChantInfo();
+        wxInfo.setId(weChantInfo.getId());
+        wxInfo.setUserId(userInfo.getId());
+        weChantInfoMapper.updateByPrimaryKeySelective(wxInfo);
+    }
+
+    @Async
+    public void addBindMobileLog(ViewAppletInfo appletInfo, ViewWeChantInfo weChantInfo, UserInfo userInfo){
         UserOperationLog log = new UserOperationLog();
         log.setUserId(userInfo.getId());
         if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())){
             log.setType(UserOperationType.BIND_APPLET_UPDATE.toString());
-            log.setDescribeContent("在小程序【" + appletInfo.getId() + "："+ appletInfo.getAppletName() + "】中进行换绑小程序的操作，" +
-                    "将原绑定账户【ID：" + weChantInfo.getUserId() + "】替换为新账户【ID：" + userInfo.getId() + "】");
+            log.setDescribeContent("在小程序【(ID：" + appletInfo.getId() + ")"+ appletInfo.getAppletName() + "】中进行换绑小程序的操作，" +
+                    "将原绑定账户【" + userInfo.getMobile() + "】替换为新账户【" + weChantInfo.getMobile() + "】,微信小程序用户ID：" + weChantInfo.getId());
         } else {
             log.setType(UserOperationType.BIND_APPLET.toString());
-            log.setDescribeContent("在小程序【" + appletInfo.getId() + "："+ appletInfo.getAppletName() + "】中进行绑定小程序的操作，" +
-                    "绑定了账户【ID：" + userInfo.getId() + "】");
+            log.setDescribeContent("在小程序【(ID：" + appletInfo.getId() + ")"+ appletInfo.getAppletName() + "】中进行绑定小程序的操作，" +
+                    "绑定了账户【" + userInfo.getMobile() + "】,微信小程序用户ID：" + weChantInfo.getId());
         }
         log.setCreateTime(new Date());
         userOperationLogMapper.insertSelective(log);
@@ -251,27 +275,25 @@ public class WeChantService {
             log.setCreateTime(new Date());
             userOperationLogMapper.insertSelective(log);
         }
-
-        //更新微信信息
-        weChantInfo.setUserId(userInfo.getId());
-        weChantInfoMapper.updateByPrimaryKeySelective(weChantInfo);
     }
 
     /**
      * 更新微信头像到七牛空间
-     * @param info
-     * @param avatarUrl
+     * @param netUrl
+     * @param key
      */
     @Async
-    public void updateUserInfo(UserInfo info, String avatarUrl){
+    public String updateUserAvatar(String netUrl, String key){
         try {
-            byte[] pdfFile = GetImageUtil.getImageFromNetByUrl(avatarUrl);
+            byte[] pdfFile = GetImageUtil.getImageFromNetByUrl(netUrl);
             InputStream inputStream = new ByteArrayInputStream(pdfFile);
             MultipartFile file = new MockMultipartFile("newFileName","oldFileName", ContentType.APPLICATION_OCTET_STREAM.toString(), inputStream);
-            QiNiuUtil.uploadFile(file, QiNiuConfig.bucketAppletImage);
-            userInfoMapper.updateByPrimaryKeySelective(info);
+            QiNiuUtil.uploadFile(file, key);
+//            userInfoMapper.updateByPrimaryKeySelective(info);
+            return key;
         } catch (Exception e) {
             log.error("上传微信头像到七牛空间出错{}", e);
+            return null;
         }
     }
 

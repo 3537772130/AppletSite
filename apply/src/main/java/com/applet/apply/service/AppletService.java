@@ -33,6 +33,19 @@ public class AppletService {
     }
 
     /**
+     * 查询小程序信息
+     * @param id
+     * @param userId
+     * @return
+     */
+    public AppletInfo selectAppletInfo(Integer id, Integer userId) {
+        AppletInfoExample example = new AppletInfoExample();
+        example.createCriteria().andIdEqualTo(id).andUserIdEqualTo(userId);
+        List<AppletInfo> list = appletInfoMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+    }
+
+    /**
      * 查询登录小程序信息
      * @param appletCode
      * @return
@@ -62,5 +75,17 @@ public class AppletService {
         applet.setLon(Double.parseDouble(map.get("lon").toString()));
         applet.setLat(Double.parseDouble(map.get("lat").toString()));
         appletInfoMapper.updateByPrimaryKeySelective(applet);
+    }
+
+    /**
+     * 更新小程序主题颜色
+     * @param id
+     * @param color
+     */
+    public void updateAppletColor(Integer id, String color){
+        AppletInfo info = new AppletInfo();
+        info.setId(id);
+        info.setSystemColor(color);
+        appletInfoMapper.updateByPrimaryKeySelective(info);
     }
 }

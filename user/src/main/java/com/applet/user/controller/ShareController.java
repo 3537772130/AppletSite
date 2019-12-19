@@ -25,13 +25,21 @@ public class ShareController {
     private RegionService regionService;
 
     /**
-     * 登录拦截，返回错误码
-     *
+     * 错误拦截，返回错误码
      * @return
      */
     @RequestMapping(value = "error")
     public Object error() {
-        return AjaxResponse.msg("0", "当前访问人数过多，请稍后再试");
+        return AjaxResponse.error("请求出错");
+    }
+
+    /**
+     *
+     * @return
+     */
+    @RequestMapping(value = "illegal")
+    public Object illegal(){
+        return AjaxResponse.error("非法请求");
     }
 
     /**

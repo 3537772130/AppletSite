@@ -1,6 +1,6 @@
 package com.applet.apply.controller;
 
-import com.applet.apply.config.annotation.CancelAuthentication;
+import com.applet.apply.config.annotation.CancelAuth;
 import com.applet.apply.config.annotation.SessionScope;
 import com.applet.apply.entity.*;
 import com.applet.apply.service.GoodsService;
@@ -37,7 +37,7 @@ public class GoodsController {
      * @return
      */
     @RequestMapping(value = "loadGoodsClassify")
-    @CancelAuthentication
+    @CancelAuth
     public Object loadGoodsClassify(@SessionScope("appletInfo") ViewAppletInfo appletInfo) {
         try {
             List<ViewGoodsType> typeList = goodsService.selectGoodsTypeList(appletInfo.getId());
@@ -63,7 +63,7 @@ public class GoodsController {
      * @return
      */
     @RequestMapping(value = "loadGoodsDetails")
-    @CancelAuthentication
+    @CancelAuth
     public Object loadGoodsDetails(@SessionScope("appletInfo") ViewAppletInfo appletInfo, Integer goodsId){
         try {
             ViewGoodsInfo info = goodsService.selectGoodsInfo(appletInfo.getId(), goodsId);

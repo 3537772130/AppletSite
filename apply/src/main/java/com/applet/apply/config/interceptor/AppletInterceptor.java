@@ -1,8 +1,7 @@
 package com.applet.apply.config.interceptor;
 
-import com.applet.apply.config.annotation.CancelAuthentication;
+import com.applet.apply.config.annotation.CancelAuth;
 import com.applet.apply.entity.ViewAppletInfo;
-import com.applet.apply.entity.ViewWeChantInfo;
 import com.applet.apply.entity.WeChantInfo;
 import com.applet.apply.service.AppletService;
 import com.applet.apply.service.WeChantService;
@@ -34,7 +33,7 @@ public class AppletInterceptor extends HandlerInterceptorAdapter {
             logger.info("初始化访问者信息...");
             String appletCode = request.getParameter("appletCode");
             if (NullUtil.isNullOrEmpty(appletCode)){
-                request.getRequestDispatcher("/api/error").forward(request, response);
+                request.getRequestDispatcher("/api/illegal").forward(request, response);
                 return false;
             }
             //检查小程序及当前应用模板状态
@@ -59,7 +58,7 @@ public class AppletInterceptor extends HandlerInterceptorAdapter {
 
             //取消用户登录认证
             HandlerMethod handleMethod = (HandlerMethod) handler;
-            CancelAuthentication ca  = handleMethod.getMethodAnnotation(CancelAuthentication.class);
+            CancelAuth ca  = handleMethod.getMethodAnnotation(CancelAuth.class);
             if (ca != null){
                 return true;
             }
@@ -79,6 +78,7 @@ public class AppletInterceptor extends HandlerInterceptorAdapter {
             return true;
         } catch (Exception e) {
             logger.error("访问出错{}", e);
+            request.getRequestDispatcher("/api/error").forward(request, response);
         }
         return false;
     }
