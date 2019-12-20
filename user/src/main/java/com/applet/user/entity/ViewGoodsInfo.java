@@ -9,6 +9,8 @@ import java.util.Date;
 public class ViewGoodsInfo implements Serializable {
     private Integer id;
 
+    private Integer appletId;
+
     private Integer userId;
 
     private String userMobile;
@@ -23,15 +25,18 @@ public class ViewGoodsInfo implements Serializable {
 
     private String coverSrc;
 
-    private static final long serialVersionUID = 1L;
     private Double minPrice;
+
     private Double maxPrice;
+
+    private Integer goodsIndex;
 
     @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
     private Date updateTime;
 
     private Integer goodsStatus;
-    private Integer goodsIndex;
+
+    private static final long serialVersionUID = 1L;
 
     public Integer getId() {
         return id;
@@ -39,6 +44,14 @@ public class ViewGoodsInfo implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getAppletId() {
+        return appletId;
+    }
+
+    public void setAppletId(Integer appletId) {
+        this.appletId = appletId;
     }
 
     public Integer getUserId() {

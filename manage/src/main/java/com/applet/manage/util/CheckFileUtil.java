@@ -26,8 +26,8 @@ public class CheckFileUtil {
         if (NullUtil.isNullOrEmpty(fileName) && file.getSize() == 0) {
             return new CheckResult("图片内容为空");
         }
-        if (file.getSize() > 5 * 1048576) {
-            return new CheckResult("文件大于5MB");
+        if (file.getSize() > 3 * 1048576) {
+            return new CheckResult("仅支持 3MB 以内的图片上传");
         }
         String type = file.getContentType();
         if (Constants.UPLOAD_FILE_TYPE_IMAGE.indexOf(type) < 0) {
@@ -50,8 +50,8 @@ public class CheckFileUtil {
         if (NullUtil.isNullOrEmpty(fileName) && file.getSize() == 0) {
             return new CheckResult("音频内容为空");
         }
-        if (file.getSize() > 10 * 1048576) {
-            return new CheckResult("文件大于10MB");
+        if (file.getSize() > 5 * 1048576) {
+            return new CheckResult("仅支持 5MB 以内的音频上传");
         }
         if (!FileUtil.isVedioFile(fileName)) {
             return new CheckResult("不支持的文件类型");
@@ -78,7 +78,7 @@ public class CheckFileUtil {
             return new CheckResult("视频内容为空");
         }
         if (file.getSize() > 10 * 1048576) {
-            return new CheckResult("文件大于10MB");
+            return new CheckResult("仅支持 10MB 以内的视频上传");
         }
         if (!FileUtil.isVedioFile(fileName)) {
             return new CheckResult("不支持的文件类型");
@@ -105,7 +105,7 @@ public class CheckFileUtil {
             return new CheckResult("压缩包内容为空");
         }
         if (file.getSize() > 50 * 1048576) {
-            return new CheckResult("文件大于50MB");
+            return new CheckResult("仅支持 50MB 以内的压缩包上传");
         }
         String type = file.getContentType();
         if (Constants.UPLOAD_FILE_TYPE_ZIP.indexOf(type) < 0) {

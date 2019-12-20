@@ -53,6 +53,15 @@ public class ShareController {
     }
 
     /**
+     * 登录过期拦截，返回错误码
+     * @return
+     */
+    @RequestMapping(value = "loginOverdue")
+    public Object loginOverdue(){
+        return AjaxResponse.msg("0","亲,登录过期啦");
+    }
+
+    /**
      * 查询地域信息集合
      *
      * @param id

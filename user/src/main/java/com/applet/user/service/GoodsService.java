@@ -41,6 +41,8 @@ public class GoodsService {
     private ViewGoodsSpecsMapper viewGoodsSpecsMapper;
     @Autowired
     private CommonMapper commonMapper;
+    @Autowired
+    private AppletPageService appletPageService;
 
     /**
      * 分页查询商品类型
@@ -110,6 +112,11 @@ public class GoodsService {
             goodsTypeMapper.updateByPrimaryKeySelective(record);
         } else {
             goodsTypeMapper.insertSelective(record);
+        }
+
+        if (record.getTypeStatus()){
+            // 检查更新小程序页面配置信息
+            appletPageService.updatePageContext(record.getAppletId(), record.getUserId(), record, null);
         }
     }
 
@@ -183,6 +190,20 @@ public class GoodsService {
             page.setDataSource(viewGoodsInfoMapper.selectByExample(example));
         }
         return page;
+    }
+
+    /**
+     * 查询商品信息
+     *
+     * @param id
+     * @param userId
+     * @return
+     */
+    public ViewGoodsInfo selectViewGoodsInfo (Integer id, Integer userId){
+        ViewGoodsInfoExample example = new ViewGoodsInfoExample();
+        example.createCriteria().andIdEqualTo(id). andUserIdEqualTo(userId);
+        List<ViewGoodsInfo> list = viewGoodsInfoMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
     }
 
     /**
@@ -285,14 +306,17 @@ public class GoodsService {
     /**
      * 更新商品状态
      *
-     * @param id
-     * @param status
+     * @param goods
      */
-    public void updateGoodsStatus(Integer id, boolean status) {
-        GoodsInfo goods = new GoodsInfo();
-        goods.setId(id);
-        goods.setStatus(!status);
-        goodsInfoMapper.updateByPrimaryKeySelective(goods);
+    public void updateGoodsStatus(ViewGoodsInfo goods) {
+        GoodsInfo record = new GoodsInfo();
+        record.setId(goods.getId());
+        record.setStatus(!(goods.getGoodsStatus() == 1));
+        goodsInfoMapper.updateByPrimaryKeySelective(record);
+        if (goods.getGoodsStatus() == 0){
+            // 检查更新小程序页面配置信息
+            appletPageService.updatePageContext(goods.getAppletId(), goods.getUserId(), null, goods);
+        }
     }
 
     /**

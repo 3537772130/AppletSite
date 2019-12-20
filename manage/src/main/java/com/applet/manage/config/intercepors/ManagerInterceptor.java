@@ -40,7 +40,7 @@ public class ManagerInterceptor implements HandlerInterceptor {
         ManagerInfo managerInfo = (ManagerInfo) SerializeUtil.unserialize((byte[]) session.getAttribute(Constants.WEB_MANAGER_INFO));
         if (managerInfo == null) {
             log.info("===> 登录过期");
-            request.getRequestDispatcher("/api/illegal").forward(request, response);
+            request.getRequestDispatcher("/api/loginOverdue").forward(request, response);
             return false;
         } else {
 //                if (menuService == null) {//解决service为null无法注入问题

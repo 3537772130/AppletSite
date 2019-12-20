@@ -68,6 +68,9 @@ public class GoodsController {
         try {
             ViewGoodsInfo info = goodsService.selectGoodsInfo(appletInfo.getId(), goodsId);
             if (null != info){
+                if (info.getGoodsStatus().intValue() == 0){
+                    return AjaxResponse.error("sorry，该宝贝已经下架咯");
+                }
                 List<ViewGoodsFile> fileList = goodsService.selectGoodsFileList(info.getId());
                 List<ViewGoodsSpecs> specsList = goodsService.selectGoodsSpecsList(info.getId());
                 Map map = new HashMap();

@@ -2,6 +2,7 @@ package com.applet.user.controller;
 
 import com.applet.user.config.annotation.SessionScope;
 import com.applet.user.entity.*;
+import com.applet.user.service.AppletPageService;
 import com.applet.user.service.GoodsService;
 import com.applet.user.util.*;
 import com.applet.user.util.file.FileUtil;
@@ -381,9 +382,9 @@ public class UserGoodsController {
         if (NullUtil.isNullOrEmpty(goodsId)) {
             return AjaxResponse.error("参数错误");
         }
-        GoodsInfo goods = goodsService.selectGoodsInfo(goodsId, user.getId());
+        ViewGoodsInfo goods = goodsService.selectViewGoodsInfo(goodsId, user.getId());
         try {
-            if (!goods.getStatus()) {
+            if (goods.getGoodsStatus().intValue() == 0) {
                 GoodsType type = goodsService.selectGoodsType(goods.getTypeId(), user.getId());
                 if (!type.getTypeStatus()) {
                     return AjaxResponse.error("发布失败：该商品的类型已禁用");
@@ -397,11 +398,11 @@ public class UserGoodsController {
                     return AjaxResponse.error("发布失败：请设置至少一条正常规格)");
                 }
             }
-            goodsService.updateGoodsStatus(goods.getId(), goods.getStatus());
-            return AjaxResponse.success(goods.getStatus() ? "下架成功" : "发布成功");
+            goodsService.updateGoodsStatus(goods);
+            return AjaxResponse.success(goods.getGoodsStatus().intValue() == 1 ? "下架成功" : "发布成功");
         } catch (Exception e) {
             log.error("更新商品状态出错{}", e);
-            return AjaxResponse.error(goods.getStatus() ? "下架失败" : "发布失败");
+            return AjaxResponse.error(goods.getGoodsStatus().intValue() == 1 ? "下架失败" : "发布失败");
         }
     }
 

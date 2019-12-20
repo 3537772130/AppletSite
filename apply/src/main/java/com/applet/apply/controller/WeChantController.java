@@ -361,13 +361,17 @@ public class WeChantController {
     /**
      * 上传用户头像
      * @param weChantInfo
-     * @param file
+     * @param multipartFile
      * @return
      */
     @RequestMapping(value = "uploadUserAvatar")
-    public Object uploadUserAvatar(@SessionScope("weChantInfo") WeChantInfo weChantInfo, @RequestParam("avatar") MultipartFile file){
+    public Object uploadUserAvatar(@SessionScope("weChantInfo") WeChantInfo weChantInfo, @RequestParam("avatar") MultipartFile multipartFile){
         try {
-
+            //校验文件信息
+            CheckResult result = CheckFileUtil.checkImageFile(multipartFile);
+            if (!result.getBool()) {
+                return AjaxResponse.error(result.getMsg());
+            }
             UserInfo userInfo = weChantService.getUserInfo(weChantInfo.getUserId());
             if (null == userInfo){
                 return AjaxResponse.error("没有权限");
@@ -375,14 +379,16 @@ public class WeChantController {
             if (!userInfo.getStatus()) {
                 return AjaxResponse.error("账号已禁用");
             }
-            if (null == file){
+            if (null == multipartFile){
                 return AjaxResponse.error("参数错误");
             }
             if (NullUtil.isNullOrEmpty(userInfo.getAvatarUrl())){
                 userInfo.setAvatarUrl("/api/image/USER-A" + RandomUtil.getTimeStamp());
             }
-            QiNiuUtil.uploadFile(file, userInfo.getAvatarUrl());
-            return AjaxResponse.success(userInfo.getAvatarUrl() + "?token=" + RandomUtil.getTimeStamp());
+            QiNiuUtil.uploadFile(multipartFile, userInfo.getAvatarUrl());
+            Map map = new HashMap();
+            map.put("avatarUrl", userInfo.getAvatarUrl());
+            return AjaxResponse.success(map);
         } catch (Exception e) {
             logger.error("小程序上传用户头像出错{}", e);
             return AjaxResponse.error("上传失败");

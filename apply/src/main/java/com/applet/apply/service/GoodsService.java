@@ -63,7 +63,7 @@ public class GoodsService {
      */
     public ViewGoodsInfo selectGoodsInfo(Integer appletId, Integer goodsId){
         ViewGoodsInfoExample example = new ViewGoodsInfoExample();
-        example.createCriteria().andIdEqualTo(goodsId).andAppletIdEqualTo(appletId).andGoodsStatusEqualTo(1);
+        example.createCriteria().andIdEqualTo(goodsId).andAppletIdEqualTo(appletId);
         List<ViewGoodsInfo> list = viewGoodsInfoMapper.selectByExample(example);
         return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
     }

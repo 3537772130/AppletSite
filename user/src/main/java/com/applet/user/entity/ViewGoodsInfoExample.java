@@ -1,7 +1,6 @@
 package com.applet.user.entity;
 
 import com.applet.user.util.Page;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -69,7 +68,7 @@ public class ViewGoodsInfoExample {
     }
 
     public void setPage(Page page) {
-        this.page = page;
+        this.page=page;
     }
 
     public Page getPage() {
@@ -174,6 +173,66 @@ public class ViewGoodsInfoExample {
 
         public Criteria andIdNotBetween(Integer value1, Integer value2) {
             addCriterion("id not between", value1, value2, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletIdIsNull() {
+            addCriterion("applet_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletIdIsNotNull() {
+            addCriterion("applet_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletIdEqualTo(Integer value) {
+            addCriterion("applet_id =", value, "appletId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletIdNotEqualTo(Integer value) {
+            addCriterion("applet_id <>", value, "appletId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletIdGreaterThan(Integer value) {
+            addCriterion("applet_id >", value, "appletId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("applet_id >=", value, "appletId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletIdLessThan(Integer value) {
+            addCriterion("applet_id <", value, "appletId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletIdLessThanOrEqualTo(Integer value) {
+            addCriterion("applet_id <=", value, "appletId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletIdIn(List<Integer> values) {
+            addCriterion("applet_id in", values, "appletId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletIdNotIn(List<Integer> values) {
+            addCriterion("applet_id not in", values, "appletId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletIdBetween(Integer value1, Integer value2) {
+            addCriterion("applet_id between", value1, value2, "appletId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppletIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("applet_id not between", value1, value2, "appletId");
             return (Criteria) this;
         }
 

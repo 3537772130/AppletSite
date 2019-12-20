@@ -38,7 +38,7 @@ public class UserInterceptor implements HandlerInterceptor {
         UserInfo user = (UserInfo) SerializeUtil.unserialize((byte[]) session.getAttribute(Constants.VUE_USER_INFO));
         if (user == null) {
             log.info("===> 登录过期");
-            request.getRequestDispatcher("/api/illegal").forward(request, response);
+            request.getRequestDispatcher("/api/loginOverdue").forward(request, response);
             return false;
         }
         return true;

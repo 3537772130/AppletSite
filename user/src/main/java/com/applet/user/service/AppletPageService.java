@@ -1,12 +1,21 @@
 package com.applet.user.service;
 
 import com.applet.user.entity.*;
+import com.applet.user.entity.page.ContentInfo;
+import com.applet.user.entity.page.ElementInfo;
+import com.applet.user.entity.page.PageContent;
 import com.applet.user.mapper.*;
 import com.applet.user.util.NullUtil;
+import net.sf.ezmorph.bean.MorphDynaBean;
+import net.sf.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +27,7 @@ import java.util.Map;
  **/
 @Service
 public class AppletPageService {
+    private final static Logger log = LoggerFactory.getLogger(AppletPageService.class);
     @Autowired
     private ViewAppletVersionMapper viewAppletVersionMapper;
     @Autowired
@@ -216,5 +226,65 @@ public class AppletPageService {
         }
         sql += " ORDER BY type_index ASC;";
         return commonMapper.selectListMap(sql);
+    }
+
+    /**
+     * 修改商品或类型信息，更新页面配置内容
+     *
+     * @param appletId
+     * @param userId
+     * @param type
+     * @param goods
+     * @throws Exception
+     */
+    @Async
+    public void updatePageContext(Integer appletId, Integer userId, GoodsType type, ViewGoodsInfo goods) {
+        try {
+            List<ViewAppletPageContent> contentList = selectAppletPageContent(userId, appletId);
+            for (ViewAppletPageContent content : contentList) {
+                if (NullUtil.isNotNullOrEmpty(content.getContentJson())) {
+                    boolean bool = false;
+                    String json = "{\"contentList\":" + content.getContentJson() + "}";
+                    JSONObject object = JSONObject.fromObject(json);
+                    Map<String, Class> map = new HashMap<>();
+                    map.put("contentList", ContentInfo.class);
+                    map.put("list", ElementInfo.class);
+                    PageContent record = (PageContent) JSONObject.toBean(object, PageContent.class, map);
+                    List<ContentInfo> list = record.getContentList();
+                    for (int k = 0; k < list.size(); k++) {
+                        if (NullUtil.isNotNullOrEmpty(list.get(k).getList())) {
+                            List<ElementInfo> list1 = list.get(k).getList();
+                            for (int i = 0; i < list1.size(); i++) {
+                                ElementInfo note = list1.get(i);
+                                if (null != goods && NullUtil.isNotNullOrEmpty(note.getGoodsId()) && goods.getId().intValue() == note.getGoodsId().intValue()) {
+                                    record.getContentList().get(k).getList().get(i).setName(goods.getGoodsName());
+                                    record.getContentList().get(k).getList().get(i).setMinPrice(goods.getMinPrice());
+                                    record.getContentList().get(k).getList().get(i).setMaxPrice(goods.getMaxPrice());
+                                    bool = true;
+                                } else if (null != type && NullUtil.isNotNullOrEmpty(note.getTypeId()) && type.getId().intValue() == note.getTypeId().intValue()) {
+                                    record.getContentList().get(k).getList().get(i).setName(type.getTypeName());
+                                    bool = true;
+                                }
+                                continue;
+                            }
+                        }
+                    }
+
+                    if (bool) {
+                        object = JSONObject.fromObject(record);
+                        json = object.toString();
+                        json = json.substring(15, json.length());
+                        json = json.substring(0, json.length() - 1);
+                        AppletPageContent content1 = new AppletPageContent();
+                        content1.setId(content.getId());
+                        content1.setContentJson(json);
+                        content1.setUpdateTime(new Date());
+                        appletPageContentMapper.updateByPrimaryKeySelective(content1);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("修改商品或类型信息，更新页面配置内容出错{}", e);
+        }
     }
 }

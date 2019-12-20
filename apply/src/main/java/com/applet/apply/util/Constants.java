@@ -31,7 +31,7 @@ public class Constants {
 
 
     // 图片上传格式
-    public static final String UPLOAD_FILE_TYPE_IMAGE = "image/png,image/jpeg";
+    public static final String UPLOAD_FILE_TYPE_IMAGE = "image/png,image/jpeg,image/jpg";
     // 系统压缩文件格式
     public static final String UPLOAD_FILE_TYPE_ZIP = "application/x-zip-compressed,application/x-7z-compressed,application/x-gzip";//上传模板压缩文件类型
     // 视频上传格式
