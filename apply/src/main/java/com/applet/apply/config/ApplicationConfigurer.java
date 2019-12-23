@@ -3,17 +3,26 @@ package com.applet.apply.config;
 import com.applet.apply.config.argumentResolver.SessionScopeMethod;
 import com.applet.apply.config.interceptor.AppletInterceptor;
 import com.applet.apply.config.interceptor.FileInterceptor;
+import com.applet.apply.util.ObjectRedisSerializer;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -54,6 +63,35 @@ public class ApplicationConfigurer extends WebMvcConfigurationSupport {
         log.info("对拦截器AppletInterceptor中的Service进行注入");
         return new AppletInterceptor();
     }
+
+    @Bean(name = "springSessionDefaultRedisSerializer")
+    public GenericJackson2JsonRedisSerializer getGenericJackson2JsonRedisSerializer() {
+        return new GenericJackson2JsonRedisSerializer();
+    }
+
+    @Bean
+    public RedisTemplate<Serializable, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<Serializable, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(connectionFactory);
+
+        // 使用Jackson2JsonRedisSerialize 替换默认序列化
+        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer =
+                new Jackson2JsonRedisSerializer(Object.class);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+        jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
+
+        // 设置value的序列化规则和 key的序列化规则
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new ObjectRedisSerializer());
+//        redisTemplate.setHashKeySerializer(jackson2JsonRedisSerializer);
+//        redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
+//        redisTemplate.setDefaultSerializer(jackson2JsonRedisSerializer);
+//        redisTemplate.setEnableDefaultSerializer(true);
+        redisTemplate.afterPropertiesSet();
+        return redisTemplate;
+    }
+
 
     /**
      * 初始化函数参数分解器

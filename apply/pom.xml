@@ -70,6 +70,21 @@
             <artifactId>gson</artifactId>
             <version>2.8.5</version>
         </dependency>
+        <!--redis包-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.11</version>
+        </dependency>
         <!--七牛云SDK-->
         <dependency>
             <groupId>com.qiniu</groupId>
@@ -82,11 +97,6 @@
             <version>0.4.8</version>
         </dependency>
         <!-- 阿里云SDK -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.7</version>
-        </dependency>
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>aliyun-java-sdk-core</artifactId>
@@ -124,6 +134,12 @@
             <groupId>org.jodd</groupId>
             <artifactId>jodd-core</artifactId>
             <version>3.7</version>
+        </dependency>
+        <!--JSON-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.7</version>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>

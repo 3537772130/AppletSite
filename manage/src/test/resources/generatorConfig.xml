@@ -13,9 +13,9 @@
             <property name="suppressAllComments" value="true"/>
         </commentGenerator>
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-                        connectionURL="jdbc:mysql://localhost:3306/applet_site?characterEncoding=utf8&amp;useSSL=false&amp;serverTimezone=UTC&amp;rewriteBatchedStatements=true"
+                        connectionURL="jdbc:mysql://139.196.160.176:3306/applet_site_test?characterEncoding=utf8&amp;useSSL=false&amp;serverTimezone=UTC&amp;rewriteBatchedStatements=true"
                         userId="root"
-                        password="zhouhuahu123">
+                        password="ml-mysql">
             <property name="useInformationSchema" value="true"/>
         </jdbcConnection>
         <javaTypeResolver type="generator.plugins.JavaTypeResolverForMysql">
@@ -43,20 +43,20 @@
             <property name="enableSubPackages" value="false" />
         </javaClientGenerator>
 
-        <table tableName="applet_page_content"
-               domainObjectName="AppletPageContent"
-               enableCountByExample="true"
-               enableDeleteByExample="true"
-               enableDeleteByPrimaryKey="true"
-               enableInsert="true"
-               enableSelectByExample="true"
-               enableSelectByPrimaryKey="true"
-               enableUpdateByExample="true"
-               enableUpdateByPrimaryKey="true">
-        </table>
+<!--        <table tableName="goods_info"-->
+<!--               domainObjectName="GoodsInfo"-->
+<!--               enableCountByExample="false"-->
+<!--               enableDeleteByExample="false"-->
+<!--               enableDeleteByPrimaryKey="false"-->
+<!--               enableInsert="false"-->
+<!--               enableSelectByExample="true"-->
+<!--               enableSelectByPrimaryKey="true"-->
+<!--               enableUpdateByExample="false"-->
+<!--               enableUpdateByPrimaryKey="false">-->
+<!--        </table>-->
 
-        <table tableName="view_applet_page_content"
-               domainObjectName="ViewAppletPageContent"
+        <table tableName="sms_template"
+               domainObjectName="SmsTemplate"
                enableCountByExample="true"
                enableDeleteByExample="false"
                enableDeleteByPrimaryKey="false"

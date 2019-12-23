@@ -4,6 +4,7 @@ import com.applet.apply.config.annotation.CancelAuth;
 import com.applet.apply.entity.ViewAppletInfo;
 import com.applet.apply.entity.WeChantInfo;
 import com.applet.apply.service.AppletService;
+import com.applet.apply.service.RedisService;
 import com.applet.apply.service.WeChantService;
 import com.applet.apply.util.NullUtil;
 import org.slf4j.Logger;
@@ -26,6 +27,9 @@ public class AppletInterceptor extends HandlerInterceptorAdapter {
     private WeChantService weChantService;
     @Autowired
     private AppletService appletService;
+    @Autowired
+    private RedisService redisService;
+
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -36,11 +40,15 @@ public class AppletInterceptor extends HandlerInterceptorAdapter {
                 request.getRequestDispatcher("/api/illegal").forward(request, response);
                 return false;
             }
-            //检查小程序及当前应用模板状态
-            ViewAppletInfo appletInfo = appletService.selectAppletInfo(appletCode);
-            if (appletInfo == null){
-                request.getRequestDispatcher("/api/appletNull").forward(request, response);
-                return false;
+            //检查小程序信息
+            ViewAppletInfo appletInfo = (ViewAppletInfo) redisService.getRedisValue(appletCode);
+            if (null == appletInfo){
+                appletInfo = appletService.selectAppletInfo(appletCode);
+                if (null == appletInfo){
+                    request.getRequestDispatcher("/api/appletNull").forward(request, response);
+                    return false;
+                }
+                redisService.setRedisValue(appletCode, appletInfo);
             }
             if (appletInfo.getStatus().intValue() == 0){
                 request.getRequestDispatcher("/api/appletNotOpen").forward(request, response);
@@ -69,10 +77,18 @@ public class AppletInterceptor extends HandlerInterceptorAdapter {
                 request.getRequestDispatcher("/api/loginOverdue").forward(request, response);
                 return false;
             }
-            WeChantInfo weChantInfo = weChantService.selectWeChantInfo(appletInfo.getId(), wxCode);
-            if (weChantInfo == null || !weChantInfo.getStatus()){
-                request.getRequestDispatcher("/api/auth").forward(request, response);
-                return false;
+            WeChantInfo weChantInfo = (WeChantInfo) redisService.getRedisValue(wxCode);
+            if (null == weChantInfo){
+                weChantInfo = weChantService.selectWeChantInfo(appletInfo.getId(), wxCode);
+                if (null == weChantInfo){
+                    request.getRequestDispatcher("/api/auth").forward(request, response);
+                    return false;
+                }
+                if (!weChantInfo.getStatus()){
+                    request.getRequestDispatcher("/api/auth").forward(request, response);
+                    return false;
+                }
+                redisService.setRedisValue(wxCode, weChantInfo);
             }
             request.getSession().setAttribute("weChantInfo", weChantInfo);
             return true;
