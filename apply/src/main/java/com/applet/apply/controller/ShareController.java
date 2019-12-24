@@ -2,9 +2,9 @@ package com.applet.apply.controller;
 
 import com.applet.apply.entity.RegionInfo;
 import com.applet.apply.service.RegionService;
-import com.applet.apply.util.AjaxResponse;
-import com.applet.apply.util.Constants;
-import com.applet.apply.util.NullUtil;
+import com.applet.common.util.AjaxResponse;
+import com.applet.common.util.Constants;
+import com.applet.common.util.NullUtil;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

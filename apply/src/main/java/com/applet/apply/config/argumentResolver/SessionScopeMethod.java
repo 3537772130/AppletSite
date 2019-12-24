@@ -1,7 +1,7 @@
 package com.applet.apply.config.argumentResolver;
 
 import com.applet.apply.config.annotation.SessionScope;
-import com.applet.apply.util.SerializeUtil;
+import com.applet.common.util.SerializeUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;

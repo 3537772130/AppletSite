@@ -6,7 +6,7 @@ import com.applet.apply.entity.WeChantInfo;
 import com.applet.apply.service.AppletService;
 import com.applet.apply.service.RedisService;
 import com.applet.apply.service.WeChantService;
-import com.applet.apply.util.NullUtil;
+import com.applet.common.util.NullUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.applet.apply.entity;
+package com.applet.common.entity;
 
 import com.applet.common.util.Constants;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -6,14 +6,18 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Date;
 
-public class AppletInfo implements Serializable {
+public class ViewAppletInfo implements Serializable {
     private Integer id;
 
     private Integer userId;
 
+    private String mobile;
+
+    private String nickName;
+
     private Integer typeId;
 
-    private String appletLogo;
+    private static final long serialVersionUID = 1L;
 
     private String appletCode;
 
@@ -24,8 +28,7 @@ public class AppletInfo implements Serializable {
     private String licenseCode;
 
     private String businessScope;
-
-    private String licenseSrc;
+    private String typeName;
 
     private String telephone;
 
@@ -51,7 +54,7 @@ public class AppletInfo implements Serializable {
 
     private Double lat;
 
-    private String systemColor;
+    private String appletLogo;
 
     private Boolean ifRetail;
 
@@ -59,10 +62,8 @@ public class AppletInfo implements Serializable {
 
     @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
     private Date updateTime;
-
+    private String licenseSrc;
     private Integer status;
-
-    private static final long serialVersionUID = 1L;
 
     public Integer getId() {
         return id;
@@ -80,6 +81,22 @@ public class AppletInfo implements Serializable {
         this.userId = userId;
     }
 
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile == null ? null : mobile.trim();
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName == null ? null : nickName.trim();
+    }
+
     public Integer getTypeId() {
         return typeId;
     }
@@ -88,12 +105,12 @@ public class AppletInfo implements Serializable {
         this.typeId = typeId;
     }
 
-    public String getAppletLogo() {
-        return appletLogo;
+    public String getTypeName() {
+        return typeName;
     }
 
-    public void setAppletLogo(String appletLogo) {
-        this.appletLogo = appletLogo == null ? null : appletLogo.trim();
+    public void setTypeName(String typeName) {
+        this.typeName = typeName == null ? null : typeName.trim();
     }
 
     public String getAppletCode() {
@@ -240,12 +257,12 @@ public class AppletInfo implements Serializable {
         this.lat = lat;
     }
 
-    public String getSystemColor() {
-        return systemColor;
+    public String getAppletLogo() {
+        return appletLogo;
     }
 
-    public void setSystemColor(String systemColor) {
-        this.systemColor = systemColor == null ? null : systemColor.trim();
+    public void setAppletLogo(String appletLogo) {
+        this.appletLogo = appletLogo == null ? null : appletLogo.trim();
     }
 
     public Boolean getIfRetail() {

@@ -3,7 +3,7 @@ package com.applet.apply.config;
 import com.applet.apply.config.argumentResolver.SessionScopeMethod;
 import com.applet.apply.config.interceptor.AppletInterceptor;
 import com.applet.apply.config.interceptor.FileInterceptor;
-import com.applet.apply.util.ObjectRedisSerializer;
+import com.applet.common.util.ObjectRedisSerializer;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;

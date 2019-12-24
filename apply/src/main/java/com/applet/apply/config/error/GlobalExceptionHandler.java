@@ -1,6 +1,6 @@
 package com.applet.apply.config.error;
 
-import com.applet.apply.util.AjaxResponse;
+import com.applet.common.util.AjaxResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;

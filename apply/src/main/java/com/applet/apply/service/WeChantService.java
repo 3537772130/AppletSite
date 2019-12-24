@@ -2,14 +2,13 @@ package com.applet.apply.service;
 
 import com.applet.apply.entity.*;
 import com.applet.apply.mapper.*;
-import com.applet.apply.util.NullUtil;
-import com.applet.apply.util.RandomUtil;
-import com.applet.apply.util.encryption.DesUtil;
-import com.applet.apply.util.encryption.MD5Util;
-import com.applet.apply.util.enums.UserOperationType;
-import com.applet.apply.util.file.GetImageUtil;
-import com.applet.apply.util.qiniu.QiNiuConfig;
-import com.applet.apply.util.qiniu.QiNiuUtil;
+import com.applet.common.util.NullUtil;
+import com.applet.common.util.RandomUtil;
+import com.applet.common.util.encryption.DesUtil;
+import com.applet.common.util.encryption.MD5Util;
+import com.applet.common.util.enums.UserOperationType;
+import com.applet.common.util.file.GetImageUtil;
+import com.applet.common.util.qiniu.QiNiuUtil;
 import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,24 +30,25 @@ import java.util.List;
 @Service
 public class WeChantService {
     private final static Logger log = LoggerFactory.getLogger(WeChantService.class);
-    @Autowired
+    @Autowired(required=true)
     private WeChantInfoMapper weChantInfoMapper;
-    @Autowired
+    @Autowired(required=true)
     private ViewWeChantInfoMapper viewWeChantInfoMapper;
-    @Autowired
+    @Autowired(required=true)
     private UserInfoMapper userInfoMapper;
-    @Autowired
+    @Autowired(required=true)
     private UserOperationLogMapper userOperationLogMapper;
-    @Autowired
+    @Autowired(required=true)
     private CommonMapper commonMapper;
 
     /**
      * 查询登录微信信息
+     *
      * @param wxId
      * @param appletId
      * @return
      */
-    public ViewWeChantInfo selectViewWeChantInfo(Integer wxId, Integer appletId){
+    public ViewWeChantInfo selectViewWeChantInfo(Integer wxId, Integer appletId) {
         ViewWeChantInfoExample example = new ViewWeChantInfoExample();
         example.createCriteria().andIdEqualTo(wxId).andAppletIdEqualTo(appletId);
         List<ViewWeChantInfo> list = viewWeChantInfoMapper.selectByExample(example);
@@ -57,12 +57,13 @@ public class WeChantService {
 
     /**
      * 查询登录微信信息
+     *
      * @param wxId
      * @param appletId
      * @param mobile
      * @return
      */
-    public ViewWeChantInfo selectWeChantInfo(Integer wxId, Integer appletId, String mobile){
+    public ViewWeChantInfo selectWeChantInfo(Integer wxId, Integer appletId, String mobile) {
         ViewWeChantInfoExample example = new ViewWeChantInfoExample();
         example.createCriteria().andIdEqualTo(wxId).andAppletIdEqualTo(appletId).andMobileEqualTo(mobile);
         List<ViewWeChantInfo> list = viewWeChantInfoMapper.selectByExample(example);
@@ -71,16 +72,17 @@ public class WeChantService {
 
     /**
      * 查询登录微信信息
+     *
      * @param appletId
      * @param openId
      * @param nickName
      * @return
      */
-    public ViewWeChantInfo selectViewWeChantInfo(Integer appletId, String openId, String nickName, String avatarUrl, boolean gender){
+    public ViewWeChantInfo selectViewWeChantInfo(Integer appletId, String openId, String nickName, String avatarUrl, boolean gender) {
         ViewWeChantInfoExample example = new ViewWeChantInfoExample();
         example.createCriteria().andOpenIdEqualTo(openId).andAppletIdEqualTo(appletId);
         List<ViewWeChantInfo> list = viewWeChantInfoMapper.selectByExample(example);
-        if (NullUtil.isNotNullOrEmpty(list)){
+        if (NullUtil.isNotNullOrEmpty(list)) {
             ViewWeChantInfo info = list.get(0);
             updateWeChantInfo(info.getId(), appletId, openId, nickName, avatarUrl, gender);
             return info;
@@ -98,6 +100,7 @@ public class WeChantService {
 
     /**
      * 更新微信用户信息
+     *
      * @param id
      * @param appletId
      * @param openId
@@ -106,14 +109,14 @@ public class WeChantService {
      * @param gender
      * @return
      */
-    public String updateWeChantInfo(Integer id, Integer appletId, String openId, String nickName, String avatarUrl, boolean gender){
+    public String updateWeChantInfo(Integer id, Integer appletId, String openId, String nickName, String avatarUrl, boolean gender) {
         WeChantInfo info = new WeChantInfo();
         info.setId(id);
         info.setNickName(nickName);
         info.setAvatarUrl(avatarUrl);
         info.setGender(gender);
         info.setCreateTime(new Date());
-        if (NullUtil.isNotNullOrEmpty(id)){
+        if (NullUtil.isNotNullOrEmpty(id)) {
             weChantInfoMapper.updateByPrimaryKeySelective(info);
         } else {
             info.setAppletId(appletId);
@@ -129,16 +132,17 @@ public class WeChantService {
 
     /**
      * 查询微信信息
+     *
      * @param wxCode
      * @return
      */
-    public WeChantInfo selectWeChantInfo(String wxCode){
+    public WeChantInfo selectWeChantInfo(String wxCode) {
         WeChantInfoExample example = new WeChantInfoExample();
         example.createCriteria().andWxCodeEqualTo(wxCode);
         List<WeChantInfo> list = weChantInfoMapper.selectByExample(example);
-        if (NullUtil.isNotNullOrEmpty(list)){
+        if (NullUtil.isNotNullOrEmpty(list)) {
             WeChantInfo info = list.get(0);
-            if (info.getStatus()){
+            if (info.getStatus()) {
                 return info;
             }
         }
@@ -147,17 +151,18 @@ public class WeChantService {
 
     /**
      * 查询微信信息
+     *
      * @param appletId
      * @param wxCode
      * @return
      */
-    public WeChantInfo selectWeChantInfo(Integer appletId, String wxCode){
+    public WeChantInfo selectWeChantInfo(Integer appletId, String wxCode) {
         WeChantInfoExample example = new WeChantInfoExample();
         example.createCriteria().andAppletIdEqualTo(appletId).andWxCodeEqualTo(wxCode);
         List<WeChantInfo> list = weChantInfoMapper.selectByExample(example);
-        if (NullUtil.isNotNullOrEmpty(list)){
+        if (NullUtil.isNotNullOrEmpty(list)) {
             WeChantInfo info = list.get(0);
-            if (info.getStatus()){
+            if (info.getStatus()) {
                 return info;
             }
         }
@@ -166,17 +171,18 @@ public class WeChantService {
 
     /**
      * 查询微信信息
+     *
      * @param appletId
      * @param userId
      * @return
      */
-    public WeChantInfo selectWeChantInfo(Integer appletId, Integer userId){
+    public WeChantInfo selectWeChantInfo(Integer appletId, Integer userId) {
         WeChantInfoExample example = new WeChantInfoExample();
         example.createCriteria().andAppletIdEqualTo(appletId).andUserIdEqualTo(userId);
         List<WeChantInfo> list = weChantInfoMapper.selectByExample(example);
-        if (NullUtil.isNotNullOrEmpty(list)){
+        if (NullUtil.isNotNullOrEmpty(list)) {
             WeChantInfo info = list.get(0);
-            if (info.getStatus()){
+            if (info.getStatus()) {
                 return info;
             }
         }
@@ -185,23 +191,25 @@ public class WeChantService {
 
     /**
      * 查询用户信息
+     *
      * @param userId
      * @return
      */
-    public UserInfo getUserInfo(Integer userId){
+    public UserInfo getUserInfo(Integer userId) {
         return userInfoMapper.selectByPrimaryKey(userId);
     }
 
     /**
      * 查询用户信息
+     *
      * @param mobile
      * @return
      */
-    public UserInfo getUserInfo(String mobile){
+    public UserInfo getUserInfo(String mobile) {
         UserInfoExample example = new UserInfoExample();
         example.createCriteria().andMobileEqualTo(mobile);
         List<UserInfo> list = userInfoMapper.selectByExample(example);
-        if (NullUtil.isNotNullOrEmpty(list)){
+        if (NullUtil.isNotNullOrEmpty(list)) {
             return list.get(0);
         }
         return null;
@@ -218,8 +226,8 @@ public class WeChantService {
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
-    public void updateWeChantUserId(ViewAppletInfo appletInfo, ViewWeChantInfo weChantInfo, UserInfo userInfo, String mobile, UserInfo rmdInfo){
-        if (userInfo == null){
+    public void updateWeChantUserId(ViewAppletInfo appletInfo, ViewWeChantInfo weChantInfo, UserInfo userInfo, String mobile, UserInfo rmdInfo) {
+        if (userInfo == null) {
             //未注册手机号则自动完成注册
             userInfo = new UserInfo();
             userInfo.setMobile(mobile);
@@ -255,21 +263,21 @@ public class WeChantService {
     }
 
     @Async
-    public void addBindMobileLog(ViewAppletInfo appletInfo, ViewWeChantInfo weChantInfo, UserInfo userInfo){
+    public void addBindMobileLog(ViewAppletInfo appletInfo, ViewWeChantInfo weChantInfo, UserInfo userInfo) {
         UserOperationLog log = new UserOperationLog();
         log.setUserId(userInfo.getId());
-        if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())){
+        if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())) {
             log.setType(UserOperationType.BIND_APPLET_UPDATE.toString());
-            log.setDescribeContent("在小程序【(ID：" + appletInfo.getId() + ")"+ appletInfo.getAppletName() + "】中进行换绑小程序的操作，" +
+            log.setDescribeContent("在小程序【(ID：" + appletInfo.getId() + ")" + appletInfo.getAppletName() + "】中进行换绑小程序的操作，" +
                     "将原绑定账户【" + userInfo.getMobile() + "】替换为新账户【" + weChantInfo.getMobile() + "】,微信小程序用户ID：" + weChantInfo.getId());
         } else {
             log.setType(UserOperationType.BIND_APPLET.toString());
-            log.setDescribeContent("在小程序【(ID：" + appletInfo.getId() + ")"+ appletInfo.getAppletName() + "】中进行绑定小程序的操作，" +
+            log.setDescribeContent("在小程序【(ID：" + appletInfo.getId() + ")" + appletInfo.getAppletName() + "】中进行绑定小程序的操作，" +
                     "绑定了账户【" + userInfo.getMobile() + "】,微信小程序用户ID：" + weChantInfo.getId());
         }
         log.setCreateTime(new Date());
         userOperationLogMapper.insertSelective(log);
-        if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())){
+        if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())) {
             log.setId(null);
             log.setUserId(weChantInfo.getUserId());
             log.setCreateTime(new Date());
@@ -279,15 +287,16 @@ public class WeChantService {
 
     /**
      * 更新微信头像到七牛空间
+     *
      * @param netUrl
      * @param key
      */
     @Async
-    public String updateUserAvatar(String netUrl, String key){
+    public String updateUserAvatar(String netUrl, String key) {
         try {
             byte[] pdfFile = GetImageUtil.getImageFromNetByUrl(netUrl);
             InputStream inputStream = new ByteArrayInputStream(pdfFile);
-            MultipartFile file = new MockMultipartFile("newFileName","oldFileName", ContentType.APPLICATION_OCTET_STREAM.toString(), inputStream);
+            MultipartFile file = new MockMultipartFile("newFileName", "oldFileName", ContentType.APPLICATION_OCTET_STREAM.toString(), inputStream);
             QiNiuUtil.uploadFile(file, key);
 //            userInfoMapper.updateByPrimaryKeySelective(info);
             return key;
@@ -299,17 +308,19 @@ public class WeChantService {
 
     /**
      * 更新用户信息
+     *
      * @param userInfo
      */
-    public void updateUserInfo(UserInfo userInfo){
+    public void updateUserInfo(UserInfo userInfo) {
         userInfoMapper.updateByPrimaryKeySelective(userInfo);
     }
 
     /**
      * 微信自动解绑账号
+     *
      * @param weChantInfo
      */
-    public void updateWeChant(ViewWeChantInfo weChantInfo){
+    public void updateWeChant(ViewWeChantInfo weChantInfo) {
         String sql = "UPDATE we_chant_applet SET user_id = NULL WHERE id = " + weChantInfo.getId();
         commonMapper.updateBatch(sql);
     }

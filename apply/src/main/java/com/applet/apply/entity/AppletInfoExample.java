@@ -1,6 +1,7 @@
 package com.applet.apply.entity;
 
-import com.applet.apply.util.Page;
+import com.applet.common.util.Page;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -68,7 +69,7 @@ public class AppletInfoExample {
     }
 
     public void setPage(Page page) {
-        this.page=page;
+        this.page = page;
     }
 
     public Page getPage() {

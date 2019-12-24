@@ -4,7 +4,7 @@ import com.applet.apply.config.annotation.CancelAuth;
 import com.applet.apply.config.annotation.SessionScope;
 import com.applet.apply.entity.*;
 import com.applet.apply.service.GoodsService;
-import com.applet.apply.util.AjaxResponse;
+import com.applet.common.util.AjaxResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

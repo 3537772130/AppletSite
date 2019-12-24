@@ -1,7 +1,7 @@
-package com.applet.apply.entity;
+package com.applet.common.entity;
 
 /**
- * @program: AppletSite
+ * @program: SpringBootDemo
  * @description: 检查结果
  * @author: Mr.ZhouHuaHu
  * @create: 2019-08-05 09:25
