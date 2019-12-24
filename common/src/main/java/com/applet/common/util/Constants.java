@@ -45,7 +45,7 @@ public class Constants {
     // 系统压缩文件格式
     public static final String UPLOAD_FILE_TYPE_ZIP = "application/x-zip-compressed,application/x-7z-compressed,application/x-gzip";//上传模板压缩文件类型
     // 视频上传格式
-    public static final String UPLOAD_FILE_TYPE_VIDEO = "video/mpeg,video/mp4,video/3gpp,video/quicktime,video/x-ms-wmv";//上传视频文件类型
+    public static final String UPLOAD_FILE_TYPE_VIDEO = "video/mp4";//上传视频文件类型
     // 音频上传格式
     public static final String UPLOAD_FILE_TYPE_AUDIO = "audio/mpeg,audio/mp3,audio/mp4";
 

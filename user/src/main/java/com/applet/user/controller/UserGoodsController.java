@@ -518,7 +518,7 @@ public class UserGoodsController {
             return AjaxResponse.success(map);
         } catch (Exception e) {
             log.error("上传头像出错{}", e);
-            return AjaxResponse.success("上传失败");
+            return AjaxResponse.error("上传失败");
         }
     }
 

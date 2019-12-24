@@ -53,9 +53,9 @@ public class CheckFileUtil {
         if (file.getSize() > 5 * 1048576) {
             return new CheckResult("仅支持 5MB 以内的音频上传");
         }
-        if (!FileUtil.isVedioFile(fileName)) {
-            return new CheckResult("不支持的文件类型");
-        }
+//        if (!FileUtil.isVedioFile(fileName)) {
+//            return new CheckResult("不支持的文件类型");
+//        }
         String type = file.getContentType();
         if (Constants.UPLOAD_FILE_TYPE_AUDIO.indexOf(type) < 0) {
             return new CheckResult("不支持的文件类型");
@@ -80,9 +80,9 @@ public class CheckFileUtil {
         if (file.getSize() > 10 * 1048576) {
             return new CheckResult("仅支持 10MB 以内的视频上传");
         }
-        if (!FileUtil.isVedioFile(fileName)) {
-            return new CheckResult("不支持的文件类型");
-        }
+//        if (!FileUtil.isVedioFile(fileName)) {
+//            return new CheckResult("不支持的文件类型");
+//        }
         String type = file.getContentType();
         if (Constants.UPLOAD_FILE_TYPE_VIDEO.indexOf(type) < 0) {
             return new CheckResult("不支持的文件类型");
