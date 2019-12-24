@@ -2,8 +2,8 @@ package com.applet.manage.service;
 
 import com.applet.manage.entity.*;
 import com.applet.manage.mapper.*;
-import com.applet.manage.util.Constants;
-import com.applet.manage.util.NullUtil;
+import com.applet.common.util.Constants;
+import com.applet.common.util.NullUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

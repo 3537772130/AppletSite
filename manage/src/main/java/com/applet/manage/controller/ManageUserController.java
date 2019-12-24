@@ -2,10 +2,10 @@ package com.applet.manage.controller;
 
 import com.applet.manage.service.ManagerService;
 import com.applet.manage.service.UserInfoService;
-import com.applet.manage.util.AjaxResponse;
-import com.applet.manage.util.NullUtil;
-import com.applet.manage.util.Page;
-import com.applet.manage.util.PageUtil;
+import com.applet.common.util.AjaxResponse;
+import com.applet.common.util.NullUtil;
+import com.applet.common.util.Page;
+import com.applet.common.util.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

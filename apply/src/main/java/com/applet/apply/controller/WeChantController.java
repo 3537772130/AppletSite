@@ -148,7 +148,7 @@ public class WeChantController {
                     return AjaxResponse.error("已绑定该账户");
                 }
             }
-            String ipAddress = IpUtil.getIpAddr(request);
+            String ipAddress = IpUtil.getForIp(request);
 
             AuthCode authCode = new AuthCode();
             authCode.setUserId(userInfo.getId());
@@ -253,7 +253,7 @@ public class WeChantController {
             }
             String channel = SMSChannel.ALIYUN.toString();
             String remark = "修改密码";
-            String ipAddress = IpUtil.getIpAddr(request);
+            String ipAddress = IpUtil.getForIp(request);
 
             AuthCode authCode = new AuthCode();
             authCode.setUserId(userInfo.getId());

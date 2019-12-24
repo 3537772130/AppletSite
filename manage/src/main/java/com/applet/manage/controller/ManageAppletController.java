@@ -1,11 +1,11 @@
 package com.applet.manage.controller;
 
+import com.applet.common.util.*;
+import com.applet.common.util.encryption.EncryptionUtil;
+import com.applet.common.util.qiniu.QiNiuUtil;
 import com.applet.manage.config.annotation.SessionScope;
 import com.applet.manage.entity.*;
 import com.applet.manage.service.AppletService;
-import com.applet.manage.util.*;
-import com.applet.manage.util.encryption.EncryptionUtil;
-import com.applet.manage.util.qiniu.QiNiuUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -354,7 +354,7 @@ public class ManageAppletController {
     public Object uploadAppletFile(@RequestParam("typeZip") MultipartFile multipartFile, Integer id, Integer typeId) {
         try {
             //校验文件信息
-            CheckResult result = CheckFileUtil.checkZipFile(multipartFile);
+            com.applet.common.entity.CheckResult result = CheckFileUtil.checkZipFile(multipartFile);
             if (!result.getBool()) {
                 return AjaxResponse.error(result.getMsg());
             }

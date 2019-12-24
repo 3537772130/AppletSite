@@ -2,9 +2,9 @@ package com.applet.manage.config.intercepors;
 
 import com.applet.manage.config.annotation.CancelAuthentication;
 import com.applet.manage.entity.ManagerInfo;
-import com.applet.manage.util.Constants;
-import com.applet.manage.util.NullUtil;
-import com.applet.manage.util.SerializeUtil;
+import com.applet.common.util.Constants;
+import com.applet.common.util.NullUtil;
+import com.applet.common.util.SerializeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;

@@ -3,7 +3,7 @@ package com.applet.manage.controller;
 import com.applet.manage.entity.ViewAppletInfo;
 import com.applet.manage.entity.ViewAppletInfoExample;
 import com.applet.manage.service.ExcelService;
-import com.applet.manage.util.NullUtil;
+import com.applet.common.util.NullUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

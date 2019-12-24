@@ -2,9 +2,9 @@ package com.applet.manage.controller;
 
 import com.applet.manage.entity.*;
 import com.applet.manage.service.MenuService;
-import com.applet.manage.util.AjaxResponse;
-import com.applet.manage.util.Constants;
-import com.applet.manage.util.NullUtil;
+import com.applet.common.util.AjaxResponse;
+import com.applet.common.util.Constants;
+import com.applet.common.util.NullUtil;
 import jodd.datetime.JDateTime;
 import org.json.JSONArray;
 import org.slf4j.Logger;

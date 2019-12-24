@@ -2,9 +2,9 @@ package com.applet.manage.service;
 
 import com.applet.manage.entity.*;
 import com.applet.manage.mapper.*;
-import com.applet.manage.util.NullUtil;
-import com.applet.manage.util.Page;
-import com.applet.manage.util.RandomUtil;
+import com.applet.common.util.NullUtil;
+import com.applet.common.util.Page;
+import com.applet.common.util.RandomUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

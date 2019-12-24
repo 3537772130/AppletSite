@@ -1,12 +1,12 @@
 package com.applet.manage.controller;
 
+import com.applet.common.entity.CheckResult;
+import com.applet.common.util.*;
+import com.applet.common.util.qiniu.QiNiuUtil;
 import com.applet.manage.config.annotation.SessionScope;
 import com.applet.manage.entity.*;
 import com.applet.manage.service.AppletPageService;
 import com.applet.manage.service.AppletService;
-import com.applet.manage.util.*;
-import com.applet.manage.util.file.FileUtil;
-import com.applet.manage.util.qiniu.QiNiuUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,7 @@ public class ManageAppletPageController {
      */
     @RequestMapping(value = "loadAppletPageList")
     public Object loadAppletPageList(Integer fileId) {
-        if (NullUtil.isNotNullOrEmpty(fileId)){
+        if (NullUtil.isNotNullOrEmpty(fileId)) {
             AppletFile file = appletService.selectAppletFileById(fileId);
             List<AppletFile> fileList = appletService.selectAppletFileList(file.getId(), file.getTypeId());
             Map map = new HashMap();
@@ -57,12 +57,13 @@ public class ManageAppletPageController {
 
     /**
      * 分页查询页面
+     *
      * @param appletPage
      * @param request
      * @return
      */
     @RequestMapping(value = "queryAppletPage")
-    public Object queryAppletPage(AppletPage appletPage, HttpServletRequest request){
+    public Object queryAppletPage(AppletPage appletPage, HttpServletRequest request) {
         Page page = PageUtil.initPage(request);
         page = appletPageService.selectAppletPage(appletPage, page);
         return AjaxResponse.success(page);
@@ -121,12 +122,13 @@ public class ManageAppletPageController {
 
     /**
      * 页面元素类型分页查询
+     *
      * @param type
      * @param request
      * @return
      */
     @RequestMapping(value = "queryElementTypePage")
-    public Object queryElementTypePage(AppletPageElementType type, HttpServletRequest request){
+    public Object queryElementTypePage(AppletPageElementType type, HttpServletRequest request) {
         Page page = PageUtil.initPage(request);
         page = appletPageService.selectElementTypePage(type, page);
         return AjaxResponse.success(page);
@@ -134,14 +136,15 @@ public class ManageAppletPageController {
 
     /**
      * 加载页面元素类型
+     *
      * @param id
      * @param pageId
      * @return
      */
     @RequestMapping(value = "loadElementType")
-    public Object loadElementType(Integer id, Integer pageId){
+    public Object loadElementType(Integer id, Integer pageId) {
         AppletPageElementType type = appletPageService.selectElementType(id, pageId);
-        if (null == type){
+        if (null == type) {
             return AjaxResponse.error("未找到相关记录");
         }
         return AjaxResponse.success(type);
@@ -149,25 +152,26 @@ public class ManageAppletPageController {
 
     /**
      * 更新页面元素类型
+     *
      * @param type
      * @return
      */
     @RequestMapping(value = "updateElementType")
-    public Object updateElementType(AppletPageElementType type){
+    public Object updateElementType(AppletPageElementType type) {
         try {
-            if (null == type){
+            if (null == type) {
                 return AjaxResponse.error("参数有误");
             }
-            if (NullUtil.isNullOrEmpty(type.getPageId())){
+            if (NullUtil.isNullOrEmpty(type.getPageId())) {
                 return AjaxResponse.error("参数丢失");
             }
-            if (NullUtil.isNullOrEmpty(type.getTypeName())){
+            if (NullUtil.isNullOrEmpty(type.getTypeName())) {
                 return AjaxResponse.error("类型名称不能为空");
             }
-            if (type.getTypeName().trim().length() > 30){
+            if (type.getTypeName().trim().length() > 30) {
                 return AjaxResponse.error("类型名称长度过长");
             }
-            if (NullUtil.isNullOrEmpty(type.getId())){
+            if (NullUtil.isNullOrEmpty(type.getId())) {
                 int count = appletPageService.countElementTypeByPageId(type.getPageId());
                 type.setTypeIndex(count + 1);
             }
@@ -181,6 +185,7 @@ public class ManageAppletPageController {
 
     /**
      * 更新页面元素类型排序
+     *
      * @param typeId
      * @param pageId
      * @param sort
@@ -217,11 +222,12 @@ public class ManageAppletPageController {
 
     /**
      * 加载页面元素列表信息
+     *
      * @param pageId
      * @return
      */
     @RequestMapping(value = "loadAppletPageElementPage")
-    public Object loadAppletPageElementPage(Integer pageId){
+    public Object loadAppletPageElementPage(Integer pageId) {
         List<AppletPageElementType> list = appletPageService.selectElementTypeList(pageId);
         return AjaxResponse.success(list);
     }
@@ -242,6 +248,7 @@ public class ManageAppletPageController {
 
     /**
      * 更新页面元素排序
+     *
      * @param elementId
      * @param pageId
      * @param sort
@@ -286,9 +293,9 @@ public class ManageAppletPageController {
     public Object loadAppletPageElement(Integer id, Integer pageId) {
         Map map = new HashMap();
         map.put("typeList", appletPageService.selectElementTypeList(pageId));
-        if (NullUtil.isNotNullOrEmpty(id) && id.intValue() != 0){
+        if (NullUtil.isNotNullOrEmpty(id) && id.intValue() != 0) {
             AppletPageElement element = appletPageService.selectElementById(id, pageId);
-            if (null != element){
+            if (null != element) {
                 map.put("info", element);
                 return AjaxResponse.success(map);
             }
@@ -327,10 +334,10 @@ public class ManageAppletPageController {
             } else {
                 element.setElementName(element.getElementName().trim());
             }
-            if (NullUtil.isNullOrEmpty(element.getTypeId())){
+            if (NullUtil.isNullOrEmpty(element.getTypeId())) {
                 return AjaxResponse.error("元素类型不能为空");
             }
-            if (NullUtil.isNullOrEmpty(element.getId())){
+            if (NullUtil.isNullOrEmpty(element.getId())) {
                 int count = appletPageService.countElementByPageId(element.getPageId());
                 element.setElementIndex(count + 1);
             }
@@ -344,13 +351,14 @@ public class ManageAppletPageController {
 
     /**
      * 加载页面默认信息
+     *
      * @param fileId
      * @return
      */
     @RequestMapping(value = "loadPageDefault")
-    public Object loadPageDefault(Integer fileId){
+    public Object loadPageDefault(Integer fileId) {
         List<AppletPage> list = appletPageService.selectAppletPageList(fileId);
-        if (NullUtil.isNotNullOrEmpty(list)){
+        if (NullUtil.isNotNullOrEmpty(list)) {
             return AjaxResponse.success(list);
         }
         return AjaxResponse.error("未找到相关记录");
@@ -358,21 +366,22 @@ public class ManageAppletPageController {
 
     /**
      * 加载页面元素
+     *
      * @param pageId
      * @return
      */
     @RequestMapping(value = "loadPageElement")
-    public Object loadPageElement(Integer pageId){
+    public Object loadPageElement(Integer pageId) {
         List<AppletPageElementType> list1 = appletPageService.selectElementTypeList(pageId);
         List<AppletPageElement> list2 = appletPageService.selectElementList(pageId);
         List<Map> mapList = new ArrayList<>();
-        for (AppletPageElementType type: list1) {
+        for (AppletPageElementType type : list1) {
             Map map1 = new HashMap();
             map1.put("id", type.getId());
             map1.put("name", type.getTypeName());
             List<Map> list3 = new ArrayList<>();
-            for (AppletPageElement element:list2) {
-                if (element.getTypeId() == type.getId()){
+            for (AppletPageElement element : list2) {
+                if (element.getTypeId() == type.getId()) {
                     Map map2 = new HashMap();
                     map2.put("id", element.getId());
                     map2.put("logo", element.getElementLogo());
@@ -385,8 +394,8 @@ public class ManageAppletPageController {
         }
         AppletPageContent content = appletPageService.selectAppletPageContent(pageId);
         Map map = new HashMap();
-        map.put("typeList" , mapList);
-        if (null != content && NullUtil.isNotNullOrEmpty(content.getContentJson())){
+        map.put("typeList", mapList);
+        if (null != content && NullUtil.isNotNullOrEmpty(content.getContentJson())) {
             map.put("contentJson", content.getContentJson());
             return AjaxResponse.success(map);
         } else {
@@ -397,21 +406,22 @@ public class ManageAppletPageController {
 
     /**
      * 保存页面配置
+     *
      * @param pageId
      * @param json
      * @return
      */
     @RequestMapping(value = "savePageContent")
-    public Object savePageContent(Integer pageId, String json){
+    public Object savePageContent(Integer pageId, String json) {
         try {
             log.info("配置的JSON长度为：" + json.getBytes().length + "个字节");
-            if (json.getBytes().length > 65000){
+            if (json.getBytes().length > 65000) {
                 return AjaxResponse.error("展示的商品过多啦");
             }
             AppletPageContent content = appletPageService.selectAppletPageContent(pageId);
-            if (null == content){
+            if (null == content) {
                 AppletPage page = appletPageService.selectAppletPageById(pageId);
-                if (null == page){
+                if (null == page) {
                     return AjaxResponse.error("未找到相关记录");
                 }
                 content = new AppletPageContent();
@@ -447,7 +457,7 @@ public class ManageAppletPageController {
             }
             String fileKey = "/api/public/PAGE-IMG-" + RandomUtil.getTimeStamp();
             QiNiuUtil.uploadFile(multipartFile, fileKey);
-            if (NullUtil.isNotNullOrEmpty(icon)){
+            if (NullUtil.isNotNullOrEmpty(icon)) {
                 QiNiuUtil.deleteFile(icon);
             }
             Map map = new HashMap();
@@ -463,23 +473,25 @@ public class ManageAppletPageController {
 
     /**
      * 删除小程序页面图片
+     *
      * @param manager
      * @param icon
      */
     @RequestMapping(value = "deleteAppletPageImage")
-    public void deleteAppletPageImage(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo manager, String icon){
-        if (NullUtil.isNotNullOrEmpty(icon)){
+    public void deleteAppletPageImage(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo manager, String icon) {
+        if (NullUtil.isNotNullOrEmpty(icon)) {
             QiNiuUtil.deleteFile(icon);
         }
     }
 
     /**
      * 查询测试商品列表
+     *
      * @param manager
      * @return
      */
     @RequestMapping(value = "queryGoodsInfoList")
-    public Object queryGoodsInfoList(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo manager, String name){
+    public Object queryGoodsInfoList(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo manager, String name) {
         Map map = new HashMap();
         map.put("goodsList", appletPageService.selectGoodsInfoList(1, name));
         map.put("typeList", appletPageService.selectGoodsTypeList(1, null));
@@ -488,11 +500,12 @@ public class ManageAppletPageController {
 
     /**
      * 查询测试商品详情列表
+     *
      * @param manager
      * @return
      */
     @RequestMapping(value = "queryGoodsDetailsList")
-    public Object queryGoodsDetailsList(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo manager, String name){
+    public Object queryGoodsDetailsList(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo manager, String name) {
         Map map = new HashMap();
         map.put("goodsList", appletPageService.selectGoodsDetailsList(1, name));
         map.put("typeList", appletPageService.selectGoodsTypeList(1, null));
@@ -501,11 +514,12 @@ public class ManageAppletPageController {
 
     /**
      * 查询测试商品折扣列表
+     *
      * @param manager
      * @return
      */
     @RequestMapping(value = "queryGoodsDiscountList")
-    public Object queryGoodsDiscountList(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo manager, String name){
+    public Object queryGoodsDiscountList(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo manager, String name) {
         Map map = new HashMap();
         map.put("goodsList", appletPageService.selectGoodsDiscountList(1, name));
         return AjaxResponse.success(map);
@@ -513,11 +527,12 @@ public class ManageAppletPageController {
 
     /**
      * 查询测试商品类型列表
+     *
      * @param manager
      * @return
      */
     @RequestMapping(value = "queryGoodsTypeList")
-    public Object queryGoodsTypeList(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo manager, String name){
+    public Object queryGoodsTypeList(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo manager, String name) {
         Map map = new HashMap();
         map.put("typeList", appletPageService.selectGoodsTypeList(1, name));
         return AjaxResponse.success(map);

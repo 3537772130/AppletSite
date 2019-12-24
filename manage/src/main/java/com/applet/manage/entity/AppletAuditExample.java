@@ -1,7 +1,7 @@
 package com.applet.manage.entity;
 
 
-import com.applet.manage.util.Page;
+import com.applet.common.util.Page;
 
 import java.util.ArrayList;
 import java.util.Date;

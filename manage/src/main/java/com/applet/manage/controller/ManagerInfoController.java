@@ -1,12 +1,15 @@
 package com.applet.manage.controller;
 
+import com.applet.common.entity.CheckResult;
+import com.applet.common.util.*;
+import com.applet.common.util.encryption.DesUtil;
+import com.applet.common.util.encryption.MD5Util;
+import com.applet.common.util.qiniu.QiNiuUtil;
 import com.applet.manage.config.annotation.SessionScope;
-import com.applet.manage.entity.*;
+import com.applet.manage.entity.ManagerInfo;
+import com.applet.manage.entity.ManagerRole;
+import com.applet.manage.entity.ViewManagerInfo;
 import com.applet.manage.service.ManagerService;
-import com.applet.manage.util.*;
-import com.applet.manage.util.encryption.DesUtil;
-import com.applet.manage.util.encryption.MD5Util;
-import com.applet.manage.util.qiniu.QiNiuUtil;
 import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
