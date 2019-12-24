@@ -1,6 +1,6 @@
 package com.applet.user.entity;
 
-import com.applet.user.util.Page;
+import com.applet.common.util.Page;
 import java.util.ArrayList;
 import java.util.List;
 

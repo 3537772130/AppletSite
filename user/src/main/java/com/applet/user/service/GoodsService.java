@@ -2,8 +2,8 @@ package com.applet.user.service;
 
 import com.applet.user.entity.*;
 import com.applet.user.mapper.*;
-import com.applet.user.util.NullUtil;
-import com.applet.user.util.Page;
+import com.applet.common.util.NullUtil;
+import com.applet.common.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;

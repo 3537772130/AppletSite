@@ -1,6 +1,6 @@
 package com.applet.user.entity;
 
-import com.applet.user.util.Constants;
+import com.applet.common.util.Constants;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.io.Serializable;

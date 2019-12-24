@@ -1,8 +1,8 @@
 package com.applet.user.config.intercepors;
 
-import com.applet.user.util.NullUtil;
-import com.applet.user.util.RandomUtil;
-import com.applet.user.util.qiniu.QiNiuUtil;
+import com.applet.common.util.NullUtil;
+import com.applet.common.util.RandomUtil;
+import com.applet.common.util.qiniu.QiNiuUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;

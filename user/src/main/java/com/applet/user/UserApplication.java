@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
-@MapperScan(basePackages = "com.applet.user.mapper.*")
+@MapperScan(basePackages = "com.applet.user.mapper.**")
 @EnableAsync
 public class UserApplication {
 

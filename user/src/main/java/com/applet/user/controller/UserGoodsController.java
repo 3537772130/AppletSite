@@ -1,12 +1,13 @@
 package com.applet.user.controller;
 
+import com.applet.common.entity.CheckResult;
 import com.applet.user.config.annotation.SessionScope;
 import com.applet.user.entity.*;
 import com.applet.user.service.AppletPageService;
 import com.applet.user.service.GoodsService;
-import com.applet.user.util.*;
-import com.applet.user.util.file.FileUtil;
-import com.applet.user.util.qiniu.QiNiuUtil;
+import com.applet.common.util.*;
+import com.applet.common.util.file.FileUtil;
+import com.applet.common.util.qiniu.QiNiuUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -436,7 +437,7 @@ public class UserGoodsController {
                                      @RequestParam("goodsFile") MultipartFile multipartFile) {
         try {
             //校验文件信息
-            CheckResult result = CheckFileUtil.checkImageFile(multipartFile);
+            com.applet.common.entity.CheckResult result = CheckFileUtil.checkImageFile(multipartFile);
             if (!result.getBool()) {
                 return AjaxResponse.error(result.getMsg());
             }
@@ -482,7 +483,7 @@ public class UserGoodsController {
                                        @RequestParam("goodsFile") MultipartFile multipartFile) {
         try {
             //校验文件信息
-            CheckResult result = CheckFileUtil.checkVideoFile(multipartFile);
+            com.applet.common.entity.CheckResult result = CheckFileUtil.checkVideoFile(multipartFile);
             if (!result.getBool()) {
                 return AjaxResponse.error(result.getMsg());
             }

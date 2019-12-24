@@ -5,9 +5,9 @@ import com.applet.user.entity.*;
 import com.applet.user.service.AppletPageService;
 import com.applet.user.service.AppletService;
 import com.applet.user.service.ManagerService;
-import com.applet.user.util.*;
-import com.applet.user.util.encryption.EncryptionUtil;
-import com.applet.user.util.qiniu.QiNiuUtil;
+import com.applet.common.util.*;
+import com.applet.common.util.encryption.EncryptionUtil;
+import com.applet.common.util.qiniu.QiNiuUtil;
 import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,7 +145,7 @@ public class UserAppletController {
     public Object uploadAppletLogo(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, @RequestParam("appletLogo") MultipartFile multipartFile) {
         try {
             //校验文件信息
-            CheckResult result = CheckFileUtil.checkImageFile(multipartFile);
+            com.applet.common.entity.CheckResult result = CheckFileUtil.checkImageFile(multipartFile);
             if (!result.getBool()) {
                 return AjaxResponse.error(result.getMsg());
             }
@@ -169,7 +169,7 @@ public class UserAppletController {
     public Object uploadAppletLicense(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, @RequestParam("appletLicense") MultipartFile multipartFile) {
         try {
             //校验文件信息
-            CheckResult result = CheckFileUtil.checkImageFile(multipartFile);
+            com.applet.common.entity.CheckResult result = CheckFileUtil.checkImageFile(multipartFile);
             if (!result.getBool()) {
                 return AjaxResponse.error(result.getMsg());
             }

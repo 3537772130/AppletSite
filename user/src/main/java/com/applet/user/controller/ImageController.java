@@ -1,10 +1,10 @@
 package com.applet.user.controller;
 
-import com.applet.user.entity.ImageInfo;
-import com.applet.user.util.Constants;
-import com.applet.user.util.NullUtil;
-import com.applet.user.util.file.VerifyCodeUtil;
-import com.applet.user.util.file.ImageUtil;
+import com.applet.common.entity.ImageInfo;
+import com.applet.common.util.Constants;
+import com.applet.common.util.NullUtil;
+import com.applet.common.util.file.VerifyCodeUtil;
+import com.applet.common.util.file.ImageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;

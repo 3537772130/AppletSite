@@ -1,4 +1,4 @@
-package com.applet.user.util;
+package com.applet.common.util;
 
 import jodd.datetime.JDateTime;
 
