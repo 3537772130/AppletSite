@@ -1,9 +1,6 @@
 package com.applet.common.util.file;
 
-import jodd.datetime.JDateTime;
-
 import java.io.File;
-import java.util.Date;
 
 /**
  * @program: SpringBootDemo
@@ -48,10 +45,8 @@ public class PathUtil {
     }
 
     public static void main(String[] arge) {
-//        System.out.println(getClassPath("\\resources\\static\\images\\head-portrait\\"));
-        JDateTime time = new JDateTime(new Date());
-        System.out.println(time.toString("MMDDhhmmss"));
+        System.out.println(classPath);
 
-        FileUtil.copyFile("static\\images\\applet-logo\\draft\\", "U1-APPLET-LOGO.jpg", "static\\images\\applet-logo\\", "92431224MA4LW7EW87.jpg");
+//        FileUtil.copyFile("static\\images\\applet-logo\\draft\\", "U1-APPLET-LOGO.jpg", "static\\images\\applet-logo\\", "92431224MA4LW7EW87.jpg");
     }
 }

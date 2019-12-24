@@ -111,6 +111,9 @@ public class RsaUtil {
     }
 
     public static PrivateKey getPriKey(String privateKeyPath, String keyAlgorithm) {
+        privateKeyPath = privateKeyPath.replace("apply\\", "common\\")
+                .replace("manage\\", "common\\")
+                .replace("user\\", "common\\");
         PrivateKey privateKey = null;
         InputStream inputStream = null;
         try {
