@@ -495,193 +495,73 @@ public class ViewGoodsSpecsExample {
             return (Criteria) this;
         }
 
-        public Criteria andActualPriceIsNull() {
-            addCriterion("actual_price is null");
+        public Criteria andDescribeStrIsNull() {
+            addCriterion("describe_str is null");
             return (Criteria) this;
         }
 
-        public Criteria andActualPriceIsNotNull() {
-            addCriterion("actual_price is not null");
+        public Criteria andDescribeStrIsNotNull() {
+            addCriterion("describe_str is not null");
             return (Criteria) this;
         }
 
-        public Criteria andActualPriceEqualTo(Double value) {
-            addCriterion("actual_price =", value, "actualPrice");
+        public Criteria andDescribeStrEqualTo(String value) {
+            addCriterion("describe_str =", value, "describeStr");
             return (Criteria) this;
         }
 
-        public Criteria andActualPriceNotEqualTo(Double value) {
-            addCriterion("actual_price <>", value, "actualPrice");
+        public Criteria andDescribeStrNotEqualTo(String value) {
+            addCriterion("describe_str <>", value, "describeStr");
             return (Criteria) this;
         }
 
-        public Criteria andActualPriceGreaterThan(Double value) {
-            addCriterion("actual_price >", value, "actualPrice");
+        public Criteria andDescribeStrGreaterThan(String value) {
+            addCriterion("describe_str >", value, "describeStr");
             return (Criteria) this;
         }
 
-        public Criteria andActualPriceGreaterThanOrEqualTo(Double value) {
-            addCriterion("actual_price >=", value, "actualPrice");
+        public Criteria andDescribeStrGreaterThanOrEqualTo(String value) {
+            addCriterion("describe_str >=", value, "describeStr");
             return (Criteria) this;
         }
 
-        public Criteria andActualPriceLessThan(Double value) {
-            addCriterion("actual_price <", value, "actualPrice");
+        public Criteria andDescribeStrLessThan(String value) {
+            addCriterion("describe_str <", value, "describeStr");
             return (Criteria) this;
         }
 
-        public Criteria andActualPriceLessThanOrEqualTo(Double value) {
-            addCriterion("actual_price <=", value, "actualPrice");
+        public Criteria andDescribeStrLessThanOrEqualTo(String value) {
+            addCriterion("describe_str <=", value, "describeStr");
             return (Criteria) this;
         }
 
-        public Criteria andActualPriceIn(List<Double> values) {
-            addCriterion("actual_price in", values, "actualPrice");
+        public Criteria andDescribeStrLike(String value) {
+            addCriterion("describe_str like", value, "describeStr");
             return (Criteria) this;
         }
 
-        public Criteria andActualPriceNotIn(List<Double> values) {
-            addCriterion("actual_price not in", values, "actualPrice");
+        public Criteria andDescribeStrNotLike(String value) {
+            addCriterion("describe_str not like", value, "describeStr");
             return (Criteria) this;
         }
 
-        public Criteria andActualPriceBetween(Double value1, Double value2) {
-            addCriterion("actual_price between", value1, value2, "actualPrice");
+        public Criteria andDescribeStrIn(List<String> values) {
+            addCriterion("describe_str in", values, "describeStr");
             return (Criteria) this;
         }
 
-        public Criteria andActualPriceNotBetween(Double value1, Double value2) {
-            addCriterion("actual_price not between", value1, value2, "actualPrice");
+        public Criteria andDescribeStrNotIn(List<String> values) {
+            addCriterion("describe_str not in", values, "describeStr");
             return (Criteria) this;
         }
 
-        public Criteria andDiscountIsNull() {
-            addCriterion("discount is null");
+        public Criteria andDescribeStrBetween(String value1, String value2) {
+            addCriterion("describe_str between", value1, value2, "describeStr");
             return (Criteria) this;
         }
 
-        public Criteria andDiscountIsNotNull() {
-            addCriterion("discount is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andDiscountEqualTo(Integer value) {
-            addCriterion("discount =", value, "discount");
-            return (Criteria) this;
-        }
-
-        public Criteria andDiscountNotEqualTo(Integer value) {
-            addCriterion("discount <>", value, "discount");
-            return (Criteria) this;
-        }
-
-        public Criteria andDiscountGreaterThan(Integer value) {
-            addCriterion("discount >", value, "discount");
-            return (Criteria) this;
-        }
-
-        public Criteria andDiscountGreaterThanOrEqualTo(Integer value) {
-            addCriterion("discount >=", value, "discount");
-            return (Criteria) this;
-        }
-
-        public Criteria andDiscountLessThan(Integer value) {
-            addCriterion("discount <", value, "discount");
-            return (Criteria) this;
-        }
-
-        public Criteria andDiscountLessThanOrEqualTo(Integer value) {
-            addCriterion("discount <=", value, "discount");
-            return (Criteria) this;
-        }
-
-        public Criteria andDiscountIn(List<Integer> values) {
-            addCriterion("discount in", values, "discount");
-            return (Criteria) this;
-        }
-
-        public Criteria andDiscountNotIn(List<Integer> values) {
-            addCriterion("discount not in", values, "discount");
-            return (Criteria) this;
-        }
-
-        public Criteria andDiscountBetween(Integer value1, Integer value2) {
-            addCriterion("discount between", value1, value2, "discount");
-            return (Criteria) this;
-        }
-
-        public Criteria andDiscountNotBetween(Integer value1, Integer value2) {
-            addCriterion("discount not between", value1, value2, "discount");
-            return (Criteria) this;
-        }
-
-        public Criteria andDiscountDescribeIsNull() {
-            addCriterion("discount_describe is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andDiscountDescribeIsNotNull() {
-            addCriterion("discount_describe is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andDiscountDescribeEqualTo(String value) {
-            addCriterion("discount_describe =", value, "discountDescribe");
-            return (Criteria) this;
-        }
-
-        public Criteria andDiscountDescribeNotEqualTo(String value) {
-            addCriterion("discount_describe <>", value, "discountDescribe");
-            return (Criteria) this;
-        }
-
-        public Criteria andDiscountDescribeGreaterThan(String value) {
-            addCriterion("discount_describe >", value, "discountDescribe");
-            return (Criteria) this;
-        }
-
-        public Criteria andDiscountDescribeGreaterThanOrEqualTo(String value) {
-            addCriterion("discount_describe >=", value, "discountDescribe");
-            return (Criteria) this;
-        }
-
-        public Criteria andDiscountDescribeLessThan(String value) {
-            addCriterion("discount_describe <", value, "discountDescribe");
-            return (Criteria) this;
-        }
-
-        public Criteria andDiscountDescribeLessThanOrEqualTo(String value) {
-            addCriterion("discount_describe <=", value, "discountDescribe");
-            return (Criteria) this;
-        }
-
-        public Criteria andDiscountDescribeLike(String value) {
-            addCriterion("discount_describe like", value, "discountDescribe");
-            return (Criteria) this;
-        }
-
-        public Criteria andDiscountDescribeNotLike(String value) {
-            addCriterion("discount_describe not like", value, "discountDescribe");
-            return (Criteria) this;
-        }
-
-        public Criteria andDiscountDescribeIn(List<String> values) {
-            addCriterion("discount_describe in", values, "discountDescribe");
-            return (Criteria) this;
-        }
-
-        public Criteria andDiscountDescribeNotIn(List<String> values) {
-            addCriterion("discount_describe not in", values, "discountDescribe");
-            return (Criteria) this;
-        }
-
-        public Criteria andDiscountDescribeBetween(String value1, String value2) {
-            addCriterion("discount_describe between", value1, value2, "discountDescribe");
-            return (Criteria) this;
-        }
-
-        public Criteria andDiscountDescribeNotBetween(String value1, String value2) {
-            addCriterion("discount_describe not between", value1, value2, "discountDescribe");
+        public Criteria andDescribeStrNotBetween(String value1, String value2) {
+            addCriterion("describe_str not between", value1, value2, "describeStr");
             return (Criteria) this;
         }
 

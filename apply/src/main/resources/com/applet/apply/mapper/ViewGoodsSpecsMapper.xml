@@ -8,9 +8,7 @@
     <result column="specs_src" jdbcType="VARCHAR" property="specsSrc" />
     <result column="specs_text" jdbcType="VARCHAR" property="specsText" />
     <result column="sell_price" jdbcType="DOUBLE" property="sellPrice" />
-    <result column="actual_price" jdbcType="DOUBLE" property="actualPrice" />
-    <result column="discount" jdbcType="INTEGER" property="discount" />
-    <result column="discount_describe" jdbcType="VARCHAR" property="discountDescribe" />
+    <result column="describe_str" jdbcType="VARCHAR" property="describeStr" />
     <result column="specs_index" jdbcType="INTEGER" property="specsIndex" />
     <result column="specs_status" jdbcType="BIT" property="specsStatus" />
   </resultMap>
@@ -44,8 +42,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, user_id, goods_id, specs_src, specs_text, sell_price, actual_price, discount, 
-    discount_describe, specs_index, specs_status
+    id, user_id, goods_id, specs_src, specs_text, sell_price, describe_str, specs_index, 
+    specs_status
   </sql>
   <select id="selectByExample" parameterType="com.applet.apply.entity.ViewGoodsSpecsExample" resultMap="BaseResultMap">
     select

@@ -346,7 +346,8 @@ public class AppletPageService {
      * @return
      */
     public List<Map> selectGoodsDiscountList(Integer userId, String goodsName) {
-        String sql = "SELECT id,goods_name AS name,specs_src AS icon,actual_price AS minPrice,sell_price AS maxPrice FROM view_goods_specs_summary WHERE user_id = " + userId;
+        String sql = "SELECT id,goods_name AS name,cover_src AS icon,CONVERT(((min_price*discount)/100),decimal(10,2)) AS minPrice,min_price AS maxPrice" +
+                " FROM view_goods_info WHERE user_id = " + userId + "  AND discount <> 100";
         if (NullUtil.isNotNullOrEmpty(goodsName)){
             sql +=  " AND goods_name LIKE '%" + goodsName + "%'";
         }

@@ -15,11 +15,7 @@ public class ViewGoodsSpecs implements Serializable {
 
     private Double sellPrice;
 
-    private Double actualPrice;
-
-    private Integer discount;
-
-    private String discountDescribe;
+    private String describeStr;
 
     private Integer specsIndex;
 
@@ -75,28 +71,12 @@ public class ViewGoodsSpecs implements Serializable {
         this.sellPrice = sellPrice;
     }
 
-    public Double getActualPrice() {
-        return actualPrice;
+    public String getDescribeStr() {
+        return describeStr;
     }
 
-    public void setActualPrice(Double actualPrice) {
-        this.actualPrice = actualPrice;
-    }
-
-    public Integer getDiscount() {
-        return discount;
-    }
-
-    public void setDiscount(Integer discount) {
-        this.discount = discount;
-    }
-
-    public String getDiscountDescribe() {
-        return discountDescribe;
-    }
-
-    public void setDiscountDescribe(String discountDescribe) {
-        this.discountDescribe = discountDescribe == null ? null : discountDescribe.trim();
+    public void setDescribeStr(String describeStr) {
+        this.describeStr = describeStr == null ? null : describeStr.trim();
     }
 
     public Integer getSpecsIndex() {

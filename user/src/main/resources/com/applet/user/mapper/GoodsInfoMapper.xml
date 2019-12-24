@@ -2,16 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.applet.user.mapper.GoodsInfoMapper">
   <resultMap id="BaseResultMap" type="com.applet.user.entity.GoodsInfo">
-    <id column="id" jdbcType="INTEGER" property="id"/>
-    <result column="user_id" jdbcType="INTEGER" property="userId"/>
-    <result column="type_id" jdbcType="INTEGER" property="typeId"/>
-    <result column="goods_name" jdbcType="VARCHAR" property="goodsName"/>
-    <result column="cover_src" jdbcType="VARCHAR" property="coverSrc"/>
-    <result column="min_price" jdbcType="DOUBLE" property="minPrice"/>
-    <result column="max_price" jdbcType="DOUBLE" property="maxPrice"/>
-    <result column="goods_index" jdbcType="INTEGER" property="goodsIndex"/>
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
-    <result column="status" jdbcType="BIT" property="status"/>
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="type_id" jdbcType="INTEGER" property="typeId" />
+    <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+    <result column="cover_src" jdbcType="VARCHAR" property="coverSrc" />
+    <result column="min_price" jdbcType="DOUBLE" property="minPrice" />
+    <result column="max_price" jdbcType="DOUBLE" property="maxPrice" />
+    <result column="discount" jdbcType="INTEGER" property="discount" />
+    <result column="describe_str" jdbcType="VARCHAR" property="describeStr" />
+    <result column="if_discount" jdbcType="BIT" property="ifDiscount" />
+    <result column="goods_index" jdbcType="INTEGER" property="goodsIndex" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="BIT" property="status" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -72,27 +75,27 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, user_id, type_id, goods_name, cover_src, min_price, max_price, goods_index, update_time,
-    status
+    id, user_id, type_id, goods_name, cover_src, min_price, max_price, discount, describe_str, 
+    if_discount, goods_index, update_time, status
   </sql>
   <select id="selectByExample" parameterType="com.applet.user.entity.GoodsInfoExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
-    <include refid="Base_Column_List"/>
+    <include refid="Base_Column_List" />
     from goods_info
     <if test="_parameter != null">
-      <include refid="Example_Where_Clause"/>
+      <include refid="Example_Where_Clause" />
     </if>
     <if test="orderByClause != null">
       order by ${orderByClause}
     </if>
-    <include refid="PageSuffix"/>
+    <include refid="PageSuffix" />
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List"/>
+    select 
+    <include refid="Base_Column_List" />
     from goods_info
     where id = #{id,jdbcType=INTEGER}
   </select>
@@ -103,21 +106,22 @@
   <delete id="deleteByExample" parameterType="com.applet.user.entity.GoodsInfoExample">
     delete from goods_info
     <if test="_parameter != null">
-      <include refid="Example_Where_Clause"/>
+      <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.applet.user.entity.GoodsInfo">
-    insert into goods_info (id, user_id, type_id,
-      goods_name, cover_src, min_price,
-      max_price, goods_index, update_time,
+    insert into goods_info (id, user_id, type_id, 
+      goods_name, cover_src, min_price, 
+      max_price, discount, describe_str, 
+      if_discount, goods_index, update_time, 
       status)
-    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{typeId,jdbcType=INTEGER},
-      #{goodsName,jdbcType=VARCHAR}, #{coverSrc,jdbcType=VARCHAR}, #{minPrice,jdbcType=DOUBLE},
-      #{maxPrice,jdbcType=DOUBLE}, #{goodsIndex,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP},
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{typeId,jdbcType=INTEGER}, 
+      #{goodsName,jdbcType=VARCHAR}, #{coverSrc,jdbcType=VARCHAR}, #{minPrice,jdbcType=DOUBLE}, 
+      #{maxPrice,jdbcType=DOUBLE}, #{discount,jdbcType=INTEGER}, #{describeStr,jdbcType=VARCHAR}, 
+      #{ifDiscount,jdbcType=BIT}, #{goodsIndex,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{status,jdbcType=BIT})
   </insert>
-  <insert id="insertSelective" keyProperty="id" parameterType="com.applet.user.entity.GoodsInfo"
-          useGeneratedKeys="true">
+  <insert id="insertSelective" keyProperty="id" parameterType="com.applet.user.entity.GoodsInfo" useGeneratedKeys="true">
     insert into goods_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -140,6 +144,15 @@
       </if>
       <if test="maxPrice != null">
         max_price,
+      </if>
+      <if test="discount != null">
+        discount,
+      </if>
+      <if test="describeStr != null">
+        describe_str,
+      </if>
+      <if test="ifDiscount != null">
+        if_discount,
       </if>
       <if test="goodsIndex != null">
         goods_index,
@@ -173,6 +186,15 @@
       <if test="maxPrice != null">
         #{maxPrice,jdbcType=DOUBLE},
       </if>
+      <if test="discount != null">
+        #{discount,jdbcType=INTEGER},
+      </if>
+      <if test="describeStr != null">
+        #{describeStr,jdbcType=VARCHAR},
+      </if>
+      <if test="ifDiscount != null">
+        #{ifDiscount,jdbcType=BIT},
+      </if>
       <if test="goodsIndex != null">
         #{goodsIndex,jdbcType=INTEGER},
       </if>
@@ -187,7 +209,7 @@
   <select id="countByExample" parameterType="com.applet.user.entity.GoodsInfoExample" resultType="java.lang.Long">
     select count(*) from goods_info
     <if test="_parameter != null">
-      <include refid="Example_Where_Clause"/>
+      <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
@@ -214,6 +236,15 @@
       <if test="record.maxPrice != null">
         max_price = #{record.maxPrice,jdbcType=DOUBLE},
       </if>
+      <if test="record.discount != null">
+        discount = #{record.discount,jdbcType=INTEGER},
+      </if>
+      <if test="record.describeStr != null">
+        describe_str = #{record.describeStr,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ifDiscount != null">
+        if_discount = #{record.ifDiscount,jdbcType=BIT},
+      </if>
       <if test="record.goodsIndex != null">
         goods_index = #{record.goodsIndex,jdbcType=INTEGER},
       </if>
@@ -225,23 +256,26 @@
       </if>
     </set>
     <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause"/>
+      <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
     update goods_info
     set id = #{record.id,jdbcType=INTEGER},
-    user_id = #{record.userId,jdbcType=INTEGER},
-    type_id = #{record.typeId,jdbcType=INTEGER},
-    goods_name = #{record.goodsName,jdbcType=VARCHAR},
-    cover_src = #{record.coverSrc,jdbcType=VARCHAR},
-    min_price = #{record.minPrice,jdbcType=DOUBLE},
-    max_price = #{record.maxPrice,jdbcType=DOUBLE},
-    goods_index = #{record.goodsIndex,jdbcType=INTEGER},
-    update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-    status = #{record.status,jdbcType=BIT}
+      user_id = #{record.userId,jdbcType=INTEGER},
+      type_id = #{record.typeId,jdbcType=INTEGER},
+      goods_name = #{record.goodsName,jdbcType=VARCHAR},
+      cover_src = #{record.coverSrc,jdbcType=VARCHAR},
+      min_price = #{record.minPrice,jdbcType=DOUBLE},
+      max_price = #{record.maxPrice,jdbcType=DOUBLE},
+      discount = #{record.discount,jdbcType=INTEGER},
+      describe_str = #{record.describeStr,jdbcType=VARCHAR},
+      if_discount = #{record.ifDiscount,jdbcType=BIT},
+      goods_index = #{record.goodsIndex,jdbcType=INTEGER},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      status = #{record.status,jdbcType=BIT}
     <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause"/>
+      <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.applet.user.entity.GoodsInfo">
@@ -265,6 +299,15 @@
       <if test="maxPrice != null">
         max_price = #{maxPrice,jdbcType=DOUBLE},
       </if>
+      <if test="discount != null">
+        discount = #{discount,jdbcType=INTEGER},
+      </if>
+      <if test="describeStr != null">
+        describe_str = #{describeStr,jdbcType=VARCHAR},
+      </if>
+      <if test="ifDiscount != null">
+        if_discount = #{ifDiscount,jdbcType=BIT},
+      </if>
       <if test="goodsIndex != null">
         goods_index = #{goodsIndex,jdbcType=INTEGER},
       </if>
@@ -285,6 +328,9 @@
       cover_src = #{coverSrc,jdbcType=VARCHAR},
       min_price = #{minPrice,jdbcType=DOUBLE},
       max_price = #{maxPrice,jdbcType=DOUBLE},
+      discount = #{discount,jdbcType=INTEGER},
+      describe_str = #{describeStr,jdbcType=VARCHAR},
+      if_discount = #{ifDiscount,jdbcType=BIT},
       goods_index = #{goodsIndex,jdbcType=INTEGER},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       status = #{status,jdbcType=BIT}

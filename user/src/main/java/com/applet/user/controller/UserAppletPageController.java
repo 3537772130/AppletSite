@@ -1,16 +1,18 @@
 package com.applet.user.controller;
 
+import com.applet.common.entity.CheckResult;
+import com.applet.common.util.*;
+import com.applet.common.util.qiniu.QiNiuUtil;
 import com.applet.user.config.annotation.SessionScope;
 import com.applet.user.entity.*;
 import com.applet.user.service.AppletPageService;
-import com.applet.common.util.AjaxResponse;
-import com.applet.common.util.Constants;
-import com.applet.common.util.NullUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +31,39 @@ public class UserAppletPageController {
     private final static Logger log = LoggerFactory.getLogger(UserAppletPageController.class);
     @Autowired
     private AppletPageService appletPageService;
+
+    /**
+     * 上传小程序页面图片
+     *
+     * @param user
+     * @param multipartFile
+     * @return
+     */
+    @RequestMapping(value = "uploadAppletPageImage")
+    public Object uploadAppletPageImage(@SessionScope(Constants.VUE_USER_INFO) UserInfo user,
+                                        @RequestParam("image") MultipartFile multipartFile,
+                                        Integer pIndex, Integer index, String icon) {
+        try {
+            //校验文件信息
+            CheckResult result = CheckFileUtil.checkImageFile(multipartFile);
+            if (!result.getBool()) {
+                return AjaxResponse.error(result.getMsg());
+            }
+            String fileKey = "/api/public/PAGE-IMG-" + RandomUtil.getTimeStamp();
+            QiNiuUtil.uploadFile(multipartFile, fileKey);
+            if (NullUtil.isNotNullOrEmpty(icon)) {
+                QiNiuUtil.deleteFile(icon);
+            }
+            Map map = new HashMap();
+            map.put("pIndex", pIndex);
+            map.put("index", index);
+            map.put("icon", fileKey);
+            return AjaxResponse.success(map);
+        } catch (Exception e) {
+            log.error("上传小程序页面图片出错{}", e);
+            return AjaxResponse.error("上传失败");
+        }
+    }
 
     /**
      * 加载页面默认信息

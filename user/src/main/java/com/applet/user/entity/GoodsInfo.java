@@ -17,15 +17,24 @@ public class GoodsInfo implements Serializable {
 
     private String coverSrc;
 
-    private static final long serialVersionUID = 1L;
     private Double minPrice;
+
     private Double maxPrice;
+
+    private Integer discount;
+
+    private String describeStr;
+
+    private Boolean ifDiscount;
+
+    private Integer goodsIndex;
 
     @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
     private Date updateTime;
 
     private Boolean status;
-    private Integer goodsIndex;
+
+    private static final long serialVersionUID = 1L;
 
     public Integer getId() {
         return id;
@@ -81,6 +90,30 @@ public class GoodsInfo implements Serializable {
 
     public void setMaxPrice(Double maxPrice) {
         this.maxPrice = maxPrice;
+    }
+
+    public Integer getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Integer discount) {
+        this.discount = discount;
+    }
+
+    public String getDescribeStr() {
+        return describeStr;
+    }
+
+    public void setDescribeStr(String describeStr) {
+        this.describeStr = describeStr == null ? null : describeStr.trim();
+    }
+
+    public Boolean getIfDiscount() {
+        return ifDiscount;
+    }
+
+    public void setIfDiscount(Boolean ifDiscount) {
+        this.ifDiscount = ifDiscount;
     }
 
     public Integer getGoodsIndex() {

@@ -1,7 +1,6 @@
 package com.applet.user.entity;
 
 import com.applet.common.util.Page;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -69,7 +68,7 @@ public class GoodsInfoExample {
     }
 
     public void setPage(Page page) {
-        this.page = page;
+        this.page=page;
     }
 
     public Page getPage() {
@@ -554,6 +553,196 @@ public class GoodsInfoExample {
 
         public Criteria andMaxPriceNotBetween(Double value1, Double value2) {
             addCriterion("max_price not between", value1, value2, "maxPrice");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiscountIsNull() {
+            addCriterion("discount is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiscountIsNotNull() {
+            addCriterion("discount is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiscountEqualTo(Integer value) {
+            addCriterion("discount =", value, "discount");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiscountNotEqualTo(Integer value) {
+            addCriterion("discount <>", value, "discount");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiscountGreaterThan(Integer value) {
+            addCriterion("discount >", value, "discount");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiscountGreaterThanOrEqualTo(Integer value) {
+            addCriterion("discount >=", value, "discount");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiscountLessThan(Integer value) {
+            addCriterion("discount <", value, "discount");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiscountLessThanOrEqualTo(Integer value) {
+            addCriterion("discount <=", value, "discount");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiscountIn(List<Integer> values) {
+            addCriterion("discount in", values, "discount");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiscountNotIn(List<Integer> values) {
+            addCriterion("discount not in", values, "discount");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiscountBetween(Integer value1, Integer value2) {
+            addCriterion("discount between", value1, value2, "discount");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiscountNotBetween(Integer value1, Integer value2) {
+            addCriterion("discount not between", value1, value2, "discount");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeStrIsNull() {
+            addCriterion("describe_str is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeStrIsNotNull() {
+            addCriterion("describe_str is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeStrEqualTo(String value) {
+            addCriterion("describe_str =", value, "describeStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeStrNotEqualTo(String value) {
+            addCriterion("describe_str <>", value, "describeStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeStrGreaterThan(String value) {
+            addCriterion("describe_str >", value, "describeStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeStrGreaterThanOrEqualTo(String value) {
+            addCriterion("describe_str >=", value, "describeStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeStrLessThan(String value) {
+            addCriterion("describe_str <", value, "describeStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeStrLessThanOrEqualTo(String value) {
+            addCriterion("describe_str <=", value, "describeStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeStrLike(String value) {
+            addCriterion("describe_str like", value, "describeStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeStrNotLike(String value) {
+            addCriterion("describe_str not like", value, "describeStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeStrIn(List<String> values) {
+            addCriterion("describe_str in", values, "describeStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeStrNotIn(List<String> values) {
+            addCriterion("describe_str not in", values, "describeStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeStrBetween(String value1, String value2) {
+            addCriterion("describe_str between", value1, value2, "describeStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeStrNotBetween(String value1, String value2) {
+            addCriterion("describe_str not between", value1, value2, "describeStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andIfDiscountIsNull() {
+            addCriterion("if_discount is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIfDiscountIsNotNull() {
+            addCriterion("if_discount is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIfDiscountEqualTo(Boolean value) {
+            addCriterion("if_discount =", value, "ifDiscount");
+            return (Criteria) this;
+        }
+
+        public Criteria andIfDiscountNotEqualTo(Boolean value) {
+            addCriterion("if_discount <>", value, "ifDiscount");
+            return (Criteria) this;
+        }
+
+        public Criteria andIfDiscountGreaterThan(Boolean value) {
+            addCriterion("if_discount >", value, "ifDiscount");
+            return (Criteria) this;
+        }
+
+        public Criteria andIfDiscountGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("if_discount >=", value, "ifDiscount");
+            return (Criteria) this;
+        }
+
+        public Criteria andIfDiscountLessThan(Boolean value) {
+            addCriterion("if_discount <", value, "ifDiscount");
+            return (Criteria) this;
+        }
+
+        public Criteria andIfDiscountLessThanOrEqualTo(Boolean value) {
+            addCriterion("if_discount <=", value, "ifDiscount");
+            return (Criteria) this;
+        }
+
+        public Criteria andIfDiscountIn(List<Boolean> values) {
+            addCriterion("if_discount in", values, "ifDiscount");
+            return (Criteria) this;
+        }
+
+        public Criteria andIfDiscountNotIn(List<Boolean> values) {
+            addCriterion("if_discount not in", values, "ifDiscount");
+            return (Criteria) this;
+        }
+
+        public Criteria andIfDiscountBetween(Boolean value1, Boolean value2) {
+            addCriterion("if_discount between", value1, value2, "ifDiscount");
+            return (Criteria) this;
+        }
+
+        public Criteria andIfDiscountNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("if_discount not between", value1, value2, "ifDiscount");
             return (Criteria) this;
         }
 

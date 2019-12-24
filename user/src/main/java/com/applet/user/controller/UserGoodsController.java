@@ -3,7 +3,6 @@ package com.applet.user.controller;
 import com.applet.common.entity.CheckResult;
 import com.applet.user.config.annotation.SessionScope;
 import com.applet.user.entity.*;
-import com.applet.user.service.AppletPageService;
 import com.applet.user.service.GoodsService;
 import com.applet.common.util.*;
 import com.applet.common.util.file.FileUtil;
@@ -278,7 +277,7 @@ public class UserGoodsController {
             if (NullUtil.isNullOrEmpty(goods.getGoodsName())) {
                 return AjaxResponse.error("商品名称不能为空");
             }
-            if (goods.getGoodsName().trim().length() > 100) {
+            if (goods.getGoodsName().trim().length() > 150) {
                 return AjaxResponse.error("商品名称输入过长");
             } else {
                 goods.setGoodsName(goods.getGoodsName().trim());
@@ -290,7 +289,15 @@ public class UserGoodsController {
             if (null == type) {
                 return AjaxResponse.error("商品类型选择错误");
             }
-
+            if (NullUtil.isNullOrEmpty(goods.getDiscount())){
+                return AjaxResponse.error("折扣不能为空");
+            }
+            if (goods.getDiscount().intValue() < 1 || goods.getDiscount().intValue() > 100){
+                return AjaxResponse.error("折扣只能为1-100");
+            }
+            if (NullUtil.isNotNullOrEmpty(goods.getDescribeStr()) && goods.getDescribeStr().getBytes().length > 300){
+                return AjaxResponse.error("描述输入过长");
+            }
             String coverSrc = "/api/image/GC-" + RandomUtil.getTimeStamp();
             if (NullUtil.isNotNullOrEmpty(goods.getId())) {
                 GoodsInfo record = goodsService.selectGoodsInfo(goods.getId(), user.getId());
@@ -437,7 +444,7 @@ public class UserGoodsController {
                                      @RequestParam("goodsFile") MultipartFile multipartFile) {
         try {
             //校验文件信息
-            com.applet.common.entity.CheckResult result = CheckFileUtil.checkImageFile(multipartFile);
+            CheckResult result = CheckFileUtil.checkImageFile(multipartFile);
             if (!result.getBool()) {
                 return AjaxResponse.error(result.getMsg());
             }
@@ -483,7 +490,7 @@ public class UserGoodsController {
                                        @RequestParam("goodsFile") MultipartFile multipartFile) {
         try {
             //校验文件信息
-            com.applet.common.entity.CheckResult result = CheckFileUtil.checkVideoFile(multipartFile);
+            CheckResult result = CheckFileUtil.checkVideoFile(multipartFile);
             if (!result.getBool()) {
                 return AjaxResponse.error(result.getMsg());
             }
@@ -584,10 +591,14 @@ public class UserGoodsController {
     @RequestMapping(value = "loadGoodsSpecs")
     public Object loadGoodsSpecs(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer goodsId, Integer specsId) {
         if (NullUtil.isNotNullOrEmpty(specsId) && specsId.intValue() != 0) {
+            GoodsInfo goodsInfo = goodsService.selectGoodsInfo(goodsId, user.getId());
             ViewGoodsSpecs record = goodsService.selectSpecsInfo(specsId, goodsId, user.getId());
             if (null != record) {
+                Map map = new HashMap();
+                map.put("discount", goodsInfo.getDiscount());
+                map.put("specs", record);
                 record.setSpecsSrc(record.getSpecsSrc());
-                return AjaxResponse.success(record);
+                return AjaxResponse.success(map);
             }
         }
         return AjaxResponse.error("未找到相关记录");
@@ -628,10 +639,7 @@ public class UserGoodsController {
             if (specs.getSellPrice().doubleValue() > 99999.99d) {
                 return AjaxResponse.error("出售价格不能高于99999.99");
             }
-            if (NullUtil.isNotNullOrEmpty(specs.getDiscount()) && specs.getDiscount().doubleValue() > 100) {
-                return AjaxResponse.error("商品折扣不能大于100");
-            }
-            if (NullUtil.isNotNullOrEmpty(specs.getDiscountDescribe()) && specs.getDiscountDescribe().length() > 500) {
+            if (NullUtil.isNotNullOrEmpty(specs.getDescribeStr()) && specs.getDescribeStr().length() > 500) {
                 return AjaxResponse.error("折扣描述长度过长");
             }
             if (NullUtil.isNullOrEmpty(specs.getId())) {
@@ -641,7 +649,6 @@ public class UserGoodsController {
                 }
             }
             boolean bool = (NullUtil.isNullOrEmpty(specs.getId()) && !specs.getSpecsStatus()) ? false : true;
-            specs.setActualPrice(specs.getSellPrice() * specs.getDiscount() / 100);
             String specsSrc = "/api/image/GS-" + RandomUtil.getTimeStamp();
             if (NullUtil.isNotNullOrEmpty(specs.getId()) && NullUtil.isNotNullOrEmpty(specs.getSpecsSrc())) {
                 ViewGoodsSpecs record = goodsService.selectSpecsInfo(specs.getId(), specs.getGoodsId(), user.getId());

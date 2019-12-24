@@ -2,10 +2,10 @@ package com.applet.user.mapper;
 
 import com.applet.user.entity.GoodsSpecs;
 import com.applet.user.entity.GoodsSpecsExample;
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 @Mapper
 public interface GoodsSpecsMapper {

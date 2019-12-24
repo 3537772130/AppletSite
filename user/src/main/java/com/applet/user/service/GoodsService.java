@@ -183,6 +183,9 @@ public class GoodsService {
         if (NullUtil.isNotNullOrEmpty(goods.getGoodsStatus())) {
             c.andGoodsStatusEqualTo(goods.getGoodsStatus());
         }
+        if (NullUtil.isNotNullOrEmpty(goods.getIfDiscount())){
+            c.andIfDiscountEqualTo(goods.getIfDiscount());
+        }
         c.andUserIdEqualTo(goods.getUserId());
         long count = viewGoodsInfoMapper.countByExample(example);
         if (count > 0) {
@@ -486,7 +489,7 @@ public class GoodsService {
         GoodsInfo goods = new GoodsInfo();
         goods.setId(goodsId);
         if (ifPrice) {
-            String sql = "SELECT goods_id,min(actual_price) as mix_price, max(actual_price) as max_price " +
+            String sql = "SELECT goods_id,min(sell_price) as mix_price, max(sell_price) as max_price " +
                     "FROM goods_specs " +
                     "WHERE goods_id = " + goodsId + " " +
                     "GROUP BY goods_id";

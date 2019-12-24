@@ -25,9 +25,15 @@ public class ViewGoodsInfo implements Serializable {
 
     private String coverSrc;
 
+    private Integer discount;
+
     private Double minPrice;
 
     private Double maxPrice;
+
+    private String describeStr;
+
+    private Integer ifDiscount;
 
     private Integer goodsIndex;
 
@@ -110,6 +116,14 @@ public class ViewGoodsInfo implements Serializable {
         this.coverSrc = coverSrc == null ? null : coverSrc.trim();
     }
 
+    public Integer getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Integer discount) {
+        this.discount = discount;
+    }
+
     public Double getMinPrice() {
         return minPrice;
     }
@@ -124,6 +138,22 @@ public class ViewGoodsInfo implements Serializable {
 
     public void setMaxPrice(Double maxPrice) {
         this.maxPrice = maxPrice;
+    }
+
+    public String getDescribeStr() {
+        return describeStr;
+    }
+
+    public void setDescribeStr(String describeStr) {
+        this.describeStr = describeStr == null ? null : describeStr.trim();
+    }
+
+    public Integer getIfDiscount() {
+        return ifDiscount;
+    }
+
+    public void setIfDiscount(Integer ifDiscount) {
+        this.ifDiscount = ifDiscount;
     }
 
     public Integer getGoodsIndex() {

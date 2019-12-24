@@ -1,5 +1,8 @@
 package com.applet.apply.entity;
 
+import com.applet.common.util.Constants;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -22,12 +25,19 @@ public class ViewGoodsInfo implements Serializable {
 
     private String coverSrc;
 
+    private Integer discount;
+
     private Double minPrice;
 
     private Double maxPrice;
 
+    private String describeStr;
+
+    private Integer ifDiscount;
+
     private Integer goodsIndex;
 
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
     private Date updateTime;
 
     private Integer goodsStatus;
@@ -106,6 +116,14 @@ public class ViewGoodsInfo implements Serializable {
         this.coverSrc = coverSrc == null ? null : coverSrc.trim();
     }
 
+    public Integer getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Integer discount) {
+        this.discount = discount;
+    }
+
     public Double getMinPrice() {
         return minPrice;
     }
@@ -120,6 +138,22 @@ public class ViewGoodsInfo implements Serializable {
 
     public void setMaxPrice(Double maxPrice) {
         this.maxPrice = maxPrice;
+    }
+
+    public String getDescribeStr() {
+        return describeStr;
+    }
+
+    public void setDescribeStr(String describeStr) {
+        this.describeStr = describeStr == null ? null : describeStr.trim();
+    }
+
+    public Integer getIfDiscount() {
+        return ifDiscount;
+    }
+
+    public void setIfDiscount(Integer ifDiscount) {
+        this.ifDiscount = ifDiscount;
     }
 
     public Integer getGoodsIndex() {
