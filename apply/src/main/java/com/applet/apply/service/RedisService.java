@@ -1,5 +1,8 @@
 package com.applet.apply.service;
 
+import com.applet.apply.entity.ViewAppletInfo;
+import com.applet.common.util.NullUtil;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -32,8 +35,6 @@ public class RedisService {
      * 不设置过期时长
      */
     public static final long NOT_EXPIRE = -1;
-
-
 
 
     public boolean existsKey(String key) {
@@ -132,12 +133,18 @@ public class RedisService {
     }
 
     public void setRedisValue(String key, Object object) {
-        redisTemplate.opsForValue().set(key, object);
+        JSONObject obj = JSONObject.fromObject(object);
+        redisTemplate.opsForValue().set(key, obj.toString());
         redisTemplate.expire(key, -1, TimeUnit.SECONDS);
     }
 
-    public Object getRedisValue(String key){
+    public Object getRedisValue(String key) {
 //        redisTemplate.opsForValue().set(key, null);
+        String json = (String) redisTemplate.opsForValue().get(key);
+        if (NullUtil.isNotNullOrEmpty(json)){
+            JSONObject obj = JSONObject.fromObject(json);
+            ViewAppletInfo info = (ViewAppletInfo) JSONObject.toBean(obj, ViewAppletInfo.class);
+        }
         Object object = (Object) redisTemplate.opsForValue().get(key);
         return object;
     }

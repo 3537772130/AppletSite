@@ -1,6 +1,8 @@
 package com.applet.common.util;
 
 import com.alibaba.fastjson.JSONObject;
+import com.applet.common.util.encryption.Base64;
+import com.applet.common.util.encryption.RsaUtil;
 import com.applet.common.util.file.PathUtil;
 import com.applet.common.util.http.HttpUtil;
 import jodd.datetime.JDateTime;
@@ -87,8 +89,7 @@ public class WeChatAppletUtil {
      */
     private static String getUserAppletDecrypt(String str) throws Exception{
         byte[] bytes = Base64.decode(str);
-        String path = PathUtil.getClassPath("encrypt\\userAppletInfo\\rsa_private_key_pkcs8.pem");
-        PrivateKey pri = RsaUtil.getPriKey(path, "RSA");
+        PrivateKey pri = RsaUtil.getPriKey(RsaUtil.APPLET_MANAGE_PRIVATE_PATH, "RSA");
         byte[] dStr = RsaUtil.decrypt(bytes, pri, 2048, 11,"RSA/ECB/PKCS1Padding");
         return new String(dStr, "GBK");//GB2312
     }

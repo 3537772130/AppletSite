@@ -192,10 +192,12 @@ public class UserInfoService {
             c.andIpAddressLike("%" + log.getIpAddress() + "%");
         }
         if (NullUtil.isNotNullOrEmpty(startDate)) {
-            c.andLoginTimeGreaterThanOrEqualTo(DateUtils.strToDate(startDate));
+            JDateTime time = new JDateTime(startDate);
+            c.andLoginTimeGreaterThanOrEqualTo(time.convertToDate());
         }
         if (NullUtil.isNotNullOrEmpty(endDate)) {
-            c.andLoginTimeLessThanOrEqualTo(DateUtils.strToDate(endDate));
+            JDateTime time = new JDateTime(endDate);
+            c.andLoginTimeLessThanOrEqualTo(time.convertToDate());
         }
         long count = userLoginLogMapper.countByExample(example);
         if (count > 0) {

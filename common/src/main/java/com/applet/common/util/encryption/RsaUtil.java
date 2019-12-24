@@ -22,8 +22,8 @@ import java.security.spec.X509EncodedKeySpec;
 public class RsaUtil {
     public static final Logger logger = LoggerFactory.getLogger(RsaUtil.class);
 
-    public static final String APPLET_MANAGE_PUBLIC_PATH = PathUtil.getClassPath("encrypt\\applet\\manage\\rsa_public_key_pkcs8.pem");
-    public static final String APPLET_MANAGE_PRIVATE_PATH = PathUtil.getClassPath("encrypt\\applet\\manage\\rsa_private_key_pkcs8.pem");
+    public static final String APPLET_MANAGE_PUBLIC_PATH = PathUtil.getClassPath("encrypt\\userAppletInfo\\rsa_public_key_pkcs8.pem");
+    public static final String APPLET_MANAGE_PRIVATE_PATH = PathUtil.getClassPath("encrypt\\userAppletInfo\\rsa_private_key_pkcs8.pem");
 
     public static void main(String[] args) throws Exception {
         // TODO Auto-generated method stub
