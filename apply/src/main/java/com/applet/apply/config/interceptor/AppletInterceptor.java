@@ -43,7 +43,7 @@ public class AppletInterceptor extends HandlerInterceptorAdapter {
             }
             //检查小程序信息
             ViewAppletInfo appletInfo = (ViewAppletInfo) Optional.ofNullable(redisService.getValue(appletCode)).orElse(new ViewAppletInfo());
-            if (null == appletInfo) {
+            if (NullUtil.isNullOrEmpty(appletInfo.getId())) {
                 appletInfo = appletService.selectAppletInfo(appletCode);
                 if (null == appletInfo) {
                     request.getRequestDispatcher("/api/appletNull").forward(request, response);
@@ -79,7 +79,7 @@ public class AppletInterceptor extends HandlerInterceptorAdapter {
                 return false;
             }
             WeChantInfo weChantInfo = (WeChantInfo) Optional.ofNullable(redisService.getValue(wxCode)).orElse(new WeChantInfo());
-            if (null == weChantInfo) {
+            if (NullUtil.isNullOrEmpty(weChantInfo.getId())) {
                 weChantInfo = weChantService.selectWeChantInfo(appletInfo.getId(), wxCode);
                 if (null == weChantInfo) {
                     request.getRequestDispatcher("/api/auth").forward(request, response);

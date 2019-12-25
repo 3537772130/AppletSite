@@ -350,7 +350,7 @@ public class QiNiuUtil {
 
     public static String getVideoDownURL(String requestfileName, Long expires) {
         Auth auth = Auth.create(QiNiuConfig.AK, QiNiuConfig.SK);
-        String downloadRUL = auth.privateDownloadUrl(QiNiuConfig.downURLAppletVideoUrl + requestfileName, (null == expires) ? 180 : expires);
+        String downloadRUL = auth.privateDownloadUrl(QiNiuConfig.downURLAppletVideoUrl + requestfileName, (null == expires) ? 60 : expires);
         return downloadRUL;
     }
 
