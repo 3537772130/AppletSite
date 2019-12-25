@@ -1,44 +1,386 @@
 package com.applet.apply.service;
 
-import com.applet.apply.entity.ViewAppletInfo;
-import com.applet.common.util.NullUtil;
-import net.sf.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.alibaba.fastjson.JSONObject;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.data.redis.connection.RedisStringCommands;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.types.Expiration;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Mr.周华虎
- * Date: 2019/12/23
- * Time: 11:36
- * To change this template use File | Settings | File Templates.
- * Description:
+ * redis 缓存 - service
+ *
+ * @author liangzhong.tan
+ * @date 2019-12-25 11:29:27
  */
-@Service
+@Slf4j
 @Component
+@RequiredArgsConstructor
 public class RedisService {
-    @Autowired
-    private RedisTemplate<Serializable, Object> redisTemplate;
+
+    private final RedisTemplate redisTemplate;
 
     /**
-     * 默认过期时长，单位：秒
+     * key 是否存在
+     *
+     * @param key
+     * @return
      */
-    public static final long DEFAULT_EXPIRE = 60 * 60 * 24;
+    public boolean exists(String key) {
+        try {
+            return redisTemplate.hasKey(key);
+        } catch (Exception ex) {
+            return false;
+        }
+    }
 
     /**
-     * 不设置过期时长
+     * Set {@code value} for {@code key}, only if {@code key} does not exist.
+     *
+     * @param key
+     * @param value
+     * @param expire
+     * @param timeUnit
+     * @return
      */
-    public static final long NOT_EXPIRE = -1;
+    public boolean setNx(String key, String value, long expire, TimeUnit timeUnit) {
+        try {
+            return (boolean) redisTemplate.execute((RedisCallback<Boolean>) connection -> connection.set(key.getBytes(), value.getBytes(), Expiration.from(expire, timeUnit), RedisStringCommands.SetOption.ifAbsent()));
+        } catch (Exception e) {
+            log.error("设置缓存异常, key = {}", key, e);
+        }
+        return false;
+    }
+
+    /**
+     * Set {@code value} for {@code key}, only if {@code key} does not exist.
+     *
+     * @param key
+     * @param value
+     * @param expire 有效期.（秒）
+     * @return
+     */
+    public boolean setNx(String key, String value, long expire) {
+        try {
+            return setNx(key, value, expire, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            log.error("设置缓存异常, key = {}", key, e);
+        }
+        return false;
+    }
+
+    /**
+     * 递增 +1
+     *
+     * @param key
+     * @return key递增后的值
+     */
+    public Long incrBy(String key) {
+        try {
+            return redisTemplate.opsForValue().increment(key);
+        } catch (Exception ex) {
+            log.error("取缓存异常, key = {}, ex = {}", key, ex);
+        }
+        return null;
+    }
+
+    /**
+     * 递增
+     *
+     * @param key
+     * @param delta 步长
+     * @return key递增后的值
+     */
+    public Long incrBy(String key, long delta) {
+        try {
+            return redisTemplate.opsForValue().increment(key, delta);
+        } catch (Exception ex) {
+            log.error("取缓存异常, key = {}, ex = {}", key, ex);
+        }
+        return null;
+    }
+
+    /**
+     * 将哈希值{@code hashKey}的{@code value}增加给定的{@code delta}。
+     *
+     * @param key
+     * @param hashKey hashKey
+     * @param delta   步长
+     * @return key递增后的值
+     */
+    public Long hashIncrBy(String key, String hashKey, long delta) {
+        try {
+            return redisTemplate.opsForHash().increment(key, hashKey, delta);
+        } catch (Exception ex) {
+            log.error("取缓存异常, key = {}, ex = {}", key, ex);
+        }
+        return null;
+    }
+
+    /**
+     * 为 key 设置 value
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public boolean setValue(String key, Serializable value) {
+        try {
+            redisTemplate.opsForValue().set(key, value);
+            return true;
+        } catch (Exception ex) {
+            log.error("取缓存异常, key = {}, ex = {}", key, ex);
+        }
+        return false;
+    }
+
+    /**
+     * 设置 key 的 value 和过期时间
+     *
+     * @param key
+     * @param value
+     * @param second 到期时间(秒)
+     * @return
+     */
+    public boolean setValue(final String key, final Serializable value, final long second) {
+        return setValue(key, value, second, TimeUnit.SECONDS);
+    }
+
+    /**
+     * 设置 key 的 value 和过期时间
+     *
+     * @param key
+     * @param value
+     * @param expire 到期时间
+     * @param unit   到期时间计量单位
+     * @return
+     */
+    public boolean setValue(String key, Serializable value, long expire, TimeUnit unit) {
+        try {
+            redisTemplate.opsForValue().set(key, value, expire, unit);
+            return true;
+        } catch (Exception ex) {
+            log.error("取缓存异常, key = {}, ex = {}", key, ex);
+        }
+        return false;
+    }
 
 
-    public boolean existsKey(String key) {
-        return redisTemplate.hasKey(key);
+    /**
+     * 获取 key 只
+     *
+     * @param key
+     * @return
+     */
+    public Object getValue(String key) {
+        try {
+            return redisTemplate.opsForValue().get(key);
+        } catch (Exception ex) {
+            log.error("取缓存异常, key = {}, ex = {}", key, ex);
+        }
+        return null;
+    }
+
+    /**
+     * 设置 key 的 value 和过期时间
+     *
+     * @param key
+     * @param expire 到期时间
+     * @param unit   到期时间计量单位
+     * @return
+     */
+    public boolean expire(String key, long expire, TimeUnit unit) {
+        try {
+            redisTemplate.expire(key, expire, unit);
+            return true;
+        } catch (Exception ex) {
+            log.error("取缓存异常, key = {}, ex = {}", key, ex);
+        }
+        return false;
+    }
+
+    /**
+     * 设置 key 的 value 和过期时间
+     *
+     * @param key
+     * @param expire 到期时间(秒)
+     * @return
+     */
+    public boolean expire(final String key, final long expire) {
+        return expire(key, expire, TimeUnit.SECONDS);
+    }
+
+    public Boolean setList(String key, Collection<Serializable> values) {
+        try {
+            redisTemplate.opsForList().leftPushAll(key, values);
+            return true;
+        } catch (Exception ex) {
+            log.error("取缓存异常, key = {}, ex = {}", key, ex);
+        }
+        return false;
+    }
+
+    public <T> Boolean setList(String key, Collection<T> values, long expire) {
+        try {
+            redisTemplate.opsForList().leftPushAll(key, values);
+            redisTemplate.expire(key, expire, TimeUnit.SECONDS);
+            return true;
+        } catch (Exception ex) {
+            log.error("取缓存异常, key = {}, ex = {}", key, ex);
+        }
+        return false;
+    }
+
+    public <T> boolean listAppend(final String key, T value) {
+        try {
+            redisTemplate.opsForList().leftPush(key, value);
+            return true;
+        } catch (Exception ex) {
+            log.error("取缓存异常, key = {}, ex = {}", key, ex);
+        }
+        return false;
+    }
+
+    public Boolean setHash(String key, Map<Object, Object> value) {
+        try {
+            redisTemplate.opsForHash().putAll(key, value);
+            return true;
+        } catch (Exception ex) {
+            log.error("取缓存异常, key = {}, ex = {}", key, ex);
+        }
+        return false;
+    }
+
+    public Boolean setHash(String key, Map<Object, Object> value, long expire) {
+        try {
+            redisTemplate.opsForHash().putAll(key, value);
+            redisTemplate.expire(key, expire, TimeUnit.SECONDS);
+            return true;
+        } catch (Exception ex) {
+            log.error("取缓存异常, key = {}, ex = {}", key, ex);
+        }
+        return false;
+    }
+
+    /**
+     * 获取存储在{@code key}的整个哈希。
+     *
+     * @param key
+     * @return
+     */
+    public Map<Object, Object> getMap(String key) {
+        Map<Object, Object> v = null;
+        try {
+            v = redisTemplate.opsForHash().entries(key);
+        } catch (Exception ex) {
+            log.error("取缓存异常, key = {}, ex = {}", key, ex);
+        }
+        return v;
+    }
+
+    /**
+     * 从{@code key}处的哈希中获取给定{@code hashKey}的值。
+     *
+     * @param key
+     * @param hashKey
+     * @return
+     */
+    public Object getMap(String key, Object hashKey) {
+        try {
+            return redisTemplate.opsForHash().get(key, hashKey);
+        } catch (Exception ex) {
+            log.error("取缓存异常, key = {}, ex = {}", key, ex);
+        }
+        return null;
+    }
+
+    public List<Serializable> getList(String key) {
+        List<Serializable> v = null;
+        try {
+            v = redisTemplate.opsForList().range(key, 0, -1);
+        } catch (Exception ex) {
+            log.error("取缓存异常, key = {}, ex = {}", key, ex);
+        }
+        return v;
+    }
+
+    public <T> List<T> getObjectList(String key) {
+        List<T> v = null;
+        try {
+            v = redisTemplate.opsForList().range(key, 0, -1);
+        } catch (Exception ex) {
+            log.error("取缓存异常, key = {}, ex = {}", key, ex);
+        }
+        return v;
+    }
+
+
+    public Boolean delete(String key) {
+        try {
+            redisTemplate.delete(key);
+            return true;
+        } catch (Exception ex) {
+            log.error("取缓存异常, key = {}, ex = {}", key, ex);
+        }
+        return false;
+    }
+
+    /**
+     * 前缀匹配删除多个key
+     *
+     * @param keyPrefix 前缀
+     * @return
+     */
+    public Boolean deleteLike(String keyPrefix) {
+        try {
+            if (StringUtils.isNotEmpty(keyPrefix)) {
+                redisTemplate.delete(redisTemplate.keys(keyPrefix + "*"));
+            }
+            return true;
+        } catch (Exception ex) {
+            log.error("取缓存异常, keyPrefix = {}, ex = {}", keyPrefix, ex);
+        }
+        return false;
+    }
+
+    /**
+     * 删除Key的集合
+     *
+     * @param keys
+     */
+    public Boolean delete(Set<String> keys) {
+        try {
+            redisTemplate.delete(keys);
+            return true;
+        } catch (Exception ex) {
+            log.error("取缓存异常, keys = {}, ex = {}", JSONObject.toJSONString(keys), ex);
+        }
+        return false;
+    }
+
+    /**
+     * 删除Key的集合
+     *
+     * @param keys
+     */
+    public Boolean delete(String... keys) {
+        try {
+            redisTemplate.delete(keys);
+            return true;
+        } catch (Exception ex) {
+            log.error("取缓存异常, keys = {}, ex = {}", JSONObject.toJSONString(keys), ex);
+        }
+        return false;
     }
 
     /**
@@ -62,55 +404,6 @@ public class RedisService {
         return redisTemplate.renameIfAbsent(oldKey, newKey);
     }
 
-    /**
-     * 删除key
-     *
-     * @param key
-     */
-    public void deleteKey(String key) {
-        redisTemplate.delete(key);
-    }
-
-//    /**
-//     * 删除多个key
-//     *
-//     * @param keys
-//     */
-//    public void deleteKey(String... keys) {
-//        Set<String> kSet = Stream.of(keys).map(k -> k).collect(Collectors.toSet());
-//        redisTemplate.delete(kSet);
-//    }
-//
-//    /**
-//     * 删除Key的集合
-//     *
-//     * @param keys
-//     */
-//    public void deleteKey(Collection<String> keys) {
-//        Set<String> kSet = keys.stream().map(k -> k).collect(Collectors.toSet());
-//        redisTemplate.delete(kSet);
-//    }
-
-    /**
-     * 设置key的生命周期
-     *
-     * @param key
-     * @param time
-     * @param timeUnit
-     */
-    public void expireKey(String key, long time, TimeUnit timeUnit) {
-        redisTemplate.expire(key, time, timeUnit);
-    }
-
-    /**
-     * 指定key在指定的日期过期
-     *
-     * @param key
-     * @param date
-     */
-    public void expireKeyAt(String key, Date date) {
-        redisTemplate.expireAt(key, date);
-    }
 
     /**
      * 查询key的生命周期
@@ -123,30 +416,5 @@ public class RedisService {
         return redisTemplate.getExpire(key, timeUnit);
     }
 
-    /**
-     * 将key设置为永久有效
-     *
-     * @param key
-     */
-    public void persistKey(String key) {
-        redisTemplate.persist(key);
-    }
-
-    public void setRedisValue(String key, Object object) {
-        JSONObject obj = JSONObject.fromObject(object);
-        redisTemplate.opsForValue().set(key, obj.toString());
-        redisTemplate.expire(key, -1, TimeUnit.SECONDS);
-    }
-
-    public Object getRedisValue(String key) {
-//        redisTemplate.opsForValue().set(key, null);
-        String json = (String) redisTemplate.opsForValue().get(key);
-        if (NullUtil.isNotNullOrEmpty(json)){
-            JSONObject obj = JSONObject.fromObject(json);
-            ViewAppletInfo info = (ViewAppletInfo) JSONObject.toBean(obj, ViewAppletInfo.class);
-        }
-        Object object = (Object) redisTemplate.opsForValue().get(key);
-        return object;
-    }
 
 }
