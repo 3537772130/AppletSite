@@ -75,6 +75,18 @@ public class AppletService {
     /**
      * 查询小程序信息
      *
+     * @param userId
+     * @return
+     */
+    public List<AppletInfo> selectAppletInfo(Integer userId) {
+        AppletInfoExample example = new AppletInfoExample();
+        example.createCriteria().andUserIdEqualTo(userId).andStatusEqualTo(1);
+        return appletInfoMapper.selectByExample(example);
+    }
+
+    /**
+     * 查询小程序信息
+     *
      * @param id
      * @param userId
      * @return
