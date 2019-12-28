@@ -35,11 +35,29 @@ public class WeChantService {
     @Autowired(required=true)
     private ViewWeChantInfoMapper viewWeChantInfoMapper;
     @Autowired(required=true)
-    private UserInfoMapper userInfoMapper;
-    @Autowired(required=true)
     private UserOperationLogMapper userOperationLogMapper;
     @Autowired(required=true)
-    private CommonMapper commonMapper;
+    private UserService userService;
+
+    /**
+     * 查询微信信息
+     *
+     * @param appletId
+     * @param wxCode
+     * @return
+     */
+    public ViewWeChantInfo selectViewWeChantInfo(Integer appletId, String wxCode) {
+        ViewWeChantInfoExample example = new ViewWeChantInfoExample();
+        example.createCriteria().andAppletIdEqualTo(appletId).andWxCodeEqualTo(wxCode);
+        List<ViewWeChantInfo> list = viewWeChantInfoMapper.selectByExample(example);
+        if (NullUtil.isNotNullOrEmpty(list)) {
+            ViewWeChantInfo info = list.get(0);
+            if (info.getStatus().intValue() == 1) {
+                return info;
+            }
+        }
+        return null;
+    }
 
     /**
      * 查询登录微信信息
@@ -153,26 +171,6 @@ public class WeChantService {
      * 查询微信信息
      *
      * @param appletId
-     * @param wxCode
-     * @return
-     */
-    public WeChantInfo selectWeChantInfo(Integer appletId, String wxCode) {
-        WeChantInfoExample example = new WeChantInfoExample();
-        example.createCriteria().andAppletIdEqualTo(appletId).andWxCodeEqualTo(wxCode);
-        List<WeChantInfo> list = weChantInfoMapper.selectByExample(example);
-        if (NullUtil.isNotNullOrEmpty(list)) {
-            WeChantInfo info = list.get(0);
-            if (info.getStatus()) {
-                return info;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 查询微信信息
-     *
-     * @param appletId
      * @param userId
      * @return
      */
@@ -185,32 +183,6 @@ public class WeChantService {
             if (info.getStatus()) {
                 return info;
             }
-        }
-        return null;
-    }
-
-    /**
-     * 查询用户信息
-     *
-     * @param userId
-     * @return
-     */
-    public UserInfo getUserInfo(Integer userId) {
-        return userInfoMapper.selectByPrimaryKey(userId);
-    }
-
-    /**
-     * 查询用户信息
-     *
-     * @param mobile
-     * @return
-     */
-    public UserInfo getUserInfo(String mobile) {
-        UserInfoExample example = new UserInfoExample();
-        example.createCriteria().andMobileEqualTo(mobile);
-        List<UserInfo> list = userInfoMapper.selectByExample(example);
-        if (NullUtil.isNotNullOrEmpty(list)) {
-            return list.get(0);
         }
         return null;
     }
@@ -230,6 +202,7 @@ public class WeChantService {
         if (userInfo == null) {
             //未注册手机号则自动完成注册
             userInfo = new UserInfo();
+            userInfo.setId(null);
             userInfo.setMobile(mobile);
             userInfo.setNickName(weChantInfo.getNickName());
             userInfo.setEncrypted(RandomUtil.getRandomStr32());
@@ -247,9 +220,8 @@ public class WeChantService {
             userInfo.setFreeBalance(0.0d);
             userInfo.setIntegral(0);
             userInfo.setRecommendId(null == rmdInfo ? null : rmdInfo.getId());
-            userInfo.setCreateDate(new Date());
             userInfo.setStatus(true);
-            userInfoMapper.insertSelective(userInfo);
+            userService.updateUserInfo(userInfo);
         }
 
         //添加操作日志记录
@@ -298,30 +270,10 @@ public class WeChantService {
             InputStream inputStream = new ByteArrayInputStream(pdfFile);
             MultipartFile file = new MockMultipartFile("newFileName", "oldFileName", ContentType.APPLICATION_OCTET_STREAM.toString(), inputStream);
             QiNiuUtil.uploadFile(file, key);
-//            userInfoMapper.updateByPrimaryKeySelective(info);
             return key;
         } catch (Exception e) {
             log.error("上传微信头像到七牛空间出错{}", e);
             return null;
         }
-    }
-
-    /**
-     * 更新用户信息
-     *
-     * @param userInfo
-     */
-    public void updateUserInfo(UserInfo userInfo) {
-        userInfoMapper.updateByPrimaryKeySelective(userInfo);
-    }
-
-    /**
-     * 微信自动解绑账号
-     *
-     * @param weChantInfo
-     */
-    public void updateWeChant(ViewWeChantInfo weChantInfo) {
-        String sql = "UPDATE we_chant_applet SET user_id = NULL WHERE id = " + weChantInfo.getId();
-        commonMapper.updateBatch(sql);
     }
 }

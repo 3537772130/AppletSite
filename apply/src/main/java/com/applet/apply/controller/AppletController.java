@@ -4,7 +4,7 @@ import com.applet.apply.config.annotation.CancelAuth;
 import com.applet.apply.config.annotation.SessionScope;
 import com.applet.apply.entity.AppletInfo;
 import com.applet.apply.entity.ViewAppletInfo;
-import com.applet.apply.entity.WeChantInfo;
+import com.applet.apply.entity.ViewWeChantInfo;
 import com.applet.apply.service.AppletService;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.AjaxResponse;
@@ -91,7 +91,7 @@ public class AppletController {
      * @return
      */
     @RequestMapping(value = "/setAppletAddress")
-    public Object setAppletAddress(@SessionScope("appletInfo") ViewAppletInfo appletInfo, @SessionScope("weChantInfo") WeChantInfo weChantInfo,
+    public Object setAppletAddress(@SessionScope("appletInfo") ViewAppletInfo appletInfo, @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo,
                                    @RequestParam String address, @RequestParam String title, @RequestParam String lat, @RequestParam String lon){
         try {
             if (!NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())){
@@ -120,7 +120,7 @@ public class AppletController {
      * @return
      */
     @RequestMapping(value = "/getAppletQrCode")
-    public Object getAppletQrCode(@SessionScope("appletInfo") ViewAppletInfo appletInfo, @SessionScope("weChantInfo") WeChantInfo weChantInfo){
+    public Object getAppletQrCode(@SessionScope("appletInfo") ViewAppletInfo appletInfo, @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo){
         if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId()) && weChantInfo.getUserId().intValue() == appletInfo.getUserId()){
             String path = "/upload/applet/qrCode/" + appletInfo.getAppletCode() + ".jpg";
             if (!QiNiuUtil.existsFile(QiNiuConfig.bucketAppletImage, path)){
@@ -145,7 +145,7 @@ public class AppletController {
      * @return
      */
     @RequestMapping(value = "setAppletColor")
-    public Object setAppletColor(@SessionScope("appletInfo") ViewAppletInfo appletInfo, @SessionScope("weChantInfo") WeChantInfo weChantInfo, String color){
+    public Object setAppletColor(@SessionScope("appletInfo") ViewAppletInfo appletInfo, @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, String color){
         try {
             AppletInfo info = appletService.selectAppletInfo(appletInfo.getId(), weChantInfo.getUserId());
             if (null == info){

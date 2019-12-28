@@ -122,15 +122,15 @@ public class UserCouponController {
                 if (NullUtil.isNullOrEmpty(coupon.getGainAppletId())) {
                     return AjaxResponse.error("获取途径不能为空");
                 }
-                if (NullUtil.isNullOrEmpty(coupon.getGainPrice())) {
-                    return AjaxResponse.error("获取额度不能为空");
-                }
-                if (coupon.getGainPrice().doubleValue() <= 0.0d) {
-                    return AjaxResponse.error("获取金额限制必须大于0");
-                }
                 if (coupon.getCouponType().intValue() == 3) {
                     coupon.setStatus(0);
                 }
+            }
+            if (NullUtil.isNullOrEmpty(coupon.getGainPrice())) {
+                return AjaxResponse.error("获取额度不能为空");
+            }
+            if (coupon.getGainPrice().doubleValue() < 0.0d) {
+                return AjaxResponse.error("获取金额限制必须大于等于0");
             }
             if (NullUtil.isNullOrEmpty(coupon.getUseAppletId())) {
                 return AjaxResponse.error("应用途径不能为空");

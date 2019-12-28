@@ -2,7 +2,7 @@ package com.applet.apply.controller;
 
 import com.applet.apply.config.annotation.SessionScope;
 import com.applet.apply.entity.ShippingAddress;
-import com.applet.apply.entity.WeChantInfo;
+import com.applet.apply.entity.ViewWeChantInfo;
 import com.applet.apply.service.ShippingAddressService;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.RegularUtil;
@@ -36,7 +36,7 @@ public class ShippingAddressController {
      * @return
      */
     @RequestMapping(value = "/queryShippingAddressList")
-    public Object queryShippingAddressList(@SessionScope("weChantInfo") WeChantInfo weChantInfo){
+    public Object queryShippingAddressList(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo){
         if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())){
             List<ShippingAddress> list = shippingAddressService.selectShippingAddressList(weChantInfo.getUserId());
             return AjaxResponse.success(list);
@@ -51,7 +51,7 @@ public class ShippingAddressController {
      * @return
      */
     @RequestMapping(value = "/queryShippingAddressInfo")
-    public Object queryShippingAddressInfo(@SessionScope("weChantInfo") WeChantInfo weChantInfo, @RequestParam Integer id){
+    public Object queryShippingAddressInfo(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, @RequestParam Integer id){
         if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())){
             ShippingAddress shippingAddress = shippingAddressService.selectShippingAddressInfo(id, weChantInfo.getUserId());
             if (shippingAddress == null){
@@ -69,7 +69,7 @@ public class ShippingAddressController {
      * @return
      */
     @RequestMapping(value = "/addShippingAddress")
-    public Object addShippingAddress(@SessionScope("weChantInfo") WeChantInfo weChantInfo, ShippingAddress record){
+    public Object addShippingAddress(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, ShippingAddress record){
         try {
             if (!NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())){
                 return AjaxResponse.msg("0","未绑定账号");
@@ -114,7 +114,7 @@ public class ShippingAddressController {
      * @return
      */
     @RequestMapping(value = "/setShippingAddressByIsDefault")
-    public Object setShippingAddressByIsDefault(@SessionScope("weChantInfo") WeChantInfo weChantInfo, @RequestParam Integer id){
+    public Object setShippingAddressByIsDefault(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, @RequestParam Integer id){
         try {
             if (!NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())){
                 return AjaxResponse.msg("0","未绑定账号");
@@ -138,7 +138,7 @@ public class ShippingAddressController {
      * @return
      */
     @RequestMapping(value = "/deleteShippingAddress")
-    public Object deleteShippingAddress(@SessionScope("weChantInfo") WeChantInfo weChantInfo, @RequestParam Integer id){
+    public Object deleteShippingAddress(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, @RequestParam Integer id){
         try {
             if (!NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())){
                 return AjaxResponse.msg("0","未绑定账号");

@@ -1,5 +1,6 @@
 package com.applet.common.util;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -117,6 +118,14 @@ public class NullUtil {
         return null == bool ? true : false;
     }
 
+    /**
+     * 判断时间类型是否为空
+     * @param date
+     * @return
+     */
+    public static boolean isNullOrEmpty(Date date){
+        return null == date ? true : false;
+    }
 
     /**
      * 判断字符串是否不为空
@@ -136,7 +145,7 @@ public class NullUtil {
      * @return
      */
     public static boolean isNotNullOrEmpty(Integer num) {
-        return null == num ? false : true;
+        return !isNullOrEmpty(num);
     }
 
     /**
@@ -146,7 +155,7 @@ public class NullUtil {
      * @return
      */
     public static boolean isNotNullOrEmpty(List list) {
-        return (null != list && list.size() > 0) ? true : false;
+        return !isNullOrEmpty(list);
     }
 
     /**
@@ -155,7 +164,7 @@ public class NullUtil {
      * @return
      */
     public static boolean isNotNullOrEmpty(Double num){
-        return null == num ? false : true;
+        return !isNullOrEmpty(num);
     }
 
     /**
@@ -164,9 +173,17 @@ public class NullUtil {
      * @return
      */
     public static boolean isNotNullOrEmpty(Boolean bool){
-        return null == bool ? false : true;
+        return !isNullOrEmpty(bool);
     }
 
+    /**
+     * 判断时间类型是否为空
+     * @param date
+     * @return
+     */
+    public static boolean isNotNullOrEmpty(Date date){
+        return !isNullOrEmpty(date);
+    }
 
     /**
      *    * 判断传进来的字符串，是否
