@@ -1,5 +1,6 @@
 package com.applet.apply.config.interceptor;
 
+import com.alibaba.fastjson.JSONObject;
 import com.applet.apply.config.annotation.CancelAuth;
 import com.applet.apply.entity.ViewAppletInfo;
 import com.applet.apply.entity.ViewWeChantInfo;
@@ -37,7 +38,7 @@ public class AppletInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         try {
-            log.info("初始化访问者信息...");
+            log.info("访问控制拦截\nURI: {} \n Params: {}", request.getRequestURI(), JSONObject.toJSONString(request.getParameterMap()));
             String appletCode = request.getParameter("appletCode");
             if (NullUtil.isNullOrEmpty(appletCode)) {
                 request.getRequestDispatcher("/api/illegal").forward(request, response);
@@ -67,6 +68,10 @@ public class AppletInterceptor extends HandlerInterceptorAdapter {
             }
             request.getSession().setAttribute("appletInfo", appletInfo);
 
+            if (!handler.getClass().isAssignableFrom(HandlerMethod.class)) {
+                return true;
+            }
+
             // 检查登录用户信息
             // 取消用户登录认证
             HandlerMethod handleMethod = (HandlerMethod) handler;
@@ -76,10 +81,10 @@ public class AppletInterceptor extends HandlerInterceptorAdapter {
             if (NullUtil.isNotNullOrEmpty(loginCode) && ca != null) {
                 log.info("没有登陆记录，微信重新授权登陆小程序，loginCode: " + loginCode);
                 return true;
-            } else if (NullUtil.isNullOrEmpty(wxCode) && ca != null){
+            } else if (NullUtil.isNullOrEmpty(wxCode) && ca != null) {
                 log.info("加载小程序信息,appletCode: " + appletCode);
                 return true;
-            } else if (NullUtil.isNullOrEmpty(wxCode) && ca == null){
+            } else if (NullUtil.isNullOrEmpty(wxCode) && ca == null) {
                 log.info("小程序登陆过期......");
                 request.getRequestDispatcher("/api/loginOverdue").forward(request, response);
                 return false;
