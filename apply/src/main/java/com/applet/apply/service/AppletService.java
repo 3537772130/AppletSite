@@ -67,9 +67,6 @@ public class AppletService {
      */
     public void updateAppletAddress(Integer appletId, Map map){
         AppletInfo applet = selectAppletInfo(appletId);
-        applet.setProvince(map.get("province").toString());
-        applet.setCity(map.get("city").toString());
-        applet.setCounty(map.get("district").toString());
         applet.setAddressDetails(map.get("address").toString());
         applet.setAddressSimple(map.get("title").toString());
         applet.setLon(Double.parseDouble(map.get("lon").toString()));

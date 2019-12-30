@@ -12,6 +12,7 @@ import jodd.datetime.JDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,7 +49,7 @@ public class WeChantController {
      * @param gender
      * @return
      */
-    @RequestMapping(value = "login")
+    @PostMapping(value = "login")
     @CancelAuth
     public Object login(@SessionScope("appletInfo") ViewAppletInfo appletInfo, @RequestParam("loginCode") String loginCode,
                         @RequestParam("nickName") String nickName, @RequestParam("avatarUrl") String avatarUrl,

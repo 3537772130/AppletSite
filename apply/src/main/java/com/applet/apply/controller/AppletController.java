@@ -6,6 +6,7 @@ import com.applet.apply.entity.AppletInfo;
 import com.applet.apply.entity.ViewAppletInfo;
 import com.applet.apply.entity.ViewWeChantInfo;
 import com.applet.apply.service.AppletService;
+import com.applet.apply.service.RedisService;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.AjaxResponse;
 import com.applet.common.util.TencentLocationUtils;
@@ -32,6 +33,8 @@ public class AppletController {
     private static final Logger log = LoggerFactory.getLogger(AppletController.class);
     @Autowired
     private AppletService appletService;
+    @Autowired
+    private RedisService redisService;
 
     /**
      * 获取小程序基本信息
@@ -42,6 +45,7 @@ public class AppletController {
     @CancelAuth
     public Object getAppletInfo(@SessionScope("appletInfo") ViewAppletInfo appletInfo){
         Map map = new HashMap();
+        map.put("id", appletInfo.getId());
         map.put("appletName", NullUtil.isNotNullOrEmpty(appletInfo.getAppletSimple()) ? appletInfo.getAppletSimple() : appletInfo.getAppletName());
         map.put("appletLogo", appletInfo.getAppletLogo());
         map.put("telephone", appletInfo.getTelephone());
@@ -106,6 +110,9 @@ public class AppletController {
             map.put("lon", lon);
             map.put("lat", lat);
             appletService.updateAppletAddress(appletInfo.getId(), map);
+            // 更新redis信息
+            ViewAppletInfo appletInfo1 = appletService.selectAppletInfo(appletInfo.getAppletCode());
+            redisService.setValue(appletInfo1.getAppletCode(), appletInfo1);
             return AjaxResponse.success("设置成功");
         } catch (Exception e) {
             log.error("商家设置小程序位置信息出错{}", e);
@@ -152,6 +159,10 @@ public class AppletController {
                 return AjaxResponse.error("没有权限");
             }
             appletService.updateAppletColor(info.getId(), color);
+
+            // 更新redis信息
+            ViewAppletInfo appletInfo1 = appletService.selectAppletInfo(appletInfo.getAppletCode());
+            redisService.setValue(appletInfo1.getAppletCode(), appletInfo1);
             return AjaxResponse.success("设置成功");
         } catch (Exception e) {
             log.error("设置小程序主题色彩出错{}", e);

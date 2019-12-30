@@ -85,7 +85,12 @@ public class AppletInterceptor extends HandlerInterceptorAdapter {
                 return false;
             }
             log.info("已有登陆记录，微信登陆信息使用redis加载,wxCode: " + wxCode);
-            ViewWeChantInfo weChantInfo = (ViewWeChantInfo) Optional.ofNullable(redisService.getValue(wxCode)).orElse(new WeChantInfo());
+            ViewWeChantInfo weChantInfo = new ViewWeChantInfo();
+            try {
+                weChantInfo = (ViewWeChantInfo) Optional.ofNullable(redisService.getValue(wxCode)).orElse(new WeChantInfo());
+            } catch (Exception e) {
+                log.info("未能从redis中获取到用户信息");
+            }
             if (NullUtil.isNullOrEmpty(weChantInfo.getId())) {
                 weChantInfo = weChantService.selectViewWeChantInfo(appletInfo.getId(), wxCode);
                 if (null == weChantInfo) {
