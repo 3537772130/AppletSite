@@ -1,25 +1,19 @@
 package com.applet.apply.service;
 
-import com.applet.apply.config.annotation.SessionScope;
-import com.applet.apply.entity.AuthCodeExample;
+import com.applet.apply.entity.ReceiveAddress;
+import com.applet.apply.entity.ReceiveAddressExample;
 import com.applet.apply.entity.UserInfo;
 import com.applet.apply.entity.UserInfoExample;
-import com.applet.apply.entity.WeChantInfo;
+import com.applet.apply.mapper.ReceiveAddressMapper;
 import com.applet.apply.mapper.UserInfoMapper;
-import com.applet.common.entity.CheckResult;
 import com.applet.common.util.*;
-import com.applet.common.util.qiniu.QiNiuUtil;
-import jodd.datetime.JDateTime;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -33,6 +27,8 @@ import java.util.Map;
 public class UserService {
     @Autowired(required = true)
     private UserInfoMapper userInfoMapper;
+    @Autowired
+    private ReceiveAddressMapper receiveAddressMapper;
 
     /**
      * 查询用户信息
@@ -73,4 +69,65 @@ public class UserService {
         }
     }
 
+    /**
+     * 查询用户收货人集合
+     * @param userId
+     * @return
+     */
+    public List<ReceiveAddress> selectReceiveAddressList(Integer userId){
+        ReceiveAddressExample example = new ReceiveAddressExample();
+        example.setOrderByClause("update_time desc");
+        example.createCriteria().andUserIdEqualTo(userId).andStatusEqualTo(true);
+        return receiveAddressMapper.selectByExample(example);
+    }
+
+    /**
+     * 查询用户收货人信息
+     * @param id
+     * @param userId
+     * @return
+     */
+    public ReceiveAddress selectReceiveAddressInfo(Integer id, Integer userId){
+        ReceiveAddressExample example = new ReceiveAddressExample();
+        example.createCriteria().andIdEqualTo(id).andUserIdEqualTo(userId).andStatusEqualTo(true);
+        List<ReceiveAddress> list = receiveAddressMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+    }
+
+    /**
+     * 更新用户收货人信息
+     * @param record
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void updateReceiveAddressInfo(ReceiveAddress record){
+        if (record.getIsDefault()){
+            ReceiveAddressExample example = new ReceiveAddressExample();
+            example.createCriteria().andUserIdEqualTo(record.getUserId()).andIsDefaultEqualTo(true).andStatusEqualTo(true);
+            ReceiveAddress record1 = new ReceiveAddress();
+            record1.setIsDefault(false);
+            receiveAddressMapper.updateByExampleSelective(record1, example);
+        }
+        record.setUpdateTime(new Date());
+        if (NullUtil.isNotNullOrEmpty(record.getId())){
+            record.setUserId(null);
+            record.setStatus(null);
+            receiveAddressMapper.updateByPrimaryKeySelective(record);
+        } else {
+            record.setStatus(true);
+            receiveAddressMapper.insertSelective(record);
+        }
+
+
+    }
+
+    /**
+     * 删除用户收货人信息
+     * @param id
+     */
+    public void updateReceiveAddressStatus(Integer id) {
+        ReceiveAddress record = new ReceiveAddress();
+        record.setId(id);
+        record.setStatus(false);
+        receiveAddressMapper.updateByPrimaryKeySelective(record);
+    }
 }

@@ -1,8 +1,5 @@
 package com.applet.apply.service;
 
-import com.applet.apply.entity.ShippingAddress;
-import com.applet.apply.entity.ShippingAddressExample;
-import com.applet.apply.mapper.ShippingAddressMapper;
 import com.applet.common.util.NullUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

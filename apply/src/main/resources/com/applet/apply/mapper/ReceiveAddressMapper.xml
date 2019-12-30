@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.applet.apply.mapper.ShippingAddressMapper">
-  <resultMap id="BaseResultMap" type="com.applet.apply.entity.ShippingAddress">
+<mapper namespace="com.applet.apply.mapper.ReceiveAddressMapper">
+  <resultMap id="BaseResultMap" type="com.applet.apply.entity.ReceiveAddress">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="user_id" jdbcType="INTEGER" property="userId" />
-    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
     <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="province_code" jdbcType="VARCHAR" property="provinceCode" />
     <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
     <result column="county" jdbcType="VARCHAR" property="county" />
+    <result column="region" jdbcType="VARCHAR" property="region" />
     <result column="address" jdbcType="VARCHAR" property="address" />
-    <result column="zip_code" jdbcType="VARCHAR" property="zipCode" />
+    <result column="lon" jdbcType="VARCHAR" property="lon" />
+    <result column="lat" jdbcType="VARCHAR" property="lat" />
+    <result column="label" jdbcType="INTEGER" property="label" />
     <result column="is_default" jdbcType="BIT" property="isDefault" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="status" jdbcType="BIT" property="status" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -73,16 +79,16 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, user_id, user_name, mobile, province, city, county, address, zip_code, is_default, 
-    status
+    id, user_id, name, mobile, province, province_code, city, city_code, county, region, 
+    address, lon, lat, label, is_default, update_time, status
   </sql>
-  <select id="selectByExample" parameterType="com.applet.apply.entity.ShippingAddressExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.applet.apply.entity.ReceiveAddressExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from shipping_address
+    from receive_address
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -94,31 +100,35 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from shipping_address
+    from receive_address
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from shipping_address
+    delete from receive_address
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.applet.apply.entity.ShippingAddressExample">
-    delete from shipping_address
+  <delete id="deleteByExample" parameterType="com.applet.apply.entity.ReceiveAddressExample">
+    delete from receive_address
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.applet.apply.entity.ShippingAddress">
-    insert into shipping_address (id, user_id, user_name, 
-      mobile, province, city, 
-      county, address, zip_code, 
-      is_default, status)
-    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, 
-      #{mobile,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
-      #{county,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{zipCode,jdbcType=VARCHAR}, 
-      #{isDefault,jdbcType=BIT}, #{status,jdbcType=BIT})
+  <insert id="insert" parameterType="com.applet.apply.entity.ReceiveAddress">
+    insert into receive_address (id, user_id, name, 
+      mobile, province, province_code, 
+      city, city_code, county, 
+      region, address, lon, 
+      lat, label, is_default, 
+      update_time, status)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
+      #{mobile,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{provinceCode,jdbcType=VARCHAR}, 
+      #{city,jdbcType=VARCHAR}, #{cityCode,jdbcType=VARCHAR}, #{county,jdbcType=VARCHAR}, 
+      #{region,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{lon,jdbcType=VARCHAR}, 
+      #{lat,jdbcType=VARCHAR}, #{label,jdbcType=INTEGER}, #{isDefault,jdbcType=BIT}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=BIT})
   </insert>
-  <insert id="insertSelective" keyProperty="id" parameterType="com.applet.apply.entity.ShippingAddress" useGeneratedKeys="true">
-    insert into shipping_address
+  <insert id="insertSelective" keyProperty="id" parameterType="com.applet.apply.entity.ReceiveAddress" useGeneratedKeys="true">
+    insert into receive_address
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -126,8 +136,8 @@
       <if test="userId != null">
         user_id,
       </if>
-      <if test="userName != null">
-        user_name,
+      <if test="name != null">
+        name,
       </if>
       <if test="mobile != null">
         mobile,
@@ -135,20 +145,38 @@
       <if test="province != null">
         province,
       </if>
+      <if test="provinceCode != null">
+        province_code,
+      </if>
       <if test="city != null">
         city,
+      </if>
+      <if test="cityCode != null">
+        city_code,
       </if>
       <if test="county != null">
         county,
       </if>
+      <if test="region != null">
+        region,
+      </if>
       <if test="address != null">
         address,
       </if>
-      <if test="zipCode != null">
-        zip_code,
+      <if test="lon != null">
+        lon,
+      </if>
+      <if test="lat != null">
+        lat,
+      </if>
+      <if test="label != null">
+        label,
       </if>
       <if test="isDefault != null">
         is_default,
+      </if>
+      <if test="updateTime != null">
+        update_time,
       </if>
       <if test="status != null">
         status,
@@ -161,8 +189,8 @@
       <if test="userId != null">
         #{userId,jdbcType=INTEGER},
       </if>
-      <if test="userName != null">
-        #{userName,jdbcType=VARCHAR},
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
       </if>
       <if test="mobile != null">
         #{mobile,jdbcType=VARCHAR},
@@ -170,34 +198,52 @@
       <if test="province != null">
         #{province,jdbcType=VARCHAR},
       </if>
+      <if test="provinceCode != null">
+        #{provinceCode,jdbcType=VARCHAR},
+      </if>
       <if test="city != null">
         #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null">
+        #{cityCode,jdbcType=VARCHAR},
       </if>
       <if test="county != null">
         #{county,jdbcType=VARCHAR},
       </if>
+      <if test="region != null">
+        #{region,jdbcType=VARCHAR},
+      </if>
       <if test="address != null">
         #{address,jdbcType=VARCHAR},
       </if>
-      <if test="zipCode != null">
-        #{zipCode,jdbcType=VARCHAR},
+      <if test="lon != null">
+        #{lon,jdbcType=VARCHAR},
+      </if>
+      <if test="lat != null">
+        #{lat,jdbcType=VARCHAR},
+      </if>
+      <if test="label != null">
+        #{label,jdbcType=INTEGER},
       </if>
       <if test="isDefault != null">
         #{isDefault,jdbcType=BIT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="status != null">
         #{status,jdbcType=BIT},
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.applet.apply.entity.ShippingAddressExample" resultType="java.lang.Long">
-    select count(*) from shipping_address
+  <select id="countByExample" parameterType="com.applet.apply.entity.ReceiveAddressExample" resultType="java.lang.Long">
+    select count(*) from receive_address
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update shipping_address
+    update receive_address
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
@@ -205,8 +251,8 @@
       <if test="record.userId != null">
         user_id = #{record.userId,jdbcType=INTEGER},
       </if>
-      <if test="record.userName != null">
-        user_name = #{record.userName,jdbcType=VARCHAR},
+      <if test="record.name != null">
+        name = #{record.name,jdbcType=VARCHAR},
       </if>
       <if test="record.mobile != null">
         mobile = #{record.mobile,jdbcType=VARCHAR},
@@ -214,20 +260,38 @@
       <if test="record.province != null">
         province = #{record.province,jdbcType=VARCHAR},
       </if>
+      <if test="record.provinceCode != null">
+        province_code = #{record.provinceCode,jdbcType=VARCHAR},
+      </if>
       <if test="record.city != null">
         city = #{record.city,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cityCode != null">
+        city_code = #{record.cityCode,jdbcType=VARCHAR},
       </if>
       <if test="record.county != null">
         county = #{record.county,jdbcType=VARCHAR},
       </if>
+      <if test="record.region != null">
+        region = #{record.region,jdbcType=VARCHAR},
+      </if>
       <if test="record.address != null">
         address = #{record.address,jdbcType=VARCHAR},
       </if>
-      <if test="record.zipCode != null">
-        zip_code = #{record.zipCode,jdbcType=VARCHAR},
+      <if test="record.lon != null">
+        lon = #{record.lon,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lat != null">
+        lat = #{record.lat,jdbcType=VARCHAR},
+      </if>
+      <if test="record.label != null">
+        label = #{record.label,jdbcType=INTEGER},
       </if>
       <if test="record.isDefault != null">
         is_default = #{record.isDefault,jdbcType=BIT},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.status != null">
         status = #{record.status,jdbcType=BIT},
@@ -238,30 +302,36 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update shipping_address
+    update receive_address
     set id = #{record.id,jdbcType=INTEGER},
       user_id = #{record.userId,jdbcType=INTEGER},
-      user_name = #{record.userName,jdbcType=VARCHAR},
+      name = #{record.name,jdbcType=VARCHAR},
       mobile = #{record.mobile,jdbcType=VARCHAR},
       province = #{record.province,jdbcType=VARCHAR},
+      province_code = #{record.provinceCode,jdbcType=VARCHAR},
       city = #{record.city,jdbcType=VARCHAR},
+      city_code = #{record.cityCode,jdbcType=VARCHAR},
       county = #{record.county,jdbcType=VARCHAR},
+      region = #{record.region,jdbcType=VARCHAR},
       address = #{record.address,jdbcType=VARCHAR},
-      zip_code = #{record.zipCode,jdbcType=VARCHAR},
+      lon = #{record.lon,jdbcType=VARCHAR},
+      lat = #{record.lat,jdbcType=VARCHAR},
+      label = #{record.label,jdbcType=INTEGER},
       is_default = #{record.isDefault,jdbcType=BIT},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       status = #{record.status,jdbcType=BIT}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.applet.apply.entity.ShippingAddress">
-    update shipping_address
+  <update id="updateByPrimaryKeySelective" parameterType="com.applet.apply.entity.ReceiveAddress">
+    update receive_address
     <set>
       <if test="userId != null">
         user_id = #{userId,jdbcType=INTEGER},
       </if>
-      <if test="userName != null">
-        user_name = #{userName,jdbcType=VARCHAR},
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
       </if>
       <if test="mobile != null">
         mobile = #{mobile,jdbcType=VARCHAR},
@@ -269,20 +339,38 @@
       <if test="province != null">
         province = #{province,jdbcType=VARCHAR},
       </if>
+      <if test="provinceCode != null">
+        province_code = #{provinceCode,jdbcType=VARCHAR},
+      </if>
       <if test="city != null">
         city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null">
+        city_code = #{cityCode,jdbcType=VARCHAR},
       </if>
       <if test="county != null">
         county = #{county,jdbcType=VARCHAR},
       </if>
+      <if test="region != null">
+        region = #{region,jdbcType=VARCHAR},
+      </if>
       <if test="address != null">
         address = #{address,jdbcType=VARCHAR},
       </if>
-      <if test="zipCode != null">
-        zip_code = #{zipCode,jdbcType=VARCHAR},
+      <if test="lon != null">
+        lon = #{lon,jdbcType=VARCHAR},
+      </if>
+      <if test="lat != null">
+        lat = #{lat,jdbcType=VARCHAR},
+      </if>
+      <if test="label != null">
+        label = #{label,jdbcType=INTEGER},
       </if>
       <if test="isDefault != null">
         is_default = #{isDefault,jdbcType=BIT},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=BIT},
@@ -290,17 +378,23 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.applet.apply.entity.ShippingAddress">
-    update shipping_address
+  <update id="updateByPrimaryKey" parameterType="com.applet.apply.entity.ReceiveAddress">
+    update receive_address
     set user_id = #{userId,jdbcType=INTEGER},
-      user_name = #{userName,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
       mobile = #{mobile,jdbcType=VARCHAR},
       province = #{province,jdbcType=VARCHAR},
+      province_code = #{provinceCode,jdbcType=VARCHAR},
       city = #{city,jdbcType=VARCHAR},
+      city_code = #{cityCode,jdbcType=VARCHAR},
       county = #{county,jdbcType=VARCHAR},
+      region = #{region,jdbcType=VARCHAR},
       address = #{address,jdbcType=VARCHAR},
-      zip_code = #{zipCode,jdbcType=VARCHAR},
+      lon = #{lon,jdbcType=VARCHAR},
+      lat = #{lat,jdbcType=VARCHAR},
+      label = #{label,jdbcType=INTEGER},
       is_default = #{isDefault,jdbcType=BIT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
       status = #{status,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>

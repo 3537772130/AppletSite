@@ -2,10 +2,7 @@ package com.applet.apply.controller;
 
 import com.applet.apply.config.annotation.CancelAuth;
 import com.applet.apply.config.annotation.SessionScope;
-import com.applet.apply.entity.AuthCode;
-import com.applet.apply.entity.UserInfo;
-import com.applet.apply.entity.ViewAppletInfo;
-import com.applet.apply.entity.ViewWeChantInfo;
+import com.applet.apply.entity.*;
 import com.applet.apply.service.*;
 import com.applet.common.entity.CheckResult;
 import com.applet.common.util.*;
@@ -18,6 +15,7 @@ import com.applet.common.util.qiniu.QiNiuUtil;
 import jodd.datetime.JDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -298,5 +297,112 @@ public class UserController {
             log.error("小程序更新用户信息出错{}", e);
             return AjaxResponse.error("提交失败");
         }
+    }
+
+    /**
+     * 查询收货人列表
+     * @param weChantInfo
+     * @return
+     */
+    @RequestMapping(value = "queryReceiveAddressList")
+    public Object queryReceiveAddressList(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo){
+        List<ReceiveAddress> list = userService.selectReceiveAddressList(weChantInfo.getUserId());
+        if (NullUtil.isNotNullOrEmpty(list)){
+            return AjaxResponse.success(list);
+        }
+        return AjaxResponse.error("未找到相关记录");
+    }
+
+    /**
+     * 查询收货人信息
+     * @param weChantInfo
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "queryReceiveAddressInfo")
+    public Object queryReceiveAddressInfo(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer id){
+        ReceiveAddress receiveAddress = userService.selectReceiveAddressInfo(id, weChantInfo.getUserId());
+        if (receiveAddress != null){
+            return AjaxResponse.success(receiveAddress);
+        }
+        return AjaxResponse.error("未找到相关记录");
+    }
+
+    /**
+     * 保存收货人信息
+     * @param weChantInfo
+     * @param record
+     * @return
+     */
+    @RequestMapping(value = "addReceiveAddress")
+    public Object addReceiveAddress(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, @Param("record") ReceiveAddress record){
+        try {
+            if (!NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())){
+                return AjaxResponse.msg("0","未绑定账号");
+            }
+            if (record == null){
+                return AjaxResponse.error("参数错误");
+            }
+            if (NullUtil.isNotNullOrEmpty(record.getId())){
+                record.setId(record.getId().intValue() == 0 ? null : record.getId());
+            }
+            if (NullUtil.isNullOrEmpty(record.getName())){
+                return AjaxResponse.error("收货人不能为空");
+            }
+            if (record.getName().trim().getBytes().length > 60){
+                return AjaxResponse.error("收货人输入过长");
+            }
+            if (NullUtil.isNullOrEmpty(record.getMobile())){
+                return AjaxResponse.error("联系电话不能为空");
+            }
+            if (!RegularUtil.checkMobile(record.getMobile())){
+                return AjaxResponse.error("联系电话格式不正确");
+            }
+            if (NullUtil.isNullOrEmpty(record.getRegion())){
+                return AjaxResponse.error("地区不能为空");
+            }
+            if (NullUtil.isNullOrEmpty(record.getAddress())){
+                return AjaxResponse.error("详细地址不能为空");
+            }
+            if (record.getAddress().trim().getBytes().length > 150){
+                return AjaxResponse.error("详细地址输入过长");
+            }
+            if (NullUtil.isNullOrEmpty(record.getLon()) || NullUtil.isNullOrEmpty(record.getLat())){
+                return AjaxResponse.error("参数错误");
+            }
+            Map map = TencentLocationUtils.getLocation(record.getLon(), record.getLat());
+            record.setProvince(map.get("province").toString());
+            record.setProvinceCode(map.get("provinceCode").toString());
+            record.setCity(map.get("city").toString());
+            record.setCityCode(map.get("cityCode").toString());
+            record.setCounty(map.get("district").toString());
+            record.setUserId(weChantInfo.getUserId());
+            userService.updateReceiveAddressInfo(record);
+            return AjaxResponse.success("保存成功");
+        } catch (Exception e) {
+            log.error("保存收货人信息出错{}", e);
+        }
+        return AjaxResponse.error("保存失败");
+    }
+
+    /**
+     * 删除收货地址
+     * @param weChantInfo
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "deleteReceiveAddress")
+    public Object deleteReceiveAddress(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer id){
+        try {
+            ReceiveAddress record = userService.selectReceiveAddressInfo(id, weChantInfo.getUserId());
+            if (record == null){
+                return AjaxResponse.error("未找到相关记录");
+            }
+            userService.updateReceiveAddressStatus(id);
+            return AjaxResponse.success("操作成功");
+        } catch (Exception e) {
+            log.error("删除收货地址出错{}", e);
+        }
+        return AjaxResponse.error("操作失败");
     }
 }

@@ -39,7 +39,7 @@ public class AppletInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         try {
             log.info("访问控制拦截\nURI: {} \n Params: {}", request.getRequestURI(), JSONObject.toJSONString(request.getParameterMap()));
-            String appletCode = request.getParameter("appletCode");
+            String appletCode = request.getHeader("appletCode");
             if (NullUtil.isNullOrEmpty(appletCode)) {
                 request.getRequestDispatcher("/api/illegal").forward(request, response);
                 return false;
@@ -77,7 +77,7 @@ public class AppletInterceptor extends HandlerInterceptorAdapter {
             HandlerMethod handleMethod = (HandlerMethod) handler;
             CancelAuth ca = handleMethod.getMethodAnnotation(CancelAuth.class);
             String loginCode = request.getParameter("loginCode");
-            String wxCode = request.getParameter("wxCode");
+            String wxCode = request.getHeader("wxCode");
             if (NullUtil.isNotNullOrEmpty(loginCode) && ca != null) {
                 log.info("没有登陆记录，微信重新授权登陆小程序，loginCode: " + loginCode);
                 return true;

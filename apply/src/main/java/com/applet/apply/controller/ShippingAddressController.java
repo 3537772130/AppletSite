@@ -1,7 +1,6 @@
 package com.applet.apply.controller;
 
 import com.applet.apply.config.annotation.SessionScope;
-import com.applet.apply.entity.ShippingAddress;
 import com.applet.apply.entity.ViewWeChantInfo;
 import com.applet.apply.service.ShippingAddressService;
 import com.applet.common.util.NullUtil;
