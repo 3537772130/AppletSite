@@ -1,27 +1,44 @@
 package com.applet.apply.entity;
 
-import java.io.Serializable;
+import com.applet.common.util.Constants;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
-public class ShippingAddress implements Serializable {
+import java.io.Serializable;
+import java.util.Date;
+
+public class ReceiveAddress implements Serializable {
     private Integer id;
 
     private Integer userId;
 
-    private String userName;
+    private String name;
 
     private String mobile;
 
     private String province;
 
+    private String provinceCode;
+
     private String city;
+
+    private String cityCode;
 
     private String county;
 
+    private String region;
+
     private String address;
 
-    private String zipCode;
+    private String lon;
+
+    private String lat;
+
+    private Integer label;
 
     private Boolean isDefault;
+
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
+    private Date updateTime;
 
     private Boolean status;
 
@@ -43,12 +60,12 @@ public class ShippingAddress implements Serializable {
         this.userId = userId;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getName() {
+        return name;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName == null ? null : userName.trim();
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
     }
 
     public String getMobile() {
@@ -67,12 +84,28 @@ public class ShippingAddress implements Serializable {
         this.province = province == null ? null : province.trim();
     }
 
+    public String getProvinceCode() {
+        return provinceCode;
+    }
+
+    public void setProvinceCode(String provinceCode) {
+        this.provinceCode = provinceCode == null ? null : provinceCode.trim();
+    }
+
     public String getCity() {
         return city;
     }
 
     public void setCity(String city) {
         this.city = city == null ? null : city.trim();
+    }
+
+    public String getCityCode() {
+        return cityCode;
+    }
+
+    public void setCityCode(String cityCode) {
+        this.cityCode = cityCode == null ? null : cityCode.trim();
     }
 
     public String getCounty() {
@@ -83,6 +116,14 @@ public class ShippingAddress implements Serializable {
         this.county = county == null ? null : county.trim();
     }
 
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region == null ? null : region.trim();
+    }
+
     public String getAddress() {
         return address;
     }
@@ -91,12 +132,28 @@ public class ShippingAddress implements Serializable {
         this.address = address == null ? null : address.trim();
     }
 
-    public String getZipCode() {
-        return zipCode;
+    public String getLon() {
+        return lon;
     }
 
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode == null ? null : zipCode.trim();
+    public void setLon(String lon) {
+        this.lon = lon == null ? null : lon.trim();
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat == null ? null : lat.trim();
+    }
+
+    public Integer getLabel() {
+        return label;
+    }
+
+    public void setLabel(Integer label) {
+        this.label = label;
     }
 
     public Boolean getIsDefault() {
@@ -105,6 +162,14 @@ public class ShippingAddress implements Serializable {
 
     public void setIsDefault(Boolean isDefault) {
         this.isDefault = isDefault;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 
     public Boolean getStatus() {
