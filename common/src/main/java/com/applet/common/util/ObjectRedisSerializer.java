@@ -1,5 +1,6 @@
 package com.applet.common.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.serializer.support.DeserializingConverter;
 import org.springframework.core.serializer.support.SerializingConverter;
@@ -14,6 +15,7 @@ import org.springframework.data.redis.serializer.SerializationException;
  * To change this template use File | Settings | File Templates.
  * Description:
  */
+@Slf4j
 public class ObjectRedisSerializer implements RedisSerializer<Object> {
 
     /**
@@ -31,13 +33,13 @@ public class ObjectRedisSerializer implements RedisSerializer<Object> {
     public byte[] serialize(Object obj) throws SerializationException {
         byte[] byteArray = null;
         if (null == obj) {
-            System.err.println("----------------------------->:Redis待序列化的对象为空.");
+            log.error(":Redis待序列化的对象为空.");
             byteArray = EMPTY_ARRAY;
         } else {
             try {
                 byteArray = serializer.convert(obj);
             } catch (Exception e) {
-                System.err.println("----------------------------->Redis序列化对象失败,异常："+e.getMessage());
+                log.error("Redis序列化对象失败,异常：", e);
                 byteArray = EMPTY_ARRAY;
             }
         }
@@ -47,13 +49,13 @@ public class ObjectRedisSerializer implements RedisSerializer<Object> {
     @Override
     public Object deserialize(byte[] datas) throws SerializationException {
         Object obj = null;
-        if((null == datas)|| (datas.length == 0)){
-            System.out.println("---------------------------------->Redis待反序列化的对象为空.");
-        }else{
+        if ((null == datas) || (datas.length == 0)) {
+            log.error("-----Redis待反序列化的对象为空.");
+        } else {
             try {
                 obj = deserializer.convert(datas);
             } catch (Exception e) {
-                System.out.println("------------------------------------->Redis反序列化对象失败,异常："+e.getMessage());
+                log.error("--------Redis反序列化对象失败,异常：" + e);
             }
         }
         return obj;
