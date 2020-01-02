@@ -1,20 +1,43 @@
 package com.applet.common.util;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 import java.util.Collection;
 
-/**
- * @program: SpringBootDemo
- * @description: 分页
- * @author: Mr.ZhouHuaHu
- * @create: 2019-06-18 17:22
- **/
-public class Page {
-    private long totalCount;//总数
-    private long page;//当前页码
-    private long pageSize;//页面大小
-    private Collection dataSource;//数据源
+@Data
+@ApiModel("分页对象")
+@NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Page<T> implements Serializable {
+
+    @ApiModelProperty("总数")
+    private long totalCount;
+
+    @ApiModelProperty("当前页码")
+    private long page;
+
+    @ApiModelProperty("页面大小")
+    private long pageSize;
+
+    @ApiModelProperty("数据源")
+    private Collection<T> dataSource;
+
+    @ApiModelProperty("开始行")
     private long rowStart;
+
+    @ApiModelProperty("总页数")
     private long totalPage;
+
+    public Page(long page, long size, long totalCount) {
+        this.page = page;
+        this.pageSize = size;
+        this.totalCount = totalCount;
+    }
 
     public Page(long page, long pageSize) {
         if (pageSize <= 0) {
@@ -30,10 +53,6 @@ public class Page {
         this.rowStart = (this.page - 1) * this.pageSize;
     }
 
-    public void setTotalPage(long totalPage) {
-        this.totalPage = totalPage;
-    }
-
     public long getTotalPage() {
         if (totalCount % pageSize == 0) {
             this.totalPage = totalCount / pageSize;
@@ -43,43 +62,4 @@ public class Page {
         return totalPage;
     }
 
-    public long getTotalCount() {
-        return totalCount;
-    }
-
-    public void setTotalCount(long totalCount) {
-        this.totalCount = totalCount;
-    }
-
-    public long getPage() {
-        return page;
-    }
-
-    public void setPage(long page) {
-        this.page = page;
-    }
-
-    public long getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(long pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public Collection getDataSource() {
-        return dataSource;
-    }
-
-    public void setDataSource(Collection dataSource) {
-        this.dataSource = dataSource;
-    }
-
-    public long getRowStart() {
-        return rowStart;
-    }
-
-    public void setRowStart(long rowStart) {
-        this.rowStart = rowStart;
-    }
 }

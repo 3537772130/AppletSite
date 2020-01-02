@@ -2,7 +2,7 @@ package com.applet.manage.service;
 
 import com.applet.common.bo.PageBo;
 import com.applet.common.bo.SaleOrderBo;
-import com.applet.common.vo.PageVo;
+import com.applet.common.util.Page;
 import com.applet.common.vo.SaleOrderVo;
 
 /**
@@ -20,7 +20,7 @@ public interface SaleOrderService {
      * @param bo
      * @return
      */
-    PageVo<SaleOrderVo> findPage(PageBo<SaleOrderBo> bo);
+    Page<SaleOrderVo> findPage(PageBo<SaleOrderBo> bo);
 
     /**
      * 更新订单状态

@@ -2,7 +2,7 @@ package com.applet.manage.controller;
 
 import com.applet.common.bo.PageBo;
 import com.applet.common.bo.SaleOrderBo;
-import com.applet.common.vo.PageVo;
+import com.applet.common.util.Page;
 import com.applet.common.vo.RestVo;
 import com.applet.common.vo.SaleOrderVo;
 import com.applet.manage.service.SaleOrderService;
@@ -28,7 +28,7 @@ public class SaleOrderController {
 
     @PostMapping("page")
     @ApiOperation("分页")
-    public RestVo<PageVo<SaleOrderVo>> findPage(@ApiParam("分页对象") @RequestBody PageBo<SaleOrderBo> bo) {
+    public RestVo<Page<SaleOrderVo>> findPage(@ApiParam("分页对象") @RequestBody PageBo<SaleOrderBo> bo) {
         return RestVo.SUCCESS(service.findPage(bo));
     }
 
