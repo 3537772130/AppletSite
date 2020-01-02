@@ -278,7 +278,7 @@ public class RedisService {
      * @param key
      * @return
      */
-    public Map<Object, Object> getMap(String key) {
+    public Map<Object, Object> getHash(String key) {
         Map<Object, Object> v = null;
         try {
             v = redisTemplate.opsForHash().entries(key);
