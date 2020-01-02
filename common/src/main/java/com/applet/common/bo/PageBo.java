@@ -1,5 +1,7 @@
 package com.applet.common.bo;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -13,35 +15,20 @@ import java.util.Map;
  * @date 2019/12/31 13:51
  */
 @Data
+@ApiModel("分页请求实体")
 public class PageBo<T> implements Serializable {
 
-    /**
-     * 页码
-     */
+    @ApiModelProperty("页码")
     private Integer page;
 
-    /**
-     * 页码大小
-     */
+    @ApiModelProperty("页码大小")
     private Integer size = 20;
 
-    /**
-     * 查询参数
-     */
+    @ApiModelProperty("查询参数")
     private T param;
 
-    /**
-     * 多个参数排序
-     * <p>
-     * key : createDate
-     * value : desc
-     */
-    private Map<String, String> orderby = new HashMap<>();
-
-    /**
-     * 单参数排序
-     */
-    private String sortableField;
+    @ApiModelProperty(value = "多个参数排序", example = "{'createDate':'desc'}")
+    private Map<String, String> sortableField = new HashMap<>();
 
     public long getOffset() {
         return (page - 1) * size;

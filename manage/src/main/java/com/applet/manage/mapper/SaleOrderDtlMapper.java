@@ -3,6 +3,8 @@ package com.applet.manage.mapper;
 
 import com.applet.manage.entity.SaleOrderDtl;
 
+import java.util.List;
+
 /**
  * 订单详情
  *
@@ -21,4 +23,12 @@ public interface SaleOrderDtlMapper {
     int updateByPrimaryKeySelective(SaleOrderDtl record);
 
     int updateByPrimaryKey(SaleOrderDtl record);
+
+    /**
+     * 根据订单Id查询
+     *
+     * @param orderId 订单id
+     * @return 订单详情
+     */
+    List<SaleOrderDtl> findByOrderId(Integer orderId);
 }

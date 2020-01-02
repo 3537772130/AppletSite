@@ -1,5 +1,6 @@
 package com.applet.manage.mapper;
 
+import com.applet.common.mapper.BaseMapper;
 import com.applet.manage.entity.SaleOrderDoc;
 
 /**
@@ -8,7 +9,7 @@ import com.applet.manage.entity.SaleOrderDoc;
  * @author liangzhong.tan
  * @date 2019-12-31 10:11:00
  */
-public interface SaleOrderDocMapper {
+public interface SaleOrderDocMapper extends BaseMapper<SaleOrderDoc> {
     int deleteByPrimaryKey(Integer orderId);
 
     int insert(SaleOrderDoc record);

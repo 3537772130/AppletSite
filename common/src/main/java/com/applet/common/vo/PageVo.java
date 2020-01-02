@@ -1,5 +1,8 @@
 package com.applet.common.vo;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,34 +17,26 @@ import java.util.List;
  * @date 2019/12/31 13:51
  */
 @Data
-@NoArgsConstructor
+@ApiModel("分页响应实体")
 @AllArgsConstructor
+@NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PageVo<T> implements Serializable {
 
-    /**
-     * 当前页数
-     */
+    @ApiModelProperty("当前页数")
     private Integer page;
 
-    /**
-     * 每页条数
-     */
+    @ApiModelProperty("每页条数")
     private Integer size;
 
-    /**
-     * 总数
-     */
+    @ApiModelProperty("总数")
     private Long total;
 
-    /**
-     * 总页数
-     */
+    @ApiModelProperty("总页数")
     private Integer totalPages;
 
-    /**
-     * 数据 {@link List}
-     */
-    private List<T> data;
+    @ApiModelProperty("数据 {@link List}")
+    private List<T> datas;
 
 
 }
