@@ -31,4 +31,13 @@ public interface SaleOrderDtlMapper {
      * @return 订单详情
      */
     List<SaleOrderDtl> findByOrderId(Integer orderId);
+
+
+    /**
+     * 批量新增
+     *
+     * @param list
+     * @return
+     */
+    int batchInsert(List<SaleOrderDtl> list);
 }

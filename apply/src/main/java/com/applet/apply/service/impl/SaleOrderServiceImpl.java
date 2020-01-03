@@ -1,5 +1,12 @@
 package com.applet.apply.service.impl;
 
+import com.applet.apply.entity.SaleOrderDoc;
+import com.applet.apply.entity.SaleOrderDtl;
+import com.applet.apply.entity.SaleOrderTimeline;
+import com.applet.apply.mapper.SaleOrderDocMapper;
+import com.applet.apply.mapper.SaleOrderDtlMapper;
+import com.applet.apply.mapper.SaleOrderTimelineMapper;
+import com.applet.apply.service.SaleOrderService;
 import com.applet.common.bo.PageBo;
 import com.applet.common.bo.SaleOrderBo;
 import com.applet.common.enums.OrderEnums;
@@ -8,13 +15,6 @@ import com.applet.common.util.ObjectUtils;
 import com.applet.common.util.Page;
 import com.applet.common.vo.SaleOrderDtlVo;
 import com.applet.common.vo.SaleOrderVo;
-import com.applet.apply.entity.SaleOrderDoc;
-import com.applet.apply.entity.SaleOrderDtl;
-import com.applet.apply.entity.SaleOrderTimeline;
-import com.applet.apply.mapper.SaleOrderDocMapper;
-import com.applet.apply.mapper.SaleOrderDtlMapper;
-import com.applet.apply.mapper.SaleOrderTimelineMapper;
-import com.applet.apply.service.SaleOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -89,6 +89,21 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         });
         docVo.setDtls(dtlVos);
         return docVo;
+    }
+
+    @Override
+    public boolean create(SaleOrderBo bo) {
+        SaleOrderDoc order = new SaleOrderDoc();
+        BeanUtils.copyProperties(bo, order);
+        saleOrderDocMapper.insertSelective(order);
+        List<SaleOrderDtl> dtls = new ArrayList<>();
+        bo.getDtls().forEach(it -> {
+            SaleOrderDtl dtl = new SaleOrderDtl();
+            BeanUtils.copyProperties(it, dtl);
+            dtls.add(dtl);
+        });
+        saleOrderDtlMapper.batchInsert(dtls);
+        return false;
     }
 
 

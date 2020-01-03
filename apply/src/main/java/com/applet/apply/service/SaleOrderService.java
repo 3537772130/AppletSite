@@ -40,4 +40,13 @@ public interface SaleOrderService {
      * @return
      */
     SaleOrderVo detail(Integer orderId);
+
+    /**
+     * 创建销售订单
+     *
+     * @param bo
+     * @return
+     */
+    @Transactional(rollbackFor = Throwable.class)
+    boolean create(SaleOrderBo bo);
 }

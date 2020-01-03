@@ -1,11 +1,11 @@
 package com.applet.apply.controller;
 
+import com.applet.apply.service.SaleOrderService;
 import com.applet.common.bo.PageBo;
 import com.applet.common.bo.SaleOrderBo;
 import com.applet.common.util.Page;
 import com.applet.common.vo.RestVo;
 import com.applet.common.vo.SaleOrderVo;
-import com.applet.apply.service.SaleOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -43,4 +43,11 @@ public class SaleOrderController {
     public RestVo<SaleOrderVo> detail(@PathVariable Integer orderId) {
         return RestVo.SUCCESS(service.detail(orderId));
     }
+
+    @PostMapping("create")
+    @ApiOperation("用户下单")
+    public RestVo<SaleOrderVo> detail(@ApiParam("订单对象") @RequestBody SaleOrderBo bo) {
+        return RestVo.SUCCESS(service.create(bo));
+    }
+
 }
