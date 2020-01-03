@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.applet.apply.mapper.SaleOrderTimelineMapper" >
+<mapper namespace="com.applet.manage.mapper.SaleOrderTimelineMapper" >
   <resultMap id="BaseResultMap" type="com.applet.manage.entity.SaleOrderTimeline" >
     <id column="order_timeline_id" property="orderTimelineId" jdbcType="INTEGER" />
     <result column="order_id" property="orderId" jdbcType="INTEGER" />

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.applet.apply.mapper.SaleOrderDocMapper" >
+<mapper namespace="com.applet.manage.mapper.SaleOrderDocMapper" >
   <resultMap id="BaseResultMap" type="com.applet.manage.entity.SaleOrderDoc" >
     <id column="order_id" property="orderId" jdbcType="INTEGER" />
     <result column="gmt_created" property="gmtCreated" jdbcType="TIMESTAMP" />
