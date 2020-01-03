@@ -26,7 +26,7 @@ public interface OrderEnums {
         RECEIVED((byte) 6, "已签收"),
         ;
 
-        private byte code;
+        private Byte code;
         private String name;
 
     }
