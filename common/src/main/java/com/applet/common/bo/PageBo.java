@@ -18,10 +18,10 @@ import java.util.Map;
 @ApiModel("分页请求实体")
 public class PageBo<T> implements Serializable {
 
-    @ApiModelProperty("页码")
+    @ApiModelProperty(value = "页码",example = "1")
     private Integer page;
 
-    @ApiModelProperty("页码大小")
+    @ApiModelProperty(value = "页码大小",example = "30")
     private Integer size = 20;
 
     @ApiModelProperty("查询参数")

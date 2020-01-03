@@ -17,8 +17,8 @@ public enum ResultMsg {
      * 业务响应状态码信息
      */
 
-    SUCCESS("1", "操作成功"),
-    ERROR("-1", "系统异常"),
+    SUCCESS("S0000", "操作成功"),
+    ERROR("E0000", "系统异常"),
     FAIL("F0000", "操作失败"),
     ;
 

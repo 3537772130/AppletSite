@@ -38,7 +38,7 @@ public class SaleOrderController {
         return RestVo.SUCCESS(service.updateOrderStatus(orderId, status));
     }
 
-    @PutMapping("detail/{orderId}")
+    @GetMapping("detail/{orderId}")
     @ApiOperation("订单详情")
     public RestVo<SaleOrderVo> detail(@PathVariable Integer orderId) {
         return RestVo.SUCCESS(service.detail(orderId));
