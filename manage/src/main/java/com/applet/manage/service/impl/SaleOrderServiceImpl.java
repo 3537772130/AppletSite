@@ -2,14 +2,18 @@ package com.applet.manage.service.impl;
 
 import com.applet.common.bo.PageBo;
 import com.applet.common.bo.SaleOrderBo;
+import com.applet.common.enums.OrderEnums;
+import com.applet.common.util.EnumUtil;
 import com.applet.common.util.ObjectUtils;
 import com.applet.common.util.Page;
 import com.applet.common.vo.SaleOrderDtlVo;
 import com.applet.common.vo.SaleOrderVo;
 import com.applet.manage.entity.SaleOrderDoc;
 import com.applet.manage.entity.SaleOrderDtl;
+import com.applet.manage.entity.SaleOrderTimeline;
 import com.applet.manage.mapper.SaleOrderDocMapper;
 import com.applet.manage.mapper.SaleOrderDtlMapper;
+import com.applet.manage.mapper.SaleOrderTimelineMapper;
 import com.applet.manage.service.SaleOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -31,6 +35,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
     private final SaleOrderDocMapper saleOrderDocMapper;
     private final SaleOrderDtlMapper saleOrderDtlMapper;
+    private final SaleOrderTimelineMapper saleOrderTimelineMapper;
 
     @Override
     public Page<SaleOrderVo> findPage(PageBo<SaleOrderBo> bo) {
@@ -53,11 +58,18 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
     @Override
     public boolean updateOrderStatus(Integer orderId, Byte status) {
+        OrderEnums.OrderStatus orderStatus = EnumUtil.getEnumByCode(status, OrderEnums.OrderStatus.class);
+        if (orderStatus == null) {
+            return false;
+        }
         SaleOrderDoc order = new SaleOrderDoc();
         order.setGmtModified(new Date());
         order.setOrderId(orderId);
         order.setOrderStatus(status);
-        return saleOrderDocMapper.updateByPrimaryKeySelective(order) > 0;
+        order.setOrderStatusCn(orderStatus.getName());
+        saleOrderDocMapper.updateByPrimaryKeySelective(order);
+        saleOrderTimelineMapper.insertSelective(new SaleOrderTimeline(orderId, status, orderStatus.getName()));
+        return true;
     }
 
     @Override

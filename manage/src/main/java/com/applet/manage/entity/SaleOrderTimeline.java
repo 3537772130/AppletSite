@@ -1,6 +1,7 @@
 package com.applet.manage.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
@@ -11,6 +12,7 @@ import java.util.Date;
  * @date 2019-12-31 10:11:00
  */
 @Data
+@NoArgsConstructor
 public class SaleOrderTimeline {
     private Integer orderTimelineId;
 
@@ -18,7 +20,13 @@ public class SaleOrderTimeline {
 
     private Byte orderStatus;
 
-    private Byte orderStatusCn;
+    private String orderStatusCn;
 
     private Date gmtCreated;
+
+    public SaleOrderTimeline(Integer orderId, Byte orderStatus, String orderStatusCn) {
+        this.orderId = orderId;
+        this.orderStatus = orderStatus;
+        this.orderStatusCn = orderStatusCn;
+    }
 }

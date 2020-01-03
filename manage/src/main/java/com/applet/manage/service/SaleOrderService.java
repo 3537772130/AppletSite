@@ -4,6 +4,7 @@ import com.applet.common.bo.PageBo;
 import com.applet.common.bo.SaleOrderBo;
 import com.applet.common.util.Page;
 import com.applet.common.vo.SaleOrderVo;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 销售订单 - Service
@@ -29,6 +30,7 @@ public interface SaleOrderService {
      * @param status  状态
      * @return
      */
+    @Transactional(rollbackFor = Throwable.class)
     boolean updateOrderStatus(Integer orderId, Byte status);
 
     /**
