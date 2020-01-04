@@ -16,6 +16,8 @@ import java.util.List;
 @ApiModel("销售订单")
 public class SaleOrderBo {
 
+    // TODO 支付方式
+
     @ApiModelProperty("订单Id")
     private Integer orderId;
 
@@ -70,7 +72,10 @@ public class SaleOrderBo {
     @ApiModelProperty("订单拒绝原因")
     private String denialReason;
 
-    @ApiModelProperty("订单详情")
-    private List<SaleOrderDtlVo> dtls;
+    @ApiModelProperty("购物车Ids")
+    private List<Integer> dtls;
+
+//    @ApiModelProperty("订单详情")
+//    private List<SaleOrderDtlVo> dtls;
 
 }
