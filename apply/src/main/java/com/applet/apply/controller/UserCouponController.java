@@ -61,13 +61,12 @@ public class UserCouponController {
 
     /**
      * 查询用户在当前小程序可使用的优惠券
-     * @param appletInfo
      * @param weChantInfo
      * @return
      */
     @RequestMapping(value = "queryUserCouponByUse")
-    public Object queryUserCouponByUse(@SessionScope("appletInfo") ViewAppletInfo appletInfo, @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Double mountPrice){
-        List<ViewUserCoupon> list = userCouponService.selectUserCouponList(weChantInfo.getUserId(), appletInfo.getId(), mountPrice);
+    public Object queryUserCouponByUse( @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Double mountPrice){
+        List<ViewUserCoupon> list = userCouponService.selectUserCouponList(weChantInfo.getUserId(), weChantInfo.getAppletId(), mountPrice);
         if (NullUtil.isNotNullOrEmpty(list)){
             return AjaxResponse.success(list);
         }

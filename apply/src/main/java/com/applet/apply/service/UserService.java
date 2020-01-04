@@ -95,6 +95,18 @@ public class UserService {
     }
 
     /**
+     * 查询用户默认收货人信息
+     * @param userId
+     * @return
+     */
+    public ReceiveAddress selectReceiveAddressInfo(Integer userId){
+        ReceiveAddressExample example = new ReceiveAddressExample();
+        example.createCriteria().andUserIdEqualTo(userId).andIsDefaultEqualTo(true).andStatusEqualTo(true);
+        List<ReceiveAddress> list = receiveAddressMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+    }
+
+    /**
      * 更新用户收货人信息
      * @param record
      */
