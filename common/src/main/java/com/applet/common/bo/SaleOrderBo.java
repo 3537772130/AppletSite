@@ -1,11 +1,9 @@
 package com.applet.common.bo;
 
-import com.applet.common.vo.SaleOrderDtlVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -15,8 +13,7 @@ import java.util.List;
 @Data
 @ApiModel("销售订单")
 public class SaleOrderBo {
-
-    // TODO 支付方式
+/*
 
     @ApiModelProperty("订单Id")
     private Integer orderId;
@@ -72,10 +69,22 @@ public class SaleOrderBo {
     @ApiModelProperty("订单拒绝原因")
     private String denialReason;
 
-    @ApiModelProperty("购物车Ids")
-    private List<Integer> dtls;
+    @ApiModelProperty("订单详情")
+    private List<SaleOrderDtlVo> dtls;
+*/
 
-//    @ApiModelProperty("订单详情")
-//    private List<SaleOrderDtlVo> dtls;
+    @ApiModelProperty(value = "用户Id", hidden = true)
+    private Integer userId;
 
+    @ApiModelProperty("收获地址")
+    private Integer addressId;
+
+    @ApiModelProperty("支付方式")
+    private Byte payType;
+
+    @ApiModelProperty("用户购物车Ids")
+    private List<Integer> cartIdList;
+
+    @ApiModelProperty("用户优惠卷Id")
+    private Integer couponId;
 }

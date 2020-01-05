@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/sale/order")
 @RequiredArgsConstructor
-public class SaleOrderController {
+public class SaleOrderController extends BaseController {
 
     private final SaleOrderService service;
 
@@ -47,6 +47,7 @@ public class SaleOrderController {
     @PostMapping("create")
     @ApiOperation("用户下单")
     public RestVo<SaleOrderVo> detail(@ApiParam("订单对象") @RequestBody SaleOrderBo bo) {
+        bo.setUserId(this.getUserId());
         return RestVo.SUCCESS(service.create(bo));
     }
 

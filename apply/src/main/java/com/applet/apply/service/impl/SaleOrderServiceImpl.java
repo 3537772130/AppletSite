@@ -1,12 +1,12 @@
 package com.applet.apply.service.impl;
 
-import com.applet.apply.entity.SaleOrderDoc;
-import com.applet.apply.entity.SaleOrderDtl;
-import com.applet.apply.entity.SaleOrderTimeline;
+import com.applet.apply.entity.*;
 import com.applet.apply.mapper.SaleOrderDocMapper;
 import com.applet.apply.mapper.SaleOrderDtlMapper;
 import com.applet.apply.mapper.SaleOrderTimelineMapper;
+import com.applet.apply.mapper.ViewUserCartMapper;
 import com.applet.apply.service.SaleOrderService;
+import com.applet.apply.service.UserCouponService;
 import com.applet.common.bo.PageBo;
 import com.applet.common.bo.SaleOrderBo;
 import com.applet.common.enums.OrderEnums;
@@ -33,9 +33,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SaleOrderServiceImpl implements SaleOrderService {
 
+    private final UserCouponService userCouponService;
+
     private final SaleOrderDocMapper saleOrderDocMapper;
     private final SaleOrderDtlMapper saleOrderDtlMapper;
     private final SaleOrderTimelineMapper saleOrderTimelineMapper;
+    private final ViewUserCartMapper viewUserCartMapper;
 
     @Override
     public Page<SaleOrderVo> findPage(PageBo<SaleOrderBo> bo) {
@@ -93,15 +96,24 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
     @Override
     public boolean create(SaleOrderBo bo) {
+        ViewUserCoupon coupon = userCouponService.selectUserCouponInfo(bo.getAddressId(), bo.getUserId());
+
+        // TODO
+
+        List<ViewUserCart> carts = viewUserCartMapper.findByIds(bo.getCartIdList());
+        carts.forEach(it -> {
+        });
+
+
         SaleOrderDoc order = new SaleOrderDoc();
         BeanUtils.copyProperties(bo, order);
         saleOrderDocMapper.insertSelective(order);
         List<SaleOrderDtl> dtls = new ArrayList<>();
-        bo.getDtls().forEach(it -> {
+/*        bo.getDtls().forEach(it -> {
             SaleOrderDtl dtl = new SaleOrderDtl();
             BeanUtils.copyProperties(it, dtl);
             dtls.add(dtl);
-        });
+        });*/
         saleOrderDtlMapper.batchInsert(dtls);
         return false;
     }

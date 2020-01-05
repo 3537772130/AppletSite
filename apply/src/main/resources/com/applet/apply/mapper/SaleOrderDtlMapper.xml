@@ -157,4 +157,21 @@
     from sale_order_dtl
     where order_id = #{orderId,jdbcType=INTEGER}
   </select>
+
+  <insert id="batchInsert" parameterType="java.util.List" >
+    <selectKey resultType="java.lang.Integer" keyProperty="orderDtlId" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sale_order_dtl (order_id, goods_id, goods_name,
+    goods_specs_id, goods_specs_name, goods_specs_pic,
+    sale_qty, amount, sale_price
+    )
+    values
+     <foreach collection="list" item="item" separator=",">
+       (#{item.orderId,jdbcType=INTEGER}, #{item.goodsId,jdbcType=INTEGER}, #{item.goodsName,jdbcType=VARCHAR},
+       #{item.goodsSpecsId,jdbcType=INTEGER}, #{item.goodsSpecsName,jdbcType=VARCHAR}, #{item.goodsSpecsPic,jdbcType=VARCHAR},
+       #{item.saleQty,jdbcType=INTEGER}, #{item.amount,jdbcType=DECIMAL}, #{item.salePrice,jdbcType=DECIMAL}
+       )
+     </foreach>
+  </insert>
 </mapper>

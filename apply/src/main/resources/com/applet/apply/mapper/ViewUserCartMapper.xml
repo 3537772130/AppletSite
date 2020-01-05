@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.applet.apply.mapper.ViewUserCartMapper">
+    <resultMap id="BaseResultMap" type="com.applet.apply.entity.ViewUserCart">
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="wx_id" jdbcType="INTEGER" property="wxId"/>
+        <result column="applet_id" jdbcType="INTEGER" property="appletId"/>
+        <result column="goods_id" jdbcType="INTEGER" property="goodsId"/>
+        <result column="goods_name" jdbcType="VARCHAR" property="goodsName"/>
+        <result column="discount" jdbcType="INTEGER" property="discount"/>
+        <result column="if_discount" jdbcType="BIT" property="ifDiscount"/>
+        <result column="describe_str" jdbcType="VARCHAR" property="describeStr"/>
+        <result column="specs_id" jdbcType="INTEGER" property="specsId"/>
+        <result column="specs_src" jdbcType="VARCHAR" property="specsSrc"/>
+        <result column="specs_text" jdbcType="VARCHAR" property="specsText"/>
+        <result column="sell_price" jdbcType="DOUBLE" property="sellPrice"/>
+        <result column="amount" jdbcType="INTEGER" property="amount"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+
+    <select id="findByIds" resultMap="BaseResultMap" parameterType="java.util.List">
+        select * from view_user_cart
+        <where>
+            id in
+            <foreach collection="list" item="item" close=")" open="(" separator=",">
+                #{item}
+            </foreach>
+        </where>
+    </select>
+
+</mapper>

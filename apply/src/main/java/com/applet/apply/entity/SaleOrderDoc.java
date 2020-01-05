@@ -54,6 +54,5 @@ public class SaleOrderDoc {
 
     private String denialReason;
 
-    private List<SaleOrderTimeline> timelines;
-
+    private Byte payType;
 }
