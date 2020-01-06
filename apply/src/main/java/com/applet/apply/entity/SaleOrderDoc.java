@@ -1,10 +1,10 @@
 package com.applet.apply.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 /**
  * 销售订单
@@ -13,6 +13,7 @@ import java.util.List;
  * @date 2019-12-31 10:11:00
  */
 @Data
+@NoArgsConstructor
 public class SaleOrderDoc {
     private Integer orderId;
 
@@ -56,8 +57,7 @@ public class SaleOrderDoc {
 
     private Byte payType;
 
-    public SaleOrderDoc(String orderNo, Integer userId, String receiverName, String receiverPhone, String detailAddr, Double lat, Double lon, BigDecimal carriersFee, Integer appletId, Byte orderStatus, String orderStatusCn, BigDecimal totalAmount, BigDecimal ticketAmount, Integer userCouponId, Byte payType) {
-        this.orderNo = orderNo;
+    public SaleOrderDoc(Integer userId, String receiverName, String receiverPhone, String detailAddr, Double lat, Double lon, BigDecimal carriersFee, Integer appletId, Byte orderStatus, String orderStatusCn, BigDecimal totalAmount, BigDecimal ticketAmount, Integer userCouponId, Byte payType) {
         this.userId = userId;
         this.receiverName = receiverName;
         this.receiverPhone = receiverPhone;
