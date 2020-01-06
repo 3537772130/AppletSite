@@ -76,6 +76,9 @@ public class SaleOrderBo {
     @ApiModelProperty(value = "用户Id", hidden = true)
     private Integer userId;
 
+    @ApiModelProperty(value = "小程序Id", hidden = true)
+    private Integer appletId;
+
     @ApiModelProperty("收获地址")
     private Integer addressId;
 

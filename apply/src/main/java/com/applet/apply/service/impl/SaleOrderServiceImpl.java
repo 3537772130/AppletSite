@@ -15,10 +15,14 @@ import com.applet.common.util.ObjectUtils;
 import com.applet.common.util.Page;
 import com.applet.common.vo.SaleOrderDtlVo;
 import com.applet.common.vo.SaleOrderVo;
+import com.google.common.util.concurrent.AtomicDouble;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -96,19 +100,43 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
     @Override
     public boolean create(SaleOrderBo bo) {
-        ViewUserCoupon coupon = userCouponService.selectUserCouponInfo(bo.getAddressId(), bo.getUserId());
 
         // TODO
 
+        ViewUserCoupon coupon = userCouponService.selectUserCouponInfo(bo.getAddressId(), bo.getUserId());
+        SaleOrderDoc order = new SaleOrderDoc();
+/*        SaleOrderDoc order = new SaleOrderDoc(LocalDate.now().format(DateTimeFormatter.ofPattern("YYYYMMDD")),
+                bo.getUserId(),
+
+                );*/
+        List<SaleOrderDtl> dtls = new ArrayList<>();
+
         List<ViewUserCart> carts = viewUserCartMapper.findByIds(bo.getCartIdList());
+        AtomicDouble totalAmount = new AtomicDouble();
         carts.forEach(it -> {
+            double discountPrice = it.getIfDiscount() ? it.getSellPrice() * it.getDiscount() / 100 : it.getSellPrice();
+            totalAmount.addAndGet(discountPrice);
+            dtls.add(new SaleOrderDtl(null,
+                    order.getOrderId(),
+                    it.getGoodsId(),
+                    it.getGoodsName(),
+                    it.getSpecsId(),
+                    it.getSpecsText(),
+                    it.getSpecsSrc(),
+                    it.getAmount(),
+                    BigDecimal.valueOf(discountPrice).setScale(2, BigDecimal.ROUND_HALF_UP),
+                    BigDecimal.valueOf(it.getSellPrice()).setScale(2, BigDecimal.ROUND_HALF_UP)
+            ));
         });
 
+//        LocalDate.now().format(DateTimeFormatter.ofPattern("YYYYMMDD"));
 
-        SaleOrderDoc order = new SaleOrderDoc();
-        BeanUtils.copyProperties(bo, order);
+
         saleOrderDocMapper.insertSelective(order);
-        List<SaleOrderDtl> dtls = new ArrayList<>();
+
+
+
+
 /*        bo.getDtls().forEach(it -> {
             SaleOrderDtl dtl = new SaleOrderDtl();
             BeanUtils.copyProperties(it, dtl);

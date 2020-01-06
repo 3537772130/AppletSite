@@ -48,6 +48,7 @@ public class SaleOrderController extends BaseController {
     @ApiOperation("用户下单")
     public RestVo<SaleOrderVo> detail(@ApiParam("订单对象") @RequestBody SaleOrderBo bo) {
         bo.setUserId(this.getUserId());
+        bo.setAppletId(this.getAppletId());
         return RestVo.SUCCESS(service.create(bo));
     }
 

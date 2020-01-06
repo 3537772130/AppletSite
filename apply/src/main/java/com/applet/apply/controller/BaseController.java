@@ -1,5 +1,6 @@
 package com.applet.apply.controller;
 
+import com.applet.apply.entity.ViewAppletInfo;
 import com.applet.apply.entity.ViewWeChantInfo;
 import com.applet.apply.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,4 +23,7 @@ public class BaseController {
         return ((ViewWeChantInfo) redisService.getValue(request.getHeader("wxCode"))).getUserId();
     }
 
+    public Integer getAppletId() {
+        return ((ViewAppletInfo) redisService.getValue(request.getHeader("appletCode"))).getId();
+    }
 }

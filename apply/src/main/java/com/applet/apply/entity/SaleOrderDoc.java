@@ -55,4 +55,22 @@ public class SaleOrderDoc {
     private String denialReason;
 
     private Byte payType;
+
+    public SaleOrderDoc(String orderNo, Integer userId, String receiverName, String receiverPhone, String detailAddr, Double lat, Double lon, BigDecimal carriersFee, Integer appletId, Byte orderStatus, String orderStatusCn, BigDecimal totalAmount, BigDecimal ticketAmount, Integer userCouponId, Byte payType) {
+        this.orderNo = orderNo;
+        this.userId = userId;
+        this.receiverName = receiverName;
+        this.receiverPhone = receiverPhone;
+        this.detailAddr = detailAddr;
+        this.lat = lat;
+        this.lon = lon;
+        this.carriersFee = carriersFee;
+        this.appletId = appletId;
+        this.orderStatus = orderStatus;
+        this.orderStatusCn = orderStatusCn;
+        this.totalAmount = totalAmount;
+        this.ticketAmount = ticketAmount;
+        this.userCouponId = userCouponId;
+        this.payType = payType;
+    }
 }

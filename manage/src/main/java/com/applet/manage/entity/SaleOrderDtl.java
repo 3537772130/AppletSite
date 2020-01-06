@@ -28,7 +28,7 @@ public class SaleOrderDtl {
 
     private Integer saleQty;
 
-    private BigDecimal amount;
+    private BigDecimal discountPrice;
 
     private BigDecimal salePrice;
 }
