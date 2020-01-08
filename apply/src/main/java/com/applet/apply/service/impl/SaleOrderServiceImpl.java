@@ -200,9 +200,10 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         // save 订单详情
         dtls.forEach(it -> it.setOrderId(order.getOrderId()));
         saleOrderDtlMapper.batchInsert(dtls);
-
-        // 更新优惠券状态
-        userCouponMapper.updateByPrimaryKeySelective(new UserCoupon(userCoupon.getId(), OrderEnums.UserCouponStatus.USING.getCode()));
+        if (userCoupon != null) {
+            // 更新优惠券状态
+            userCouponMapper.updateByPrimaryKeySelective(new UserCoupon(userCoupon.getId(), OrderEnums.UserCouponStatus.USING.getCode()));
+        }
         return true;
     }
 
