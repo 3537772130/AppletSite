@@ -62,4 +62,9 @@ public class UserCoupon implements Serializable {
     public void setStatus(Integer status) {
         this.status = status;
     }
+
+    public UserCoupon(Integer id, Integer status) {
+        this.id = id;
+        this.status = status;
+    }
 }

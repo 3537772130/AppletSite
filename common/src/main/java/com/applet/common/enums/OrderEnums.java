@@ -11,12 +11,13 @@ import lombok.Getter;
  */
 public interface OrderEnums {
 
+    /**
+     * 订单状态
+     */
     @Getter
     @AllArgsConstructor
     enum OrderStatus implements BaseEnum {
-        /**
-         * 订单状态
-         */
+
         CANCEL((byte) 0, "取消"),
         PENDING((byte) 1, "待处理"),
         MERCHANT_CONFIRM((byte) 2, "商户确认"),
@@ -27,6 +28,23 @@ public interface OrderEnums {
         ;
 
         private Byte code;
+        private String name;
+
+    }
+
+    /**
+     * 用户优惠券状态
+     */
+    @Getter
+    @AllArgsConstructor
+    enum UserCouponStatus implements BaseEnum {
+
+        UNUSED(0, "未使用"),
+        USING(1, "使用中"),
+        USED(2, "已使用"),
+        ;
+
+        private Integer code;
         private String name;
 
     }

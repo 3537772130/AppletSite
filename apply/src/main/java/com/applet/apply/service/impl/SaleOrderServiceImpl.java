@@ -1,10 +1,7 @@
 package com.applet.apply.service.impl;
 
 import com.applet.apply.entity.*;
-import com.applet.apply.mapper.SaleOrderDocMapper;
-import com.applet.apply.mapper.SaleOrderDtlMapper;
-import com.applet.apply.mapper.SaleOrderTimelineMapper;
-import com.applet.apply.mapper.ViewUserCartMapper;
+import com.applet.apply.mapper.*;
 import com.applet.apply.service.SaleOrderService;
 import com.applet.apply.service.UserCouponService;
 import com.applet.apply.service.UserService;
@@ -30,6 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 销售订单 - Impl
@@ -49,6 +47,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     private final SaleOrderDtlMapper saleOrderDtlMapper;
     private final SaleOrderTimelineMapper saleOrderTimelineMapper;
     private final ViewUserCartMapper viewUserCartMapper;
+    private final UserCouponMapper userCouponMapper;
 
     @Override
     public Page<SaleOrderVo> findPage(PageBo<SaleOrderBo> bo) {
@@ -71,9 +70,16 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
     @Override
     public boolean updateOrderStatus(Integer orderId, Byte status) {
+        log.info("更新订单状态, orderId: {} , status: {}", orderId, status);
         OrderEnums.OrderStatus orderStatus = EnumUtil.getEnumByCode(status, OrderEnums.OrderStatus.class);
         if (orderStatus == null) {
-            return false;
+            log.warn("参数错误, orderId: {} , status: {}", orderId, status);
+            throw BusinessException.of("参数错误");
+        }
+        SaleOrderDoc orderDoc = saleOrderDocMapper.selectByPrimaryKey(orderId);
+        if (orderDoc == null) {
+            log.warn("订单不存在, orderId: {} , status: {}", orderId, status);
+            throw BusinessException.of("订单不存在");
         }
         SaleOrderDoc order = new SaleOrderDoc();
         order.setGmtModified(new Date());
@@ -82,6 +88,10 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         order.setOrderStatusCn(orderStatus.getName());
         saleOrderDocMapper.updateByPrimaryKeySelective(order);
         saleOrderTimelineMapper.insertSelective(new SaleOrderTimeline(orderId, status, orderStatus.getName()));
+        // 用户签收订单结束, 更新优惠券状态
+        if (OrderEnums.OrderStatus.RECEIVED.getCode().equals(status)) {
+            userCouponMapper.updateByPrimaryKeySelective(new UserCoupon(orderDoc.getUserCouponId(), OrderEnums.UserCouponStatus.USING.getCode()));
+        }
         return true;
     }
 
@@ -117,8 +127,12 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         List<SaleOrderDtl> dtls = new ArrayList<>();
         List<ViewUserCart> carts = viewUserCartMapper.findByIds(bo.getCartIdList());
         AtomicDouble totalAmount = new AtomicDouble();
+        AtomicBoolean couponFlag = new AtomicBoolean(true);
         carts.forEach(it -> {
-            double discountPrice = it.getIfDiscount() ? it.getSellPrice() * it.getDiscount() / 100 : it.getSellPrice();
+            if (!it.getIfDiscount()) {
+                couponFlag.set(false);
+            }
+            double discountPrice = it.getSellPrice() * it.getDiscount() / 100;
             totalAmount.addAndGet(discountPrice);
             dtls.add(new SaleOrderDtl(null,
                     null,
@@ -133,18 +147,24 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             ));
         });
 
-
         ReceiveAddress address = userService.selectReceiveAddressInfo(bo.getAddressId(), bo.getUserId());
         if (address == null) {
             log.warn("地址输入错误");
             throw BusinessException.of("地址输入错误");
         }
 
-        ViewUserCoupon userCoupon = userCouponService.selectUserCouponInfo(bo.getCouponId(), bo.getUserId());
-        Date now = new Date();
-        if (userCoupon.getActivityOver().getTime() < now.getTime()) {
-            log.warn("优惠卷过期, UserCouponId: {}", userCoupon.getId());
-            throw BusinessException.of("优惠卷过期");
+        ViewUserCoupon userCoupon = null;
+        if (couponFlag.get()) {
+            userCoupon = userCouponService.selectUserCouponInfo(bo.getCouponId(), bo.getUserId());
+            Date now = new Date();
+            if (userCoupon == null) {
+                log.warn("无此优惠卷, CouponId: {}, UserId: {}", bo.getCouponId(), bo.getUserId());
+                throw BusinessException.of("无此优惠卷");
+            }
+            if (userCoupon.getActivityOver().getTime() < now.getTime()) {
+                log.warn("优惠卷过期, UserCouponId: {}", userCoupon.getId());
+                throw BusinessException.of("优惠卷过期");
+            }
         }
 
         // save 订单
@@ -160,10 +180,14 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                 orderStatus.getCode(),
                 orderStatus.getName(),
                 BigDecimal.valueOf(totalAmount.get()),
-                BigDecimal.valueOf(userCoupon.getDenomination()),
-                userCoupon.getCouponId(),
+                BigDecimal.valueOf(0.00),
+                null,
                 (byte) 1
         );
+        if (userCoupon != null) {
+            order.setTicketAmount(BigDecimal.valueOf(userCoupon.getDenomination()));
+            order.setUserCouponId(userCoupon.getCouponId());
+        }
         saleOrderDocMapper.insertSelective(order);
 
         // 生成订单编号
@@ -176,7 +200,10 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         // save 订单详情
         dtls.forEach(it -> it.setOrderId(order.getOrderId()));
         saleOrderDtlMapper.batchInsert(dtls);
-        return false;
+
+        // 更新优惠券状态
+        userCouponMapper.updateByPrimaryKeySelective(new UserCoupon(userCoupon.getId(), OrderEnums.UserCouponStatus.USING.getCode()));
+        return true;
     }
 
 
