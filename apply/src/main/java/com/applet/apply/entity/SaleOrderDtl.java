@@ -1,6 +1,8 @@
 package com.applet.apply.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
@@ -11,6 +13,8 @@ import java.math.BigDecimal;
  * @date 2019-12-31 10:11:00
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class SaleOrderDtl {
     private Integer orderDtlId;
 
@@ -28,7 +32,8 @@ public class SaleOrderDtl {
 
     private Integer saleQty;
 
-    private BigDecimal amount;
+    private BigDecimal discountPrice;
 
     private BigDecimal salePrice;
+
 }

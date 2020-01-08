@@ -1,14 +1,17 @@
 package com.applet.apply.mapper;
 
 import com.applet.apply.entity.ViewUserCart;
-import com.applet.apply.entity.ViewUserCartExample;
-import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
-@Mapper
+/**
+ * 用户购物车
+ *
+ * @author liangzhong.tan
+ * @date 2019-12-31 10:11:00
+ */
 public interface ViewUserCartMapper {
-    long countByExample(ViewUserCartExample example);
 
-    List<ViewUserCart> selectByExample(ViewUserCartExample example);
+    List<ViewUserCart> findByIds(List<Integer> ids);
+
 }

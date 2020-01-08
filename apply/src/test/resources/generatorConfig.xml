@@ -10,7 +10,7 @@
         <plugin type="generator.plugins.MySQLFixedPlugin"></plugin>
         <commentGenerator>
             <!-- 去除自动生成的注释 -->
-            <property name="suppressAllComments" value="true"/>
+            <property name="suppressAllComments" value="false"/>
         </commentGenerator>
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
                         connectionURL="jdbc:mysql://139.196.160.176:3306/applet_site_test?characterEncoding=utf8&amp;useSSL=false&amp;serverTimezone=UTC&amp;rewriteBatchedStatements=true"
@@ -43,19 +43,11 @@
             <property name="enableSubPackages" value="false"/>
         </javaClientGenerator>
 
-        <table tableName="user_info"
-               domainObjectName="UserInfo"
-               enableCountByExample="true"
-               enableDeleteByExample="true"
-               enableDeleteByPrimaryKey="true"
-               enableInsert="true"
-               enableSelectByExample="true"
-               enableSelectByPrimaryKey="true"
-               enableUpdateByExample="true"
-               enableUpdateByPrimaryKey="true">
+        <table tableName="view_user_cart"
+               enableSelectByPrimaryKey="true">
         </table>
 
-        <table tableName="user_operation_log"
+        <!--<table tableName="user_operation_log"
                domainObjectName="UserOperationLog"
                enableCountByExample="true"
                enableDeleteByExample="true"
@@ -65,7 +57,7 @@
                enableSelectByPrimaryKey="true"
                enableUpdateByExample="true"
                enableUpdateByPrimaryKey="true">
-        </table>
+        </table>-->
 
 <!--        <table tableName="sms_template"-->
 <!--               domainObjectName="SmsTemplate"-->

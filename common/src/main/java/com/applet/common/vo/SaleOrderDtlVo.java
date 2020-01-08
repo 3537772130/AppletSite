@@ -40,9 +40,9 @@ public class SaleOrderDtlVo {
     @ApiModelProperty("数量")
     private Integer saleQty;
 
-    @ApiModelProperty("实际价格")
-    private BigDecimal amount;
-    
-    @ApiModelProperty("销售价格")
+    @ApiModelProperty("折后价格")
+    private BigDecimal discountPrice;
+
+    @ApiModelProperty("销售价格-原价")
     private BigDecimal salePrice;
 }
