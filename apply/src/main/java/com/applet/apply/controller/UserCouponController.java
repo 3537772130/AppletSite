@@ -1,9 +1,7 @@
 package com.applet.apply.controller;
 
 import com.applet.apply.config.annotation.SessionScope;
-import com.applet.apply.entity.ViewAppletInfo;
-import com.applet.apply.entity.ViewUserCoupon;
-import com.applet.apply.entity.ViewWeChantInfo;
+import com.applet.apply.entity.*;
 import com.applet.apply.service.UserCouponService;
 import com.applet.common.util.AjaxResponse;
 import com.applet.common.util.NullUtil;
@@ -65,11 +63,39 @@ public class UserCouponController {
      * @return
      */
     @RequestMapping(value = "queryUserCouponByUse")
-    public Object queryUserCouponByUse( @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Double mountPrice){
+    public Object queryUserCouponByUse(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Double mountPrice){
         List<ViewUserCoupon> list = userCouponService.selectUserCouponList(weChantInfo.getUserId(), weChantInfo.getAppletId(), mountPrice);
         if (NullUtil.isNotNullOrEmpty(list)){
             return AjaxResponse.success(list);
         }
         return AjaxResponse.error("未找到相关记录");
+    }
+
+    /**
+     * 用户领取优惠券
+     * @param appletInfo
+     * @param weChantInfo
+     * @param couponId
+     * @return
+     */
+    @RequestMapping(value = "userGainCoupon")
+    public Object userGainCoupon(@SessionScope("appletInfo") ViewAppletInfo appletInfo, @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer couponId){
+        try {
+            if (NullUtil.isNullOrEmpty(weChantInfo.getUserId())){
+                return AjaxResponse.error("为了您的使用体验，请绑定手机号码");
+            }
+            CouponInfo couponInfo = userCouponService.selectCouponList(couponId, appletInfo.getId());
+            if (null == couponInfo){
+                return AjaxResponse.error("参数错误");
+            }
+            if (couponInfo.getStatus().intValue() != 1){
+                return AjaxResponse.msg("0","手慢啦，优惠券已经发完了");
+            }
+            userCouponService.addUserCoupon(couponInfo, weChantInfo.getUserId());
+            return AjaxResponse.success("领取成功");
+        } catch (Exception e) {
+            log.error("领取优惠券出错{}", e);
+            return AjaxResponse.error("领取失败");
+        }
     }
 }
