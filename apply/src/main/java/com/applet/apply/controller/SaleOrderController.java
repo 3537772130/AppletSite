@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @Api(tags = "销售订单")
 @RestController
-@RequestMapping("api/sale/order")
+@RequestMapping("/api/applet/sale/order")
 @RequiredArgsConstructor
 public class SaleOrderController extends BaseController {
 
