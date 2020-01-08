@@ -59,6 +59,7 @@ public class UserCouponService {
      */
     public List<ViewUserCoupon> selectUserCouponList(Integer userId, Integer useAppletId, Double mountPrice){
         ViewUserCouponExample example = new ViewUserCouponExample();
+        example.setOrderByClause("denomination desc");
         example.createCriteria().andUserIdEqualTo(userId).andUseAppletIdEqualTo(useAppletId).andUsePriceLessThanOrEqualTo(mountPrice)
                 .andActivityOverGreaterThan(new Date()).andStatusEqualTo(0);
         return viewUserCouponMapper.selectByExample(example);
