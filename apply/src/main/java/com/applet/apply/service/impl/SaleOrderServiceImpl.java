@@ -90,7 +90,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         saleOrderTimelineMapper.insertSelective(new SaleOrderTimeline(orderId, status, orderStatus.getName()));
         // 用户签收订单结束, 更新优惠券状态
         if (OrderEnums.OrderStatus.RECEIVED.getCode().equals(status)) {
-            userCouponMapper.updateByPrimaryKeySelective(new UserCoupon(orderDoc.getUserCouponId(), OrderEnums.UserCouponStatus.USING.getCode()));
+            userCouponMapper.updateByPrimaryKeySelective(new UserCoupon(orderDoc.getUserCouponId(), OrderEnums.UserCouponStatus.USED.getCode()));
         }
         return true;
     }

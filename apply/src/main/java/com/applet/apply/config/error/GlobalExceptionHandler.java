@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author: Mr.ZhouHuaHu
  * @create: 2019-09-04 14:14
  **/
-@ControllerAdvice(annotations = {RestController.class})
+//@ControllerAdvice(annotations = {RestController.class})
 public class GlobalExceptionHandler {
     private Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
