@@ -209,6 +209,10 @@ public class UserCoupon implements Serializable {
         this.status = status;
     }
 
+    public UserCoupon(){
+
+    }
+
     public UserCoupon(Integer id, Integer status) {
         this.id = id;
         this.useTime = new Date();
