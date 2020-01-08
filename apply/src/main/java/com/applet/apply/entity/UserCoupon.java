@@ -2,6 +2,7 @@ package com.applet.apply.entity;
 
 import com.applet.common.util.Constants;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -9,6 +10,7 @@ import java.util.Date;
 /**
  * 用户优惠券关系信息类
  */
+@NoArgsConstructor
 public class UserCoupon implements Serializable {
     private Integer id;
 
