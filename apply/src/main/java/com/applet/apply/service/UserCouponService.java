@@ -7,8 +7,10 @@ import com.applet.apply.mapper.ViewCouponInfoMapper;
 import com.applet.apply.mapper.ViewUserCouponMapper;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.Page;
+import jodd.datetime.JDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -103,12 +105,96 @@ public class UserCouponService {
     /**
      * 更新用户优惠券状态
      * @param id
-     * @param status
      */
-    public void updateUserCouponStatus(Integer id, Integer status){
+    public void updateUserCouponStatus(Integer id){
         UserCoupon coupon = new UserCoupon();
         coupon.setId(id);
-        coupon.setStatus(status);
+        coupon.setUseTime(new Date());
+        coupon.setStatus(1);
         userCouponMapper.updateByPrimaryKeySelective(coupon);
+    }
+
+    /**
+     * 添加用户优惠券
+     * @param couponInfo
+     * @param userId
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void addUserCoupon(CouponInfo couponInfo, Integer userId){
+        UserCoupon record = new UserCoupon();
+        record.setUserId(userId);
+        record.setCouponId(couponInfo.getId());
+        record.setGainTime(new Date());
+        record.setStatus(0);
+        userCouponMapper.insertSelective(record);
+
+        int status = (couponInfo.getAlreadyIssueNum().intValue() + 1) == couponInfo.getMakeIssueNum() ? 2 : 1;
+        CouponInfo info = new CouponInfo();
+        info.setId(couponInfo.getId());
+        info.setAlreadyIssueNum(couponInfo.getAlreadyIssueNum() + 1);
+        info.setStatus(status);
+        couponInfoMapper.updateByPrimaryKeySelective(info);
+    }
+
+    /**
+     * 查询小程序可派发的优惠券集合
+     * @param appletId
+     * @return
+     */
+    public List<ViewCouponInfo> selectCouponList(Integer appletId){
+        ViewCouponInfoExample example = new ViewCouponInfoExample();
+        example.setOrderByClause("denomination asc");
+        example.createCriteria()
+                .andGainAppletIdEqualTo(appletId)
+                .andUseAppletIdEqualTo(appletId)
+                .andActivityStartLessThan(new Date())
+                .andActivityOverGreaterThan(new Date())
+                .andStatusEqualTo(1);
+        return viewCouponInfoMapper.selectByExample(example);
+    }
+
+    /**
+     * 检测优惠券是否可被当前用户领取
+     * 同一优惠券一天领一次，直到用完后第二天可再领
+     * @param couponId
+     * @param userId
+     * @param useAppletId
+     * @return
+     */
+    public Boolean checkUserCouponInfo(Integer couponId, Integer userId, Integer useAppletId){
+        ViewUserCouponExample example = new ViewUserCouponExample();
+        example.createCriteria()
+                .andCouponIdEqualTo(couponId)
+                .andUserIdEqualTo(userId)
+                .andUseAppletIdEqualTo(useAppletId)
+                .andStatusEqualTo(0);
+        JDateTime time = new JDateTime(new Date());
+        example.or()
+                .andCouponIdEqualTo(couponId)
+                .andUserIdEqualTo(userId)
+                .andUseTimeGreaterThanOrEqualTo(time.setHour(0).setMinute(0).setSecond(0).convertToDate())
+                .andUseTimeLessThanOrEqualTo(time.setHour(23).setMinute(59).setSecond(59).convertToDate())
+                .andStatusEqualTo(1);
+        List<ViewUserCoupon> list = viewUserCouponMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? false : true;
+    }
+
+    /**
+     * 查询优惠券详情
+     * @param id
+     * @param appletId
+     * @return
+     */
+    public CouponInfo selectCouponList(Integer id, Integer appletId){
+        CouponInfoExample example = new CouponInfoExample();
+        example.createCriteria()
+                .andIdEqualTo(id)
+                .andGainAppletIdEqualTo(appletId)
+                .andUseAppletIdEqualTo(appletId)
+                .andActivityStartLessThan(new Date())
+                .andActivityOverGreaterThan(new Date())
+                .andStatusEqualTo(1);
+        List<CouponInfo> list = couponInfoMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
     }
 }
