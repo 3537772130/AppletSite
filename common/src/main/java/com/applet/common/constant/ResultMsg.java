@@ -20,6 +20,7 @@ public enum ResultMsg {
     SUCCESS("S0000", "操作成功"),
     ERROR("E0000", "系统异常"),
     FAIL("F0000", "操作失败"),
+    FREQUENT_OPERATIONS("S10001", "操作频繁, 请稍后再试!!!"),
     ;
 
     private String code;
