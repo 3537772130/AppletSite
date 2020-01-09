@@ -38,7 +38,7 @@ public class UserLoginController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "user/checkLogin")
+    @RequestMapping(value = "checkLogin")
     @CancelAuthentication
     public Object checkLogin(HttpServletRequest request) {
         UserInfo user = (UserInfo) SerializeUtil.unserialize((byte[]) request.getSession().getAttribute(Constants.VUE_USER_INFO));
