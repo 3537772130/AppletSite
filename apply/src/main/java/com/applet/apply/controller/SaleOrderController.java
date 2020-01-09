@@ -35,8 +35,8 @@ public class SaleOrderController extends BaseController {
 
     @PutMapping("update/status")
     @ApiOperation("更新订单状态")
-    public RestVo<Boolean> updateOrderStatus(@RequestParam Integer orderId, @RequestParam Byte status) {
-        return RestVo.SUCCESS(service.updateOrderStatus(orderId, status));
+    public RestVo<Boolean> updateOrderStatus(@ApiParam("订单对象") @RequestBody SaleOrderBo bo) {
+        return RestVo.SUCCESS(service.updateOrderStatus(bo));
     }
 
     @GetMapping("detail/{orderId}")

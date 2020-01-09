@@ -69,7 +69,9 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
 
     @Override
-    public boolean updateOrderStatus(Integer orderId, Byte status) {
+    public boolean updateOrderStatus(SaleOrderBo bo) {
+        Integer orderId = bo.getOrderId();
+        Byte status = bo.getOrderStatus();
         log.info("更新订单状态, orderId: {} , status: {}", orderId, status);
         OrderEnums.OrderStatus orderStatus = EnumUtil.getEnumByCode(status, OrderEnums.OrderStatus.class);
         if (orderStatus == null) {
@@ -86,8 +88,16 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         order.setOrderId(orderId);
         order.setOrderStatus(status);
         order.setOrderStatusCn(orderStatus.getName());
+        if (OrderEnums.OrderStatus.CANCEL.getCode().equals(status)){
+            order.setCancelReason(bo.getCancelReason());
+        }
+        if (OrderEnums.OrderStatus.DENIAL.getCode().equals(status)){
+            order.setDenialReason(bo.getDenialReason());
+        }
+
         saleOrderDocMapper.updateByPrimaryKeySelective(order);
         saleOrderTimelineMapper.insertSelective(new SaleOrderTimeline(orderId, status, orderStatus.getName()));
+
         // 用户签收订单结束, 更新优惠券状态
         if (OrderEnums.OrderStatus.RECEIVED.getCode().equals(status)) {
             userCouponMapper.updateByPrimaryKeySelective(new UserCoupon(orderDoc.getUserCouponId(), OrderEnums.UserCouponStatus.USED.getCode()));
@@ -182,7 +192,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                 BigDecimal.valueOf(totalAmount.get()),
                 BigDecimal.valueOf(0.00),
                 null,
-                (byte) 1
+                (byte) 1,
+                bo.getOrderRemark()
         );
         if (userCoupon != null) {
             order.setTicketAmount(BigDecimal.valueOf(userCoupon.getDenomination()));

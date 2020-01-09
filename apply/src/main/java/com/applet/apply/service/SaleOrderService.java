@@ -26,12 +26,11 @@ public interface SaleOrderService {
     /**
      * 更新订单状态
      *
-     * @param orderId 订单Id
-     * @param status  状态
+     * @param bo 订单对象
      * @return
      */
     @Transactional(rollbackFor = Throwable.class)
-    boolean updateOrderStatus(Integer orderId, Byte status);
+    boolean updateOrderStatus(SaleOrderBo bo);
 
     /**
      * 订单详情

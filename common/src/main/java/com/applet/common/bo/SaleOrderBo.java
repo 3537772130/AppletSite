@@ -94,12 +94,19 @@ public class SaleOrderBo {
     @ApiModelProperty("订单备注")
     private String orderRemark;
 
+    @ApiModelProperty("距离(米)")
+    private String distance;
+
+    @ApiModelProperty("订单Id")
+    private Integer orderId;
+
+    @ApiModelProperty("订单状态(0-取消,1-待处理(用户提交订单后,待商户处理),2-商户确认,3-拒绝,4-开始配送,5-确认送达,6-签收)")
+    private Byte orderStatus;
+
     @ApiModelProperty("订单取消原因")
     private String cancelReason;
 
     @ApiModelProperty("订单拒绝原因")
     private String denialReason;
 
-    @ApiModelProperty("距离(米)")
-    private String distance;
 }
