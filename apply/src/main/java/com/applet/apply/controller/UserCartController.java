@@ -37,6 +37,8 @@ public class UserCartController {
     private UserCouponService userCouponService;
     @Autowired
     private UserCartService userCartService;
+//    @Autowired
+//    private FreightDeployService
 
     /**
      * 加入购物车
@@ -174,5 +176,20 @@ public class UserCartController {
         map.put("list", cartList);
         map.put("ifCoupon", ifCoupon);
         return AjaxResponse.success(map);
+    }
+
+    /**
+     * 查询运费
+     * @param appletInfo
+     * @param distance
+     * @return
+     */
+    @RequestMapping(value = "getOrderFreight")
+    public Object getOrderFreight(@SessionScope("appletInfo") ViewAppletInfo appletInfo, Integer distance){
+        Double freight = userCouponService.countFreight(appletInfo.getId(), distance);
+        if (freight.doubleValue() < 0){
+            return AjaxResponse.error("超出配送范围");
+        }
+        return AjaxResponse.success(freight);
     }
 }

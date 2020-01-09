@@ -1,10 +1,7 @@
 package com.applet.apply.service;
 
 import com.applet.apply.entity.*;
-import com.applet.apply.mapper.CouponInfoMapper;
-import com.applet.apply.mapper.UserCouponMapper;
-import com.applet.apply.mapper.ViewCouponInfoMapper;
-import com.applet.apply.mapper.ViewUserCouponMapper;
+import com.applet.apply.mapper.*;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.Page;
 import jodd.datetime.JDateTime;
@@ -33,6 +30,8 @@ public class UserCouponService {
     private CouponInfoMapper couponInfoMapper;
     @Autowired
     private ViewCouponInfoMapper viewCouponInfoMapper;
+    @Autowired
+    private FreightDeployMapper freightDeployMapper;
 
     /**
      * 分页查询用户可正常使用的优惠券记录
@@ -196,5 +195,30 @@ public class UserCouponService {
                 .andStatusEqualTo(1);
         List<CouponInfo> list = couponInfoMapper.selectByExample(example);
         return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+    }
+
+    /**
+     * 计算运费
+     * @param appletId 小程序ID
+     * @param distance 距离（米）
+     * @return
+     */
+    public Double countFreight(Integer appletId, Integer distance) {
+        FreightDeployExample example = new FreightDeployExample();
+        FreightDeployExample.Criteria c = example.createCriteria();
+        c.andAppletIdEqualTo(appletId);
+        long count = freightDeployMapper.countByExample(example);
+        if (count > 0){
+            c.andMinimumLessThanOrEqualTo(distance).andMaximumGreaterThanOrEqualTo(distance);
+            List<FreightDeploy> list = freightDeployMapper.selectByExample(example);
+            if (NullUtil.isNotNullOrEmpty(list)) {
+                return list.get(0).getFreight();
+            }
+            // 超出配送范围
+            return -1.0d;
+        } else {
+            // 未设置运费
+            return 0.0d;
+        }
     }
 }

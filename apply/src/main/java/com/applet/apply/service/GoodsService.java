@@ -3,6 +3,7 @@ package com.applet.apply.service;
 import com.applet.apply.entity.*;
 import com.applet.apply.mapper.*;
 import com.applet.common.util.NullUtil;
+import com.applet.common.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  * Description:
  */
+@SuppressWarnings("ALL")
 @Service
 public class GoodsService {
     @Autowired
@@ -32,6 +34,7 @@ public class GoodsService {
 
     /**
      * 查询小程序商品类型集合
+     *
      * @param appletId
      * @return
      */
@@ -44,6 +47,7 @@ public class GoodsService {
 
     /**
      * 查询小程序商品集合
+     *
      * @param appletId
      * @param typeIdList
      * @return
@@ -57,11 +61,12 @@ public class GoodsService {
 
     /**
      * 查询商品信息
+     *
      * @param appletId
      * @param goodsId
      * @return
      */
-    public ViewGoodsInfo selectGoodsInfo(Integer appletId, Integer goodsId){
+    public ViewGoodsInfo selectGoodsInfo(Integer appletId, Integer goodsId) {
         ViewGoodsInfoExample example = new ViewGoodsInfoExample();
         example.createCriteria().andIdEqualTo(goodsId).andAppletIdEqualTo(appletId);
         List<ViewGoodsInfo> list = viewGoodsInfoMapper.selectByExample(example);
@@ -69,11 +74,30 @@ public class GoodsService {
     }
 
     /**
+     * 查询商品信息
+     *
+     * @param appletId
+     * @param goodsName
+     * @return
+     */
+    public List<ViewGoodsInfo> selectGoodsList(Integer appletId, String goodsName, Page page) {
+        ViewGoodsInfoExample example = new ViewGoodsInfoExample();
+        example.setPage(page);
+        example.setOrderByClause("id desc");
+        example.createCriteria()
+                .andAppletIdEqualTo(appletId)
+                .andGoodsNameLike("%" + goodsName + "%")
+                .andGoodsStatusEqualTo(1);
+        return viewGoodsInfoMapper.selectByExample(example);
+    }
+
+    /**
      * 查询商品文件信息集合
+     *
      * @param goodsId
      * @return
      */
-    public List<ViewGoodsFile> selectGoodsFileList(Integer goodsId){
+    public List<ViewGoodsFile> selectGoodsFileList(Integer goodsId) {
         ViewGoodsFileExample example = new ViewGoodsFileExample();
         example.setOrderByClause("id asc");
         example.createCriteria().andGoodsIdEqualTo(goodsId).andFileSrcIsNotNull();
@@ -82,10 +106,11 @@ public class GoodsService {
 
     /**
      * 查询商品规格信息集合
+     *
      * @param goodsId
      * @return
      */
-    public List<ViewGoodsSpecs> selectGoodsSpecsList (Integer goodsId){
+    public List<ViewGoodsSpecs> selectGoodsSpecsList(Integer goodsId) {
         ViewGoodsSpecsExample example = new ViewGoodsSpecsExample();
         example.setOrderByClause("specs_index asc");
         example.createCriteria().andGoodsIdEqualTo(goodsId).andSpecsStatusEqualTo(true);

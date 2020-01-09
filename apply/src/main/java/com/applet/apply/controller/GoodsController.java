@@ -7,6 +7,7 @@ import com.applet.apply.service.GoodsService;
 import com.applet.apply.service.UserCouponService;
 import com.applet.common.util.AjaxResponse;
 import com.applet.common.util.NullUtil;
+import com.applet.common.util.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -116,6 +117,26 @@ public class GoodsController {
             log.error("加载商品详情信息出错");
         }
         return AjaxResponse.error("加载信息失败");
+    }
+
+    /**
+     * 搜索商品
+     * @param appletInfo
+     * @param goodsName
+     * @return
+     */
+    @RequestMapping(value = "queryGoodsName")
+    @CancelAuth
+    public Object queryGoodsName(@SessionScope("appletInfo") ViewAppletInfo appletInfo, String goodsName){
+        if (NullUtil.isNullOrEmpty(goodsName)){
+            return AjaxResponse.error("");
+        }
+        Page page = new Page(1, 10);
+        List<ViewGoodsInfo> list = goodsService.selectGoodsList(appletInfo.getId(), goodsName, page);
+        if (NullUtil.isNullOrEmpty(list)) {
+            return AjaxResponse.error("");
+        }
+        return AjaxResponse.success(list);
     }
 
 }
