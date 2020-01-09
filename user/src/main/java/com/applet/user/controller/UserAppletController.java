@@ -72,6 +72,17 @@ public class UserAppletController {
     }
 
     /**
+     * 查询用户所有小程序信息
+     * @param user 用户
+     * @return
+     */
+    @RequestMapping(value = "queryApplets")
+    public Object queryApplets(@SessionScope(Constants.VUE_USER_INFO) UserInfo user) {
+        List<AppletInfo> appletInfos = appletService.selectAppletInfo(user.getId());
+        return AjaxResponse.success(appletInfos);
+    }
+
+    /**
      * 查询小程序信息详情
      *
      * @param user
