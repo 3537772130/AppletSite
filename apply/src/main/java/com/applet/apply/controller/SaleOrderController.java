@@ -1,6 +1,7 @@
 package com.applet.apply.controller;
 
 import com.applet.apply.service.SaleOrderService;
+import com.applet.common.annotation.Resubmit;
 import com.applet.common.bo.PageBo;
 import com.applet.common.bo.SaleOrderBo;
 import com.applet.common.util.Page;
@@ -44,6 +45,7 @@ public class SaleOrderController extends BaseController {
         return RestVo.SUCCESS(service.detail(orderId));
     }
 
+    @Resubmit
     @PostMapping("create")
     @ApiOperation("用户下单")
     public RestVo<SaleOrderVo> detail(@ApiParam("订单对象") @RequestBody SaleOrderBo bo) {
