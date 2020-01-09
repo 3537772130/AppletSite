@@ -90,4 +90,16 @@ public class SaleOrderBo {
 
     @ApiModelProperty("用户优惠卷Id")
     private Integer couponId;
+
+    @ApiModelProperty("订单备注")
+    private String orderRemark;
+
+    @ApiModelProperty("订单取消原因")
+    private String cancelReason;
+
+    @ApiModelProperty("订单拒绝原因")
+    private String denialReason;
+
+    @ApiModelProperty("距离(米)")
+    private String distance;
 }
