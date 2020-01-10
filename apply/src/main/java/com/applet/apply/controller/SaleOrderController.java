@@ -13,6 +13,8 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 /**
  * 销售订单
  *
@@ -30,6 +32,10 @@ public class SaleOrderController extends BaseController {
     @PostMapping("page")
     @ApiOperation("分页")
     public RestVo<Page<SaleOrderVo>> findPage(@ApiParam("分页对象") @RequestBody PageBo<SaleOrderBo> bo) {
+        SaleOrderBo params = Optional.ofNullable(bo.getParam()).orElse(new SaleOrderBo());
+        params.setUserId(this.getUserId());
+        params.setAppletId(this.getAppletId());
+        bo.setParam(params);
         return RestVo.SUCCESS(service.findPage(bo));
     }
 

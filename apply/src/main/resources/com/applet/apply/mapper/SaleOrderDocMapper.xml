@@ -272,8 +272,11 @@
   <select id="selectSearchCount" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select count(order_id) from sale_order_doc
     <where>
-      <if  test="params.params != null">
+      <if  test="params.appletId != null">
         and applet_id = #{params.applet_id}
+      </if>
+      <if  test="params.userId != null">
+        and user_id = #{params.userId}
       </if>
     </where>
   </select>
@@ -283,8 +286,11 @@
     <include refid="Base_Column_List" />
     from sale_order_doc
     <where>
-      <if  test="params.params != null">
+      <if  test="params.appletId != null">
         and applet_id = #{params.applet_id}
+      </if>
+      <if  test="params.userId != null">
+        and user_id = #{params.userId}
       </if>
     </where>
     order by order_id desc

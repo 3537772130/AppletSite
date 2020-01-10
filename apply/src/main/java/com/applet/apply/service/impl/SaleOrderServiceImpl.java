@@ -27,9 +27,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -55,13 +53,14 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
     @Override
     public Page<SaleOrderVo> findPage(PageBo<SaleOrderBo> bo) {
-        Long total = saleOrderDocMapper.selectSearchCount(ObjectUtils.objToMap(bo.getPage()));
+        Map<String, Object> params = ObjectUtils.objToMap(bo.getParam());
+        Long total = saleOrderDocMapper.selectSearchCount(params);
         Page<SaleOrderVo> pageVo = new Page<>(bo.getPage(), bo.getSize(), total);
         if (bo.getOffset() >= total) {
             pageVo.setDataSource(new ArrayList<>(0));
             return pageVo;
         }
-        List<SaleOrderDoc> entitys = saleOrderDocMapper.selectSearchData(ObjectUtils.objToMap(bo.getPage()), bo.getOffset(), bo.getSize());
+        List<SaleOrderDoc> entitys = saleOrderDocMapper.selectSearchData(params, bo.getOffset(), bo.getSize());
         List<SaleOrderVo> vos = new ArrayList<>();
         entitys.forEach(it -> {
             SaleOrderVo vo = new SaleOrderVo();
