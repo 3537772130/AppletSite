@@ -196,7 +196,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                 bo.getAppletId(),
                 orderStatus.getCode(),
                 orderStatus.getName(),
-                BigDecimal.valueOf(totalAmount.get()),
+                BigDecimal.valueOf(totalAmount.addAndGet(carriersFee)),
                 BigDecimal.valueOf(0.00),
                 null,
                 (byte) 1,
