@@ -54,7 +54,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     @Override
     public Page<SaleOrderVo> findPage(PageBo<SaleOrderBo> bo) {
         Map<String, Object> params = ObjectUtils.objToMap(bo.getParam());
-        Long total = saleOrderDocMapper.selectSearchCount(params);
+        long total = Optional.ofNullable(saleOrderDocMapper.selectSearchCount(params)).orElse(0L);
         Page<SaleOrderVo> pageVo = new Page<>(bo.getPage(), bo.getSize(), total);
         if (bo.getOffset() >= total) {
             pageVo.setDataSource(new ArrayList<>(0));

@@ -31,11 +31,15 @@ public class PageBo<T> implements Serializable {
     @Max(value = 100, message = "页大小最大100")
     @ApiModelProperty(value = "每页显示数", required = true, example = "10")
     private Integer size;
+
     @ApiModelProperty("查询参数")
     private T param;
 
     @ApiModelProperty(value = "多个参数排序", example = "{'createDate':'desc'}")
     private Map<String, String> sortableField = new HashMap<>();
+
+    @ApiModelProperty(value = "offset",hidden = true)
+    private long offset;
 
     public long getOffset() {
         return (page - 1) * size;
