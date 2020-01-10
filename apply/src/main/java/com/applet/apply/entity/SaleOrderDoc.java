@@ -57,8 +57,9 @@ public class SaleOrderDoc {
 
     private Byte payType;
 
-    public SaleOrderDoc(Integer userId, String receiverName, String receiverPhone, String detailAddr, Double lat, Double lon, BigDecimal carriersFee, Integer appletId,
+    public SaleOrderDoc(String orderNo, Integer userId, String receiverName, String receiverPhone, String detailAddr, Double lat, Double lon, BigDecimal carriersFee, Integer appletId,
                         Byte orderStatus, String orderStatusCn, BigDecimal totalAmount, BigDecimal ticketAmount, Integer userCouponId, Byte payType, String orderRemark) {
+        this.orderNo = orderNo;
         this.userId = userId;
         this.receiverName = receiverName;
         this.receiverPhone = receiverPhone;

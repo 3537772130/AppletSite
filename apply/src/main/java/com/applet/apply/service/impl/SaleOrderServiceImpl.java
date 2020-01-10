@@ -2,13 +2,16 @@ package com.applet.apply.service.impl;
 
 import com.applet.apply.entity.*;
 import com.applet.apply.mapper.*;
+import com.applet.apply.service.RedisService;
 import com.applet.apply.service.SaleOrderService;
 import com.applet.apply.service.UserCouponService;
 import com.applet.apply.service.UserService;
 import com.applet.common.bo.PageBo;
 import com.applet.common.bo.SaleOrderBo;
+import com.applet.common.constant.RedisKey;
 import com.applet.common.enums.OrderEnums;
 import com.applet.common.excepion.BusinessException;
+import com.applet.common.util.DateUtils;
 import com.applet.common.util.EnumUtil;
 import com.applet.common.util.ObjectUtils;
 import com.applet.common.util.Page;
@@ -42,6 +45,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
     private final UserCouponService userCouponService;
     private final UserService userService;
+    private final RedisService redisService;
 
     private final SaleOrderDocMapper saleOrderDocMapper;
     private final SaleOrderDtlMapper saleOrderDtlMapper;
@@ -186,7 +190,9 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
         // save 订单
         OrderEnums.OrderStatus orderStatus = OrderEnums.OrderStatus.PENDING;
-        SaleOrderDoc order = new SaleOrderDoc(bo.getUserId(),
+        SaleOrderDoc order = new SaleOrderDoc(
+                DateUtils.now("YYYYMMDD") + String.format("%04d", bo.getAppletId()) + String.format("%04d", redisService.incrBy(RedisKey.ORDER_ON_KEY)),
+                bo.getUserId(),
                 address.getName(),
                 address.getMobile(),
                 String.format("%s %s %s %s", address.getCity(), address.getCounty(), address.getRegion(), address.getAddress()),
@@ -208,16 +214,10 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         }
         saleOrderDocMapper.insertSelective(order);
 
-        // 生成订单编号
-        String orderNo = LocalDate.now().format(DateTimeFormatter.ofPattern("YYYYMMDD")) + String.format("%04d", bo.getAppletId()) + String.format("%04d", bo.getUserId()) + String.format("%04d", order.getOrderId());
-        SaleOrderDoc orderDoc = new SaleOrderDoc();
-        orderDoc.setOrderId(order.getOrderId());
-        orderDoc.setOrderNo(orderNo);
-        saleOrderDocMapper.updateByPrimaryKeySelective(order);
-
         // save 订单详情
         dtls.forEach(it -> it.setOrderId(order.getOrderId()));
         saleOrderDtlMapper.batchInsert(dtls);
+
         if (userCoupon != null) {
             // 更新优惠券状态
             userCouponMapper.updateByPrimaryKeySelective(new UserCoupon(userCoupon.getId(), OrderEnums.UserCouponStatus.USING.getCode()));

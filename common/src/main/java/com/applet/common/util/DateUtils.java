@@ -5,6 +5,7 @@ import jodd.datetime.JDateTime;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
@@ -39,5 +40,25 @@ public class DateUtils {
                 throw new RuntimeException("时间转化格式错误" + "[dateString=" + dateString + "]" + "[FORMAT_STRING=" + Constants.DATE_TIME_JDK + "]");
             }
         }
+    }
+
+    /**
+     * 当前时间
+     *
+     * @return YYYY-MM-DD HH-mm-ss
+     */
+    public static String now() {
+        return now(null);
+    }
+
+    /**
+     * 当前时间
+     *
+     * @param format 时间格式
+     * @return 当前时间
+     */
+    public static String now(String format) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Optional.ofNullable(format).orElse("YYYY-MM-DD HH-mm-ss"));
+        return simpleDateFormat.format(new Date());
     }
 }
