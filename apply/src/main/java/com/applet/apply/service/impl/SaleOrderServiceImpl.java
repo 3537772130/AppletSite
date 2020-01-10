@@ -65,6 +65,9 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         entitys.forEach(it -> {
             SaleOrderVo vo = new SaleOrderVo();
             BeanUtils.copyProperties(it, vo);
+            String[] addr = it.getDetailAddr().split(" ");
+            vo.setRegion(addr[0]);
+            vo.setAddress(addr[1]);
             vos.add(vo);
         });
         pageVo.setDataSource(vos);
@@ -116,6 +119,9 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             return docVo;
         }
         BeanUtils.copyProperties(orderDoc, docVo);
+        String[] addr = orderDoc.getDetailAddr().split(" ");
+        docVo.setRegion(addr[0]);
+        docVo.setAddress(addr[1]);
         List<SaleOrderDtlVo> dtlVos = new ArrayList<>();
         List<SaleOrderDtl> orderDtls = saleOrderDtlMapper.findByOrderId(orderId);
         orderDtls.forEach(it -> {
@@ -194,7 +200,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                 bo.getUserId(),
                 address.getName(),
                 address.getMobile(),
-                String.format("%s %s %s %s", address.getCity(), address.getCounty(), address.getRegion(), address.getAddress()),
+                String.format("%s %s", address.getRegion(), address.getAddress()),
                 Double.valueOf(address.getLat()),
                 Double.valueOf(address.getLon()),
                 BigDecimal.valueOf(carriersFee),

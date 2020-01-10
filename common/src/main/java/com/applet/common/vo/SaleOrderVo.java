@@ -39,6 +39,12 @@ public class SaleOrderVo {
     @ApiModelProperty("收货人手机")
     private String receiverPhone;
 
+    @ApiModelProperty("区")
+    private String region;
+
+    @ApiModelProperty("地址")
+    private String address;
+
     @ApiModelProperty("详细地址")
     private String detailAddr;
 
@@ -48,7 +54,7 @@ public class SaleOrderVo {
     @ApiModelProperty("维度")
     private Double lon;
 
-    @ApiModelProperty("详细地址")
+    @ApiModelProperty("运费")
     private BigDecimal carriersFee;
 
     @ApiModelProperty("小程序Id")
