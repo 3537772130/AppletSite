@@ -34,7 +34,6 @@ public class SaleOrderController extends BaseController {
     public RestVo<Page<SaleOrderVo>> findPage(@ApiParam("分页对象") @RequestBody PageBo<SaleOrderBo> bo) {
         SaleOrderBo params = Optional.ofNullable(bo.getParam()).orElse(new SaleOrderBo());
         params.setUserId(this.getUserId());
-        params.setAppletId(this.getAppletId());
         bo.setParam(params);
         return RestVo.SUCCESS(service.findPage(bo));
     }
