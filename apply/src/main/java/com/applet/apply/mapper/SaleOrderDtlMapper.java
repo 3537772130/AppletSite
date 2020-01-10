@@ -2,6 +2,7 @@ package com.applet.apply.mapper;
 
 
 import com.applet.apply.entity.SaleOrderDtl;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import java.util.List;
  * @author liangzhong.tan
  * @date 2019-12-31 10:11:00
  */
+@Mapper
 public interface SaleOrderDtlMapper {
 
     SaleOrderDtl selectByPrimaryKey(Integer orderDtlId);

@@ -272,8 +272,11 @@
   <select id="selectSearchCount" resultType="java.lang.Long" parameterType="java.util.Map" >
     select count(order_id) from sale_order_doc
     <where>
-      <if  test="params.params != null">
-        and applet_id = #{params.applet_id}
+      <if  test="params.appletId != null">
+        and applet_id = #{params.appletId}
+      </if>
+      <if  test="params.userId != null">
+        and user_id = #{params.userId}
       </if>
     </where>
   </select>
@@ -283,8 +286,11 @@
     <include refid="Base_Column_List" />
     from sale_order_doc
     <where>
-      <if  test="params.params != null">
-        and applet_id = #{params.applet_id}
+      <if  test="params.appletId != null">
+        and applet_id = #{params.appletId}
+      </if>
+      <if  test="params.userId != null">
+        and user_id = #{params.userId}
       </if>
     </where>
     order by order_id desc
@@ -292,4 +298,5 @@
       limit #{offset} , #{limit}
     </if>
   </select>
+
 </mapper>

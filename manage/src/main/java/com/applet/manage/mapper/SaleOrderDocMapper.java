@@ -2,6 +2,7 @@ package com.applet.manage.mapper;
 
 import com.applet.common.mapper.BaseMapper;
 import com.applet.manage.entity.SaleOrderDoc;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 销售订单
@@ -9,6 +10,7 @@ import com.applet.manage.entity.SaleOrderDoc;
  * @author liangzhong.tan
  * @date 2019-12-31 10:11:00
  */
+@Mapper
 public interface SaleOrderDocMapper extends BaseMapper<SaleOrderDoc> {
     int deleteByPrimaryKey(Integer orderId);
 

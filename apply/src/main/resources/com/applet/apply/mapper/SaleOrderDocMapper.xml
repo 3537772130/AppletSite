@@ -268,12 +268,11 @@
     where order_id = #{orderId,jdbcType=INTEGER}
   </update>
 
-
-  <select id="selectSearchCount" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectSearchCount" resultType="java.lang.Long" parameterType="java.util.Map" >
     select count(order_id) from sale_order_doc
     <where>
       <if  test="params.appletId != null">
-        and applet_id = #{params.applet_id}
+        and applet_id = #{params.appletId}
       </if>
       <if  test="params.userId != null">
         and user_id = #{params.userId}
@@ -281,13 +280,13 @@
     </where>
   </select>
 
-  <select id="selectSearchData" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectSearchData" resultMap="BaseResultMap" parameterType="java.util.Map" >
     select
     <include refid="Base_Column_List" />
     from sale_order_doc
     <where>
       <if  test="params.appletId != null">
-        and applet_id = #{params.applet_id}
+        and applet_id = #{params.appletId}
       </if>
       <if  test="params.userId != null">
         and user_id = #{params.userId}
@@ -298,4 +297,5 @@
       limit #{offset} , #{limit}
     </if>
   </select>
+
 </mapper>
