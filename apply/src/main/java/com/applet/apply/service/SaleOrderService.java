@@ -47,5 +47,5 @@ public interface SaleOrderService {
      * @return
      */
     @Transactional(rollbackFor = Throwable.class)
-    boolean create(SaleOrderBo bo);
+    Integer create(SaleOrderBo bo);
 }

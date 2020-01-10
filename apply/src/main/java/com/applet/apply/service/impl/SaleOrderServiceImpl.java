@@ -125,7 +125,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
 
     @Override
-    public boolean create(SaleOrderBo bo) {
+    public Integer create(SaleOrderBo bo) {
         log.info("用户下单, Params: {}", bo);
 
         if (CollectionUtils.isEmpty(bo.getCartIdList()) || bo.getAddressId() == null) {
@@ -222,7 +222,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             // 更新优惠券状态
             userCouponMapper.updateByPrimaryKeySelective(new UserCoupon(userCoupon.getId(), OrderEnums.UserCouponStatus.USING.getCode()));
         }
-        return true;
+        return order.getOrderId();
     }
 
 
