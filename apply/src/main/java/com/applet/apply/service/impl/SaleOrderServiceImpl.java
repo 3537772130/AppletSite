@@ -88,10 +88,10 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         order.setOrderId(orderId);
         order.setOrderStatus(status);
         order.setOrderStatusCn(orderStatus.getName());
-        if (OrderEnums.OrderStatus.CANCEL.getCode().equals(status)){
+        if (OrderEnums.OrderStatus.CANCEL.getCode().equals(status)) {
             order.setCancelReason(bo.getCancelReason());
         }
-        if (OrderEnums.OrderStatus.DENIAL.getCode().equals(status)){
+        if (OrderEnums.OrderStatus.DENIAL.getCode().equals(status)) {
             order.setDenialReason(bo.getDenialReason());
         }
 
@@ -177,6 +177,13 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             }
         }
 
+        // 运费
+        Double carriersFee = userCouponService.countFreight(bo.getAppletId(), bo.getDistance());
+        if (carriersFee < 0) {
+            log.warn("超出配送范围, AppletId: {}, Distance:{}", bo.getAppletId(), bo.getDistance());
+            throw BusinessException.of("超出配送范围");
+        }
+
         // save 订单
         OrderEnums.OrderStatus orderStatus = OrderEnums.OrderStatus.PENDING;
         SaleOrderDoc order = new SaleOrderDoc(bo.getUserId(),
@@ -185,7 +192,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                 String.format("%s %s %s %s", address.getCity(), address.getCounty(), address.getRegion(), address.getAddress()),
                 Double.valueOf(address.getLat()),
                 Double.valueOf(address.getLon()),
-                BigDecimal.valueOf(0),
+                BigDecimal.valueOf(carriersFee),
                 bo.getAppletId(),
                 orderStatus.getCode(),
                 orderStatus.getName(),

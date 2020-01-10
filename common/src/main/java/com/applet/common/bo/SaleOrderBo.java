@@ -95,7 +95,7 @@ public class SaleOrderBo {
     private String orderRemark;
 
     @ApiModelProperty("距离(米)")
-    private String distance;
+    private Integer distance;
 
     @ApiModelProperty("订单Id")
     private Integer orderId;
