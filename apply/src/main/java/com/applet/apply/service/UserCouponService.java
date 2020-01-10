@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +21,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  * Description: 用户优惠券服务类
  */
+@SuppressWarnings("ALL")
 @Service
 public class UserCouponService {
     @Autowired
@@ -32,9 +34,11 @@ public class UserCouponService {
     private ViewCouponInfoMapper viewCouponInfoMapper;
     @Autowired
     private FreightDeployMapper freightDeployMapper;
+    @Autowired
+    private SaleOrderDocMapper saleOrderDocMapper;
 
     /**
-     * 分页查询用户可正常使用的优惠券记录
+     * 分页查询用户可正常待使用的优惠券记录
      * @param userId
      * @return
      */
@@ -42,7 +46,10 @@ public class UserCouponService {
         ViewUserCouponExample example = new ViewUserCouponExample();
         example.setPage(page);
         example.setOrderByClause("activity_over desc");
-        example.createCriteria().andUserIdEqualTo(userId).andActivityOverGreaterThan(new Date()).andStatusEqualTo(0);
+        example.createCriteria()
+                .andUserIdEqualTo(userId)
+                .andActivityOverGreaterThan(new Date())
+                .andStatusEqualTo(0);
         long count = viewUserCouponMapper.countByExample(example);
         if (count > 0){
             page.setTotalCount(count);
@@ -61,8 +68,12 @@ public class UserCouponService {
     public List<ViewUserCoupon> selectUserCouponList(Integer userId, Integer useAppletId, Double mountPrice){
         ViewUserCouponExample example = new ViewUserCouponExample();
         example.setOrderByClause("denomination desc");
-        example.createCriteria().andUserIdEqualTo(userId).andUseAppletIdEqualTo(useAppletId).andUsePriceLessThanOrEqualTo(mountPrice)
-                .andActivityOverGreaterThan(new Date()).andStatusEqualTo(0);
+        example.createCriteria()
+                .andUserIdEqualTo(userId)
+                .andUseAppletIdEqualTo(useAppletId)
+                .andUsePriceLessThanOrEqualTo(mountPrice)
+                .andActivityOverGreaterThan(new Date())
+                .andStatusEqualTo(0);
         return viewUserCouponMapper.selectByExample(example);
     }
 
@@ -74,8 +85,11 @@ public class UserCouponService {
      */
     public ViewUserCoupon selectUserCouponInfo(Integer id, Integer userId){
         ViewUserCouponExample example = new ViewUserCouponExample();
-        example.createCriteria().andIdEqualTo(id).andUserIdEqualTo(userId)
-                .andActivityOverGreaterThan(new Date()).andStatusEqualTo(0);
+        example.createCriteria()
+                .andIdEqualTo(id)
+                .andUserIdEqualTo(userId)
+                .andActivityOverGreaterThan(new Date())
+                .andStatusEqualTo(0);
         List<ViewUserCoupon> list = viewUserCouponMapper.selectByExample(example);
         return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
     }
@@ -88,29 +102,12 @@ public class UserCouponService {
     public List<CouponInfo> selectGainAppletCouponList(Integer gainAppletId){
         CouponInfoExample example = new CouponInfoExample();
         example.setOrderByClause("denomination desc");
-        example.createCriteria().andGainAppletIdEqualTo(gainAppletId).andActivityStartLessThan(new Date())
-                .andActivityOverGreaterThan(new Date()).andStatusEqualTo(1);
+        example.createCriteria()
+                .andGainAppletIdEqualTo(gainAppletId)
+                .andActivityStartLessThan(new Date())
+                .andActivityOverGreaterThan(new Date())
+                .andStatusEqualTo(1);
         return couponInfoMapper.selectByExample(example);
-    }
-
-    /**
-     * 添加用户优惠券
-     * @param coupon
-     */
-    public void insertUserCouponInfo(UserCoupon coupon){
-        userCouponMapper.insertSelective(coupon);
-    }
-
-    /**
-     * 更新用户优惠券状态
-     * @param id
-     */
-    public void updateUserCouponStatus(Integer id){
-        UserCoupon coupon = new UserCoupon();
-        coupon.setId(id);
-        coupon.setUseTime(new Date());
-        coupon.setStatus(1);
-        userCouponMapper.updateByPrimaryKeySelective(coupon);
     }
 
     /**
@@ -168,12 +165,15 @@ public class UserCouponService {
                 .andUseAppletIdEqualTo(useAppletId)
                 .andStatusEqualTo(0);
         JDateTime time = new JDateTime(new Date());
+        List<Integer> statusList = new ArrayList<>();
+        statusList.add(1);
+        statusList.add(2);
         example.or()
                 .andCouponIdEqualTo(couponId)
                 .andUserIdEqualTo(userId)
                 .andUseTimeGreaterThanOrEqualTo(time.setHour(0).setMinute(0).setSecond(0).convertToDate())
                 .andUseTimeLessThanOrEqualTo(time.setHour(23).setMinute(59).setSecond(59).convertToDate())
-                .andStatusEqualTo(1);
+                .andStatusIn(statusList);
         List<ViewUserCoupon> list = viewUserCouponMapper.selectByExample(example);
         return NullUtil.isNotNullOrEmpty(list) ? false : true;
     }

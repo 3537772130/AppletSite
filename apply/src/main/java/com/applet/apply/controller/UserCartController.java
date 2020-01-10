@@ -42,31 +42,32 @@ public class UserCartController {
 
     /**
      * 加入购物车
+     *
      * @param weChantInfo
      * @param cart
      * @return
      */
     @RequestMapping(value = "saveUserCartInfo")
-    public Object saveUserCartInfo(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, @Param("cart") UserCart cart){
+    public Object saveUserCartInfo(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, @Param("cart") UserCart cart) {
         try {
-            if (null == cart){
+            if (null == cart) {
                 return AjaxResponse.error("参数错误");
             }
             cart.setId(null);
-            if (NullUtil.isNullOrEmpty(cart.getGoodsId())){
+            if (NullUtil.isNullOrEmpty(cart.getGoodsId())) {
                 return AjaxResponse.error("商品参数丢失");
             }
-            if (NullUtil.isNullOrEmpty(cart.getSpecsId())){
+            if (NullUtil.isNullOrEmpty(cart.getSpecsId())) {
                 return AjaxResponse.error("商品规格参数丢失");
             }
-            if (NullUtil.isNullOrEmpty(cart.getAmount())){
+            if (NullUtil.isNullOrEmpty(cart.getAmount())) {
                 return AjaxResponse.error("选购数量参数丢失");
             }
-            if (cart.getAmount().intValue() < 1 || cart.getAmount().intValue() > 999){
+            if (cart.getAmount().intValue() < 1 || cart.getAmount().intValue() > 999) {
                 return AjaxResponse.error("选购数量只能为1-999");
             }
             ViewUserCart userCart = userCartService.selectUserCartInfo(weChantInfo.getId(), weChantInfo.getAppletId(), cart.getSpecsId());
-            if (null != userCart){
+            if (null != userCart) {
                 cart.setId(userCart.getId());
             }
             cart.setWxId(weChantInfo.getId());
@@ -81,13 +82,14 @@ public class UserCartController {
 
     /**
      * 查询用户购物车列表
+     *
      * @param weChantInfo
      * @return
      */
     @RequestMapping(value = "queryUserCartList")
-    public Object queryUserCartList(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo){
+    public Object queryUserCartList(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo) {
         List<ViewUserCart> list = userCartService.selectUserCartList(weChantInfo.getId(), weChantInfo.getAppletId());
-        if (NullUtil.isNotNullOrEmpty(list)){
+        if (NullUtil.isNotNullOrEmpty(list)) {
             return AjaxResponse.success(list);
         }
         return AjaxResponse.error("未找到相关记录");
@@ -95,25 +97,26 @@ public class UserCartController {
 
     /**
      * 更新购物车商品规格数量
+     *
      * @param weChantInfo
      * @param id
      * @param amount
      * @return
      */
     @RequestMapping(value = "updateCartGoodsAmount")
-    public Object updateCartGoodsAmount(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer id, Integer amount){
+    public Object updateCartGoodsAmount(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer id, Integer amount) {
         try {
-            if (NullUtil.isNullOrEmpty(id)){
+            if (NullUtil.isNullOrEmpty(id)) {
                 return AjaxResponse.error("参数错误");
             }
-            if (NullUtil.isNullOrEmpty(amount)){
+            if (NullUtil.isNullOrEmpty(amount)) {
                 return AjaxResponse.error("选购数量参数丢失");
             }
-            if (amount.intValue() < 1 || amount.intValue() > 999){
+            if (amount.intValue() < 1 || amount.intValue() > 999) {
                 return AjaxResponse.error("选购数量只能为1-999");
             }
             Integer num = userCartService.updateCartGoodsAmount(id, weChantInfo.getId(), weChantInfo.getAppletId(), amount);
-            if (num.intValue() > 0){
+            if (num.intValue() > 0) {
                 return AjaxResponse.success("更新成功");
             }
         } catch (Exception e) {
@@ -124,18 +127,19 @@ public class UserCartController {
 
     /**
      * 删除购物车商品记录
+     *
      * @param weChantInfo
      * @param id
      * @return
      */
     @RequestMapping(value = "deleteUserCart")
-    public Object deleteUserCart(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer id){
+    public Object deleteUserCart(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer id) {
         try {
-            if (NullUtil.isNullOrEmpty(id)){
+            if (NullUtil.isNullOrEmpty(id)) {
                 return AjaxResponse.error("参数错误");
             }
             Integer num = userCartService.updateCartStatus(id, weChantInfo.getId(), weChantInfo.getAppletId());
-            if (num.intValue() > 0){
+            if (num.intValue() > 0) {
                 return AjaxResponse.success("删除成功");
             }
         } catch (Exception e) {
@@ -146,33 +150,40 @@ public class UserCartController {
 
     /**
      * 加载订单准备信息
+     *
      * @param weChantInfo
      * @param mountPrice
      * @return
      */
     @RequestMapping(value = "loadOrderReadyInfo")
-    public Object loadOrderReadyInfo(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, String idJson, Double mountPrice){
-        if (NullUtil.isNullOrEmpty(idJson)){
+    public Object loadOrderReadyInfo(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, String idJson, Double mountPrice) {
+        if (NullUtil.isNullOrEmpty(idJson)) {
             return AjaxResponse.error("参数错误");
         }
-        List<Integer> idList = JSON.parseObject(idJson, new TypeReference<List<Integer>>(){});
+        List<Integer> idList = JSON.parseObject(idJson, new TypeReference<List<Integer>>() {
+        });
         List<ViewUserCart> cartList = userCartService.selectUserCartList(weChantInfo.getId(), weChantInfo.getAppletId(), idList);
         // 检测是否可以使用优惠券
         Boolean ifCoupon = true;
-        for (ViewUserCart cart: cartList) {
-            if (!cart.getIfDiscount()){
+        for (ViewUserCart cart : cartList) {
+            if (!cart.getIfDiscount()) {
                 ifCoupon = false;
                 break;
             }
         }
-        List<ViewUserCoupon> couponList = null;
-        if (ifCoupon){
-            couponList = userCouponService.selectUserCouponList(weChantInfo.getUserId(), weChantInfo.getAppletId(), mountPrice);
+        ViewUserCoupon coupon = null;
+        if (ifCoupon) {
+            List<ViewUserCoupon> couponList = userCouponService.selectUserCouponList(weChantInfo.getUserId(), weChantInfo.getAppletId(), mountPrice);
+            coupon = NullUtil.isNotNullOrEmpty(couponList) ? couponList.get(0) : null;
+        }
+        if (null == coupon){
+            coupon = new ViewUserCoupon();
+            coupon.setDenomination(0.0d);
         }
         ReceiveAddress address = userService.selectReceiveAddressInfo(weChantInfo.getUserId());
         Map map = new HashMap();
         map.put("address", address);
-        map.put("coupon", NullUtil.isNotNullOrEmpty(couponList) ? couponList.get(0) : null);
+        map.put("coupon", coupon);
         map.put("list", cartList);
         map.put("ifCoupon", ifCoupon);
         return AjaxResponse.success(map);
@@ -180,15 +191,16 @@ public class UserCartController {
 
     /**
      * 查询运费
+     *
      * @param appletInfo
      * @param distance
      * @return
      */
     @RequestMapping(value = "getOrderFreight")
-    public Object getOrderFreight(@SessionScope("appletInfo") ViewAppletInfo appletInfo, Integer distance){
+    public Object getOrderFreight(@SessionScope("appletInfo") ViewAppletInfo appletInfo, Integer distance) {
         Double freight = userCouponService.countFreight(appletInfo.getId(), distance);
-        if (freight.doubleValue() < 0){
-            return AjaxResponse.error("超出配送范围");
+        if (freight.doubleValue() < 0) {
+            return AjaxResponse.error("超出配送范围，请重新选择收货地址！");
         }
         return AjaxResponse.success(freight);
     }

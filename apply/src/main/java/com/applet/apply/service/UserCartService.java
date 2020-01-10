@@ -123,4 +123,18 @@ public class UserCartService {
         example.createCriteria().andWxIdEqualTo(wxId).andAppletIdEqualTo(appletId).andIdIn(idList);
         return viewUserCartMapper.selectByExample(example);
     }
+
+    /**
+     * 更新购物车信息状态
+     * @param appletId
+     * @param wxId
+     * @param specsIdList
+     */
+    public void updateUserCartStatus(Integer appletId, Integer wxId, List<Integer> specsIdList){
+        UserCartExample example = new UserCartExample();
+        example.createCriteria().andAppletIdEqualTo(appletId).andWxIdEqualTo(wxId).andSpecsIdIn(specsIdList);
+        UserCart record = new UserCart();
+        record.setStatus(false);
+        userCartMapper.updateByExampleSelective(record, example);
+    }
 }
