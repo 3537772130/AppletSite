@@ -4,6 +4,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,12 +21,16 @@ import java.util.Map;
 @ApiModel("分页请求实体")
 public class PageBo<T> implements Serializable {
 
-    @ApiModelProperty(value = "页码",example = "1")
+    @NotNull(message = "起始页为空")
+    @Min(value = 1, message = "起始页最小1")
+    @ApiModelProperty(value = "当前页数", required = true, example = "1")
     private Integer page;
 
-    @ApiModelProperty(value = "页码大小",example = "30")
-    private Integer size = 20;
-
+    @NotNull(message = "页大小为空")
+    @Min(value = 1, message = "页大小最小1")
+    @Max(value = 100, message = "页大小最大100")
+    @ApiModelProperty(value = "每页显示数", required = true, example = "10")
+    private Integer size;
     @ApiModelProperty("查询参数")
     private T param;
 
