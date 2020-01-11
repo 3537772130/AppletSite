@@ -173,7 +173,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         }
 
         ViewUserCoupon userCoupon = null;
-        if (couponFlag.get()) {
+        if (couponFlag.get() && bo.getCouponId() != null) {
             userCoupon = userCouponService.selectUserCouponInfo(bo.getCouponId(), bo.getUserId());
             Date now = new Date();
             if (userCoupon == null) {
@@ -210,7 +210,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                 BigDecimal.valueOf(totalAmount.addAndGet(carriersFee)),
                 BigDecimal.valueOf(0.00),
                 null,
-                (byte) 1,
+                bo.getPayType(),
                 bo.getOrderRemark()
         );
         if (userCoupon != null) {

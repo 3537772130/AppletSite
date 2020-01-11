@@ -83,6 +83,21 @@ public class UserCouponService {
      * @param userId
      * @return
      */
+    public ViewUserCoupon selectUserCoupon(Integer id, Integer userId){
+        ViewUserCouponExample example = new ViewUserCouponExample();
+        example.createCriteria()
+                .andIdEqualTo(id)
+                .andUserIdEqualTo(userId);
+        List<ViewUserCoupon> list = viewUserCouponMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+    }
+
+    /**
+     * 查询用户优惠券详情（未过期、未使用）
+     * @param id
+     * @param userId
+     * @return
+     */
     public ViewUserCoupon selectUserCouponInfo(Integer id, Integer userId){
         ViewUserCouponExample example = new ViewUserCouponExample();
         example.createCriteria()
@@ -159,21 +174,25 @@ public class UserCouponService {
      */
     public Boolean checkUserCouponInfo(Integer couponId, Integer userId, Integer useAppletId){
         ViewUserCouponExample example = new ViewUserCouponExample();
+        // 检测是否存在未使用的
         example.createCriteria()
                 .andCouponIdEqualTo(couponId)
                 .andUserIdEqualTo(userId)
                 .andUseAppletIdEqualTo(useAppletId)
                 .andStatusEqualTo(0);
+        // 检测是否存在使用中的
+        example.or()
+                .andCouponIdEqualTo(couponId)
+                .andUserIdEqualTo(userId)
+                .andStatusEqualTo(1);
+        // 检测今天是否已使用
         JDateTime time = new JDateTime(new Date());
-        List<Integer> statusList = new ArrayList<>();
-        statusList.add(1);
-        statusList.add(2);
         example.or()
                 .andCouponIdEqualTo(couponId)
                 .andUserIdEqualTo(userId)
                 .andUseTimeGreaterThanOrEqualTo(time.setHour(0).setMinute(0).setSecond(0).convertToDate())
                 .andUseTimeLessThanOrEqualTo(time.setHour(23).setMinute(59).setSecond(59).convertToDate())
-                .andStatusIn(statusList);
+                .andStatusEqualTo(2);
         List<ViewUserCoupon> list = viewUserCouponMapper.selectByExample(example);
         return NullUtil.isNotNullOrEmpty(list) ? false : true;
     }
@@ -196,6 +215,21 @@ public class UserCouponService {
         List<CouponInfo> list = couponInfoMapper.selectByExample(example);
         return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
     }
+
+    /**
+     * 更新用户优惠券状态
+     * @param id
+     * @param status
+     */
+    public void updateUserCouponStatus(Integer id, Integer status){
+        UserCoupon coupon = new UserCoupon();
+        coupon.setId(id);
+        coupon.setUseTime(new Date());
+        coupon.setStatus(status);
+        userCouponMapper.updateByPrimaryKeySelective(coupon);
+    }
+
+
 
     /**
      * 计算运费

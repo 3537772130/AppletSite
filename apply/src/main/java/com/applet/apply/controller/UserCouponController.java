@@ -92,7 +92,7 @@ public class UserCouponController {
                 return AjaxResponse.msg("0","手慢啦，优惠券已经发完了");
             }
             userCouponService.addUserCoupon(couponInfo, weChantInfo.getUserId());
-            return AjaxResponse.success("领取成功");
+            return AjaxResponse.success("领取成功，快去使用吧 ^_^");
         } catch (Exception e) {
             log.error("领取优惠券出错{}", e);
             return AjaxResponse.error("领取失败");
