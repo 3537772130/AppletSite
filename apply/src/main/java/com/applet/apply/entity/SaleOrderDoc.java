@@ -75,5 +75,6 @@ public class SaleOrderDoc {
         this.userCouponId = userCouponId;
         this.payType = payType;
         this.orderRemark = orderRemark;
+        this.gmtModified = new Date();
     }
 }

@@ -81,25 +81,32 @@ public class UserOrderController {
     @RequestMapping(value = "queryOrderInfo")
     public Object queryOrderInfo(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo,
                                  Integer id) {
-        SaleOrder order = userOrderService.selectSaleOrderInfoByUser(id, weChantInfo.getUserId());
+        ViewOrderInfo order = userOrderService.selectViewOrderInfoByUser(id, weChantInfo.getUserId());
         if (null != order) {
             if (!order.getOrderStatus().toString().equals("0")
                     && !order.getOrderStatus().toString().equals("3")
                     && !order.getOrderStatus().toString().equals("6")) {
-                AppletInfo appletInfo = appletService.selectAppletInfo(order.getAppletId());
-                Map map = new HashMap();
-                map.put("appletLogo", appletInfo.getAppletLogo());
-                map.put("lon", appletInfo.getLon());
-                map.put("lat", appletInfo.getLat());
-                map.put("telephone", appletInfo.getTelephone());
-
-                Map map1 = new HashMap();
-                map1.put("order", order);
-                map1.put("appletInfo", map);
-                return AjaxResponse.success(map1);
+                userOrderService.updateOrderSeeRecord(order.getId(), true, null);
+                return AjaxResponse.success(order);
             }
         }
         return AjaxResponse.error("未找到相关信息");
+    }
+
+    /**
+     * 分页查询订单 - 用户
+     * @param weChantInfo
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "querySaleOrderByUser")
+    public Object querySaleOrderByUser(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, HttpServletRequest request) {
+        Page page = PageUtil.initPage(request);
+        page = userOrderService.selectSaleOrderByUserToPage(weChantInfo.getUserId(), page);
+        if (null != page.getDataSource()) {
+            return AjaxResponse.success(page);
+        }
+        return AjaxResponse.error("未找到相关记录");
     }
 
     /**
@@ -116,6 +123,7 @@ public class UserOrderController {
             if (null != order) {
                 if (order.getOrderStatus().toString().equals("1")) {
                     userOrderService.updateSaleOrderStatus(order.getOrderId(), 0, null);
+                    userOrderService.updateOrderSeeRecord(order.getOrderId(), true, false);
                     return AjaxResponse.success("取消成功");
                 } else if (order.getOrderStatus().toString().equals("2")) {
                     return AjaxResponse.error("商家已接单，有问题请联系商家");
@@ -144,6 +152,7 @@ public class UserOrderController {
             if (null != order) {
                 if (order.getOrderStatus().toString().equals("5")) {
                     userOrderService.updateSaleOrderStatus(order.getOrderId(), 6, null);
+                    userOrderService.updateOrderSeeRecord(order.getOrderId(), true, false);
                     return AjaxResponse.success("签收成功");
                 }
             }
@@ -163,18 +172,13 @@ public class UserOrderController {
      */
     @RequestMapping(value = "querySaleOrderDetailsByUser")
     public Object querySaleOrderDetailsByUser(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer orderId) {
-        SaleOrder order = userOrderService.selectSaleOrderInfoByUser(orderId, weChantInfo.getUserId());
+        ViewOrderInfo order = userOrderService.selectViewOrderInfoByUser(orderId, weChantInfo.getUserId());
         if (null != order) {
             Map map = new HashMap<>();
             map.put("order", order);
-            // 优惠券信息
-            if (NullUtil.isNotNullOrEmpty(order.getUserCouponId())) {
-                map.put("coupon", userCouponService.selectUserCouponInfo(order.getUserCouponId(), order.getUserId()));
-            } else {
-                map.put("coupon", "");
-            }
             // 订单详情列表
             map.put("list", userOrderService.selectSaleOrderDetailsList(orderId));
+            userOrderService.updateOrderSeeRecord(order.getId(), true, null);
             return AjaxResponse.success(map);
         }
         return AjaxResponse.error("未找到相关记录");
@@ -189,26 +193,40 @@ public class UserOrderController {
 
     /******************************************商户对订单的操作***********************************************/
 
-
+    /**
+     * 查询订单信息列表 - 商户
+     * @param appletInfo
+     * @param weChantInfo
+     * @param orderStatus
+     * @return
+     */
+    @RequestMapping(value = "querySaleOrderByStore")
+    public Object querySaleOrderByStore(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
+                                        @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo,
+                                        Integer orderStatus) {
+        Page page = new Page(1, 10);
+        page = userOrderService.selectSaleOrderByStoreToList(appletInfo.getId(), weChantInfo.getUserId(), orderStatus, page);
+        if (null != page.getDataSource()) {
+            return AjaxResponse.success(page);
+        }
+        return AjaxResponse.error("未找到相关记录");
+    }
 
     /**
-     * 分页查询订单信息 - 商户
+     * 分页查询订单信息列表 - 商户
      *
      * @param appletInfo
-     * @param orderStatus
      * @param request
      * @return
      */
-    @RequestMapping(value = "querySaleOrderByBusiness")
-    public Object querySaleOrderByBusiness(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
+    @RequestMapping(value = "querySaleOrderByStoreToPage")
+    public Object querySaleOrderByStoreToPage(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
                                            @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo,
-                                           Integer orderStatus, HttpServletRequest request) {
-        if (appletInfo.getUserId().intValue() == weChantInfo.getUserId().intValue()) {
-            Page page = PageUtil.initPage(request);
-            page = userOrderService.selectSaleOrderByBusinessToPage(appletInfo.getId(), orderStatus, page);
-            if (null != page.getDataSource()) {
-                return AjaxResponse.success(page);
-            }
+                                           HttpServletRequest request) {
+        Page page = PageUtil.initPage(request);
+        page = userOrderService.selectSaleOrderByStoreToPage(appletInfo.getId(), weChantInfo.getUserId(), page);
+        if (null != page.getDataSource()) {
+            return AjaxResponse.success(page);
         }
         return AjaxResponse.error("未找到相关记录");
     }
@@ -221,28 +239,17 @@ public class UserOrderController {
      * @param orderId
      * @return
      */
-    @RequestMapping(value = "querySaleOrderDetailsByBusiness")
-    public Object querySaleOrderDetailsByBusiness(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
+    @RequestMapping(value = "querySaleOrderDetailsByStore")
+    public Object querySaleOrderDetailsByStore(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
                                                   @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer orderId) {
-        if (appletInfo.getUserId().intValue() == weChantInfo.getUserId().intValue()) {
-            SaleOrder order = userOrderService.selectSaleOrderInfoByUser(orderId, appletInfo.getId());
-            if (null != order) {
-                Map map = new HashMap<>();
-                AppletInfo info = appletService.selectAppletInfo(order.getAppletId());
-                map.put("telephone", info.getTelephone());
-                map.put("order", order);
-                // 优惠券信息
-                if (NullUtil.isNotNullOrEmpty(order.getUserCouponId())) {
-                    map.put("coupon", userCouponService.selectUserCoupon(order.getUserCouponId(), order.getUserId()));
-                } else {
-                    CouponInfo couponInfo = new CouponInfo();
-                    couponInfo.setDenomination(0.0d);
-                    map.put("coupon", couponInfo);
-                }
-                // 订单详情列表
-                map.put("list", userOrderService.selectSaleOrderDetailsList(orderId));
-                return AjaxResponse.success(map);
-            }
+        ViewOrderInfo order = userOrderService.selectViewOrderInfoByStore(orderId, appletInfo.getId(), weChantInfo.getUserId());
+        if (null != order) {
+            Map map = new HashMap<>();
+            map.put("order", order);
+            // 订单详情列表
+            map.put("list", userOrderService.selectSaleOrderDetailsList(orderId));
+            userOrderService.updateOrderSeeRecord(order.getId(), null, true);
+            return AjaxResponse.success(map);
         }
         return AjaxResponse.error("未找到相关记录");
     }
@@ -257,31 +264,30 @@ public class UserOrderController {
      * @param remark
      * @return
      */
-    @RequestMapping(value = "updateOrderByBusiness")
-    public Object updateOrderByBusiness(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
+    @RequestMapping(value = "updateOrderStatusByStore")
+    public Object updateOrderStatusByStore(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
                                         @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo,
                                         Integer id, Integer status, String remark) {
         try {
-            if (appletInfo.getUserId().intValue() == weChantInfo.getUserId().intValue()
-                    && (status.intValue() == 2 || status.intValue() == 3 || status.intValue() == 4 || status.intValue() == 5)){
-                SaleOrder order = userOrderService.selectSaleOrderInfoByBusiness(id, appletInfo.getId());
+            if (status.intValue() == 2 || status.intValue() == 3 || status.intValue() == 4 || status.intValue() == 5){
+                ViewOrderInfo order = userOrderService.selectViewOrderInfoByStore(id, appletInfo.getId(), weChantInfo.getUserId());
                 if (null != order) {
                     if (order.getOrderStatus().toString().equals("0")){
                         return AjaxResponse.error("买家已取消订单");
                     } else if (order.getOrderStatus().toString().equals("1") && status.intValue() == 2) {
-                        userOrderService.updateSaleOrderStatus(order.getOrderId(), 2, null);
+                        userOrderService.updateSaleOrderStatus(order.getId(), 2, null);
                         userCouponService.updateUserCouponStatus(order.getUserCouponId(), 2);
                         return AjaxResponse.success("已成功接受订单，准备好商品去配送吧 ^_^");
                     } else if (order.getOrderStatus().toString().equals("1") && status.intValue() == 3) {
-                        userOrderService.updateSaleOrderStatus(order.getOrderId(), status, remark);
+                        userOrderService.updateSaleOrderStatus(order.getId(), 3, remark);
                         userCouponService.updateUserCouponStatus(order.getUserCouponId(), 0);
                         return AjaxResponse.success("已成功取消订单");
-                    } else if (order.getOrderStatus().toString().equals("2")) {
-                        userOrderService.updateSaleOrderStatus(order.getOrderId(), 4, null);
+                    } else if (order.getOrderStatus().toString().equals("2") && status.intValue() == 4) {
+                        userOrderService.updateSaleOrderStatus(order.getId(), 4, null);
                         return AjaxResponse.success("准备准备，咱就开始配送吧 ^_^");
-                    } else if (order.getOrderStatus().toString().equals("5")) {
-                        userOrderService.updateSaleOrderStatus(order.getOrderId(), 6, null);
-                        return AjaxResponse.success("签收成功");
+                    } else if (order.getOrderStatus().toString().equals("4") && status.intValue() == 5) {
+                        userOrderService.updateSaleOrderStatus(order.getId(), 5, null);
+                        return AjaxResponse.success("辛苦啦，又完成了一单 ^_^");
                     }
                 }
             }

@@ -7,6 +7,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * 订单详情
+ */
 public class ViewOrderInfo implements Serializable {
     private Integer id;
 
@@ -26,7 +29,15 @@ public class ViewOrderInfo implements Serializable {
 
     private String appletLogo;
 
+    private Double appletLon;
+
+    private Double appletLat;
+
+    private String appletTelephone;
+
     private String receiverName;
+
+    private String receiverPhone;
 
     private String detailAddr;
 
@@ -34,15 +45,15 @@ public class ViewOrderInfo implements Serializable {
 
     private Double lon;
 
-    private BigDecimal totalAmount;
-
-    private BigDecimal carriersFee;
-
     private Integer userCouponId;
 
     private String couponName;
 
-    private Double denomination;
+    private BigDecimal ticketAmount;
+
+    private BigDecimal carriersFee;
+
+    private BigDecimal totalAmount;
 
     private String orderRemark;
 
@@ -50,9 +61,15 @@ public class ViewOrderInfo implements Serializable {
 
     private Byte payType;
 
-    private Boolean userStatus;
+    private Boolean userSeeStatus;
 
-    private Boolean storeStatus;
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
+    private Date userSeeTime;
+
+    private Boolean storeSeeStatus;
+
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
+    private Date storeSeeTime;
 
     @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
     private Date createTime;
@@ -136,12 +153,44 @@ public class ViewOrderInfo implements Serializable {
         this.appletLogo = appletLogo == null ? null : appletLogo.trim();
     }
 
+    public Double getAppletLon() {
+        return appletLon;
+    }
+
+    public void setAppletLon(Double appletLon) {
+        this.appletLon = appletLon;
+    }
+
+    public Double getAppletLat() {
+        return appletLat;
+    }
+
+    public void setAppletLat(Double appletLat) {
+        this.appletLat = appletLat;
+    }
+
+    public String getAppletTelephone() {
+        return appletTelephone;
+    }
+
+    public void setAppletTelephone(String appletTelephone) {
+        this.appletTelephone = appletTelephone == null ? null : appletTelephone.trim();
+    }
+
     public String getReceiverName() {
         return receiverName;
     }
 
     public void setReceiverName(String receiverName) {
         this.receiverName = receiverName == null ? null : receiverName.trim();
+    }
+
+    public String getReceiverPhone() {
+        return receiverPhone;
+    }
+
+    public void setReceiverPhone(String receiverPhone) {
+        this.receiverPhone = receiverPhone == null ? null : receiverPhone.trim();
     }
 
     public String getDetailAddr() {
@@ -168,22 +217,6 @@ public class ViewOrderInfo implements Serializable {
         this.lon = lon;
     }
 
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
-    public BigDecimal getCarriersFee() {
-        return carriersFee;
-    }
-
-    public void setCarriersFee(BigDecimal carriersFee) {
-        this.carriersFee = carriersFee;
-    }
-
     public Integer getUserCouponId() {
         return userCouponId;
     }
@@ -200,12 +233,28 @@ public class ViewOrderInfo implements Serializable {
         this.couponName = couponName == null ? null : couponName.trim();
     }
 
-    public Double getDenomination() {
-        return denomination;
+    public BigDecimal getTicketAmount() {
+        return ticketAmount;
     }
 
-    public void setDenomination(Double denomination) {
-        this.denomination = denomination;
+    public void setTicketAmount(BigDecimal ticketAmount) {
+        this.ticketAmount = ticketAmount;
+    }
+
+    public BigDecimal getCarriersFee() {
+        return carriersFee;
+    }
+
+    public void setCarriersFee(BigDecimal carriersFee) {
+        this.carriersFee = carriersFee;
+    }
+
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
     }
 
     public String getOrderRemark() {
@@ -232,20 +281,36 @@ public class ViewOrderInfo implements Serializable {
         this.payType = payType;
     }
 
-    public Boolean getUserStatus() {
-        return userStatus;
+    public Boolean getUserSeeStatus() {
+        return userSeeStatus;
     }
 
-    public void setUserStatus(Boolean userStatus) {
-        this.userStatus = userStatus;
+    public void setUserSeeStatus(Boolean userSeeStatus) {
+        this.userSeeStatus = userSeeStatus;
     }
 
-    public Boolean getStoreStatus() {
-        return storeStatus;
+    public Date getUserSeeTime() {
+        return userSeeTime;
     }
 
-    public void setStoreStatus(Boolean storeStatus) {
-        this.storeStatus = storeStatus;
+    public void setUserSeeTime(Date userSeeTime) {
+        this.userSeeTime = userSeeTime;
+    }
+
+    public Boolean getStoreSeeStatus() {
+        return storeSeeStatus;
+    }
+
+    public void setStoreSeeStatus(Boolean storeSeeStatus) {
+        this.storeSeeStatus = storeSeeStatus;
+    }
+
+    public Date getStoreSeeTime() {
+        return storeSeeTime;
+    }
+
+    public void setStoreSeeTime(Date storeSeeTime) {
+        this.storeSeeTime = storeSeeTime;
     }
 
     public Date getCreateTime() {

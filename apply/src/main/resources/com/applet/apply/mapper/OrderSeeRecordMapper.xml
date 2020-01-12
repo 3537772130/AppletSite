@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.applet.apply.mapper.OrderSeeMapper">
-  <resultMap id="BaseResultMap" type="com.applet.apply.entity.OrderSee">
+<mapper namespace="com.applet.apply.mapper.OrderSeeRecordMapper">
+  <resultMap id="BaseResultMap" type="com.applet.apply.entity.OrderSeeRecord">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="order_id" jdbcType="INTEGER" property="orderId" />
-    <result column="user_status" jdbcType="BIT" property="userStatus" />
-    <result column="store_status" jdbcType="BIT" property="storeStatus" />
+    <result column="user_see_status" jdbcType="BIT" property="userSeeStatus" />
+    <result column="user_see_time" jdbcType="TIMESTAMP" property="userSeeTime" />
+    <result column="store_see_status" jdbcType="BIT" property="storeSeeStatus" />
+    <result column="store_see_time" jdbcType="TIMESTAMP" property="storeSeeTime" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -66,15 +68,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, order_id, user_status, store_status
+    id, order_id, user_see_status, user_see_time, store_see_status, store_see_time
   </sql>
-  <select id="selectByExample" parameterType="com.applet.apply.entity.OrderSeeExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.applet.apply.entity.OrderSeeRecordExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from order_see
+    from order_see_record
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -86,27 +88,29 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from order_see
+    from order_see_record
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from order_see
+    delete from order_see_record
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.applet.apply.entity.OrderSeeExample">
-    delete from order_see
+  <delete id="deleteByExample" parameterType="com.applet.apply.entity.OrderSeeRecordExample">
+    delete from order_see_record
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.applet.apply.entity.OrderSee">
-    insert into order_see (id, order_id, user_status, 
-      store_status)
-    values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{userStatus,jdbcType=BIT}, 
-      #{storeStatus,jdbcType=BIT})
+  <insert id="insert" parameterType="com.applet.apply.entity.OrderSeeRecord">
+    insert into order_see_record (id, order_id, user_see_status, 
+      user_see_time, store_see_status, store_see_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{userSeeStatus,jdbcType=BIT}, 
+      #{userSeeTime,jdbcType=TIMESTAMP}, #{storeSeeStatus,jdbcType=BIT}, #{storeSeeTime,jdbcType=TIMESTAMP}
+      )
   </insert>
-  <insert id="insertSelective" keyProperty="id" parameterType="com.applet.apply.entity.OrderSee" useGeneratedKeys="true">
-    insert into order_see
+  <insert id="insertSelective" keyProperty="id" parameterType="com.applet.apply.entity.OrderSeeRecord" useGeneratedKeys="true">
+    insert into order_see_record
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -114,11 +118,17 @@
       <if test="orderId != null">
         order_id,
       </if>
-      <if test="userStatus != null">
-        user_status,
+      <if test="userSeeStatus != null">
+        user_see_status,
       </if>
-      <if test="storeStatus != null">
-        store_status,
+      <if test="userSeeTime != null">
+        user_see_time,
+      </if>
+      <if test="storeSeeStatus != null">
+        store_see_status,
+      </if>
+      <if test="storeSeeTime != null">
+        store_see_time,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -128,22 +138,28 @@
       <if test="orderId != null">
         #{orderId,jdbcType=INTEGER},
       </if>
-      <if test="userStatus != null">
-        #{userStatus,jdbcType=BIT},
+      <if test="userSeeStatus != null">
+        #{userSeeStatus,jdbcType=BIT},
       </if>
-      <if test="storeStatus != null">
-        #{storeStatus,jdbcType=BIT},
+      <if test="userSeeTime != null">
+        #{userSeeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="storeSeeStatus != null">
+        #{storeSeeStatus,jdbcType=BIT},
+      </if>
+      <if test="storeSeeTime != null">
+        #{storeSeeTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.applet.apply.entity.OrderSeeExample" resultType="java.lang.Long">
-    select count(*) from order_see
+  <select id="countByExample" parameterType="com.applet.apply.entity.OrderSeeRecordExample" resultType="java.lang.Long">
+    select count(*) from order_see_record
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update order_see
+    update order_see_record
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
@@ -151,11 +167,17 @@
       <if test="record.orderId != null">
         order_id = #{record.orderId,jdbcType=INTEGER},
       </if>
-      <if test="record.userStatus != null">
-        user_status = #{record.userStatus,jdbcType=BIT},
+      <if test="record.userSeeStatus != null">
+        user_see_status = #{record.userSeeStatus,jdbcType=BIT},
       </if>
-      <if test="record.storeStatus != null">
-        store_status = #{record.storeStatus,jdbcType=BIT},
+      <if test="record.userSeeTime != null">
+        user_see_time = #{record.userSeeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.storeSeeStatus != null">
+        store_see_status = #{record.storeSeeStatus,jdbcType=BIT},
+      </if>
+      <if test="record.storeSeeTime != null">
+        store_see_time = #{record.storeSeeTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null">
@@ -163,35 +185,45 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update order_see
+    update order_see_record
     set id = #{record.id,jdbcType=INTEGER},
       order_id = #{record.orderId,jdbcType=INTEGER},
-      user_status = #{record.userStatus,jdbcType=BIT},
-      store_status = #{record.storeStatus,jdbcType=BIT}
+      user_see_status = #{record.userSeeStatus,jdbcType=BIT},
+      user_see_time = #{record.userSeeTime,jdbcType=TIMESTAMP},
+      store_see_status = #{record.storeSeeStatus,jdbcType=BIT},
+      store_see_time = #{record.storeSeeTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.applet.apply.entity.OrderSee">
-    update order_see
+  <update id="updateByPrimaryKeySelective" parameterType="com.applet.apply.entity.OrderSeeRecord">
+    update order_see_record
     <set>
       <if test="orderId != null">
         order_id = #{orderId,jdbcType=INTEGER},
       </if>
-      <if test="userStatus != null">
-        user_status = #{userStatus,jdbcType=BIT},
+      <if test="userSeeStatus != null">
+        user_see_status = #{userSeeStatus,jdbcType=BIT},
       </if>
-      <if test="storeStatus != null">
-        store_status = #{storeStatus,jdbcType=BIT},
+      <if test="userSeeTime != null">
+        user_see_time = #{userSeeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="storeSeeStatus != null">
+        store_see_status = #{storeSeeStatus,jdbcType=BIT},
+      </if>
+      <if test="storeSeeTime != null">
+        store_see_time = #{storeSeeTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.applet.apply.entity.OrderSee">
-    update order_see
+  <update id="updateByPrimaryKey" parameterType="com.applet.apply.entity.OrderSeeRecord">
+    update order_see_record
     set order_id = #{orderId,jdbcType=INTEGER},
-      user_status = #{userStatus,jdbcType=BIT},
-      store_status = #{storeStatus,jdbcType=BIT}
+      user_see_status = #{userSeeStatus,jdbcType=BIT},
+      user_see_time = #{userSeeTime,jdbcType=TIMESTAMP},
+      store_see_status = #{storeSeeStatus,jdbcType=BIT},
+      store_see_time = #{storeSeeTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <sql id="PageSuffix">

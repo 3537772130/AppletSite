@@ -1,18 +1,17 @@
 package com.applet.apply.service;
 
 import com.applet.apply.entity.*;
-import com.applet.apply.mapper.OrderSeeMapper;
-import com.applet.apply.mapper.SaleOrderDetailsMapper;
-import com.applet.apply.mapper.SaleOrderMapper;
-import com.applet.apply.mapper.ViewOrderInfoMapper;
+import com.applet.apply.mapper.*;
 import com.applet.common.enums.OrderEnums;
 import com.applet.common.util.EnumUtil;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,19 +30,21 @@ public class UserOrderService {
     @Autowired
     private SaleOrderDetailsMapper saleOrderDetailsMapper;
     @Autowired
-    private OrderSeeMapper orderSeeMapper;
+    private OrderSeeRecordMapper orderSeeRecordMapper;
     @Autowired
     private ViewOrderInfoMapper viewOrderInfoMapper;
+    @Autowired
+    private ViewStoreUserOrderCountMapper viewStoreUserOrderCountMapper;
 
     /**
      * 查询订单查看记录
      * @param orderId
      * @return
      */
-    public OrderSee selectOrderSee(Integer orderId){
-        OrderSeeExample example = new OrderSeeExample();
+    public OrderSeeRecord selectOrderSeeRecord(Integer orderId){
+        OrderSeeRecordExample example = new OrderSeeRecordExample();
         example.createCriteria().andOrderIdEqualTo(orderId);
-        List<OrderSee> list = orderSeeMapper.selectByExample(example);
+        List<OrderSeeRecord> list = orderSeeRecordMapper.selectByExample(example);
         return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
     }
 
@@ -51,14 +52,17 @@ public class UserOrderService {
      * 添加订单查看记录
      * @param orderId
      */
-    public void addOrderSee(Integer orderId){
-        OrderSee record = selectOrderSee(orderId);
+    @Async
+    public void addOrderSeeRecord(Integer orderId){
+        OrderSeeRecord record = selectOrderSeeRecord(orderId);
         if (null == record){
-            record = new OrderSee();
+            record = new OrderSeeRecord();
             record.setOrderId(orderId);
-            record.setUserStatus(false);
-            record.setStoreStatus(false);
-            orderSeeMapper.insertSelective(record);
+            record.setUserSeeStatus(false);
+            record.setUserSeeTime(new Date());
+            record.setStoreSeeStatus(false);
+            record.setStoreSeeTime(new Date());
+            orderSeeRecordMapper.insertSelective(record);
         }
     }
 
@@ -68,13 +72,22 @@ public class UserOrderService {
      * @param userStatus
      * @param storeStatus
      */
-    public void updateOrderSee(Integer orderId, Boolean userStatus, Boolean storeStatus){
-        OrderSeeExample example = new OrderSeeExample();
+    @Async
+    public void updateOrderSeeRecord(Integer orderId, Boolean userStatus, Boolean storeStatus){
+        OrderSeeRecord record = selectOrderSeeRecord(orderId);
+
+        OrderSeeRecordExample example = new OrderSeeRecordExample();
         example.createCriteria().andOrderIdEqualTo(orderId);
-        OrderSee record = new OrderSee();
-        record.setUserStatus(userStatus);
-        record.setStoreStatus(storeStatus);
-        orderSeeMapper.updateByExampleSelective(record, example);
+        OrderSeeRecord record1 = new OrderSeeRecord();
+        record1.setUserSeeStatus(userStatus);
+        if (NullUtil.isNotNullOrEmpty(userStatus) && !record.getUserSeeStatus()){
+            record1.setUserSeeTime(new Date());
+        }
+        record1.setStoreSeeStatus(storeStatus);
+        if (NullUtil.isNotNullOrEmpty(storeStatus) && !record.getStoreSeeStatus()){
+            record1.setStoreSeeTime(new Date());
+        }
+        orderSeeRecordMapper.updateByExampleSelective(record1, example);
     }
 
     /**
@@ -85,8 +98,35 @@ public class UserOrderService {
      */
     public SaleOrder selectSaleOrderInfoByUser(Integer orderId, Integer userId){
         SaleOrderExample example = new SaleOrderExample();
-        SaleOrderExample.Criteria c = example.createCriteria().andOrderIdEqualTo(orderId).andUserIdEqualTo(userId);
+        example.createCriteria().andOrderIdEqualTo(orderId).andUserIdEqualTo(userId);
         List<SaleOrder> list = saleOrderMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+    }
+
+    /**
+     * 用户查询订单详情
+     * @param orderId
+     * @param userId
+     * @return
+     */
+    public ViewOrderInfo selectViewOrderInfoByUser(Integer orderId, Integer userId){
+        ViewOrderInfoExample example = new ViewOrderInfoExample();
+        example.createCriteria().andIdEqualTo(orderId).andUserIdEqualTo(userId);
+        List<ViewOrderInfo> list = viewOrderInfoMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+    }
+
+    /**
+     * 商家查询订单详情
+     * @param orderId
+     * @param appletId
+     * @param userId
+     * @return
+     */
+    public ViewOrderInfo selectViewOrderInfoByStore(Integer orderId, Integer appletId, Integer userId){
+        ViewOrderInfoExample example = new ViewOrderInfoExample();
+        example.createCriteria().andIdEqualTo(orderId).andAppletIdEqualTo(appletId).andStoreUserIdEqualTo(userId);
+        List<ViewOrderInfo> list = viewOrderInfoMapper.selectByExample(example);
         return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
     }
 
@@ -96,7 +136,7 @@ public class UserOrderService {
      * @param appletId
      * @return
      */
-    public SaleOrder selectSaleOrderInfoByBusiness(Integer orderId, Integer appletId){
+    public SaleOrder selectSaleOrderInfoByStore(Integer orderId, Integer appletId){
         SaleOrderExample example = new SaleOrderExample();
         SaleOrderExample.Criteria c = example.createCriteria().andOrderIdEqualTo(orderId).andAppletIdEqualTo(appletId);
         List<SaleOrder> list = saleOrderMapper.selectByExample(example);
@@ -116,6 +156,8 @@ public class UserOrderService {
         record.setOrderStatusCn(orderStatus.getName());
         record.setDenialReason(remark);
         saleOrderMapper.updateByPrimaryKeySelective(record);
+
+        updateOrderSeeRecord(id, false, false);
     }
 
     /**
@@ -123,75 +165,28 @@ public class UserOrderService {
      * @param appletId
      * @return
      */
-    public long countOrder(Integer appletId, Integer status){
-        SaleOrderExample example = new SaleOrderExample();
-        example.createCriteria().andAppletIdEqualTo(appletId).andOrderStatusEqualTo(status.byteValue());
-        return saleOrderMapper.countByExample(example);
+    public ViewStoreUserOrderCount countOrder(Integer userId){
+        ViewStoreUserOrderCountExample example = new ViewStoreUserOrderCountExample();
+        example.createCriteria().andStoreUserIdEqualTo(userId);
+        List<ViewStoreUserOrderCount> list = viewStoreUserOrderCountMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
     }
 
     /**
-     * 分页查询订单 - 商户
+     * 查询订单列表 - 商户
      * @param appletId
+     * @param userId
      * @param status
      * @param page
      * @return
      */
-    public Page selectSaleOrderByBusinessToPage(Integer appletId, Integer status, Page page){
-        SaleOrderExample example = new SaleOrderExample();
-        example.setPage(page);
-        if (status.intValue() == 1){
-            example.setOrderByClause("gmt_created desc");
-        } else {
-            example.setOrderByClause("gmt_modified desc");
-        }
-        SaleOrderExample.Criteria c = example.createCriteria().andAppletIdEqualTo(appletId);
-        if (status.intValue() == 2){
-            List<Byte> list = new ArrayList<>();
-            status = 2;
-            list.add(status.byteValue());
-            status = 4;
-            list.add(status.byteValue());
-            c.andOrderStatusIn(list);
-        } else if (status.intValue() == 3){
-            List<Byte> list = new ArrayList<>();
-            status = 5;
-            list.add(status.byteValue());
-            status = 6;
-            list.add(status.byteValue());
-            c.andOrderStatusIn(list);
-        } else {
-            c.andOrderStatusEqualTo(status.byteValue());
-        }
-        long count = saleOrderMapper.countByExample(example);
-        if (count > 0){
-            page.setTotalCount(count);
-            page.setDataSource(saleOrderMapper.selectByExample(example));
-        }
-        return page;
-    }
-
-    public Page selectSaleOrderByStoreToPage(Integer appletId, Integer userId, Integer status, Page page){
+    public Page selectSaleOrderByStoreToList(Integer appletId, Integer userId, Integer status, Page page){
         ViewOrderInfoExample example = new ViewOrderInfoExample();
-        example.setPage(page);
-        example.setOrderByClause("store_status,create_time DESC");
-        ViewOrderInfoExample.Criteria c = example.createCriteria().andAppletIdEqualTo(appletId).andStoreUserIdEqualTo(userId);
-        if (status.intValue() == 2){
-            List<Byte> list = new ArrayList<>();
-            status = 2;
-            list.add(status.byteValue());
-            status = 4;
-            list.add(status.byteValue());
-            c.andOrderStatusIn(list);
-        } else if (status.intValue() == 3){
-            List<Byte> list = new ArrayList<>();
-            status = 5;
-            list.add(status.byteValue());
-            status = 6;
-            list.add(status.byteValue());
-            c.andOrderStatusIn(list);
-        } else {
-            c.andOrderStatusEqualTo(status.byteValue());
-        }
+        example.setOrderByClause("store_see_status,store_see_time DESC");
+        example.createCriteria()
+                .andAppletIdEqualTo(appletId)
+                .andStoreUserIdEqualTo(userId)
+                .andOrderStatusEqualTo(status.byteValue());
         long count = viewOrderInfoMapper.countByExample(example);
         if (count > 0){
             page.setTotalCount(count);
@@ -200,10 +195,44 @@ public class UserOrderService {
         return page;
     }
 
+    /**
+     * 分页查询完成订单列表 - 商户
+     * @param appletId
+     * @param status
+     * @param page
+     * @return
+     */
+    public Page selectSaleOrderByStoreToPage(Integer appletId, Integer userId, Page page){
+        List<Byte> list = new ArrayList<>();
+        Integer status = 5;
+        list.add(status.byteValue());
+        status = 6;
+        list.add(status.byteValue());
+        ViewOrderInfoExample example = new ViewOrderInfoExample();
+        example.setPage(page);
+        example.setOrderByClause("store_see_status,store_see_time DESC");
+        example.createCriteria()
+                .andAppletIdEqualTo(appletId)
+                .andStoreUserIdEqualTo(userId)
+                .andOrderStatusIn(list);
+        long count = viewOrderInfoMapper.countByExample(example);
+        if (count > 0){
+            page.setTotalCount(count);
+            page.setDataSource(viewOrderInfoMapper.selectByExample(example));
+        }
+        return page;
+    }
+
+    /**
+     * 分页查询订单 - 用户
+     * @param userId
+     * @param page
+     * @return
+     */
     public Page selectSaleOrderByUserToPage(Integer userId, Page page){
         ViewOrderInfoExample example = new ViewOrderInfoExample();
         example.setPage(page);
-        example.setOrderByClause("user_status,update_time DESC");
+        example.setOrderByClause("user_see_status,user_see_time DESC");
         ViewOrderInfoExample.Criteria c = example.createCriteria().andStoreUserIdEqualTo(userId);
         long count = viewOrderInfoMapper.countByExample(example);
         if (count > 0){

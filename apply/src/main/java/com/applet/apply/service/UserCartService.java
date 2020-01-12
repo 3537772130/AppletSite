@@ -21,6 +21,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  * Description: 用户购物车服务类
  */
+@SuppressWarnings("ALL")
 @Service
 public class UserCartService {
     @Autowired
@@ -139,6 +140,6 @@ public class UserCartService {
         UserCart record = new UserCart();
         record.setStatus(false);
         userCartMapper.updateByExampleSelective(record, example);
-        userOrderService.addOrderSee(orderId);
+        userOrderService.addOrderSeeRecord(orderId);
     }
 }

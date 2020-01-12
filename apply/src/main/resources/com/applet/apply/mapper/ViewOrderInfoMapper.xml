@@ -11,20 +11,26 @@
     <result column="store_user_id" jdbcType="INTEGER" property="storeUserId" />
     <result column="applet_name" jdbcType="VARCHAR" property="appletName" />
     <result column="applet_logo" jdbcType="VARCHAR" property="appletLogo" />
+    <result column="applet_lon" jdbcType="DOUBLE" property="appletLon" />
+    <result column="applet_lat" jdbcType="DOUBLE" property="appletLat" />
+    <result column="applet_telephone" jdbcType="VARCHAR" property="appletTelephone" />
     <result column="receiver_name" jdbcType="VARCHAR" property="receiverName" />
+    <result column="receiver_phone" jdbcType="VARCHAR" property="receiverPhone" />
     <result column="detail_addr" jdbcType="VARCHAR" property="detailAddr" />
     <result column="lat" jdbcType="DOUBLE" property="lat" />
     <result column="lon" jdbcType="DOUBLE" property="lon" />
-    <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
-    <result column="carriers_fee" jdbcType="DECIMAL" property="carriersFee" />
     <result column="user_coupon_id" jdbcType="INTEGER" property="userCouponId" />
     <result column="coupon_name" jdbcType="VARCHAR" property="couponName" />
-    <result column="denomination" jdbcType="DOUBLE" property="denomination" />
+    <result column="ticket_amount" jdbcType="DECIMAL" property="ticketAmount" />
+    <result column="carriers_fee" jdbcType="DECIMAL" property="carriersFee" />
+    <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
     <result column="order_remark" jdbcType="VARCHAR" property="orderRemark" />
     <result column="reason" jdbcType="VARCHAR" property="reason" />
     <result column="pay_type" jdbcType="TINYINT" property="payType" />
-    <result column="user_status" jdbcType="BIT" property="userStatus" />
-    <result column="store_status" jdbcType="BIT" property="storeStatus" />
+    <result column="user_see_status" jdbcType="BIT" property="userSeeStatus" />
+    <result column="user_see_time" jdbcType="TIMESTAMP" property="userSeeTime" />
+    <result column="store_see_status" jdbcType="BIT" property="storeSeeStatus" />
+    <result column="store_see_time" jdbcType="TIMESTAMP" property="storeSeeTime" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="order_status" jdbcType="TINYINT" property="orderStatus" />
@@ -60,9 +66,10 @@
   </sql>
   <sql id="Base_Column_List">
     id, order_no, user_id, nick_name, avatar_url, applet_id, store_user_id, applet_name, 
-    applet_logo, receiver_name, detail_addr, lat, lon, total_amount, carriers_fee, user_coupon_id, 
-    coupon_name, denomination, order_remark, reason, pay_type, user_status, store_status, 
-    create_time, update_time, order_status
+    applet_logo, applet_lon, applet_lat, applet_telephone, receiver_name, receiver_phone, 
+    detail_addr, lat, lon, user_coupon_id, coupon_name, ticket_amount, carriers_fee, 
+    total_amount, order_remark, reason, pay_type, user_see_status, user_see_time, store_see_status, 
+    store_see_time, create_time, update_time, order_status
   </sql>
   <select id="selectByExample" parameterType="com.applet.apply.entity.ViewOrderInfoExample" resultMap="BaseResultMap">
     select

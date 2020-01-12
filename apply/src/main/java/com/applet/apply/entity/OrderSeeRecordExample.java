@@ -2,9 +2,10 @@ package com.applet.apply.entity;
 
 import com.applet.common.util.Page;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class OrderSeeExample {
+public class OrderSeeRecordExample {
     protected String orderByClause;
 
     protected boolean distinct;
@@ -13,7 +14,7 @@ public class OrderSeeExample {
 
     protected Page page;
 
-    public OrderSeeExample() {
+    public OrderSeeRecordExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
 
@@ -235,123 +236,243 @@ public class OrderSeeExample {
             return (Criteria) this;
         }
 
-        public Criteria andUserStatusIsNull() {
-            addCriterion("user_status is null");
+        public Criteria andUserSeeStatusIsNull() {
+            addCriterion("user_see_status is null");
             return (Criteria) this;
         }
 
-        public Criteria andUserStatusIsNotNull() {
-            addCriterion("user_status is not null");
+        public Criteria andUserSeeStatusIsNotNull() {
+            addCriterion("user_see_status is not null");
             return (Criteria) this;
         }
 
-        public Criteria andUserStatusEqualTo(Boolean value) {
-            addCriterion("user_status =", value, "userStatus");
+        public Criteria andUserSeeStatusEqualTo(Boolean value) {
+            addCriterion("user_see_status =", value, "userSeeStatus");
             return (Criteria) this;
         }
 
-        public Criteria andUserStatusNotEqualTo(Boolean value) {
-            addCriterion("user_status <>", value, "userStatus");
+        public Criteria andUserSeeStatusNotEqualTo(Boolean value) {
+            addCriterion("user_see_status <>", value, "userSeeStatus");
             return (Criteria) this;
         }
 
-        public Criteria andUserStatusGreaterThan(Boolean value) {
-            addCriterion("user_status >", value, "userStatus");
+        public Criteria andUserSeeStatusGreaterThan(Boolean value) {
+            addCriterion("user_see_status >", value, "userSeeStatus");
             return (Criteria) this;
         }
 
-        public Criteria andUserStatusGreaterThanOrEqualTo(Boolean value) {
-            addCriterion("user_status >=", value, "userStatus");
+        public Criteria andUserSeeStatusGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("user_see_status >=", value, "userSeeStatus");
             return (Criteria) this;
         }
 
-        public Criteria andUserStatusLessThan(Boolean value) {
-            addCriterion("user_status <", value, "userStatus");
+        public Criteria andUserSeeStatusLessThan(Boolean value) {
+            addCriterion("user_see_status <", value, "userSeeStatus");
             return (Criteria) this;
         }
 
-        public Criteria andUserStatusLessThanOrEqualTo(Boolean value) {
-            addCriterion("user_status <=", value, "userStatus");
+        public Criteria andUserSeeStatusLessThanOrEqualTo(Boolean value) {
+            addCriterion("user_see_status <=", value, "userSeeStatus");
             return (Criteria) this;
         }
 
-        public Criteria andUserStatusIn(List<Boolean> values) {
-            addCriterion("user_status in", values, "userStatus");
+        public Criteria andUserSeeStatusIn(List<Boolean> values) {
+            addCriterion("user_see_status in", values, "userSeeStatus");
             return (Criteria) this;
         }
 
-        public Criteria andUserStatusNotIn(List<Boolean> values) {
-            addCriterion("user_status not in", values, "userStatus");
+        public Criteria andUserSeeStatusNotIn(List<Boolean> values) {
+            addCriterion("user_see_status not in", values, "userSeeStatus");
             return (Criteria) this;
         }
 
-        public Criteria andUserStatusBetween(Boolean value1, Boolean value2) {
-            addCriterion("user_status between", value1, value2, "userStatus");
+        public Criteria andUserSeeStatusBetween(Boolean value1, Boolean value2) {
+            addCriterion("user_see_status between", value1, value2, "userSeeStatus");
             return (Criteria) this;
         }
 
-        public Criteria andUserStatusNotBetween(Boolean value1, Boolean value2) {
-            addCriterion("user_status not between", value1, value2, "userStatus");
+        public Criteria andUserSeeStatusNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("user_see_status not between", value1, value2, "userSeeStatus");
             return (Criteria) this;
         }
 
-        public Criteria andStoreStatusIsNull() {
-            addCriterion("store_status is null");
+        public Criteria andUserSeeTimeIsNull() {
+            addCriterion("user_see_time is null");
             return (Criteria) this;
         }
 
-        public Criteria andStoreStatusIsNotNull() {
-            addCriterion("store_status is not null");
+        public Criteria andUserSeeTimeIsNotNull() {
+            addCriterion("user_see_time is not null");
             return (Criteria) this;
         }
 
-        public Criteria andStoreStatusEqualTo(Boolean value) {
-            addCriterion("store_status =", value, "storeStatus");
+        public Criteria andUserSeeTimeEqualTo(Date value) {
+            addCriterion("user_see_time =", value, "userSeeTime");
             return (Criteria) this;
         }
 
-        public Criteria andStoreStatusNotEqualTo(Boolean value) {
-            addCriterion("store_status <>", value, "storeStatus");
+        public Criteria andUserSeeTimeNotEqualTo(Date value) {
+            addCriterion("user_see_time <>", value, "userSeeTime");
             return (Criteria) this;
         }
 
-        public Criteria andStoreStatusGreaterThan(Boolean value) {
-            addCriterion("store_status >", value, "storeStatus");
+        public Criteria andUserSeeTimeGreaterThan(Date value) {
+            addCriterion("user_see_time >", value, "userSeeTime");
             return (Criteria) this;
         }
 
-        public Criteria andStoreStatusGreaterThanOrEqualTo(Boolean value) {
-            addCriterion("store_status >=", value, "storeStatus");
+        public Criteria andUserSeeTimeGreaterThanOrEqualTo(Date value) {
+            addCriterion("user_see_time >=", value, "userSeeTime");
             return (Criteria) this;
         }
 
-        public Criteria andStoreStatusLessThan(Boolean value) {
-            addCriterion("store_status <", value, "storeStatus");
+        public Criteria andUserSeeTimeLessThan(Date value) {
+            addCriterion("user_see_time <", value, "userSeeTime");
             return (Criteria) this;
         }
 
-        public Criteria andStoreStatusLessThanOrEqualTo(Boolean value) {
-            addCriterion("store_status <=", value, "storeStatus");
+        public Criteria andUserSeeTimeLessThanOrEqualTo(Date value) {
+            addCriterion("user_see_time <=", value, "userSeeTime");
             return (Criteria) this;
         }
 
-        public Criteria andStoreStatusIn(List<Boolean> values) {
-            addCriterion("store_status in", values, "storeStatus");
+        public Criteria andUserSeeTimeIn(List<Date> values) {
+            addCriterion("user_see_time in", values, "userSeeTime");
             return (Criteria) this;
         }
 
-        public Criteria andStoreStatusNotIn(List<Boolean> values) {
-            addCriterion("store_status not in", values, "storeStatus");
+        public Criteria andUserSeeTimeNotIn(List<Date> values) {
+            addCriterion("user_see_time not in", values, "userSeeTime");
             return (Criteria) this;
         }
 
-        public Criteria andStoreStatusBetween(Boolean value1, Boolean value2) {
-            addCriterion("store_status between", value1, value2, "storeStatus");
+        public Criteria andUserSeeTimeBetween(Date value1, Date value2) {
+            addCriterion("user_see_time between", value1, value2, "userSeeTime");
             return (Criteria) this;
         }
 
-        public Criteria andStoreStatusNotBetween(Boolean value1, Boolean value2) {
-            addCriterion("store_status not between", value1, value2, "storeStatus");
+        public Criteria andUserSeeTimeNotBetween(Date value1, Date value2) {
+            addCriterion("user_see_time not between", value1, value2, "userSeeTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andStoreSeeStatusIsNull() {
+            addCriterion("store_see_status is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStoreSeeStatusIsNotNull() {
+            addCriterion("store_see_status is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStoreSeeStatusEqualTo(Boolean value) {
+            addCriterion("store_see_status =", value, "storeSeeStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andStoreSeeStatusNotEqualTo(Boolean value) {
+            addCriterion("store_see_status <>", value, "storeSeeStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andStoreSeeStatusGreaterThan(Boolean value) {
+            addCriterion("store_see_status >", value, "storeSeeStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andStoreSeeStatusGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("store_see_status >=", value, "storeSeeStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andStoreSeeStatusLessThan(Boolean value) {
+            addCriterion("store_see_status <", value, "storeSeeStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andStoreSeeStatusLessThanOrEqualTo(Boolean value) {
+            addCriterion("store_see_status <=", value, "storeSeeStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andStoreSeeStatusIn(List<Boolean> values) {
+            addCriterion("store_see_status in", values, "storeSeeStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andStoreSeeStatusNotIn(List<Boolean> values) {
+            addCriterion("store_see_status not in", values, "storeSeeStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andStoreSeeStatusBetween(Boolean value1, Boolean value2) {
+            addCriterion("store_see_status between", value1, value2, "storeSeeStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andStoreSeeStatusNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("store_see_status not between", value1, value2, "storeSeeStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andStoreSeeTimeIsNull() {
+            addCriterion("store_see_time is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStoreSeeTimeIsNotNull() {
+            addCriterion("store_see_time is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStoreSeeTimeEqualTo(Date value) {
+            addCriterion("store_see_time =", value, "storeSeeTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andStoreSeeTimeNotEqualTo(Date value) {
+            addCriterion("store_see_time <>", value, "storeSeeTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andStoreSeeTimeGreaterThan(Date value) {
+            addCriterion("store_see_time >", value, "storeSeeTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andStoreSeeTimeGreaterThanOrEqualTo(Date value) {
+            addCriterion("store_see_time >=", value, "storeSeeTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andStoreSeeTimeLessThan(Date value) {
+            addCriterion("store_see_time <", value, "storeSeeTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andStoreSeeTimeLessThanOrEqualTo(Date value) {
+            addCriterion("store_see_time <=", value, "storeSeeTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andStoreSeeTimeIn(List<Date> values) {
+            addCriterion("store_see_time in", values, "storeSeeTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andStoreSeeTimeNotIn(List<Date> values) {
+            addCriterion("store_see_time not in", values, "storeSeeTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andStoreSeeTimeBetween(Date value1, Date value2) {
+            addCriterion("store_see_time between", value1, value2, "storeSeeTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andStoreSeeTimeNotBetween(Date value1, Date value2) {
+            addCriterion("store_see_time not between", value1, value2, "storeSeeTime");
             return (Criteria) this;
         }
     }
