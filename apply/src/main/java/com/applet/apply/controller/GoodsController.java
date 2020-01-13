@@ -50,9 +50,11 @@ public class GoodsController {
                 typeIdList.add(type.getId());
             }
             List<ViewGoodsInfo> infoList = goodsService.selectGoodsInfoList(appletInfo.getId(), typeIdList);
+            List<ViewCouponInfo> couponList = userCouponService.selectCouponList(appletInfo.getId());
             Map map = new HashMap();
             map.put("typeList", typeList);
             map.put("infoList", infoList);
+            map.put("couponList", couponList);
             return AjaxResponse.success(map);
         } catch (Exception e) {
             log.error("加载小程序分类页面信息出错{}", e);
@@ -90,31 +92,20 @@ public class GoodsController {
                 if (info.getGoodsStatus().intValue() == 0){
                     return AjaxResponse.error("sorry，该宝贝已经下架咯");
                 }
-                List<ViewGoodsFile> fileList = goodsService.selectGoodsFileList(info.getId());
-                List<ViewGoodsSpecs> specsList = goodsService.selectGoodsSpecsList(info.getId());
-
-                List<ViewCouponInfo> couponList = userCouponService.selectCouponList(appletInfo.getId());
-                List<Map> couponMapList = new ArrayList<>();
-                for (ViewCouponInfo couponInfo:couponList) {
-                    Map map = new HashMap();
-                    map.put("id", couponInfo.getId());
-                    map.put("name", couponInfo.getCouponName());
-                    map.put("status", true);
-                    if (null != weChantInfo && NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())){
-                        boolean bool = userCouponService.checkUserCouponInfo(couponInfo.getId(), weChantInfo.getUserId(), appletInfo.getId());
-                        map.put("status", bool);
-                    }
-                    couponMapList.add(map);
-                }
                 Map map = new HashMap();
                 map.put("info", info);
-                map.put("fileList", fileList);
-                map.put("specsList", specsList);
-                map.put("couponList", couponMapList);
+                // 商品文件集合
+                map.put("fileList", goodsService.selectGoodsFileList(info.getId()));
+                // 商品规格集合
+                map.put("specsList", goodsService.selectGoodsSpecsList(info.getId()));
+                // 小程序优惠券集合
+                map.put("couponList", userCouponService.selectCouponList(appletInfo.getId()));
+                // 小程序推荐商品集合
+                map.put("recommendGoodsList", goodsService.selectGoodsSellCountList(info.getId(), appletInfo.getId(), appletInfo.getUserId()));
                 return AjaxResponse.success(map);
             }
         } catch (Exception e) {
-            log.error("加载商品详情信息出错");
+            log.error("加载商品详情信息出错{}", e);
         }
         return AjaxResponse.error("加载信息失败");
     }

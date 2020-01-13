@@ -46,7 +46,8 @@ public class AppletController {
     public Object getAppletInfo(@SessionScope("appletInfo") ViewAppletInfo appletInfo){
         Map map = new HashMap();
         map.put("id", appletInfo.getId());
-        map.put("appletName", NullUtil.isNotNullOrEmpty(appletInfo.getAppletSimple()) ? appletInfo.getAppletSimple() : appletInfo.getAppletName());
+        map.put("appletName", appletInfo.getAppletName());
+        map.put("appletSimple", appletInfo.getAppletSimple());
         map.put("appletLogo", appletInfo.getAppletLogo());
         map.put("telephone", appletInfo.getTelephone());
         map.put("province", appletInfo.getProvince());
@@ -56,6 +57,7 @@ public class AppletController {
         map.put("addressDetails", appletInfo.getAddressDetails());
         map.put("lon", appletInfo.getLon());
         map.put("lat", appletInfo.getLat());
+        map.put("businessScope", appletInfo.getBusinessScope());
         map.put("systemColor", appletInfo.getSystemColor());
         return AjaxResponse.success(map);
     }

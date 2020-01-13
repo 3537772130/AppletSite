@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.applet.apply.mapper.ViewGoodsSellCountMapper">
+  <resultMap id="BaseResultMap" type="com.applet.apply.entity.ViewGoodsSellCount">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="applet_id" jdbcType="INTEGER" property="appletId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+    <result column="cover_src" jdbcType="VARCHAR" property="coverSrc" />
+    <result column="min_price" jdbcType="DOUBLE" property="minPrice" />
+    <result column="max_price" jdbcType="DOUBLE" property="maxPrice" />
+    <result column="discount" jdbcType="INTEGER" property="discount" />
+    <result column="sell_count" jdbcType="BIGINT" property="sellCount" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, applet_id, user_id, goods_name, cover_src, min_price, max_price, discount, sell_count
+  </sql>
+  <select id="selectByExample" parameterType="com.applet.apply.entity.ViewGoodsSellCountExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from view_goods_sell_count
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <include refid="PageSuffix" />
+  </select>
+  <select id="countByExample" parameterType="com.applet.apply.entity.ViewGoodsSellCountExample" resultType="java.lang.Long">
+    select count(*) from view_goods_sell_count
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <sql id="PageSuffix">
+    <if test="page != null">
+      limit #{page.rowStart},#{page.pageSize}
+    </if>
+  </sql>
+</mapper>

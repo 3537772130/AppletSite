@@ -84,6 +84,10 @@ public class UserCouponController {
             if (NullUtil.isNullOrEmpty(weChantInfo.getUserId())){
                 return AjaxResponse.error("为了您的使用体验，请绑定手机号码");
             }
+            boolean bool = userCouponService.checkUserCouponInfo(couponId, weChantInfo.getUserId(), appletInfo.getId());
+            if (!bool){
+                return AjaxResponse.success("优惠券已经在口袋里啦，快去使用吧 ^_^");
+            }
             CouponInfo couponInfo = userCouponService.selectCouponList(couponId, appletInfo.getId());
             if (null == couponInfo){
                 return AjaxResponse.error("参数错误");

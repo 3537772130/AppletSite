@@ -42,8 +42,8 @@ public class TencentLocationUtils {
 
     public static void main(String[] args) {
         // 测试
-        String lng = "112.62701";//经度
-        String lat = "42.83221";//维度
+        String lng = "121.33498";//经度
+        String lat = "31.1241";//维度
         Map<String, Object> map = getLocation(lng, lat);
         System.out.println("国   籍：" + map.get("nation"));
         System.out.println("国家代码：" + map.get("nationCode"));

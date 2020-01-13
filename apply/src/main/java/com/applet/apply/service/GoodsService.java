@@ -4,9 +4,11 @@ import com.applet.apply.entity.*;
 import com.applet.apply.mapper.*;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.Page;
+import com.applet.common.util.RandomUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +31,8 @@ public class GoodsService {
     private ViewGoodsFileMapper viewGoodsFileMapper;
     @Autowired
     private ViewGoodsSpecsMapper viewGoodsSpecsMapper;
+    @Autowired
+    private ViewGoodsSellCountMapper viewGoodsSellCountMapper;
     @Autowired
     private CommonMapper commonMapper;
 
@@ -115,5 +119,37 @@ public class GoodsService {
         example.setOrderByClause("specs_index asc");
         example.createCriteria().andGoodsIdEqualTo(goodsId).andSpecsStatusEqualTo(true);
         return viewGoodsSpecsMapper.selectByExample(example);
+    }
+
+    /**
+     * 查询当前商品外的其他推荐商品
+     * 随机抽取1-10个
+     * 并虚增出售id个数，最大id + 99
+     * @param id       当前商品ID
+     * @param appletId 小程序ID
+     * @param userId   小程序所属用户ID
+     * @return
+     */
+    public List<ViewGoodsSellCount> selectGoodsSellCountList(Integer id, Integer appletId, Integer userId) {
+        ViewGoodsSellCountExample example = new ViewGoodsSellCountExample();
+        example.createCriteria().andIdNotEqualTo(id).andAppletIdEqualTo(appletId).andUserIdEqualTo(userId);
+        List<ViewGoodsSellCount> list = viewGoodsSellCountMapper.selectByExample(example);
+        List<ViewGoodsSellCount> list1 = new ArrayList<>();
+        if (NullUtil.isNotNullOrEmpty(list)) {
+            if (list.size() <= 10) {
+                for (ViewGoodsSellCount record : list) {
+                    record.setSellCount((long) record.getSellCount().intValue() + (record.getId().intValue() > 99 ? record.getId().intValue() - 99 : record.getId().intValue()));
+                }
+                return list;
+            } else {
+                int[] indexList = RandomUtil.randomCommon(0, list.size()-1, 10);
+                for (int index : indexList) {
+                    ViewGoodsSellCount record = list.get(index);
+                    record.setSellCount((long) record.getSellCount().intValue() + (record.getId().intValue() > 99 ? record.getId().intValue() - 99 : record.getId().intValue()));
+                    list1.add(list.get(index));
+                }
+            }
+        }
+        return list1;
     }
 }
