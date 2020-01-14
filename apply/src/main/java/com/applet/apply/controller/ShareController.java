@@ -66,7 +66,7 @@ public class ShareController {
      */
     @RequestMapping(value = "appletProhibit")
     public Object appletProhibit(){
-        return AjaxResponse.error("小程序已被禁用");
+        return AjaxResponse.msg("0","小程序正在准备中，敬请期待哟");
     }
 
     /**
@@ -75,7 +75,7 @@ public class ShareController {
      */
     @RequestMapping(value = "appletNotRelease")
     public Object appletNotRelease(){
-        return AjaxResponse.msg("0", "小程序正在整顿中，敬请期待哟");
+        return AjaxResponse.error("非常抱歉，小程序正在整顿中，请下来再来！");
     }
 
     /**
