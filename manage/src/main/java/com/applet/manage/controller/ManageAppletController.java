@@ -172,7 +172,7 @@ public class ManageAppletController {
      */
     @RequestMapping(value = "queryAppletAuditToFirstTrial")
     public Object queryAppletAuditToFirstTrial(ViewAppletAuditList record, HttpServletRequest request) {
-        record.setAuditResult(0);
+//        record.setAuditResult(0);
         Page page = PageUtil.initPage(request);
         page = appletService.selectAppletAuditToPage(record, page);
         return AjaxResponse.success(page);
@@ -257,7 +257,8 @@ public class ManageAppletController {
             }
             appletAudit.setAppletCode(audit.getAppletCode());
             appletAudit.setAuditorId(manager.getId());
-            if (appletAudit.getResult().intValue() == 1 && audit.getAuditResult().intValue() == 1) {
+            if ((manager.getRoleId().intValue() == 1 || manager.getRoleId() == 6)
+                    && appletAudit.getResult().intValue() == 1 && audit.getAuditResult().intValue() == 1) {
                 appletAudit.setResult(2);
             }
             appletService.addAppletAudit(appletAudit);
