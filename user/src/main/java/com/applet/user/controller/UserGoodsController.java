@@ -99,7 +99,9 @@ public class UserGoodsController {
     @RequestMapping(value = "queryTypePage")
     public Object queryTypePage(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer appletId, String name, Integer status, HttpServletRequest request) {
         Page page = PageUtil.initPage(request);
-        page = goodsService.selectTypePage(appletId, user.getId(), name, status, page);
+        if (NullUtil.isNotNullOrEmpty(appletId)){
+            page = goodsService.selectTypePage(appletId, user.getId(), name, status, page);
+        }
         return AjaxResponse.success(page);
     }
 
@@ -132,6 +134,9 @@ public class UserGoodsController {
         try {
             if (null == goodsType) {
                 return AjaxResponse.error("参数错误");
+            }
+            if (NullUtil.isNullOrEmpty(goodsType.getAppletId())){
+                return AjaxResponse.error("参数丢失");
             }
             if (NullUtil.isNullOrEmpty(goodsType.getTypeName())) {
                 return AjaxResponse.error("类型名称不能为空");
@@ -462,8 +467,7 @@ public class UserGoodsController {
             if (null == record) {
                 return AjaxResponse.error("未找到相关记录");
             }
-            String fileSrc = NullUtil.isNotNullOrEmpty(record.getFileSrc()) ?
-                    record.getFileSrc() : "/api/image/GI-" + RandomUtil.getTimeStamp();
+            String fileSrc = "/api/image/GI-" + RandomUtil.getTimeStamp();
             QiNiuUtil.uploadFile(multipartFile, fileSrc);
             goodsService.updateGoodsFile(fileId, fileSrc, true);
             Map map = new HashMap();

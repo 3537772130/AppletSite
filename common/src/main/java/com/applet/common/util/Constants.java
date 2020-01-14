@@ -39,7 +39,7 @@ public class Constants {
     // 商品规格数量
     public static final int GOODS_SPECS_COUNT = 20;
     // 商品类型数量
-    public static final int GOODS_TYPE_COUNT = 15;
+    public static final int GOODS_TYPE_COUNT = 50;
     // 图片上传格式
     public static final String UPLOAD_FILE_TYPE_IMAGE = "image/png,image/jpeg,image/jpg";
     // 系统压缩文件格式

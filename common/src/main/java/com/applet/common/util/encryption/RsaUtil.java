@@ -134,6 +134,9 @@ public class RsaUtil {
     }
 
     public static PublicKey getPubKey(String publicKeyPath, String keyAlgorithm) {
+        publicKeyPath = publicKeyPath.replace("apply\\", "common\\")
+                .replace("manage\\", "common\\")
+                .replace("user\\", "common\\");
         PublicKey publicKey = null;
         InputStream inputStream = null;
         try {
