@@ -22,8 +22,8 @@ import java.security.spec.X509EncodedKeySpec;
 public class RsaUtil {
     public static final Logger logger = LoggerFactory.getLogger(RsaUtil.class);
 
-    public static final String APPLET_MANAGE_PUBLIC_PATH = PathUtil.getClassPath("encrypt\\userAppletInfo\\rsa_public_key_pkcs8.pem");
-    public static final String APPLET_MANAGE_PRIVATE_PATH = PathUtil.getClassPath("encrypt\\userAppletInfo\\rsa_private_key_pkcs8.pem");
+    public static final String APPLET_MANAGE_PUBLIC_PATH = "/encrypt/userAppletInfo/rsa_public_key_pkcs8.pem";
+    public static final String APPLET_MANAGE_PRIVATE_PATH = "/encrypt/userAppletInfo/rsa_private_key_pkcs8.pem";
 
     public static void main(String[] args) throws Exception {
         // TODO Auto-generated method stub
@@ -111,49 +111,21 @@ public class RsaUtil {
     }
 
     public static PrivateKey getPriKey(String privateKeyPath, String keyAlgorithm) {
-        privateKeyPath = privateKeyPath.replace("apply\\", "common\\")
-                .replace("manage\\", "common\\")
-                .replace("user\\", "common\\");
-        PrivateKey privateKey = null;
-        InputStream inputStream = null;
         try {
-            inputStream = new FileInputStream(privateKeyPath);
-            privateKey = getPrivateKey(inputStream, keyAlgorithm);
+            return getPrivateKey(RsaUtil.class.getResourceAsStream(privateKeyPath), keyAlgorithm);
         } catch (Exception e) {
-            logger.error("加载私钥出错!", e);
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (Exception e) {
-                    logger.error("加载私钥,关闭流时出错!", e);
-                }
-            }
+            logger.error("加载私钥出错! ", e);
         }
-        return privateKey;
+        return null;
     }
 
     public static PublicKey getPubKey(String publicKeyPath, String keyAlgorithm) {
-        publicKeyPath = publicKeyPath.replace("apply\\", "common\\")
-                .replace("manage\\", "common\\")
-                .replace("user\\", "common\\");
-        PublicKey publicKey = null;
-        InputStream inputStream = null;
         try {
-            inputStream = new FileInputStream(publicKeyPath);
-            publicKey = getPublicKey(inputStream, keyAlgorithm);
+            return getPublicKey(RsaUtil.class.getResourceAsStream(publicKeyPath), keyAlgorithm);
         } catch (Exception e) {
-            logger.error("加载公钥出错!", e);
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (Exception e) {
-                    logger.error("加载公钥,关闭流时出错!", e);
-                }
-            }
+            logger.error("加载公钥出错! ", e);
         }
-        return publicKey;
+        return null;
     }
 
     public static PublicKey getPublicKey(InputStream inputStream, String keyAlgorithm) throws Exception {
