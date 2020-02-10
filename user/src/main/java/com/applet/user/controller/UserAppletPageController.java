@@ -131,10 +131,10 @@ public class UserAppletPageController {
      * @return
      */
     @RequestMapping(value = "queryGoodsInfoList")
-    public Object queryGoodsInfoList(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, String name){
+    public Object queryGoodsInfoList(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer appletId, String name){
         Map map = new HashMap();
-        map.put("goodsList", appletPageService.selectGoodsInfoList(user.getId(), name));
-        map.put("typeList", appletPageService.selectGoodsTypeList(user.getId(), null));
+        map.put("goodsList", appletPageService.selectGoodsInfoList(appletId, user.getId(), name));
+        map.put("typeList", appletPageService.selectGoodsTypeList(appletId, user.getId(), null));
         return AjaxResponse.success(map);
     }
 
@@ -145,10 +145,10 @@ public class UserAppletPageController {
      * @return
      */
     @RequestMapping(value = "queryGoodsDetailsList")
-    public Object queryGoodsDetailsList(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, String name){
+    public Object queryGoodsDetailsList(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer appletId, String name){
         Map map = new HashMap();
-        map.put("goodsList", appletPageService.selectGoodsDetailsList(user.getId(), name));
-        map.put("typeList", appletPageService.selectGoodsTypeList(user.getId(), null));
+        map.put("goodsList", appletPageService.selectGoodsDetailsList(appletId, user.getId(), name));
+        map.put("typeList", appletPageService.selectGoodsTypeList(appletId, user.getId(), null));
         return AjaxResponse.success(map);
     }
 
@@ -159,9 +159,9 @@ public class UserAppletPageController {
      * @return
      */
     @RequestMapping(value = "queryGoodsDiscountList")
-    public Object queryGoodsDiscountList(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, String name){
+    public Object queryGoodsDiscountList(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer appletId, String name){
         Map map = new HashMap();
-        map.put("goodsList", appletPageService.selectGoodsDiscountList(user.getId(), name));
+        map.put("goodsList", appletPageService.selectGoodsDiscountList(appletId, user.getId(), name));
         return AjaxResponse.success(map);
     }
 
@@ -172,9 +172,9 @@ public class UserAppletPageController {
      * @return
      */
     @RequestMapping(value = "queryGoodsTypeList")
-    public Object queryGoodsTypeList(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, String name){
+    public Object queryGoodsTypeList(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer appletId, String name){
         Map map = new HashMap();
-        map.put("typeList", appletPageService.selectGoodsTypeList(user.getId(), name));
+        map.put("typeList", appletPageService.selectGoodsTypeList(appletId, user.getId(), name));
         return AjaxResponse.success(map);
     }
 

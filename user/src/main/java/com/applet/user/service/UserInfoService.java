@@ -25,6 +25,7 @@ import java.util.Map;
  * @author: Mr.ZhouHuaHu
  * @create: 2019-06-14 14:52
  **/
+@SuppressWarnings("ALL")
 @Service
 @Component
 public class UserInfoService {

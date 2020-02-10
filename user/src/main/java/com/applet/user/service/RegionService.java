@@ -23,6 +23,7 @@ import java.util.Map;
  * @author: Mr.ZhouHuaHu
  * @create: 2019-07-29 10:57
  **/
+@SuppressWarnings("ALL")
 @Service
 @Component
 public class RegionService implements ApplicationRunner {

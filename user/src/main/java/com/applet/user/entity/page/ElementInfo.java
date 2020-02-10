@@ -15,6 +15,7 @@ public class ElementInfo {
     private String goodsIcon;
     private Double minPrice;
     private Double maxPrice;
+    private Integer discount;
     private String icon;
 
     public Integer getTypeId() {
@@ -63,6 +64,14 @@ public class ElementInfo {
 
     public void setMaxPrice(Double maxPrice) {
         this.maxPrice = maxPrice;
+    }
+
+    public Integer getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Integer discount) {
+        this.discount = discount;
     }
 
     public String getIcon() {

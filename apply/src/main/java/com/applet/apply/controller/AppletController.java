@@ -44,6 +44,16 @@ public class AppletController {
     @RequestMapping(value = "/getAppletInfo")
     @CancelAuth
     public Object getAppletInfo(@SessionScope("appletInfo") ViewAppletInfo appletInfo){
+        appletInfo = appletService.selectAppletInfo(appletInfo.getAppletCode());
+        if (appletInfo.getStatus().intValue() == 0) {
+            return AjaxResponse.error("小程序尚未开通");
+        }
+        if (appletInfo.getStatus().intValue() == -1) {
+            return AjaxResponse.msg("0","小程序正在准备中，敬请期待哟");
+        }
+        if (!appletInfo.getIfSelling()) {
+            return AjaxResponse.error("非常抱歉，小程序正在整顿中，请下来再来！");
+        }
         Map map = new HashMap();
         map.put("id", appletInfo.getId());
         map.put("appletName", appletInfo.getAppletName());

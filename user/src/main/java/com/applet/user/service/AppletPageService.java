@@ -1,5 +1,6 @@
 package com.applet.user.service;
 
+import com.applet.common.util.Arith;
 import com.applet.user.entity.*;
 import com.applet.user.entity.page.ContentInfo;
 import com.applet.user.entity.page.ElementInfo;
@@ -25,6 +26,7 @@ import java.util.Map;
  * @author: Mr.ZhouHuaHu
  * @create: 2019-12-09 11:13
  **/
+@SuppressWarnings("ALL")
 @Service
 public class AppletPageService {
     private final static Logger log = LoggerFactory.getLogger(AppletPageService.class);
@@ -170,63 +172,69 @@ public class AppletPageService {
 
     /**
      * 查询测试商品列表
-     *
+     * @param appletId
      * @param userId
+     * @param goodsName
      * @return
      */
-    public List<Map> selectGoodsInfoList(Integer userId, String goodsName) {
-        String sql = "SELECT id,type_id AS typeId,goods_name AS name,cover_src AS icon FROM goods_info WHERE user_id = " + userId + " AND `status` = 1";
-        if (NullUtil.isNotNullOrEmpty(goodsName)) {
-            sql += " AND goods_name LIKE '%" + goodsName + "%'";
+    public List<Map> selectGoodsInfoList(Integer appletId, Integer userId, String goodsName) {
+        String sql = "SELECT id,type_id AS typeId,goods_name AS name,cover_src AS icon FROM view_goods_info " +
+                "WHERE applet_id = " + appletId + " AND user_id = " + userId + " AND goods_status = 1";
+        if (NullUtil.isNotNullOrEmpty(goodsName)){
+            sql +=  " AND goods_name LIKE '%" + goodsName + "%'";
         }
-        sql += " ORDER BY goods_index ASC;";
+        sql +=  " ORDER BY goods_index ASC;";
         return commonMapper.selectListMap(sql);
     }
 
     /**
      * 查询测试商品详情列表
-     *
+     * @param appletId
      * @param userId
+     * @param goodsName
      * @return
      */
-    public List<Map> selectGoodsDetailsList(Integer userId, String goodsName) {
-        String sql = "SELECT id,type_id AS typeId,goods_name AS name,cover_src AS icon,min_price AS minPrice,max_price AS maxPrice FROM goods_info WHERE user_id = " + userId + " AND `status` = 1";
-        if (NullUtil.isNotNullOrEmpty(goodsName)) {
-            sql += " AND goods_name LIKE '%" + goodsName + "%'";
+    public List<Map> selectGoodsDetailsList(Integer appletId, Integer userId, String goodsName) {
+        String sql = "SELECT id,type_id AS typeId,goods_name AS name,cover_src AS icon,min_price AS minPrice,max_price AS maxPrice,discount AS discount" +
+                " FROM view_goods_info WHERE applet_id = " + appletId + " AND user_id = " + userId + " AND goods_status = 1";
+        if (NullUtil.isNotNullOrEmpty(goodsName)){
+            sql +=  " AND goods_name LIKE '%" + goodsName + "%'";
         }
-        sql += " ORDER BY goods_index ASC;";
+        sql +=  " ORDER BY goods_index ASC;";
         return commonMapper.selectListMap(sql);
     }
 
     /**
      * 查询测试商品折扣列表
-     *
+     * @param appletId
      * @param userId
+     * @param goodsName
      * @return
      */
-    public List<Map> selectGoodsDiscountList(Integer userId, String goodsName) {
-        String sql = "SELECT id,goods_name AS name,cover_src AS icon,CONVERT(((min_price*discount)/100),decimal(10,2)) AS minPrice,min_price AS maxPrice" +
-                " FROM view_goods_info WHERE user_id = " + userId + "  AND discount <> 100";
-        if (NullUtil.isNotNullOrEmpty(goodsName)) {
-            sql += " AND goods_name LIKE '%" + goodsName + "%'";
+    public List<Map> selectGoodsDiscountList(Integer appletId, Integer userId, String goodsName) {
+        String sql = "SELECT id,goods_name AS name,cover_src AS icon,CONVERT(((min_price*discount)/100),decimal(10,2)) AS minPrice,min_price AS maxPrice,discount AS discount" +
+                " FROM view_goods_info WHERE applet_id = " + appletId + " AND user_id = " + userId + "  AND discount <> 100";
+        if (NullUtil.isNotNullOrEmpty(goodsName)){
+            sql +=  " AND goods_name LIKE '%" + goodsName + "%'";
         }
-        sql += " ORDER BY goods_index ASC;";
+        sql +=  " ORDER BY goods_index ASC;";
         return commonMapper.selectListMap(sql);
-
     }
 
     /**
      * 查询测试商品类型列表
-     *
+     * @param appletId
      * @param userId
+     * @param typeName
      * @return
      */
-    public List<Map> selectGoodsTypeList(Integer userId, String typeName) {
-        String sql = "SELECT id,type_name AS name,type_logo AS icon FROM goods_type WHERE user_id = " + userId + " AND type_status = 1";
-        if (NullUtil.isNotNullOrEmpty(typeName)) {
-            sql += " AND type_name LIKE '%" + typeName + "%'";
+    public List<Map> selectGoodsTypeList(Integer appletId, Integer userId, String typeName) {
+        String sql = "SELECT id,type_name AS name,type_logo AS icon FROM goods_type " +
+                "WHERE applet_id = " + appletId + " AND user_id = " + userId + " AND type_status = 1";
+        if (NullUtil.isNotNullOrEmpty(typeName)){
+            sql +=  " AND type_name LIKE '%" + typeName + "%'";
         }
-        sql += " ORDER BY type_index ASC;";
+        sql +=  " ORDER BY type_index ASC;";
         return commonMapper.selectListMap(sql);
     }
 
@@ -262,6 +270,7 @@ public class AppletPageService {
                                     record.getContentList().get(k).getList().get(i).setName(goods.getGoodsName());
                                     record.getContentList().get(k).getList().get(i).setMinPrice(goods.getMinPrice());
                                     record.getContentList().get(k).getList().get(i).setMaxPrice(goods.getMaxPrice());
+                                    record.getContentList().get(k).getList().get(i).setDiscount(goods.getDiscount());
                                     bool = true;
                                 } else if (null != type && NullUtil.isNotNullOrEmpty(note.getTypeId()) && type.getId().intValue() == note.getTypeId().intValue()) {
                                     record.getContentList().get(k).getList().get(i).setName(type.getTypeName());

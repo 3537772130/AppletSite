@@ -20,6 +20,7 @@ import java.util.Map;
  * @author: Mr.ZhouHuaHu
  * @create: 2019-09-16 17:51
  **/
+@SuppressWarnings("ALL")
 @Service
 public class GoodsService {
 
@@ -376,7 +377,6 @@ public class GoodsService {
         file.setFileSrc(src);
         file.setFileStatus(status);
         goodsFileMapper.updateByPrimaryKeySelective(file);
-
     }
 
     /**
@@ -504,6 +504,9 @@ public class GoodsService {
             goods.setStatus(false);
         }
         goodsInfoMapper.updateByPrimaryKeySelective(goods);
+
+//        ViewGoodsInfo goodsInfo = selectViewGoodsInfo(goodsId, userId);
+//        appletPageService.updatePageContext(goodsInfo.getAppletId(), goodsInfo.getUserId(), null, goodsInfo);
     }
 
     /**

@@ -22,6 +22,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  * Description:
  */
+@SuppressWarnings("ALL")
 @Service
 public class CouponServer {
     @Autowired

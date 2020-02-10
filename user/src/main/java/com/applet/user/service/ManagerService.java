@@ -14,6 +14,7 @@ import java.util.*;
  * @author: zhouhuahu
  * @create: 2019-08-16 00:45
  **/
+@SuppressWarnings("ALL")
 @Service
 public class ManagerService {
 

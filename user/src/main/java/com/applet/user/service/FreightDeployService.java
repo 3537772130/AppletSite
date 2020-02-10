@@ -1,13 +1,10 @@
 package com.applet.user.service;
 
-import com.applet.common.excepion.BusinessException;
 import com.applet.common.util.AjaxResponse;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.Page;
-import com.applet.user.entity.AppletPageContent;
 import com.applet.user.entity.FreightDeploy;
 import com.applet.user.entity.FreightDeployExample;
-import com.applet.user.mapper.CommonMapper;
 import com.applet.user.mapper.FreightDeployMapper;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +22,6 @@ public class FreightDeployService {
 
     @Resource
     private FreightDeployMapper freightDeployMapper;
-
-    @Resource
-    private CommonMapper commonMapper;
 
     /**
      * 根据小程序ID查询运费配置信息

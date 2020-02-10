@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -27,6 +28,7 @@ import java.util.concurrent.Executors;
  **/
 @Configuration
 @ComponentScan
+@EnableAsync
 public class ApplicationConfigurer extends WebMvcConfigurationSupport {
     private static final Logger log = LoggerFactory.getLogger(ApplicationConfigurer.class);
 

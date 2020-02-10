@@ -17,6 +17,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -36,6 +37,7 @@ import java.util.concurrent.Executors;
  **/
 @Configuration
 @ComponentScan
+@EnableAsync
 public class ApplicationConfigurer extends WebMvcConfigurationSupport {
     private static final Logger log = LoggerFactory.getLogger(ApplicationConfigurer.class);
 

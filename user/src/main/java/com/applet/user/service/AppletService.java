@@ -19,6 +19,7 @@ import java.util.Map;
  * @author: Mr.ZhouHuaHu
  * @create: 2019-08-19 09:38
  **/
+@SuppressWarnings("ALL")
 @Service
 public class AppletService {
     @Autowired
