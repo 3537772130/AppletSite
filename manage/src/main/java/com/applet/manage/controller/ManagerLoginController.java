@@ -1,7 +1,7 @@
 package com.applet.manage.controller;
 
 import com.applet.manage.config.annotation.CancelAuthentication;
-import com.applet.manage.entity.*;
+import com.applet.common.entity.*;
 import com.applet.manage.service.ManagerService;
 import com.applet.manage.service.MenuService;
 import com.applet.common.util.AjaxResponse;

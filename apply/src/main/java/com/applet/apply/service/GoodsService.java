@@ -1,7 +1,7 @@
 package com.applet.apply.service;
 
-import com.applet.apply.entity.*;
-import com.applet.apply.mapper.*;
+import com.applet.common.entity.*;
+import com.applet.common.mapper.*;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.Page;
 import com.applet.common.util.RandomUtil;

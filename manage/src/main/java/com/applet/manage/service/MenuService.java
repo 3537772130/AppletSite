@@ -1,7 +1,7 @@
 package com.applet.manage.service;
 
-import com.applet.manage.entity.*;
-import com.applet.manage.mapper.*;
+import com.applet.common.entity.*;
+import com.applet.common.mapper.*;
 import com.applet.common.util.Constants;
 import com.applet.common.util.NullUtil;
 import org.slf4j.Logger;
@@ -22,6 +22,7 @@ import java.util.*;
  * @author: Mr.ZhouHuaHu
  * @create: 2019-09-02 10:15
  **/
+@SuppressWarnings("ALL")
 @Service
 @Component
 public class MenuService implements ApplicationRunner {

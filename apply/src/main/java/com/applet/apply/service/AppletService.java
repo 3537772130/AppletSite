@@ -1,8 +1,7 @@
 package com.applet.apply.service;
 
-import com.applet.apply.entity.*;
-import com.applet.apply.mapper.AppletInfoMapper;
-import com.applet.apply.mapper.ViewAppletInfoMapper;
+import com.applet.common.entity.*;
+import com.applet.common.mapper.*;
 import com.applet.common.util.NullUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +14,7 @@ import java.util.Map;
 /**
  * Created by zhouhuahu on 2018/6/27.
  */
+@SuppressWarnings("ALL")
 @Service
 public class AppletService {
     private static final Logger log = LoggerFactory.getLogger(AppletService.class);

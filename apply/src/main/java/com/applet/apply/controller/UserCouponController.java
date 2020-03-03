@@ -1,7 +1,7 @@
 package com.applet.apply.controller;
 
 import com.applet.apply.config.annotation.SessionScope;
-import com.applet.apply.entity.*;
+import com.applet.common.entity.*;
 import com.applet.apply.service.UserCouponService;
 import com.applet.common.util.AjaxResponse;
 import com.applet.common.util.NullUtil;

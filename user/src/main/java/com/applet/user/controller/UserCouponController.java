@@ -2,7 +2,7 @@ package com.applet.user.controller;
 
 import com.applet.common.util.*;
 import com.applet.user.config.annotation.SessionScope;
-import com.applet.user.entity.*;
+import com.applet.common.entity.*;
 import com.applet.user.service.AppletService;
 import com.applet.user.service.CouponServer;
 import lombok.extern.slf4j.Slf4j;

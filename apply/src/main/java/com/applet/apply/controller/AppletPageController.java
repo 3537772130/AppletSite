@@ -2,8 +2,7 @@ package com.applet.apply.controller;
 
 import com.applet.apply.config.annotation.CancelAuth;
 import com.applet.apply.config.annotation.SessionScope;
-import com.applet.apply.entity.ViewAppletInfo;
-import com.applet.apply.entity.ViewAppletPageContent;
+import com.applet.common.entity.*;
 import com.applet.apply.service.AppletPageService;
 import com.applet.common.util.AjaxResponse;
 import org.slf4j.Logger;

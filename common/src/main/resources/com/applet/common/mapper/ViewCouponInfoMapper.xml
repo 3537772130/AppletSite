@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.applet.common.mapper.ViewCouponInfoMapper">
+  <resultMap id="BaseResultMap" type="com.applet.common.entity.ViewCouponInfo">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="coupon_name" jdbcType="VARCHAR" property="couponName" />
+    <result column="coupon_type" jdbcType="INTEGER" property="couponType" />
+    <result column="gain_applet_id" jdbcType="INTEGER" property="gainAppletId" />
+    <result column="gain_applet_name" jdbcType="VARCHAR" property="gainAppletName" />
+    <result column="gain_price" jdbcType="DOUBLE" property="gainPrice" />
+    <result column="use_applet_id" jdbcType="INTEGER" property="useAppletId" />
+    <result column="use_applet_name" jdbcType="VARCHAR" property="useAppletName" />
+    <result column="use_applet_logo" jdbcType="VARCHAR" property="useAppletLogo" />
+    <result column="use_price" jdbcType="DOUBLE" property="usePrice" />
+    <result column="denomination" jdbcType="DOUBLE" property="denomination" />
+    <result column="make_issue_num" jdbcType="INTEGER" property="makeIssueNum" />
+    <result column="already_issue_num" jdbcType="INTEGER" property="alreadyIssueNum" />
+    <result column="activity_start" jdbcType="TIMESTAMP" property="activityStart" />
+    <result column="activity_over" jdbcType="TIMESTAMP" property="activityOver" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, user_id, nick_name, mobile, coupon_name, coupon_type, gain_applet_id, gain_applet_name, 
+    gain_price, use_applet_id, use_applet_name, use_applet_logo, use_price, denomination, 
+    make_issue_num, already_issue_num, activity_start, activity_over, create_time, status
+  </sql>
+  <select id="selectByExample" parameterType="com.applet.common.entity.ViewCouponInfoExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from view_coupon_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <include refid="PageSuffix" />
+  </select>
+  <select id="countByExample" parameterType="com.applet.common.entity.ViewCouponInfoExample" resultType="java.lang.Long">
+    select count(*) from view_coupon_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <sql id="PageSuffix">
+    <if test="page != null">
+      limit #{page.rowStart},#{page.pageSize}
+    </if>
+  </sql>
+</mapper>

@@ -2,16 +2,12 @@ package com.applet.apply.config.interceptor;
 
 import com.alibaba.fastjson.JSONObject;
 import com.applet.apply.config.annotation.CancelAuth;
-import com.applet.apply.entity.ViewAppletInfo;
-import com.applet.apply.entity.ViewWeChantInfo;
-import com.applet.apply.entity.WeChantInfo;
+import com.applet.common.entity.*;
 import com.applet.apply.service.AppletService;
 import com.applet.apply.service.RedisService;
 import com.applet.apply.service.WeChantService;
 import com.applet.common.util.NullUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;

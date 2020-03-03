@@ -3,7 +3,7 @@ package com.applet.apply.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.applet.apply.config.annotation.SessionScope;
-import com.applet.apply.entity.*;
+import com.applet.common.entity.*;
 import com.applet.apply.service.UserCartService;
 import com.applet.apply.service.UserCouponService;
 import com.applet.apply.service.UserService;

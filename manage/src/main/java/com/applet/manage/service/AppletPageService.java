@@ -1,7 +1,7 @@
 package com.applet.manage.service;
 
-import com.applet.manage.entity.*;
-import com.applet.manage.mapper.*;
+import com.applet.common.entity.*;
+import com.applet.common.mapper.*;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,7 @@ import java.util.Map;
  * @author: Mr.ZhouHuaHu
  * @create: 2019-09-25 11:07
  **/
+@SuppressWarnings("ALL")
 @Service
 public class AppletPageService {
     @Autowired

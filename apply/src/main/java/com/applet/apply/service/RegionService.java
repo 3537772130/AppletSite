@@ -1,8 +1,8 @@
 package com.applet.apply.service;
 
-import com.applet.apply.entity.RegionInfo;
-import com.applet.apply.entity.RegionInfoExample;
-import com.applet.apply.mapper.RegionInfoMapper;
+import com.applet.common.entity.RegionInfo;
+import com.applet.common.entity.RegionInfoExample;
+import com.applet.common.mapper.RegionInfoMapper;
 import com.applet.common.util.Constants;
 import com.applet.common.util.NullUtil;
 import org.slf4j.Logger;
@@ -24,6 +24,7 @@ import java.util.Map;
  * @author: Mr.ZhouHuaHu
  * @create: 2019-07-29 10:57
  **/
+@SuppressWarnings("ALL")
 @Service
 @Component
 public class RegionService implements ApplicationRunner {

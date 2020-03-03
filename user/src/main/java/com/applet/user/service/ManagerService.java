@@ -1,7 +1,7 @@
 package com.applet.user.service;
 
-import com.applet.user.entity.*;
-import com.applet.user.mapper.*;
+import com.applet.common.entity.*;
+import com.applet.common.mapper.*;
 import com.applet.common.util.NullUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

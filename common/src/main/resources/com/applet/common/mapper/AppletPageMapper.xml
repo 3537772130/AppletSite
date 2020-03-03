@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.applet.common.mapper.AppletPageMapper">
+  <resultMap id="BaseResultMap" type="com.applet.common.entity.AppletPage">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="file_id" jdbcType="INTEGER" property="fileId" />
+    <result column="page_logo" jdbcType="VARCHAR" property="pageLogo" />
+    <result column="page_name" jdbcType="VARCHAR" property="pageName" />
+    <result column="if_edit" jdbcType="BIT" property="ifEdit" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="page_status" jdbcType="BIT" property="pageStatus" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, file_id, page_logo, page_name, if_edit, update_time, page_status
+  </sql>
+  <select id="selectByExample" parameterType="com.applet.common.entity.AppletPageExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from applet_page
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <include refid="PageSuffix" />
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from applet_page
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from applet_page
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.applet.common.entity.AppletPageExample">
+    delete from applet_page
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.applet.common.entity.AppletPage">
+    insert into applet_page (id, file_id, page_logo, 
+      page_name, if_edit, update_time, 
+      page_status)
+    values (#{id,jdbcType=INTEGER}, #{fileId,jdbcType=INTEGER}, #{pageLogo,jdbcType=VARCHAR}, 
+      #{pageName,jdbcType=VARCHAR}, #{ifEdit,jdbcType=BIT}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{pageStatus,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" keyProperty="id" parameterType="com.applet.common.entity.AppletPage" useGeneratedKeys="true">
+    insert into applet_page
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="fileId != null">
+        file_id,
+      </if>
+      <if test="pageLogo != null">
+        page_logo,
+      </if>
+      <if test="pageName != null">
+        page_name,
+      </if>
+      <if test="ifEdit != null">
+        if_edit,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="pageStatus != null">
+        page_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="fileId != null">
+        #{fileId,jdbcType=INTEGER},
+      </if>
+      <if test="pageLogo != null">
+        #{pageLogo,jdbcType=VARCHAR},
+      </if>
+      <if test="pageName != null">
+        #{pageName,jdbcType=VARCHAR},
+      </if>
+      <if test="ifEdit != null">
+        #{ifEdit,jdbcType=BIT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pageStatus != null">
+        #{pageStatus,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.applet.common.entity.AppletPageExample" resultType="java.lang.Long">
+    select count(*) from applet_page
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update applet_page
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.fileId != null">
+        file_id = #{record.fileId,jdbcType=INTEGER},
+      </if>
+      <if test="record.pageLogo != null">
+        page_logo = #{record.pageLogo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pageName != null">
+        page_name = #{record.pageName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ifEdit != null">
+        if_edit = #{record.ifEdit,jdbcType=BIT},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.pageStatus != null">
+        page_status = #{record.pageStatus,jdbcType=BIT},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update applet_page
+    set id = #{record.id,jdbcType=INTEGER},
+      file_id = #{record.fileId,jdbcType=INTEGER},
+      page_logo = #{record.pageLogo,jdbcType=VARCHAR},
+      page_name = #{record.pageName,jdbcType=VARCHAR},
+      if_edit = #{record.ifEdit,jdbcType=BIT},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      page_status = #{record.pageStatus,jdbcType=BIT}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.applet.common.entity.AppletPage">
+    update applet_page
+    <set>
+      <if test="fileId != null">
+        file_id = #{fileId,jdbcType=INTEGER},
+      </if>
+      <if test="pageLogo != null">
+        page_logo = #{pageLogo,jdbcType=VARCHAR},
+      </if>
+      <if test="pageName != null">
+        page_name = #{pageName,jdbcType=VARCHAR},
+      </if>
+      <if test="ifEdit != null">
+        if_edit = #{ifEdit,jdbcType=BIT},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pageStatus != null">
+        page_status = #{pageStatus,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.applet.common.entity.AppletPage">
+    update applet_page
+    set file_id = #{fileId,jdbcType=INTEGER},
+      page_logo = #{pageLogo,jdbcType=VARCHAR},
+      page_name = #{pageName,jdbcType=VARCHAR},
+      if_edit = #{ifEdit,jdbcType=BIT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      page_status = #{pageStatus,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <sql id="PageSuffix">
+    <if test="page != null">
+      limit #{page.rowStart},#{page.pageSize}
+    </if>
+  </sql>
+</mapper>

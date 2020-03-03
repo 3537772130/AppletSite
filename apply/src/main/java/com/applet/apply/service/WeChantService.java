@@ -1,7 +1,7 @@
 package com.applet.apply.service;
 
-import com.applet.apply.entity.*;
-import com.applet.apply.mapper.*;
+import com.applet.common.entity.*;
+import com.applet.common.mapper.*;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.RandomUtil;
 import com.applet.common.util.encryption.DesUtil;
@@ -27,6 +27,7 @@ import java.util.List;
 /**
  * Created by zhouhuahu on 2018/6/26.
  */
+@SuppressWarnings("ALL")
 @Service
 public class WeChantService {
     private final static Logger log = LoggerFactory.getLogger(WeChantService.class);

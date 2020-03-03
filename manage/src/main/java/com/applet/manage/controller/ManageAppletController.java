@@ -4,7 +4,7 @@ import com.applet.common.util.*;
 import com.applet.common.util.encryption.EncryptionUtil;
 import com.applet.common.util.qiniu.QiNiuUtil;
 import com.applet.manage.config.annotation.SessionScope;
-import com.applet.manage.entity.*;
+import com.applet.common.entity.*;
 import com.applet.manage.service.AppletService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

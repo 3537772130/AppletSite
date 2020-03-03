@@ -1,7 +1,7 @@
 package com.applet.user.service;
 
-import com.applet.user.entity.*;
-import com.applet.user.mapper.RegionInfoMapper;
+import com.applet.common.entity.*;
+import com.applet.common.mapper.RegionInfoMapper;
 import com.applet.common.util.Constants;
 import com.applet.common.util.NullUtil;
 import org.slf4j.Logger;

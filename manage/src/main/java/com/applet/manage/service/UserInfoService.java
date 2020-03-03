@@ -1,7 +1,7 @@
 package com.applet.manage.service;
 
-import com.applet.manage.entity.*;
-import com.applet.manage.mapper.*;
+import com.applet.common.entity.*;
+import com.applet.common.mapper.*;
 import com.applet.common.util.*;
 import jodd.datetime.JDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
  * @author: Mr.ZhouHuaHu
  * @create: 2019-06-14 14:52
  **/
+@SuppressWarnings("ALL")
 @Service
 @Component
 public class UserInfoService {

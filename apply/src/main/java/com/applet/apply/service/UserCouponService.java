@@ -1,7 +1,7 @@
 package com.applet.apply.service;
 
-import com.applet.apply.entity.*;
-import com.applet.apply.mapper.*;
+import com.applet.common.entity.*;
+import com.applet.common.mapper.*;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.Page;
 import jodd.datetime.JDateTime;
@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 

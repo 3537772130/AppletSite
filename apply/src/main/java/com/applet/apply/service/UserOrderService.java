@@ -1,7 +1,7 @@
 package com.applet.apply.service;
 
-import com.applet.apply.entity.*;
-import com.applet.apply.mapper.*;
+import com.applet.common.entity.*;
+import com.applet.common.mapper.*;
 import com.applet.common.enums.OrderEnums;
 import com.applet.common.util.EnumUtil;
 import com.applet.common.util.NullUtil;

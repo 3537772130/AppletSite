@@ -1,11 +1,7 @@
 package com.applet.apply.service;
 
-import com.applet.apply.entity.UserCart;
-import com.applet.apply.entity.UserCartExample;
-import com.applet.apply.entity.ViewUserCart;
-import com.applet.apply.entity.ViewUserCartExample;
-import com.applet.apply.mapper.UserCartMapper;
-import com.applet.apply.mapper.ViewUserCartMapper;
+import com.applet.common.entity.*;
+import com.applet.common.mapper.*;
 import com.applet.common.util.NullUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

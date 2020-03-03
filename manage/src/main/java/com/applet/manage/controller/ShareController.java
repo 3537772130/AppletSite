@@ -1,6 +1,6 @@
 package com.applet.manage.controller;
 
-import com.applet.manage.entity.RegionInfo;
+import com.applet.common.entity.RegionInfo;
 import com.applet.manage.service.RegionService;
 import com.applet.common.util.AjaxResponse;
 import com.applet.common.util.Constants;

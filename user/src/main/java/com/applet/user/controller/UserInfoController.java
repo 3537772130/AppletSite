@@ -2,9 +2,8 @@ package com.applet.user.controller;
 
 import com.applet.common.entity.CheckResult;
 import com.applet.user.config.annotation.SessionScope;
-import com.applet.user.entity.UserInfo;
-import com.applet.user.entity.UserLoginLog;
 import com.applet.user.service.UserInfoService;
+import com.applet.common.entity.*;
 import com.applet.common.util.*;
 import com.applet.common.util.qiniu.QiNiuUtil;
 import org.json.JSONArray;

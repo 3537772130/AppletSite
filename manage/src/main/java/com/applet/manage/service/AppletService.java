@@ -1,10 +1,9 @@
 package com.applet.manage.service;
 
-import com.applet.manage.entity.*;
-import com.applet.manage.mapper.*;
+import com.applet.common.entity.*;
+import com.applet.common.mapper.*;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.Page;
-import com.applet.common.util.RandomUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +17,7 @@ import java.util.List;
  * @author: Mr.ZhouHuaHu
  * @create: 2019-08-19 09:38
  **/
+@SuppressWarnings("ALL")
 @Service
 public class AppletService {
     @Autowired

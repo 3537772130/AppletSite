@@ -1,7 +1,7 @@
 package com.applet.user.config.intercepors;
 
 import com.applet.user.config.annotation.CancelAuthentication;
-import com.applet.user.entity.UserInfo;
+import com.applet.common.entity.UserInfo;
 import com.applet.common.util.Constants;
 import com.applet.common.util.SerializeUtil;
 import org.slf4j.Logger;

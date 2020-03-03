@@ -1,6 +1,6 @@
 package com.applet.manage.util.excel;
 
-import com.applet.manage.entity.ViewAppletInfo;
+import com.applet.common.entity.ViewAppletInfo;
 import com.applet.common.util.Constants;
 import jodd.datetime.JDateTime;
 

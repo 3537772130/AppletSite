@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.applet.common.mapper.RegionInfoMapper">
+  <resultMap id="BaseResultMap" type="com.applet.common.entity.RegionInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="area_name" jdbcType="VARCHAR" property="areaName" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="short_name" jdbcType="VARCHAR" property="shortName" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="flag" jdbcType="INTEGER" property="flag" />
+    <result column="WGS84_LNG" jdbcType="DOUBLE" property="wgs84Lng" />
+    <result column="WGS84_LAT" jdbcType="DOUBLE" property="wgs84Lat" />
+    <result column="GCJ02_LNG" jdbcType="DOUBLE" property="gcj02Lng" />
+    <result column="GCJ02_LAT" jdbcType="DOUBLE" property="gcj02Lat" />
+    <result column="BD09_LNG" jdbcType="DOUBLE" property="bd09Lng" />
+    <result column="BD09_LAT" jdbcType="DOUBLE" property="bd09Lat" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, area_name, parent_id, short_name, level, flag, WGS84_LNG, WGS84_LAT, GCJ02_LNG, 
+    GCJ02_LAT, BD09_LNG, BD09_LAT
+  </sql>
+  <select id="selectByExample" parameterType="com.applet.common.entity.RegionInfoExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from region_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <include refid="PageSuffix" />
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from region_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from region_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.applet.common.entity.RegionInfoExample">
+    delete from region_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.applet.common.entity.RegionInfo">
+    insert into region_info (id, area_name, parent_id, 
+      short_name, level, flag, 
+      WGS84_LNG, WGS84_LAT, GCJ02_LNG, 
+      GCJ02_LAT, BD09_LNG, BD09_LAT
+      )
+    values (#{id,jdbcType=INTEGER}, #{areaName,jdbcType=VARCHAR}, #{parentId,jdbcType=INTEGER}, 
+      #{shortName,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER}, #{flag,jdbcType=INTEGER}, 
+      #{wgs84Lng,jdbcType=DOUBLE}, #{wgs84Lat,jdbcType=DOUBLE}, #{gcj02Lng,jdbcType=DOUBLE}, 
+      #{gcj02Lat,jdbcType=DOUBLE}, #{bd09Lng,jdbcType=DOUBLE}, #{bd09Lat,jdbcType=DOUBLE}
+      )
+  </insert>
+  <insert id="insertSelective" keyProperty="id" parameterType="com.applet.common.entity.RegionInfo" useGeneratedKeys="true">
+    insert into region_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="areaName != null">
+        area_name,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="shortName != null">
+        short_name,
+      </if>
+      <if test="level != null">
+        level,
+      </if>
+      <if test="flag != null">
+        flag,
+      </if>
+      <if test="wgs84Lng != null">
+        WGS84_LNG,
+      </if>
+      <if test="wgs84Lat != null">
+        WGS84_LAT,
+      </if>
+      <if test="gcj02Lng != null">
+        GCJ02_LNG,
+      </if>
+      <if test="gcj02Lat != null">
+        GCJ02_LAT,
+      </if>
+      <if test="bd09Lng != null">
+        BD09_LNG,
+      </if>
+      <if test="bd09Lat != null">
+        BD09_LAT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="areaName != null">
+        #{areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="shortName != null">
+        #{shortName,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        #{level,jdbcType=INTEGER},
+      </if>
+      <if test="flag != null">
+        #{flag,jdbcType=INTEGER},
+      </if>
+      <if test="wgs84Lng != null">
+        #{wgs84Lng,jdbcType=DOUBLE},
+      </if>
+      <if test="wgs84Lat != null">
+        #{wgs84Lat,jdbcType=DOUBLE},
+      </if>
+      <if test="gcj02Lng != null">
+        #{gcj02Lng,jdbcType=DOUBLE},
+      </if>
+      <if test="gcj02Lat != null">
+        #{gcj02Lat,jdbcType=DOUBLE},
+      </if>
+      <if test="bd09Lng != null">
+        #{bd09Lng,jdbcType=DOUBLE},
+      </if>
+      <if test="bd09Lat != null">
+        #{bd09Lat,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.applet.common.entity.RegionInfoExample" resultType="java.lang.Long">
+    select count(*) from region_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update region_info
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.areaName != null">
+        area_name = #{record.areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.parentId != null">
+        parent_id = #{record.parentId,jdbcType=INTEGER},
+      </if>
+      <if test="record.shortName != null">
+        short_name = #{record.shortName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.level != null">
+        level = #{record.level,jdbcType=INTEGER},
+      </if>
+      <if test="record.flag != null">
+        flag = #{record.flag,jdbcType=INTEGER},
+      </if>
+      <if test="record.wgs84Lng != null">
+        WGS84_LNG = #{record.wgs84Lng,jdbcType=DOUBLE},
+      </if>
+      <if test="record.wgs84Lat != null">
+        WGS84_LAT = #{record.wgs84Lat,jdbcType=DOUBLE},
+      </if>
+      <if test="record.gcj02Lng != null">
+        GCJ02_LNG = #{record.gcj02Lng,jdbcType=DOUBLE},
+      </if>
+      <if test="record.gcj02Lat != null">
+        GCJ02_LAT = #{record.gcj02Lat,jdbcType=DOUBLE},
+      </if>
+      <if test="record.bd09Lng != null">
+        BD09_LNG = #{record.bd09Lng,jdbcType=DOUBLE},
+      </if>
+      <if test="record.bd09Lat != null">
+        BD09_LAT = #{record.bd09Lat,jdbcType=DOUBLE},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update region_info
+    set id = #{record.id,jdbcType=INTEGER},
+      area_name = #{record.areaName,jdbcType=VARCHAR},
+      parent_id = #{record.parentId,jdbcType=INTEGER},
+      short_name = #{record.shortName,jdbcType=VARCHAR},
+      level = #{record.level,jdbcType=INTEGER},
+      flag = #{record.flag,jdbcType=INTEGER},
+      WGS84_LNG = #{record.wgs84Lng,jdbcType=DOUBLE},
+      WGS84_LAT = #{record.wgs84Lat,jdbcType=DOUBLE},
+      GCJ02_LNG = #{record.gcj02Lng,jdbcType=DOUBLE},
+      GCJ02_LAT = #{record.gcj02Lat,jdbcType=DOUBLE},
+      BD09_LNG = #{record.bd09Lng,jdbcType=DOUBLE},
+      BD09_LAT = #{record.bd09Lat,jdbcType=DOUBLE}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.applet.common.entity.RegionInfo">
+    update region_info
+    <set>
+      <if test="areaName != null">
+        area_name = #{areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="shortName != null">
+        short_name = #{shortName,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        level = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="flag != null">
+        flag = #{flag,jdbcType=INTEGER},
+      </if>
+      <if test="wgs84Lng != null">
+        WGS84_LNG = #{wgs84Lng,jdbcType=DOUBLE},
+      </if>
+      <if test="wgs84Lat != null">
+        WGS84_LAT = #{wgs84Lat,jdbcType=DOUBLE},
+      </if>
+      <if test="gcj02Lng != null">
+        GCJ02_LNG = #{gcj02Lng,jdbcType=DOUBLE},
+      </if>
+      <if test="gcj02Lat != null">
+        GCJ02_LAT = #{gcj02Lat,jdbcType=DOUBLE},
+      </if>
+      <if test="bd09Lng != null">
+        BD09_LNG = #{bd09Lng,jdbcType=DOUBLE},
+      </if>
+      <if test="bd09Lat != null">
+        BD09_LAT = #{bd09Lat,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.applet.common.entity.RegionInfo">
+    update region_info
+    set area_name = #{areaName,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=INTEGER},
+      short_name = #{shortName,jdbcType=VARCHAR},
+      level = #{level,jdbcType=INTEGER},
+      flag = #{flag,jdbcType=INTEGER},
+      WGS84_LNG = #{wgs84Lng,jdbcType=DOUBLE},
+      WGS84_LAT = #{wgs84Lat,jdbcType=DOUBLE},
+      GCJ02_LNG = #{gcj02Lng,jdbcType=DOUBLE},
+      GCJ02_LAT = #{gcj02Lat,jdbcType=DOUBLE},
+      BD09_LNG = #{bd09Lng,jdbcType=DOUBLE},
+      BD09_LAT = #{bd09Lat,jdbcType=DOUBLE}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <sql id="PageSuffix">
+    <if test="page != null">
+      limit #{page.rowStart},#{page.pageSize}
+    </if>
+  </sql>
+</mapper>

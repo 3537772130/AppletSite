@@ -1,7 +1,7 @@
 package com.applet.manage.config.intercepors;
 
 import com.applet.manage.config.annotation.CancelAuthentication;
-import com.applet.manage.entity.ManagerInfo;
+import com.applet.common.entity.ManagerInfo;
 import com.applet.common.util.Constants;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.SerializeUtil;

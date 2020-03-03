@@ -1,7 +1,6 @@
 package com.applet.apply.controller;
 
-import com.applet.apply.entity.ViewAppletInfo;
-import com.applet.apply.entity.ViewWeChantInfo;
+import com.applet.common.entity.*;
 import com.applet.apply.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 

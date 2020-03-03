@@ -2,11 +2,8 @@ package com.applet.user.service;
 
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.Page;
-import com.applet.user.entity.*;
-import com.applet.user.mapper.CouponInfoMapper;
-import com.applet.user.mapper.ViewCouponInfoMapper;
-import com.applet.user.mapper.ViewUserCouponMapper;
-import io.swagger.models.auth.In;
+import com.applet.common.entity.*;
+import com.applet.common.mapper.*;
 import jodd.datetime.JDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

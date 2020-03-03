@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.applet.common.mapper.ViewMerchantInfoMapper">
+  <resultMap id="BaseResultMap" type="com.applet.common.entity.ViewMerchantInfo">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="gender" jdbcType="BIT" property="gender" />
+    <result column="birthday" jdbcType="VARCHAR" property="birthday" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="is_dealer" jdbcType="BIT" property="isDealer" />
+    <result column="balance" jdbcType="DOUBLE" property="balance" />
+    <result column="free_balance" jdbcType="DOUBLE" property="freeBalance" />
+    <result column="integral" jdbcType="INTEGER" property="integral" />
+    <result column="goods_count" jdbcType="INTEGER" property="goodsCount" />
+    <result column="extension_code" jdbcType="VARCHAR" property="extensionCode" />
+    <result column="manager_id" jdbcType="INTEGER" property="managerId" />
+    <result column="manager_user_name" jdbcType="VARCHAR" property="managerUserName" />
+    <result column="manager_nick_name" jdbcType="VARCHAR" property="managerNickName" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="status" jdbcType="BIT" property="status" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, mobile, nick_name, gender, birthday, email, is_dealer, balance, free_balance, 
+    integral, goods_count, extension_code, manager_id, manager_user_name, manager_nick_name, 
+    create_date, status
+  </sql>
+  <select id="selectByExample" parameterType="com.applet.common.entity.ViewMerchantInfoExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from view_merchant_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <include refid="PageSuffix" />
+  </select>
+  <select id="countByExample" parameterType="com.applet.common.entity.ViewMerchantInfoExample" resultType="java.lang.Long">
+    select count(*) from view_merchant_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <sql id="PageSuffix">
+    <if test="page != null">
+      limit #{page.rowStart},#{page.pageSize}
+    </if>
+  </sql>
+</mapper>

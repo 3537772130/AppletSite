@@ -1,14 +1,11 @@
 package com.applet.user.controller;
 
 import com.applet.common.util.*;
+import com.applet.common.entity.*;
 import com.applet.user.config.annotation.SessionScope;
-import com.applet.user.entity.AppletInfo;
-import com.applet.user.entity.FreightDeploy;
-import com.applet.user.entity.UserInfo;
 import com.applet.user.service.FreightDeployService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;

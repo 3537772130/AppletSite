@@ -1,8 +1,7 @@
 package com.applet.manage.service;
 
-import com.applet.manage.entity.ViewAppletInfo;
-import com.applet.manage.entity.ViewAppletInfoExample;
-import com.applet.manage.mapper.ViewAppletInfoMapper;
+import com.applet.common.entity.*;
+import com.applet.common.mapper.ViewAppletInfoMapper;
 import com.applet.common.util.excel.DownloadUtil;
 import com.applet.common.util.excel.ExcelUtil;
 import com.applet.manage.util.excel.ConvertUtil;
@@ -22,6 +21,7 @@ import java.util.Map;
  * @author: Mr.ZhouHuaHu
  * @create: 2019-09-12 11:22
  **/
+@SuppressWarnings("ALL")
 @Service
 public class ExcelService {
 

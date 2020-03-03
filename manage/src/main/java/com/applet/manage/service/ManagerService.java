@@ -1,7 +1,7 @@
 package com.applet.manage.service;
 
-import com.applet.manage.entity.*;
-import com.applet.manage.mapper.*;
+import com.applet.common.entity.*;
+import com.applet.common.mapper.*;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.Page;
 import com.applet.common.util.http.IpUtil;

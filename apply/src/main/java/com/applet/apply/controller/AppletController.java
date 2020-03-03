@@ -2,9 +2,7 @@ package com.applet.apply.controller;
 
 import com.applet.apply.config.annotation.CancelAuth;
 import com.applet.apply.config.annotation.SessionScope;
-import com.applet.apply.entity.AppletInfo;
-import com.applet.apply.entity.ViewAppletInfo;
-import com.applet.apply.entity.ViewWeChantInfo;
+import com.applet.common.entity.*;
 import com.applet.apply.service.AppletService;
 import com.applet.apply.service.RedisService;
 import com.applet.common.util.NullUtil;

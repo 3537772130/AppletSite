@@ -1,7 +1,7 @@
 package com.applet.user.controller;
 
 import com.applet.user.config.annotation.SessionScope;
-import com.applet.user.entity.*;
+import com.applet.common.entity.*;
 import com.applet.user.service.AppletPageService;
 import com.applet.user.service.AppletService;
 import com.applet.user.service.ManagerService;

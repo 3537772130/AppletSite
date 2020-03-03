@@ -4,7 +4,7 @@ import com.applet.common.entity.CheckResult;
 import com.applet.common.util.*;
 import com.applet.common.util.qiniu.QiNiuUtil;
 import com.applet.user.config.annotation.SessionScope;
-import com.applet.user.entity.*;
+import com.applet.common.entity.*;
 import com.applet.user.service.AppletPageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

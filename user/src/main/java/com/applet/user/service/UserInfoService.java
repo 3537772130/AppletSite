@@ -1,9 +1,7 @@
 package com.applet.user.service;
 
-import com.applet.user.entity.*;
-import com.applet.user.mapper.CommonMapper;
-import com.applet.user.mapper.UserInfoMapper;
-import com.applet.user.mapper.UserLoginLogMapper;
+import com.applet.common.entity.*;
+import com.applet.common.mapper.*;
 import com.applet.common.util.*;
 import com.applet.common.util.encryption.EncryptionUtil;
 import com.applet.common.util.http.IpUtil;

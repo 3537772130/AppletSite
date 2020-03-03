@@ -4,7 +4,7 @@ import com.applet.apply.config.annotation.CancelAuth;
 import com.applet.apply.config.annotation.SessionScope;
 import com.applet.apply.service.*;
 import com.applet.common.util.*;
-import com.applet.apply.entity.*;
+import com.applet.common.entity.*;
 import com.applet.common.util.enums.SMSChannel;
 import com.applet.common.util.enums.SMSType;
 import com.applet.common.util.http.IpUtil;

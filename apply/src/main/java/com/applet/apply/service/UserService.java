@@ -1,13 +1,8 @@
 package com.applet.apply.service;
 
-import com.applet.apply.entity.ReceiveAddress;
-import com.applet.apply.entity.ReceiveAddressExample;
-import com.applet.apply.entity.UserInfo;
-import com.applet.apply.entity.UserInfoExample;
-import com.applet.apply.mapper.ReceiveAddressMapper;
-import com.applet.apply.mapper.UserInfoMapper;
+import com.applet.common.entity.*;
+import com.applet.common.mapper.*;
 import com.applet.common.util.*;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +18,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  * Description:
  */
+@SuppressWarnings("ALL")
 @Service
 public class UserService {
     @Autowired(required = true)

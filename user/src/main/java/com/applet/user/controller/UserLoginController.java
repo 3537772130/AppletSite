@@ -1,10 +1,9 @@
 package com.applet.user.controller;
 
 import com.applet.user.config.annotation.CancelAuthentication;
-import com.applet.user.entity.ManagerInfo;
-import com.applet.user.entity.UserInfo;
 import com.applet.user.service.ManagerService;
 import com.applet.user.service.UserInfoService;
+import com.applet.common.entity.*;
 import com.applet.common.util.*;
 import com.applet.common.util.encryption.EncryptionUtil;
 import org.slf4j.Logger;

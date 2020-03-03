@@ -3,9 +3,9 @@ package com.applet.user.service;
 import com.applet.common.util.AjaxResponse;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.Page;
-import com.applet.user.entity.FreightDeploy;
-import com.applet.user.entity.FreightDeployExample;
-import com.applet.user.mapper.FreightDeployMapper;
+import com.applet.common.entity.FreightDeploy;
+import com.applet.common.entity.FreightDeployExample;
+import com.applet.common.mapper.FreightDeployMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

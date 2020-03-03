@@ -1,9 +1,7 @@
 package com.applet.apply.service;
 
-import com.applet.apply.entity.AuthCode;
-import com.applet.apply.entity.SmsTemplate;
-import com.applet.apply.entity.SmsTemplateExample;
-import com.applet.apply.mapper.SmsTemplateMapper;
+import com.applet.common.entity.*;
+import com.applet.common.mapper.*;
 import com.applet.common.util.*;
 import com.applet.common.util.aliyun.SmsUtil;
 import com.applet.common.util.enums.SMSType;
@@ -22,6 +20,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  * Description: 短信发送服务类
  */
+@SuppressWarnings("ALL")
 @Service
 public class SmsService {
     private final static Logger log = LoggerFactory.getLogger(SmsService.class);

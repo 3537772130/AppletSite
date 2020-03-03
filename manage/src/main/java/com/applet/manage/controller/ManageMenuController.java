@@ -1,6 +1,6 @@
 package com.applet.manage.controller;
 
-import com.applet.manage.entity.*;
+import com.applet.common.entity.*;
 import com.applet.manage.service.MenuService;
 import com.applet.common.util.AjaxResponse;
 import com.applet.common.util.Constants;

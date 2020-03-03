@@ -1,8 +1,8 @@
 package com.applet.apply.service;
 
-import com.applet.apply.entity.ViewAppletPageContent;
-import com.applet.apply.entity.ViewAppletPageContentExample;
-import com.applet.apply.mapper.ViewAppletPageContentMapper;
+import com.applet.common.entity.ViewAppletPageContent;
+import com.applet.common.entity.ViewAppletPageContentExample;
+import com.applet.common.mapper.ViewAppletPageContentMapper;
 import com.applet.common.util.NullUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +17,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  * Description: 小程序页面服务类
  */
+@SuppressWarnings("ALL")
 @Service
 public class AppletPageService {
     @Autowired

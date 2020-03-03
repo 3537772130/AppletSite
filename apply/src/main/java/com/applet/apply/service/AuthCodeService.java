@@ -1,7 +1,7 @@
 package com.applet.apply.service;
 
-import com.applet.apply.entity.*;
-import com.applet.apply.mapper.*;
+import com.applet.common.entity.*;
+import com.applet.common.mapper.*;
 import com.applet.common.util.NullUtil;
 import jodd.datetime.JDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,7 @@ import java.util.List;
  * 短信验证码
  * Created by zhouhuahu on 2018/7/17.
  */
+@SuppressWarnings("ALL")
 @Service
 public class AuthCodeService {
     @Autowired

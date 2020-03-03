@@ -1,7 +1,6 @@
 package com.applet.manage.controller;
 
-import com.applet.manage.entity.ViewAppletInfo;
-import com.applet.manage.entity.ViewAppletInfoExample;
+import com.applet.common.entity.*;
 import com.applet.manage.service.ExcelService;
 import com.applet.common.util.NullUtil;
 import org.slf4j.Logger;
