@@ -1,8 +1,7 @@
 package com.applet.manage.config;
 
 import com.applet.manage.config.argumentResolver.SessionScopeMethod;
-import com.applet.manage.config.intercepors.FileInterceptor;
-import com.applet.manage.config.intercepors.ManagerInterceptor;
+import com.applet.manage.config.intercepors.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -82,6 +81,7 @@ public class ApplicationConfigurer extends WebMvcConfigurationSupport {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new NavigationInterceptor()).addPathPatterns("/**");
         registry.addInterceptor(new ManagerInterceptor()).addPathPatterns("/api/manage/**");
         registry.addInterceptor(new FileInterceptor()).addPathPatterns("/api/public/**");
         registry.addInterceptor(new FileInterceptor()).addPathPatterns("/api/image/**");
