@@ -309,7 +309,7 @@ public class UserGoodsController {
                 if (null == record){
                     return AjaxResponse.error("信息不符");
                 }
-                if (record.getStatus()){
+                if (record.getStatus().intValue() != 0){
                     return AjaxResponse.error("未下架商品禁止修改信息");
                 }
                 if (NullUtil.isNotNullOrEmpty(goods.getCoverSrc())) {
@@ -420,6 +420,29 @@ public class UserGoodsController {
     }
 
     /**
+     * 删除商品信息
+     * @param user
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping(value = "deleteGoodsInfo")
+    public Object deleteGoodsInfo(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer goodsId){
+        try {
+            if (NullUtil.isNullOrEmpty(goodsId)) {
+                return AjaxResponse.error("参数错误");
+            }
+            ViewGoodsInfo goods = goodsService.selectViewGoodsInfo(goodsId, user.getId());
+            if (null != goods) {
+                goodsService.updateGoodsStatus(goodsId);
+                return AjaxResponse.success("删除成功");
+            }
+        } catch (Exception e) {
+            log.error("删除商品信息出错{}", e);
+        }
+        return AjaxResponse.error("删除失败");
+    }
+
+    /**
      * 查询商品文件集合
      *
      * @param user
@@ -460,7 +483,7 @@ public class UserGoodsController {
             if (null == goodsInfo){
                 return AjaxResponse.error("信息不符");
             }
-            if (goodsInfo.getStatus()){
+            if (goodsInfo.getStatus() != 0){
                 return AjaxResponse.error("未下架商品禁止上传图片");
             }
             ViewGoodsFile record = goodsService.selectFileInfo(fileId, goodsId, user.getId());
@@ -505,7 +528,7 @@ public class UserGoodsController {
             if (null == goodsInfo){
                 return AjaxResponse.error("信息不符");
             }
-            if (goodsInfo.getStatus()){
+            if (goodsInfo.getStatus() != 0){
                 return AjaxResponse.error("未下架商品禁止上传视频");
             }
             ViewGoodsFile record = goodsService.selectFileInfo(fileId, goodsId, user.getId());
@@ -628,7 +651,7 @@ public class UserGoodsController {
             if (null == goodsInfo){
                 return AjaxResponse.error("信息不符");
             }
-            if (goodsInfo.getStatus()){
+            if (goodsInfo.getStatus() != 0){
                 return AjaxResponse.error("未下架商品禁止修改信息");
             }
             if (NullUtil.isNotNullOrEmpty(specs.getSpecsText()) && specs.getSpecsText().length() > 100) {

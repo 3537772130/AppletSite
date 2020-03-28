@@ -2,6 +2,7 @@ package com.applet.user.config;
 
 import com.applet.user.config.argumentResolver.SessionScopeMethod;
 import com.applet.user.config.intercepors.FileInterceptor;
+import com.applet.user.config.intercepors.NavigationInterceptor;
 import com.applet.user.config.intercepors.UserInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +67,8 @@ public class ApplicationConfigurer extends WebMvcConfigurationSupport {
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/**").addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("/**")
+                .addResourceLocations("classpath:/static/");
         registry.addResourceHandler("swagger-ui.html")
                 .addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**")
@@ -82,6 +84,7 @@ public class ApplicationConfigurer extends WebMvcConfigurationSupport {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new NavigationInterceptor()).addPathPatterns("/**");
         registry.addInterceptor(new UserInterceptor()).addPathPatterns("/api/user/**");
         registry.addInterceptor(new FileInterceptor()).addPathPatterns("/api/public/**");
         registry.addInterceptor(new FileInterceptor()).addPathPatterns("/api/image/**");
@@ -99,7 +102,7 @@ public class ApplicationConfigurer extends WebMvcConfigurationSupport {
      */
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("/web/toIndex");
+        registry.addViewController("/").setViewName("/index.html");
         super.addViewControllers(registry);
         log.info("已初始化默认访问地址");
     }

@@ -247,7 +247,7 @@ public class GoodsService {
      */
     public int selectGoodsCount(Integer typeId, Integer userId) {
         GoodsInfoExample example = new GoodsInfoExample();
-        example.createCriteria().andTypeIdEqualTo(typeId).andUserIdEqualTo(userId);
+        example.createCriteria().andTypeIdEqualTo(typeId).andUserIdEqualTo(userId).andStatusNotEqualTo(-1);
         return (int) goodsInfoMapper.countByExample(example);
     }
 
@@ -260,11 +260,12 @@ public class GoodsService {
     public void updateGoodsInfo(GoodsInfo record) throws SQLIntegrityConstraintViolationException {
         record.setUpdateTime(new Date());
         if (NullUtil.isNotNullOrEmpty(record.getId())) {
+            record.setGoodsName(null);
             goodsInfoMapper.updateByPrimaryKeySelective(record);
         } else {
             int count = this.selectGoodsCount(record.getTypeId(), record.getUserId());
             record.setGoodsIndex(count + 1);
-            record.setStatus(false);
+            record.setStatus(0);
             try {
                 goodsInfoMapper.insertSelective(record);
             } catch (Exception e) {
@@ -315,12 +316,23 @@ public class GoodsService {
     public void updateGoodsStatus(ViewGoodsInfo goods) {
         GoodsInfo record = new GoodsInfo();
         record.setId(goods.getId());
-        record.setStatus(!(goods.getGoodsStatus() == 1));
+        record.setStatus(goods.getGoodsStatus() == 1 ? 0 : 1);
         goodsInfoMapper.updateByPrimaryKeySelective(record);
         if (goods.getGoodsStatus() == 0){
             // 检查更新小程序页面配置信息
             appletPageService.updatePageContext(goods.getAppletId(), goods.getUserId(), null, goods);
         }
+    }
+
+    /**
+     * 删除商品信息
+     * @param goodsId
+     */
+    public void updateGoodsStatus(Integer goodsId) {
+        GoodsInfo record = new GoodsInfo();
+        record.setId(goodsId);
+        record.setStatus(-1);
+        goodsInfoMapper.updateByPrimaryKeySelective(record);
     }
 
     /**
@@ -501,7 +513,7 @@ public class GoodsService {
         int fileCount = this.selectFileCount(goodsId, userId);
         int specsCount = this.selectSpecsCount(goodsId, userId);
         if (fileCount <= 0 || specsCount <= 0) {
-            goods.setStatus(false);
+            goods.setStatus(0);
         }
         goodsInfoMapper.updateByPrimaryKeySelective(goods);
 
