@@ -43,12 +43,17 @@ public class AppletInterceptor extends HandlerInterceptorAdapter {
             //检查小程序信息
             ViewAppletInfo appletInfo = (ViewAppletInfo) Optional.ofNullable(redisService.getValue(appletCode)).orElse(new ViewAppletInfo());
             if (NullUtil.isNullOrEmpty(appletInfo.getId())) {
+                log.error("未获取到redis缓存小程序信息，重新查询...");
                 appletInfo = appletService.selectAppletInfo(appletCode);
                 if (null == appletInfo) {
                     request.getRequestDispatcher("/api/appletNull").forward(request, response);
                     return false;
                 }
-                redisService.setValue(appletCode, appletInfo);
+                try {
+                    redisService.setValue(appletCode, appletInfo);
+                } catch (Exception e) {
+                    log.error("设置redis出错(小程序信息){}", e);
+                }
             }
             if (appletInfo.getStatus().intValue() == 0) {
                 request.getRequestDispatcher("/api/appletNotOpen").forward(request, response);
@@ -86,13 +91,9 @@ public class AppletInterceptor extends HandlerInterceptorAdapter {
                 return false;
             }
             log.info("已有登陆记录，微信登陆信息使用redis加载,wxCode: " + wxCode);
-            ViewWeChantInfo weChantInfo = new ViewWeChantInfo();
-            try {
-                weChantInfo = (ViewWeChantInfo) Optional.ofNullable(redisService.getValue(wxCode)).orElse(new WeChantInfo());
-            } catch (Exception e) {
-                log.info("未能从redis中获取到用户信息");
-            }
+            ViewWeChantInfo weChantInfo = (ViewWeChantInfo) Optional.ofNullable(redisService.getValue(wxCode)).orElse(new ViewWeChantInfo());
             if (NullUtil.isNullOrEmpty(weChantInfo.getId())) {
+                log.info("未能从redis中获取到用户信息，重新查询...");
                 weChantInfo = weChantService.selectViewWeChantInfo(appletInfo.getId(), wxCode);
                 if (null == weChantInfo) {
                     request.getRequestDispatcher("/api/auth").forward(request, response);
@@ -102,7 +103,11 @@ public class AppletInterceptor extends HandlerInterceptorAdapter {
                     request.getRequestDispatcher("/api/auth").forward(request, response);
                     return false;
                 }
-                redisService.setValue(wxCode, weChantInfo);
+                try {
+                    redisService.setValue(wxCode, weChantInfo);
+                } catch (Exception e) {
+                    log.error("设置redis出错(用户信息){}", e);
+                }
             }
             request.getSession().setAttribute("weChantInfo", weChantInfo);
             return true;

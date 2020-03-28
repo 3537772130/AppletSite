@@ -4,6 +4,7 @@ import com.applet.apply.service.RedisService;
 import com.applet.common.annotation.Resubmit;
 import com.applet.common.constant.ResultMsg;
 import com.applet.common.excepion.BusinessException;
+import com.applet.common.util.PropertiesLoadUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -44,7 +45,7 @@ public class ResubmitAspect {
             String appletCode = Optional.ofNullable(request.getHeader("appletCode")).orElse("");
             String wxCode = Optional.ofNullable(request.getHeader("wxCode")).orElse("");
             String key = resubmit.prefix() + appletCode + "_" + wxCode + "_" + request.getRequestURI().hashCode();
-            if (!redisService.setNx(key, "1", resubmit.expire())) {
+            if (PropertiesLoadUtils.isRun() && !redisService.setNx(key, "1", resubmit.expire())) {
                 log.info("操作频繁, appletCode: {}, wxCode: {}, RequestURI: {}", appletCode, wxCode, request.getRequestURI());
                 throw BusinessException.of(ResultMsg.FREQUENT_OPERATIONS);
             }

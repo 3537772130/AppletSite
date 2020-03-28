@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.applet.common.mapper.CommentReplyRecordMapper">
+  <resultMap id="BaseResultMap" type="com.applet.common.entity.CommentReplyRecord">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="comment_id" jdbcType="INTEGER" property="commentId" />
+    <result column="aim_user_id" jdbcType="INTEGER" property="aimUserId" />
+    <result column="reply_user_id" jdbcType="INTEGER" property="replyUserId" />
+    <result column="reply_content" jdbcType="VARCHAR" property="replyContent" />
+    <result column="reply_index" jdbcType="INTEGER" property="replyIndex" />
+    <result column="reply_time" jdbcType="TIMESTAMP" property="replyTime" />
+    <result column="reply_status" jdbcType="BIT" property="replyStatus" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, comment_id, aim_user_id, reply_user_id, reply_content, reply_index, reply_time, 
+    reply_status
+  </sql>
+  <select id="selectByExample" parameterType="com.applet.common.entity.CommentReplyRecordExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from comment_reply_record
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <include refid="PageSuffix" />
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from comment_reply_record
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from comment_reply_record
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.applet.common.entity.CommentReplyRecordExample">
+    delete from comment_reply_record
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.applet.common.entity.CommentReplyRecord">
+    insert into comment_reply_record (id, comment_id, aim_user_id, 
+      reply_user_id, reply_content, reply_index, 
+      reply_time, reply_status)
+    values (#{id,jdbcType=INTEGER}, #{commentId,jdbcType=INTEGER}, #{aimUserId,jdbcType=INTEGER}, 
+      #{replyUserId,jdbcType=INTEGER}, #{replyContent,jdbcType=VARCHAR}, #{replyIndex,jdbcType=INTEGER}, 
+      #{replyTime,jdbcType=TIMESTAMP}, #{replyStatus,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" keyProperty="id" parameterType="com.applet.common.entity.CommentReplyRecord" useGeneratedKeys="true">
+    insert into comment_reply_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="commentId != null">
+        comment_id,
+      </if>
+      <if test="aimUserId != null">
+        aim_user_id,
+      </if>
+      <if test="replyUserId != null">
+        reply_user_id,
+      </if>
+      <if test="replyContent != null">
+        reply_content,
+      </if>
+      <if test="replyIndex != null">
+        reply_index,
+      </if>
+      <if test="replyTime != null">
+        reply_time,
+      </if>
+      <if test="replyStatus != null">
+        reply_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="commentId != null">
+        #{commentId,jdbcType=INTEGER},
+      </if>
+      <if test="aimUserId != null">
+        #{aimUserId,jdbcType=INTEGER},
+      </if>
+      <if test="replyUserId != null">
+        #{replyUserId,jdbcType=INTEGER},
+      </if>
+      <if test="replyContent != null">
+        #{replyContent,jdbcType=VARCHAR},
+      </if>
+      <if test="replyIndex != null">
+        #{replyIndex,jdbcType=INTEGER},
+      </if>
+      <if test="replyTime != null">
+        #{replyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="replyStatus != null">
+        #{replyStatus,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.applet.common.entity.CommentReplyRecordExample" resultType="java.lang.Long">
+    select count(*) from comment_reply_record
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update comment_reply_record
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.commentId != null">
+        comment_id = #{record.commentId,jdbcType=INTEGER},
+      </if>
+      <if test="record.aimUserId != null">
+        aim_user_id = #{record.aimUserId,jdbcType=INTEGER},
+      </if>
+      <if test="record.replyUserId != null">
+        reply_user_id = #{record.replyUserId,jdbcType=INTEGER},
+      </if>
+      <if test="record.replyContent != null">
+        reply_content = #{record.replyContent,jdbcType=VARCHAR},
+      </if>
+      <if test="record.replyIndex != null">
+        reply_index = #{record.replyIndex,jdbcType=INTEGER},
+      </if>
+      <if test="record.replyTime != null">
+        reply_time = #{record.replyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.replyStatus != null">
+        reply_status = #{record.replyStatus,jdbcType=BIT},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update comment_reply_record
+    set id = #{record.id,jdbcType=INTEGER},
+      comment_id = #{record.commentId,jdbcType=INTEGER},
+      aim_user_id = #{record.aimUserId,jdbcType=INTEGER},
+      reply_user_id = #{record.replyUserId,jdbcType=INTEGER},
+      reply_content = #{record.replyContent,jdbcType=VARCHAR},
+      reply_index = #{record.replyIndex,jdbcType=INTEGER},
+      reply_time = #{record.replyTime,jdbcType=TIMESTAMP},
+      reply_status = #{record.replyStatus,jdbcType=BIT}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.applet.common.entity.CommentReplyRecord">
+    update comment_reply_record
+    <set>
+      <if test="commentId != null">
+        comment_id = #{commentId,jdbcType=INTEGER},
+      </if>
+      <if test="aimUserId != null">
+        aim_user_id = #{aimUserId,jdbcType=INTEGER},
+      </if>
+      <if test="replyUserId != null">
+        reply_user_id = #{replyUserId,jdbcType=INTEGER},
+      </if>
+      <if test="replyContent != null">
+        reply_content = #{replyContent,jdbcType=VARCHAR},
+      </if>
+      <if test="replyIndex != null">
+        reply_index = #{replyIndex,jdbcType=INTEGER},
+      </if>
+      <if test="replyTime != null">
+        reply_time = #{replyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="replyStatus != null">
+        reply_status = #{replyStatus,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.applet.common.entity.CommentReplyRecord">
+    update comment_reply_record
+    set comment_id = #{commentId,jdbcType=INTEGER},
+      aim_user_id = #{aimUserId,jdbcType=INTEGER},
+      reply_user_id = #{replyUserId,jdbcType=INTEGER},
+      reply_content = #{replyContent,jdbcType=VARCHAR},
+      reply_index = #{replyIndex,jdbcType=INTEGER},
+      reply_time = #{replyTime,jdbcType=TIMESTAMP},
+      reply_status = #{replyStatus,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <sql id="PageSuffix">
+    <if test="page != null">
+      limit #{page.rowStart},#{page.pageSize}
+    </if>
+  </sql>
+</mapper>

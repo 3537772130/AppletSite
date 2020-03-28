@@ -2,6 +2,7 @@ package com.applet.apply.service;
 
 import com.applet.common.entity.*;
 import com.applet.common.mapper.*;
+import com.applet.common.util.Constants;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.RandomUtil;
 import com.applet.common.util.encryption.DesUtil;
@@ -233,6 +234,9 @@ public class WeChantService {
         wxInfo.setId(weChantInfo.getId());
         wxInfo.setUserId(userInfo.getId());
         weChantInfoMapper.updateByPrimaryKeySelective(wxInfo);
+
+        // 设置新用户系统推送通知
+        userService.setSystemNoticeByNewUser(userInfo.getId());
     }
 
     @Async

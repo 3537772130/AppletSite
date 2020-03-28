@@ -6,6 +6,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 商品信息
+ */
 public class GoodsInfo implements Serializable {
     private Integer id;
 
@@ -32,7 +35,7 @@ public class GoodsInfo implements Serializable {
     @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
     private Date updateTime;
 
-    private Boolean status;
+    private Integer status;
 
     private static final long serialVersionUID = 1L;
 
@@ -132,11 +135,11 @@ public class GoodsInfo implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public Boolean getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 }

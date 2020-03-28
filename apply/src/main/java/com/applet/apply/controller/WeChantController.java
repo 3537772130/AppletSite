@@ -86,6 +86,8 @@ public class WeChantController {
             Map<String, Object> map = new HashMap<>();
             map.put("userInfo", weChantInfo);
             map.put("isDealer", false);
+            map.put("notice", userService.selectSystemNoticeByPublic());
+            map.put("noticeUnreadCount", userService.selectUserRemindRecordByCount(weChantInfo.getUserId(), null));
             if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId()) && appletInfo.getUserId().intValue() == weChantInfo.getUserId().intValue()) {
                 map.put("isDealer", true);
                 // 订单数量统计

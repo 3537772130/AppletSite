@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -35,6 +36,8 @@ public class UserOrderService {
     private ViewOrderInfoMapper viewOrderInfoMapper;
     @Autowired
     private ViewStoreUserOrderCountMapper viewStoreUserOrderCountMapper;
+    @Autowired
+    private CommonMapper commonMapper;
 
     /**
      * 查询订单查看记录
@@ -155,6 +158,7 @@ public class UserOrderService {
         record.setOrderStatus(status.byteValue());
         record.setOrderStatusCn(orderStatus.getName());
         record.setDenialReason(remark);
+        record.setGmtModified(new Date());
         saleOrderMapper.updateByPrimaryKeySelective(record);
 
         updateOrderSeeRecord(id, false, false);
@@ -240,6 +244,16 @@ public class UserOrderService {
             page.setDataSource(viewOrderInfoMapper.selectByExample(example));
         }
         return page;
+    }
+
+    /**
+     * 加载订单详情商品分类集合
+     * @param orderId
+     * @return
+     */
+    public List<Map> loadSaleOrderDetailsByGoodsGroup(Integer orderId){
+        String sql = "SELECT goods_id AS goodsId,goods_name AS goodsName FROM sale_order_dtl WHERE order_id = " + orderId + " GROUP BY goods_id,goods_name";
+        return commonMapper.selectListMap(sql);
     }
 
     /**

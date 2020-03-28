@@ -11,10 +11,7 @@ import com.applet.common.bo.SaleOrderBo;
 import com.applet.common.constant.RedisKey;
 import com.applet.common.enums.OrderEnums;
 import com.applet.common.excepion.BusinessException;
-import com.applet.common.util.DateUtils;
-import com.applet.common.util.EnumUtil;
-import com.applet.common.util.ObjectUtils;
-import com.applet.common.util.Page;
+import com.applet.common.util.*;
 import com.applet.common.vo.SaleOrderDtlVo;
 import com.applet.common.vo.SaleOrderVo;
 import com.google.common.util.concurrent.AtomicDouble;
@@ -194,7 +191,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         // save 订单
         OrderEnums.OrderStatus orderStatus = OrderEnums.OrderStatus.PENDING;
         SaleOrderDoc order = new SaleOrderDoc(
-                DateUtils.now("YYYYMMDD") + String.format("%04d", bo.getAppletId()) + String.format("%04d", redisService.incrBy(RedisKey.ORDER_ON_KEY)),
+//                DateUtils.now("YYYYMMDD") + String.format("%04d", bo.getAppletId()) + String.format("%04d", redisService.incrBy(RedisKey.ORDER_ON_KEY)),
+                RandomUtil.getTimeStamp(),
                 bo.getUserId(),
                 address.getName(),
                 address.getMobile(),

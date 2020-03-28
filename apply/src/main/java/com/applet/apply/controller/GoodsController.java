@@ -2,6 +2,7 @@ package com.applet.apply.controller;
 
 import com.applet.apply.config.annotation.CancelAuth;
 import com.applet.apply.config.annotation.SessionScope;
+import com.applet.apply.service.CommentService;
 import com.applet.common.entity.*;
 import com.applet.apply.service.GoodsService;
 import com.applet.apply.service.UserCouponService;
@@ -34,6 +35,8 @@ public class GoodsController {
     private GoodsService goodsService;
     @Autowired
     private UserCouponService userCouponService;
+    @Autowired
+    private CommentService commentService;
 
     /**
      * 加载小程序分类页面信息
@@ -98,9 +101,11 @@ public class GoodsController {
                 map.put("fileList", goodsService.selectGoodsFileList(info.getId()));
                 // 商品规格集合
                 map.put("specsList", goodsService.selectGoodsSpecsList(info.getId()));
-                // 小程序优惠券集合
+                // 优惠券集合
                 map.put("couponList", userCouponService.selectCouponList(appletInfo.getId()));
-                // 小程序推荐商品集合
+                // 评论信息集合
+                map.put("commentList", commentService.loadCommentListByGoodsId(goodsId));
+                // 推荐商品集合
                 map.put("recommendGoodsList", goodsService.selectGoodsSellCountList(info.getId(), appletInfo.getId(), appletInfo.getUserId()));
                 return AjaxResponse.success(map);
             }

@@ -60,6 +60,7 @@ public class ViewOrderInfo implements Serializable {
 
     private Boolean userSeeStatus;
 
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
     private Date userSeeTime;
 
     private Boolean storeSeeStatus;

@@ -13,13 +13,14 @@ import java.util.Map;
  **/
 public class Constants {
     // 时间格式
-    public static final String DATE_TIME_JDK = "yyyy-MM-dd HH:mm:ss";
-    public static final String DATE_TIME_JODD = "YYYY-MM-DD hh:mm:ss";
+    public static final String DATE_TIME_JDK = "yyyy-MM-dd hh:mm:ss";
+    public static final String DATE_TIME_JODD = "YYYY-MM-DD HH:mm:ss";
     public static final String DATE_TIME_YMDHM = "YYYY-MM-DD hh:mm";
     public static final String DEFAULT_DATE_FORMAT_STAMP = "YYYYMMDDhhmmss";
     public static final String DATE_YMD = "YYYY-MM-DD";
     public static final String DATE_TIME_YMD = "yyyy-MM-dd";
     public static final String DATE_TIME_ZH = "YYYY年MM月DD日";
+    public static final String DATE_TIME_ZH_HM = "YYYY年MM月dd日 hh:mm";
     public static final String JODD_FMT_YYYYMMDD = "YYYYMMDD";
     public static final String JODD_FMT_HHMMSS = "hhmmss";
     //图形验证码
@@ -79,9 +80,31 @@ public class Constants {
         }
     };
 
-    //绑定手机号图形
+    // 绑定手机号图形
     public static final String BIND_MOBILE_FIGURE_CODE = "bindMobile";
-    //短信每日发送次数
+    // 短信每日发送次数
     public static final Integer SMS_CODE_AMOUNT = 3;
+
+
+    // 通知类型
+    // 系统通知
+    public static final Integer RELATION_TYPE_SYSTEM = 1;
+    // 评论回复通知
+    public static final Integer RELATION_TYPE_COMMENT = 2;
+
+    // 系统通知类型
+    // 系统公告
+    public static final Integer SYSTEM_NOTICE_TYPE_PUBLIC = 1;
+    // 新用户推送
+    public static final Integer SYSTEM_NOTICE_TYPE_NEW_USER = 2;
+    // 普通推送
+    public static final Integer SYSTEM_NOTICE_TYPE_PLAIN = 3;
+    public static final Map<Integer, String> SYSTEM_NOTICE_TYPE_MAP = new HashMap<Integer, String>() {
+        {
+            put(SYSTEM_NOTICE_TYPE_PUBLIC, "系统公告");
+            put(SYSTEM_NOTICE_TYPE_NEW_USER, "新用户推送");
+            put(SYSTEM_NOTICE_TYPE_PLAIN, "普通推送");
+        }
+    };
 }
 

@@ -1,24 +1,19 @@
 package com.applet.apply.controller;
 
 import com.applet.apply.config.annotation.SessionScope;
+import com.applet.apply.service.*;
 import com.applet.common.entity.*;
-import com.applet.apply.service.AppletService;
-import com.applet.apply.service.UserCartService;
-import com.applet.apply.service.UserCouponService;
-import com.applet.apply.service.UserOrderService;
 import com.applet.common.util.AjaxResponse;
 import com.applet.common.util.Page;
 import com.applet.common.util.PageUtil;
+import jodd.datetime.JDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -39,7 +34,7 @@ public class UserOrderController {
     @Autowired
     private UserCouponService userCouponService;
     @Autowired
-    private AppletService appletService;
+    private CommentService commentService;
 
 
     /******************************************用户对订单的操作***********************************************/
@@ -94,6 +89,7 @@ public class UserOrderController {
 
     /**
      * 分页查询订单 - 用户
+     *
      * @param weChantInfo
      * @param request
      * @return
@@ -173,27 +169,68 @@ public class UserOrderController {
     public Object querySaleOrderDetailsByUser(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer orderId) {
         ViewOrderInfo order = userOrderService.selectViewOrderInfoByUser(orderId, weChantInfo.getUserId());
         if (null != order) {
+            //更新订单查看记录
+            userOrderService.updateOrderSeeRecord(order.getId(), true, null);
+
+            // 加载订单详情商品分类集合
+            List<Map> goodsList = userOrderService.loadSaleOrderDetailsByGoodsGroup(order.getId());
+
+            // 订单详情列表
+            List<SaleOrderDetails> detailsList = userOrderService.selectSaleOrderDetailsList(order.getId());
+
+            // 排查已签收且用户查看后7天内订单未评论的商品，7天后不可评论
+            List<Integer> goodsIdList = new ArrayList<>();
+            JDateTime oldTime = new JDateTime(order.getUpdateTime());
+            JDateTime nowTime = new JDateTime(new Date());
+            if (order.getOrderStatus().intValue() == 6 && oldTime.addDay(7).compareDateTo(nowTime) > 0){
+                List<Integer> orderIdList = new ArrayList<>();
+                for (SaleOrderDetails details : detailsList) {
+                    orderIdList.add(details.getOrderId());
+                    goodsIdList.add(details.getGoodsId());
+                }
+                // 去除重复的goodsId
+                LinkedHashSet<Integer> hashSet = new LinkedHashSet<>(goodsIdList);
+                goodsIdList = new ArrayList<>(hashSet);
+                // 去除重复的orderId
+                hashSet = new LinkedHashSet<>(orderIdList);
+                orderIdList = new ArrayList<>(hashSet);
+                // 查询订单商品已评论的记录
+                List<ViewCommentInfo> commentList = commentService.loadOrderGoodsCommentListByAlready(orderIdList, goodsIdList);
+                goodsIdList = new ArrayList<>();
+                for (SaleOrderDetails details : detailsList) {
+                    boolean bool = true;
+                    for (ViewCommentInfo comment : commentList) {
+                        if (details.getGoodsId().intValue() == comment.getGoodsId().intValue()){
+                            bool = false;
+                            break;
+                        }
+                    }
+                    if (bool){
+                        goodsIdList.add(details.getGoodsId());
+                    }
+                }
+                // 去除重复的goodsId
+                hashSet = new LinkedHashSet<>(goodsIdList);
+                goodsIdList = new ArrayList<>(hashSet);
+            }
+
+            // 封装信息到Map
             Map map = new HashMap<>();
             map.put("order", order);
-            // 订单详情列表
-            map.put("list", userOrderService.selectSaleOrderDetailsList(orderId));
-            userOrderService.updateOrderSeeRecord(order.getId(), true, null);
+            map.put("goodsList", goodsList);
+            map.put("specsList", detailsList);
+            map.put("goodsIdList", goodsIdList);
             return AjaxResponse.success(map);
         }
         return AjaxResponse.error("未找到相关记录");
     }
 
 
-
-
-
-
-
-
     /******************************************商户对订单的操作***********************************************/
 
     /**
      * 查询订单信息列表 - 商户
+     *
      * @param appletInfo
      * @param weChantInfo
      * @param orderStatus
@@ -220,8 +257,8 @@ public class UserOrderController {
      */
     @RequestMapping(value = "querySaleOrderByStoreToPage")
     public Object querySaleOrderByStoreToPage(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
-                                           @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo,
-                                           HttpServletRequest request) {
+                                              @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo,
+                                              HttpServletRequest request) {
         Page page = PageUtil.initPage(request);
         page = userOrderService.selectSaleOrderByStoreToPage(appletInfo.getId(), weChantInfo.getUserId(), page);
         if (null != page.getDataSource()) {
@@ -240,14 +277,23 @@ public class UserOrderController {
      */
     @RequestMapping(value = "querySaleOrderDetailsByStore")
     public Object querySaleOrderDetailsByStore(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
-                                                  @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer orderId) {
+                                               @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer orderId) {
         ViewOrderInfo order = userOrderService.selectViewOrderInfoByStore(orderId, appletInfo.getId(), weChantInfo.getUserId());
         if (null != order) {
+            //更新订单查看记录
+            userOrderService.updateOrderSeeRecord(order.getId(), null, true);
+
+            // 加载订单详情商品分类集合
+            List<Map> goodsList = userOrderService.loadSaleOrderDetailsByGoodsGroup(order.getId());
+
+            // 订单详情列表
+            List<SaleOrderDetails> detailsList = userOrderService.selectSaleOrderDetailsList(order.getId());
+
+            // 封装信息到Map
             Map map = new HashMap<>();
             map.put("order", order);
-            // 订单详情列表
-            map.put("list", userOrderService.selectSaleOrderDetailsList(orderId));
-            userOrderService.updateOrderSeeRecord(order.getId(), null, true);
+            map.put("goodsList", goodsList);
+            map.put("specsList", detailsList);
             return AjaxResponse.success(map);
         }
         return AjaxResponse.error("未找到相关记录");
@@ -256,6 +302,7 @@ public class UserOrderController {
 
     /**
      * 更新订单状态 - 商家
+     *
      * @param appletInfo
      * @param weChantInfo
      * @param id
@@ -265,13 +312,13 @@ public class UserOrderController {
      */
     @RequestMapping(value = "updateOrderStatusByStore")
     public Object updateOrderStatusByStore(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
-                                        @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo,
-                                        Integer id, Integer status, String remark) {
+                                           @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo,
+                                           Integer id, Integer status, String remark) {
         try {
-            if (status.intValue() == 2 || status.intValue() == 3 || status.intValue() == 4 || status.intValue() == 5){
+            if (status.intValue() == 2 || status.intValue() == 3 || status.intValue() == 4 || status.intValue() == 5) {
                 ViewOrderInfo order = userOrderService.selectViewOrderInfoByStore(id, appletInfo.getId(), weChantInfo.getUserId());
                 if (null != order) {
-                    if (order.getOrderStatus().toString().equals("0")){
+                    if (order.getOrderStatus().toString().equals("0")) {
                         return AjaxResponse.error("买家已取消订单");
                     } else if (order.getOrderStatus().toString().equals("1") && status.intValue() == 2) {
                         userOrderService.updateSaleOrderStatus(order.getId(), 2, null);

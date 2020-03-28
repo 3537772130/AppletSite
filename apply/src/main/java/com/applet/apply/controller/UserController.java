@@ -45,6 +45,8 @@ public class UserController {
     private WeChantService weChantService;
     @Autowired
     private RedisService redisService;
+    @Autowired
+    private CommentService commentService;
 
     /**
      * 检查手机号
@@ -404,5 +406,67 @@ public class UserController {
             log.error("删除收货地址出错{}", e);
         }
         return AjaxResponse.error("操作失败");
+    }
+
+    /**
+     * 加载未读消息记录数
+     * @param weChantInfo
+     * @return
+     */
+    @RequestMapping(value = "loadUnreadNewsCount")
+    public Object loadUnreadNewsCount(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo) {
+        int systemCount = 0;
+        int commentCount = 0;
+        if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())){
+            systemCount = userService.selectUserRemindRecordByCount(weChantInfo.getUserId(), Constants.RELATION_TYPE_SYSTEM);
+            commentCount = userService.selectUserRemindRecordByCount(weChantInfo.getUserId(), Constants.RELATION_TYPE_COMMENT);
+        }
+        Map map = new HashMap();
+        map.put("systemCount", systemCount);
+        map.put("commentCount", commentCount);
+        return AjaxResponse.success(map);
+    }
+
+    /**
+     * 加载消息列表
+     * @param weChantInfo
+     * @param type
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "loadNewByPage")
+    public Object loadNewByPage(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer type, HttpServletRequest request){
+        Page page = PageUtil.initPage(request);
+        if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())){
+            switch (type.intValue()){
+                case 1:
+                    page = userService.selectUserSystemNoticeByPage(weChantInfo.getUserId(), page);
+                    break;
+                case 2:
+                    page = userService.selectUserCommentByPage(weChantInfo.getUserId(), page);
+                    break;
+            }
+        }
+        return AjaxResponse.success(page);
+    }
+
+    /**
+     * 加载信息通知消息详情
+     * @param weChantInfo
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "loadSystemNoticeDetails")
+    public Object loadSystemNoticeDetails(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer id) {
+        if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())){
+            ViewUserSystemNotice info = userService.selectUserSystemNotice(id, weChantInfo.getUserId());
+            // 查询消息阅读量
+            Integer readCount = userService.countUserSystemNoticeByRead(info.getRelationId());
+            Map map = new HashMap();
+            map.put("info", info);
+            map.put("readCount", readCount.intValue() + 1030);
+            return AjaxResponse.success(map);
+        }
+        return AjaxResponse.error("未找到相关信息");
     }
 }
