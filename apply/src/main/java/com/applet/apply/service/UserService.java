@@ -198,6 +198,7 @@ public class UserService {
 
     public void updateUserRemindRecord(Integer relationId, Integer relationUserId, Integer relationType, Integer relationStatus) {
         if (NullUtil.isNullOrEmpty(relationStatus)){
+            // 设置为未读消息
             relationStatus = 0;
         }
         // 更新消息提醒记录

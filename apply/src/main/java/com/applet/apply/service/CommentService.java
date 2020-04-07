@@ -6,7 +6,6 @@ import com.applet.common.util.Constants;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
