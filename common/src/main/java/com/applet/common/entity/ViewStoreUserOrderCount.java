@@ -3,19 +3,22 @@ package com.applet.common.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+/**
+ * 商户订单统计
+ */
 public class ViewStoreUserOrderCount implements Serializable {
     private Integer storeUserId;
-
+    // 取消的订单数（用户取消）
     private BigDecimal cancelCount;
-
+    // 待接的订单数
     private BigDecimal waitCount;
-
+    // 备货的订单数
     private BigDecimal refuseCount;
-
+    // 取消的订单数（商家驳回）
     private BigDecimal acceptCount;
-
+    // 配送的订单数
     private BigDecimal deliverCount;
-
+    // 完成的订单数
     private BigDecimal finishCount;
 
     private static final long serialVersionUID = 1L;

@@ -68,7 +68,7 @@ public class CommentController {
      * @return
      */
     @RequestMapping(value = "publishCommentInfo")
-    public Object publishCommentInfo(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, CommentInfo info){
+    public Object publishCommentInfo(@SessionScope("appletInfo") ViewAppletInfo appletInfo, @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, CommentInfo info){
         try {
             if (NullUtil.isNullOrEmpty(info.getCommentContent())){
                 return AjaxResponse.error("请输入评论内容");
@@ -78,7 +78,7 @@ public class CommentController {
             }
             if (commentService.selectOrderGoodsCommentListByIf(weChantInfo.getUserId(), info.getOrderId(), info.getGoodsId())){
                 info.setCommentUserId(weChantInfo.getUserId());
-                commentService.updateCommentInfo(info);
+                commentService.updateCommentInfo(info, appletInfo.getUserId());
                 return AjaxResponse.success("发表评论成功");
             }
             return AjaxResponse.error("已发表过评论啦");
@@ -119,7 +119,7 @@ public class CommentController {
                 info = new CommentInfo();
                 info.setId(id);
                 info.setCommentUserId(weChantInfo.getUserId());
-                commentService.updateCommentInfo(info);
+                commentService.updateCommentInfo(info, null);
                 return AjaxResponse.success("删除成功");
             }
             return AjaxResponse.error("没有权限");

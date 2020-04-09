@@ -74,7 +74,7 @@ public class GoodsController {
     @RequestMapping(value = "loadGoodsDetails")
     @CancelAuth
     public Object loadGoodsDetails(@SessionScope("appletInfo") ViewAppletInfo appletInfo, Integer goodsId){
-        return loadGoodsDetails(appletInfo, null, goodsId);
+        return queryGoodsDetails(appletInfo, goodsId);
     }
 
     /**
@@ -84,11 +84,11 @@ public class GoodsController {
      * @return
      */
     @RequestMapping(value = "loadUserGoodsDetails")
-    public Object loadUserGoodsDetails(@SessionScope("appletInfo") ViewAppletInfo appletInfo, @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer goodsId){
-        return loadGoodsDetails(appletInfo, weChantInfo, goodsId);
+    public Object loadUserGoodsDetails(@SessionScope("appletInfo") ViewAppletInfo appletInfo, Integer goodsId){
+        return queryGoodsDetails(appletInfo, goodsId);
     }
 
-    public Object loadGoodsDetails(ViewAppletInfo appletInfo, ViewWeChantInfo weChantInfo, Integer goodsId){
+    public Object queryGoodsDetails(ViewAppletInfo appletInfo, Integer goodsId){
         try {
             ViewGoodsInfo info = goodsService.selectGoodsInfo(appletInfo.getId(), goodsId);
             if (null != info){
@@ -116,6 +116,17 @@ public class GoodsController {
     }
 
     /**
+     * 加载推荐商品
+     * @param appletInfo
+     * @return
+     */
+    @RequestMapping(value = "loadRecommendGoodsList")
+    @CancelAuth
+    public Object loadRecommendGoodsList(@SessionScope("appletInfo") ViewAppletInfo appletInfo){
+        return AjaxResponse.success(goodsService.selectGoodsSellCountList(appletInfo.getId(), appletInfo.getUserId()));
+    }
+
+    /**
      * 搜索商品
      * @param appletInfo
      * @param goodsName
@@ -132,7 +143,11 @@ public class GoodsController {
         if (NullUtil.isNullOrEmpty(list)) {
             return AjaxResponse.error("");
         }
-        return AjaxResponse.success(list);
+        Map map = new HashMap();
+        map.put("list", list);
+        // 推荐商品集合
+        map.put("recommendGoodsList", goodsService.selectGoodsSellCountList(goodsName, appletInfo.getId(), appletInfo.getUserId()));
+        return AjaxResponse.success(map);
     }
 
 }

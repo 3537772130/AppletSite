@@ -111,13 +111,16 @@ public class CommentService {
      * 更新评论信息
      * @param info
      */
-    public void updateCommentInfo(CommentInfo info){
+    @Transactional(rollbackFor = Exception.class)
+    public void updateCommentInfo(CommentInfo info, Integer appletUserId){
         if (NullUtil.isNullOrEmpty(info.getId())){
             info.setCommentTime(new Date());
             info.setCommentStatus(true);
             commentInfoMapper.insertSelective(info);
-            // 插入已读提醒记录
+            // 插入用户（消费者）已读提醒记录
             userService.updateUserRemindRecord(info.getId(), info.getCommentUserId(), Constants.RELATION_TYPE_COMMENT, 1);
+            // 插入商家未读提醒记录
+            userService.updateUserRemindRecord(info.getId(), appletUserId, Constants.RELATION_TYPE_COMMENT);
         } else {
             CommentInfoExample example = new CommentInfoExample();
             example.createCriteria().andIdEqualTo(info.getId()).andCommentUserIdEqualTo(info.getCommentUserId());

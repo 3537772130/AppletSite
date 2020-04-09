@@ -91,13 +91,42 @@ public class UserOrderController {
      * 分页查询订单 - 用户
      *
      * @param weChantInfo
+     * @param orderStatus
      * @param request
      * @return
      */
     @RequestMapping(value = "querySaleOrderByUser")
-    public Object querySaleOrderByUser(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, HttpServletRequest request) {
+    public Object querySaleOrderByUser(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer orderStatus, HttpServletRequest request) {
         Page page = PageUtil.initPage(request);
-        page = userOrderService.selectSaleOrderByUserToPage(weChantInfo.getUserId(), page);
+        List<Byte> list = new ArrayList<>();
+        Integer status;
+        switch (orderStatus){
+            case 1:
+                status = 1;
+                list.add(status.byteValue());
+                break;
+            case 2:
+                status = 2;
+                list.add(status.byteValue());
+                status = 4;
+                list.add(status.byteValue());
+                status = 5;
+                list.add(status.byteValue());
+                break;
+            case 3:
+                status = 6;
+                list.add(status.byteValue());
+                break;
+            case 4:
+                status = 0;
+                list.add(status.byteValue());
+                status = 3;
+                list.add(status.byteValue());
+                break;
+            default:
+                return AjaxResponse.error("未找到相关记录");
+        }
+        page = userOrderService.selectSaleOrderByUserToPage(weChantInfo.getUserId(), list, page);
         if (null != page.getDataSource()) {
             return AjaxResponse.success(page);
         }

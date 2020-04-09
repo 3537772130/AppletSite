@@ -126,13 +126,20 @@ public class GoodsService {
      * 随机抽取1-10个
      * 并虚增出售id个数，最大id + 99
      * @param id       当前商品ID
+     * @param name      商品名称
      * @param appletId 小程序ID
      * @param userId   小程序所属用户ID
      * @return
      */
-    public List<ViewGoodsSellCount> selectGoodsSellCountList(Integer id, Integer appletId, Integer userId) {
+    public List<ViewGoodsSellCount> selectGoodsSellCountList(Integer id, String name, Integer appletId, Integer userId) {
         ViewGoodsSellCountExample example = new ViewGoodsSellCountExample();
-        example.createCriteria().andIdNotEqualTo(id).andAppletIdEqualTo(appletId).andUserIdEqualTo(userId);
+        ViewGoodsSellCountExample.Criteria c = example.createCriteria().andAppletIdEqualTo(appletId).andUserIdEqualTo(userId);
+        if (NullUtil.isNotNullOrEmpty(id)){
+            c.andIdNotEqualTo(id);
+        }
+        if (NullUtil.isNotNullOrEmpty(name)){
+            c.andGoodsNameNotLike("%" + name + "%");
+        }
         List<ViewGoodsSellCount> list = viewGoodsSellCountMapper.selectByExample(example);
         List<ViewGoodsSellCount> list1 = new ArrayList<>();
         if (NullUtil.isNotNullOrEmpty(list)) {
@@ -151,5 +158,17 @@ public class GoodsService {
             }
         }
         return list1;
+    }
+
+    public List<ViewGoodsSellCount> selectGoodsSellCountList(Integer id, Integer appletId, Integer userId){
+        return selectGoodsSellCountList(id, null, appletId, userId);
+    }
+
+    public List<ViewGoodsSellCount> selectGoodsSellCountList( String name, Integer appletId, Integer userId){
+        return selectGoodsSellCountList(null, name, appletId, userId);
+    }
+
+    public List<ViewGoodsSellCount> selectGoodsSellCountList( Integer appletId, Integer userId){
+        return selectGoodsSellCountList(null, null, appletId, userId);
     }
 }

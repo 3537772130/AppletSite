@@ -88,10 +88,11 @@ public class WeChantController {
             map.put("isDealer", false);
             map.put("notice", userService.selectSystemNoticeByPublic());
             map.put("noticeUnreadCount", userService.selectUserRemindRecordByCount(weChantInfo.getUserId(), null));
+            map.put("userOrder", userOrderService.countUserOrder(weChantInfo.getUserId()));
             if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId()) && appletInfo.getUserId().intValue() == weChantInfo.getUserId().intValue()) {
                 map.put("isDealer", true);
                 // 订单数量统计
-                map.put("order", userOrderService.countOrder(weChantInfo.getUserId()));
+                map.put("storeOrder", userOrderService.countStoreOrder(weChantInfo.getUserId()));
             }
             if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())) {
                 map.put("bindStatus", true);

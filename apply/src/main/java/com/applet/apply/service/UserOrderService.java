@@ -35,6 +35,8 @@ public class UserOrderService {
     @Autowired
     private ViewOrderInfoMapper viewOrderInfoMapper;
     @Autowired
+    private ViewUserOrderCountMapper viewUserOrderCountMapper;
+    @Autowired
     private ViewStoreUserOrderCountMapper viewStoreUserOrderCountMapper;
     @Autowired
     private CommonMapper commonMapper;
@@ -165,11 +167,23 @@ public class UserOrderService {
     }
 
     /**
-     * 统计订单数量
-     * @param appletId
+     * 统计订单数量 - 用户（消费者）
+     * @param userId
      * @return
      */
-    public ViewStoreUserOrderCount countOrder(Integer userId){
+    public ViewUserOrderCount countUserOrder(Integer userId){
+        ViewUserOrderCountExample example = new ViewUserOrderCountExample();
+        example.createCriteria().andUserIdEqualTo(userId);
+        List<ViewUserOrderCount> list = viewUserOrderCountMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+    }
+
+    /**
+     * 统计订单数量 - 商户
+     * @param userId
+     * @return
+     */
+    public ViewStoreUserOrderCount countStoreOrder(Integer userId){
         ViewStoreUserOrderCountExample example = new ViewStoreUserOrderCountExample();
         example.createCriteria().andStoreUserIdEqualTo(userId);
         List<ViewStoreUserOrderCount> list = viewStoreUserOrderCountMapper.selectByExample(example);
@@ -230,14 +244,15 @@ public class UserOrderService {
     /**
      * 分页查询订单 - 用户
      * @param userId
+     * @param statusList
      * @param page
      * @return
      */
-    public Page selectSaleOrderByUserToPage(Integer userId, Page page){
+    public Page selectSaleOrderByUserToPage(Integer userId, List<Byte> statusList, Page page){
         ViewOrderInfoExample example = new ViewOrderInfoExample();
         example.setPage(page);
         example.setOrderByClause("user_see_status,user_see_time DESC");
-        ViewOrderInfoExample.Criteria c = example.createCriteria().andStoreUserIdEqualTo(userId);
+        ViewOrderInfoExample.Criteria c = example.createCriteria().andStoreUserIdEqualTo(userId).andOrderStatusIn(statusList);
         long count = viewOrderInfoMapper.countByExample(example);
         if (count > 0){
             page.setTotalCount(count);
