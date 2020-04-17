@@ -18,7 +18,6 @@ public class Constants {
     public static final String DATE_TIME_YMDHM = "YYYY-MM-DD hh:mm";
     public static final String DEFAULT_DATE_FORMAT_STAMP = "YYYYMMDDhhmmss";
     public static final String DATE_YMD = "YYYY-MM-DD";
-    public static final String DATE_TIME_YMD = "yyyy-MM-dd";
     public static final String DATE_TIME_ZH = "YYYY年MM月DD日";
     public static final String DATE_TIME_ZH_HM = "YYYY年MM月dd日 hh:mm";
     public static final String JODD_FMT_YYYYMMDD = "YYYYMMDD";
@@ -106,5 +105,13 @@ public class Constants {
             put(SYSTEM_NOTICE_TYPE_PLAIN, "普通推送");
         }
     };
+
+    // 微信统一下单支付方式
+    // 小程序支付
+    public static final String TRADE_TYPE_JSAPI = "JSAPI";
+    // PC网站、实体店单品或订单、媒体广告支付
+    public static final String TRADE_TYPE_NATIVE = "NATIVE";
+    // APP支付
+    public static final String TRADE_TYPE_APP = "APP";
 }
 

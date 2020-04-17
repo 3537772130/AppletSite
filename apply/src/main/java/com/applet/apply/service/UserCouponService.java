@@ -33,8 +33,6 @@ public class UserCouponService {
     private ViewCouponInfoMapper viewCouponInfoMapper;
     @Autowired
     private FreightDeployMapper freightDeployMapper;
-    @Autowired
-    private SaleOrderDocMapper saleOrderDocMapper;
 
     /**
      * 分页查询用户可正常待使用的优惠券记录

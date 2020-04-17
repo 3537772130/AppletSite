@@ -39,7 +39,7 @@ public class UserInfo implements Serializable {
 
     private Integer recommendId;
 
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_YMD)
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_YMD)
     private Date createDate;
 
     private Boolean status;

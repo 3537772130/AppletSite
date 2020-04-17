@@ -16,18 +16,35 @@ public interface OrderEnums {
      */
     @Getter
     @AllArgsConstructor
-    enum OrderStatus implements BaseEnum {
+    enum PayStatus implements BaseEnum {
 
-        CANCEL((byte) 0, "取消"),
-        PENDING((byte) 1, "待处理"),
-        MERCHANT_CONFIRM((byte) 2, "商户确认"),
-        DENIAL((byte) 3, "拒绝"),
-        STARTS_HIPPING((byte) 4, "开始配送"),
-        CONFIRM_DELIVERY((byte) 5, "确认送达"),
-        RECEIVED((byte) 6, "已签收"),
+        WAIT( 0, "待付款"),
+        SUCCESS( 1, "付款成功"),
+        FAIL( -1, "付款失败"),
         ;
 
-        private Byte code;
+        private Integer code;
+        private String name;
+
+    }
+
+    /**
+     * 订单状态
+     */
+    @Getter
+    @AllArgsConstructor
+    enum OrderStatus implements BaseEnum {
+
+        CANCEL( 0, "取消"),
+        PENDING( 1, "待处理"),
+        MERCHANT_CONFIRM( 2, "商户确认"),
+        DENIAL( 3, "拒绝"),
+        STARTS_HIPPING( 4, "开始配送"),
+        CONFIRM_DELIVERY(5, "确认送达"),
+        RECEIVED(6, "已签收"),
+        ;
+
+        private Integer code;
         private String name;
 
     }

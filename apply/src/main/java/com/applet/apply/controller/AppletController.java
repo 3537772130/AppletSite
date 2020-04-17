@@ -67,6 +67,7 @@ public class AppletController {
         map.put("lat", appletInfo.getLat());
         map.put("businessScope", appletInfo.getBusinessScope());
         map.put("systemColor", appletInfo.getSystemColor());
+        map.put("ifOpenPay", appletInfo.getIfOpenPay());
         return AjaxResponse.success(map);
     }
 

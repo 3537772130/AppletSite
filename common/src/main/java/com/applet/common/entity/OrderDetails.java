@@ -1,20 +1,12 @@
 package com.applet.common.entity;
 
-import com.applet.common.util.Constants;
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 /**
- * 订单明细
+ * 订单详情
  */
-public class SaleOrderDetails implements Serializable {
-    private Integer orderDtlId;
-
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
-    private Date gmtCreated;
+public class OrderDetails implements Serializable {
+    private Integer id;
 
     private Integer orderId;
 
@@ -22,34 +14,28 @@ public class SaleOrderDetails implements Serializable {
 
     private String goodsName;
 
+    private Integer goodsDiscount;
+
     private Integer goodsSpecsId;
 
     private String goodsSpecsName;
 
     private String goodsSpecsPic;
 
-    private Integer saleQty;
+    private Integer goodsNumber;
 
-    private BigDecimal discountPrice;
+    private Double sellPrice;
 
-    private BigDecimal salePrice;
+    private Double actualPrice;
 
     private static final long serialVersionUID = 1L;
 
-    public Integer getOrderDtlId() {
-        return orderDtlId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setOrderDtlId(Integer orderDtlId) {
-        this.orderDtlId = orderDtlId;
-    }
-
-    public Date getGmtCreated() {
-        return gmtCreated;
-    }
-
-    public void setGmtCreated(Date gmtCreated) {
-        this.gmtCreated = gmtCreated;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Integer getOrderId() {
@@ -76,6 +62,14 @@ public class SaleOrderDetails implements Serializable {
         this.goodsName = goodsName == null ? null : goodsName.trim();
     }
 
+    public Integer getGoodsDiscount() {
+        return goodsDiscount;
+    }
+
+    public void setGoodsDiscount(Integer goodsDiscount) {
+        this.goodsDiscount = goodsDiscount;
+    }
+
     public Integer getGoodsSpecsId() {
         return goodsSpecsId;
     }
@@ -100,27 +94,27 @@ public class SaleOrderDetails implements Serializable {
         this.goodsSpecsPic = goodsSpecsPic == null ? null : goodsSpecsPic.trim();
     }
 
-    public Integer getSaleQty() {
-        return saleQty;
+    public Integer getGoodsNumber() {
+        return goodsNumber;
     }
 
-    public void setSaleQty(Integer saleQty) {
-        this.saleQty = saleQty;
+    public void setGoodsNumber(Integer goodsNumber) {
+        this.goodsNumber = goodsNumber;
     }
 
-    public BigDecimal getDiscountPrice() {
-        return discountPrice;
+    public Double getSellPrice() {
+        return sellPrice;
     }
 
-    public void setDiscountPrice(BigDecimal discountPrice) {
-        this.discountPrice = discountPrice;
+    public void setSellPrice(Double sellPrice) {
+        this.sellPrice = sellPrice;
     }
 
-    public BigDecimal getSalePrice() {
-        return salePrice;
+    public Double getActualPrice() {
+        return actualPrice;
     }
 
-    public void setSalePrice(BigDecimal salePrice) {
-        this.salePrice = salePrice;
+    public void setActualPrice(Double actualPrice) {
+        this.actualPrice = actualPrice;
     }
 }

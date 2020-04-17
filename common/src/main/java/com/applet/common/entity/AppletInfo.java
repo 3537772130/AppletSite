@@ -6,6 +6,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 小程序信息
+ */
 public class AppletInfo implements Serializable {
     private Integer id;
 
@@ -36,6 +39,12 @@ public class AppletInfo implements Serializable {
     private String appId;
 
     private String appSecret;
+
+    private String mchId;
+
+    private String payKey;
+
+    private Boolean ifOpenPay;
 
     private String province;
 
@@ -182,6 +191,30 @@ public class AppletInfo implements Serializable {
 
     public void setAppSecret(String appSecret) {
         this.appSecret = appSecret == null ? null : appSecret.trim();
+    }
+
+    public String getMchId() {
+        return mchId;
+    }
+
+    public void setMchId(String mchId) {
+        this.mchId = mchId == null ? null : mchId.trim();
+    }
+
+    public String getPayKey() {
+        return payKey;
+    }
+
+    public void setPayKey(String payKey) {
+        this.payKey = payKey == null ? null : payKey.trim();
+    }
+
+    public Boolean getIfOpenPay() {
+        return ifOpenPay;
+    }
+
+    public void setIfOpenPay(Boolean ifOpenPay) {
+        this.ifOpenPay = ifOpenPay;
     }
 
     public String getProvince() {

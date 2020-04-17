@@ -7,9 +7,9 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 订单信息 - 视图
+ * 订单信息
  */
-public class ViewOrderInfo implements Serializable {
+public class OrderInfo implements Serializable {
     private Integer id;
 
     private String orderNo;
@@ -18,27 +18,9 @@ public class ViewOrderInfo implements Serializable {
 
     private Integer appletId;
 
-    private String appletName;
-
-    private Integer storeUserId;
-
-    private String appletLogo;
-
-    private Double appletLat;
-
-    private Double appletLon;
-
-    private String appletTelephone;
-
     private Integer userId;
 
-    private String userNickName;
-
-    private String avatarUrl;
-
     private Integer wxId;
-
-    private String wxNickName;
 
     private String receiverName;
 
@@ -61,8 +43,6 @@ public class ViewOrderInfo implements Serializable {
     private String storeRemark;
 
     private Integer userCouponId;
-
-    private String couponName;
 
     private Double couponAmount;
 
@@ -87,16 +67,6 @@ public class ViewOrderInfo implements Serializable {
     private String payChannel;
 
     private String payRelationId;
-
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
-    private Date userSeeTime;
-
-    private Boolean userSeeStatus;
-
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
-    private Date storeSeeTime;
-
-    private Boolean storeSeeStatus;
 
     private static final long serialVersionUID = 1L;
 
@@ -132,54 +102,6 @@ public class ViewOrderInfo implements Serializable {
         this.appletId = appletId;
     }
 
-    public String getAppletName() {
-        return appletName;
-    }
-
-    public void setAppletName(String appletName) {
-        this.appletName = appletName == null ? null : appletName.trim();
-    }
-
-    public Integer getStoreUserId() {
-        return storeUserId;
-    }
-
-    public void setStoreUserId(Integer storeUserId) {
-        this.storeUserId = storeUserId;
-    }
-
-    public String getAppletLogo() {
-        return appletLogo;
-    }
-
-    public void setAppletLogo(String appletLogo) {
-        this.appletLogo = appletLogo == null ? null : appletLogo.trim();
-    }
-
-    public Double getAppletLat() {
-        return appletLat;
-    }
-
-    public void setAppletLat(Double appletLat) {
-        this.appletLat = appletLat;
-    }
-
-    public Double getAppletLon() {
-        return appletLon;
-    }
-
-    public void setAppletLon(Double appletLon) {
-        this.appletLon = appletLon;
-    }
-
-    public String getAppletTelephone() {
-        return appletTelephone;
-    }
-
-    public void setAppletTelephone(String appletTelephone) {
-        this.appletTelephone = appletTelephone == null ? null : appletTelephone.trim();
-    }
-
     public Integer getUserId() {
         return userId;
     }
@@ -188,36 +110,12 @@ public class ViewOrderInfo implements Serializable {
         this.userId = userId;
     }
 
-    public String getUserNickName() {
-        return userNickName;
-    }
-
-    public void setUserNickName(String userNickName) {
-        this.userNickName = userNickName == null ? null : userNickName.trim();
-    }
-
-    public String getAvatarUrl() {
-        return avatarUrl;
-    }
-
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl == null ? null : avatarUrl.trim();
-    }
-
     public Integer getWxId() {
         return wxId;
     }
 
     public void setWxId(Integer wxId) {
         this.wxId = wxId;
-    }
-
-    public String getWxNickName() {
-        return wxNickName;
-    }
-
-    public void setWxNickName(String wxNickName) {
-        this.wxNickName = wxNickName == null ? null : wxNickName.trim();
     }
 
     public String getReceiverName() {
@@ -308,14 +206,6 @@ public class ViewOrderInfo implements Serializable {
         this.userCouponId = userCouponId;
     }
 
-    public String getCouponName() {
-        return couponName;
-    }
-
-    public void setCouponName(String couponName) {
-        this.couponName = couponName == null ? null : couponName.trim();
-    }
-
     public Double getCouponAmount() {
         return couponAmount;
     }
@@ -402,37 +292,5 @@ public class ViewOrderInfo implements Serializable {
 
     public void setPayRelationId(String payRelationId) {
         this.payRelationId = payRelationId == null ? null : payRelationId.trim();
-    }
-
-    public Date getUserSeeTime() {
-        return userSeeTime;
-    }
-
-    public void setUserSeeTime(Date userSeeTime) {
-        this.userSeeTime = userSeeTime;
-    }
-
-    public Boolean getUserSeeStatus() {
-        return userSeeStatus;
-    }
-
-    public void setUserSeeStatus(Boolean userSeeStatus) {
-        this.userSeeStatus = userSeeStatus;
-    }
-
-    public Date getStoreSeeTime() {
-        return storeSeeTime;
-    }
-
-    public void setStoreSeeTime(Date storeSeeTime) {
-        this.storeSeeTime = storeSeeTime;
-    }
-
-    public Boolean getStoreSeeStatus() {
-        return storeSeeStatus;
-    }
-
-    public void setStoreSeeStatus(Boolean storeSeeStatus) {
-        this.storeSeeStatus = storeSeeStatus;
     }
 }

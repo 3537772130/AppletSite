@@ -20,6 +20,8 @@
     <result column="manager_password" jdbcType="VARCHAR" property="managerPassword" />
     <result column="app_id" jdbcType="VARCHAR" property="appId" />
     <result column="app_secret" jdbcType="VARCHAR" property="appSecret" />
+    <result column="pay_key" jdbcType="VARCHAR" property="payKey" />
+    <result column="if_open_pay" jdbcType="BIT" property="ifOpenPay" />
     <result column="province" jdbcType="VARCHAR" property="province" />
     <result column="city" jdbcType="VARCHAR" property="city" />
     <result column="county" jdbcType="VARCHAR" property="county" />
@@ -65,8 +67,9 @@
   <sql id="Base_Column_List">
     id, user_id, mobile, nick_name, type_id, type_name, applet_code, applet_name, applet_simple, 
     applet_logo, license_code, business_scope, license_src, telephone, manager_account, 
-    manager_password, app_id, app_secret, province, city, county, address_simple, address_details, 
-    lon, lat, system_color, if_retail, if_selling, update_time, status
+    manager_password, app_id, app_secret, pay_key, if_open_pay, province, city, county, 
+    address_simple, address_details, lon, lat, system_color, if_retail, if_selling, update_time, 
+    status
   </sql>
   <select id="selectByExample" parameterType="com.applet.common.entity.ViewAppletInfoExample" resultMap="BaseResultMap">
     select

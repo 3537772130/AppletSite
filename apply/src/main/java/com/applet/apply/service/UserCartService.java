@@ -85,6 +85,19 @@ public class UserCartService {
     }
 
     /**
+     * 查询购物车信息集合
+     * @param wxId
+     * @param appletId
+     * @return
+     */
+    public List<ViewUserCart> selectUserCartList(List<Integer> idList, Integer appletId, Integer wxId){
+        ViewUserCartExample example = new ViewUserCartExample();
+        example.setOrderByClause("update_time desc");
+        example.createCriteria().andIdIn(idList).andAppletIdEqualTo(appletId).andWxIdEqualTo(wxId);
+        return viewUserCartMapper.selectByExample(example);
+    }
+
+    /**
      * 更新购物车商品数量
      * @param id
      * @param amount

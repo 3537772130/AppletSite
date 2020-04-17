@@ -2,6 +2,7 @@ package com.applet.common.util;
 
 import jodd.datetime.JDateTime;
 
+import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
 
@@ -25,6 +26,19 @@ public class RandomUtil {
     public static String getRandomStr32() {
         UUID uuid = UUID.randomUUID();
         return uuid.toString().replace("-", "");
+    }
+
+    /**
+     * 获取精确到秒的时间戳
+     * @param date
+     * @return
+     */
+    public static String getSecondTimestamp(Date date) throws Exception{
+        if (null == date) {
+            throw new Exception();
+        }
+        String timestamp = String.valueOf(date.getTime()/1000);
+        return Integer.valueOf(timestamp).toString();
     }
 
     /**

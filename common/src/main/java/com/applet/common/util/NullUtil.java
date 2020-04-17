@@ -18,7 +18,7 @@ public class NullUtil {
      */
     public static String getWebSite() {
         if (PropertiesLoadUtils.isRun()) {
-            return "https://www.wscxy.xin/applet";
+            return "https://www.appletsite.com";
         } else {
             return "http://192.168.1.52:6060";
         }

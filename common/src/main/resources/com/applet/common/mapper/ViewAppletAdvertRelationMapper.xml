@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.applet.common.mapper.ViewAppletAdvertRelationMapper">
+  <resultMap id="BaseResultMap" type="com.applet.common.entity.ViewAppletAdvertRelation">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="applet_type_id" jdbcType="INTEGER" property="appletTypeId" />
+    <result column="applet_type_name" jdbcType="VARCHAR" property="appletTypeName" />
+    <result column="applet_page_type" jdbcType="INTEGER" property="appletPageType" />
+    <result column="applet_page_type_name" jdbcType="VARCHAR" property="appletPageTypeName" />
+    <result column="relation_image" jdbcType="VARCHAR" property="relationImage" />
+    <result column="relation_website" jdbcType="VARCHAR" property="relationWebsite" />
+    <result column="relation_type" jdbcType="INTEGER" property="relationType" />
+    <result column="relation_type_name" jdbcType="VARCHAR" property="relationTypeName" />
+    <result column="relation_name" jdbcType="VARCHAR" property="relationName" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="expire_time" jdbcType="TIMESTAMP" property="expireTime" />
+    <result column="is_default" jdbcType="BIT" property="isDefault" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="relation_status" jdbcType="BIT" property="relationStatus" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, applet_type_id, applet_type_name, applet_page_type, applet_page_type_name, relation_image, 
+    relation_website, relation_type, relation_type_name, relation_name, start_time, expire_time, 
+    is_default, update_time, relation_status
+  </sql>
+  <select id="selectByExample" parameterType="com.applet.common.entity.ViewAppletAdvertRelationExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from view_applet_advert_relation
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <include refid="PageSuffix" />
+  </select>
+  <select id="countByExample" parameterType="com.applet.common.entity.ViewAppletAdvertRelationExample" resultType="java.lang.Long">
+    select count(*) from view_applet_advert_relation
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <sql id="PageSuffix">
+    <if test="page != null">
+      limit #{page.rowStart},#{page.pageSize}
+    </if>
+  </sql>
+</mapper>

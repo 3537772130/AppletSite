@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.applet.common.mapper.SaleOrderDetailsMapper">
-  <resultMap id="BaseResultMap" type="com.applet.common.entity.SaleOrderDetails">
-    <id column="order_dtl_id" jdbcType="INTEGER" property="orderDtlId" />
-    <result column="gmt_created" jdbcType="TIMESTAMP" property="gmtCreated" />
+<mapper namespace="com.applet.common.mapper.OrderDetailsMapper">
+  <resultMap id="BaseResultMap" type="com.applet.common.entity.OrderDetails">
+    <id column="id" jdbcType="INTEGER" property="id" />
     <result column="order_id" jdbcType="INTEGER" property="orderId" />
     <result column="goods_id" jdbcType="INTEGER" property="goodsId" />
     <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+    <result column="goods_discount" jdbcType="INTEGER" property="goodsDiscount" />
     <result column="goods_specs_id" jdbcType="INTEGER" property="goodsSpecsId" />
     <result column="goods_specs_name" jdbcType="VARCHAR" property="goodsSpecsName" />
     <result column="goods_specs_pic" jdbcType="VARCHAR" property="goodsSpecsPic" />
-    <result column="sale_qty" jdbcType="INTEGER" property="saleQty" />
-    <result column="discount_price" jdbcType="DECIMAL" property="discountPrice" />
-    <result column="sale_price" jdbcType="DECIMAL" property="salePrice" />
+    <result column="goods_number" jdbcType="INTEGER" property="goodsNumber" />
+    <result column="sell_price" jdbcType="DOUBLE" property="sellPrice" />
+    <result column="actual_price" jdbcType="DOUBLE" property="actualPrice" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -73,16 +73,16 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    order_dtl_id, gmt_created, order_id, goods_id, goods_name, goods_specs_id, goods_specs_name,
-    goods_specs_pic, sale_qty, discount_price, sale_price
+    id, order_id, goods_id, goods_name, goods_discount, goods_specs_id, goods_specs_name,
+    goods_specs_pic, goods_number, sell_price, actual_price
   </sql>
-  <select id="selectByExample" parameterType="com.applet.common.entity.SaleOrderDetailsExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.applet.common.entity.OrderDetailsExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from sale_order_dtl
+    from order_details
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -94,37 +94,34 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    from sale_order_dtl
-    where order_dtl_id = #{orderDtlId,jdbcType=INTEGER}
+    from order_details
+    where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from sale_order_dtl
-    where order_dtl_id = #{orderDtlId,jdbcType=INTEGER}
+    delete from order_details
+    where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.applet.common.entity.SaleOrderDetailsExample">
-    delete from sale_order_dtl
+  <delete id="deleteByExample" parameterType="com.applet.common.entity.OrderDetailsExample">
+    delete from order_details
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.applet.common.entity.SaleOrderDetails">
-    insert into sale_order_dtl (order_dtl_id, gmt_created, order_id,
-      goods_id, goods_name, goods_specs_id,
-      goods_specs_name, goods_specs_pic, sale_qty,
-      discount_price, sale_price)
-    values (#{orderDtlId,jdbcType=INTEGER}, #{gmtCreated,jdbcType=TIMESTAMP}, #{orderId,jdbcType=INTEGER},
-      #{goodsId,jdbcType=INTEGER}, #{goodsName,jdbcType=VARCHAR}, #{goodsSpecsId,jdbcType=INTEGER},
-      #{goodsSpecsName,jdbcType=VARCHAR}, #{goodsSpecsPic,jdbcType=VARCHAR}, #{saleQty,jdbcType=INTEGER},
-      #{discountPrice,jdbcType=DECIMAL}, #{salePrice,jdbcType=DECIMAL})
+  <insert id="insert" parameterType="com.applet.common.entity.OrderDetails">
+    insert into order_details (id, order_id, goods_id,
+      goods_name, goods_discount, goods_specs_id,
+      goods_specs_name, goods_specs_pic, goods_number,
+      sell_price, actual_price)
+    values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{goodsId,jdbcType=INTEGER},
+      #{goodsName,jdbcType=VARCHAR}, #{goodsDiscount,jdbcType=INTEGER}, #{goodsSpecsId,jdbcType=INTEGER},
+      #{goodsSpecsName,jdbcType=VARCHAR}, #{goodsSpecsPic,jdbcType=VARCHAR}, #{goodsNumber,jdbcType=INTEGER},
+      #{sellPrice,jdbcType=DOUBLE}, #{actualPrice,jdbcType=DOUBLE})
   </insert>
-  <insert id="insertSelective" keyProperty="id" parameterType="com.applet.common.entity.SaleOrderDetails" useGeneratedKeys="true">
-    insert into sale_order_dtl
+  <insert id="insertSelective" keyProperty="id" parameterType="com.applet.common.entity.OrderDetails" useGeneratedKeys="true">
+    insert into order_details
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="orderDtlId != null">
-        order_dtl_id,
-      </if>
-      <if test="gmtCreated != null">
-        gmt_created,
+      <if test="id != null">
+        id,
       </if>
       <if test="orderId != null">
         order_id,
@@ -135,6 +132,9 @@
       <if test="goodsName != null">
         goods_name,
       </if>
+      <if test="goodsDiscount != null">
+        goods_discount,
+      </if>
       <if test="goodsSpecsId != null">
         goods_specs_id,
       </if>
@@ -144,22 +144,19 @@
       <if test="goodsSpecsPic != null">
         goods_specs_pic,
       </if>
-      <if test="saleQty != null">
-        sale_qty,
+      <if test="goodsNumber != null">
+        goods_number,
       </if>
-      <if test="discountPrice != null">
-        discount_price,
+      <if test="sellPrice != null">
+        sell_price,
       </if>
-      <if test="salePrice != null">
-        sale_price,
+      <if test="actualPrice != null">
+        actual_price,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="orderDtlId != null">
-        #{orderDtlId,jdbcType=INTEGER},
-      </if>
-      <if test="gmtCreated != null">
-        #{gmtCreated,jdbcType=TIMESTAMP},
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
       </if>
       <if test="orderId != null">
         #{orderId,jdbcType=INTEGER},
@@ -170,6 +167,9 @@
       <if test="goodsName != null">
         #{goodsName,jdbcType=VARCHAR},
       </if>
+      <if test="goodsDiscount != null">
+        #{goodsDiscount,jdbcType=INTEGER},
+      </if>
       <if test="goodsSpecsId != null">
         #{goodsSpecsId,jdbcType=INTEGER},
       </if>
@@ -179,31 +179,28 @@
       <if test="goodsSpecsPic != null">
         #{goodsSpecsPic,jdbcType=VARCHAR},
       </if>
-      <if test="saleQty != null">
-        #{saleQty,jdbcType=INTEGER},
+      <if test="goodsNumber != null">
+        #{goodsNumber,jdbcType=INTEGER},
       </if>
-      <if test="discountPrice != null">
-        #{discountPrice,jdbcType=DECIMAL},
+      <if test="sellPrice != null">
+        #{sellPrice,jdbcType=DOUBLE},
       </if>
-      <if test="salePrice != null">
-        #{salePrice,jdbcType=DECIMAL},
+      <if test="actualPrice != null">
+        #{actualPrice,jdbcType=DOUBLE},
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.applet.common.entity.SaleOrderDetailsExample" resultType="java.lang.Long">
-    select count(*) from sale_order_dtl
+  <select id="countByExample" parameterType="com.applet.common.entity.OrderDetailsExample" resultType="java.lang.Long">
+    select count(*) from order_details
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update sale_order_dtl
+    update order_details
     <set>
-      <if test="record.orderDtlId != null">
-        order_dtl_id = #{record.orderDtlId,jdbcType=INTEGER},
-      </if>
-      <if test="record.gmtCreated != null">
-        gmt_created = #{record.gmtCreated,jdbcType=TIMESTAMP},
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
       </if>
       <if test="record.orderId != null">
         order_id = #{record.orderId,jdbcType=INTEGER},
@@ -214,6 +211,9 @@
       <if test="record.goodsName != null">
         goods_name = #{record.goodsName,jdbcType=VARCHAR},
       </if>
+      <if test="record.goodsDiscount != null">
+        goods_discount = #{record.goodsDiscount,jdbcType=INTEGER},
+      </if>
       <if test="record.goodsSpecsId != null">
         goods_specs_id = #{record.goodsSpecsId,jdbcType=INTEGER},
       </if>
@@ -223,14 +223,14 @@
       <if test="record.goodsSpecsPic != null">
         goods_specs_pic = #{record.goodsSpecsPic,jdbcType=VARCHAR},
       </if>
-      <if test="record.saleQty != null">
-        sale_qty = #{record.saleQty,jdbcType=INTEGER},
+      <if test="record.goodsNumber != null">
+        goods_number = #{record.goodsNumber,jdbcType=INTEGER},
       </if>
-      <if test="record.discountPrice != null">
-        discount_price = #{record.discountPrice,jdbcType=DECIMAL},
+      <if test="record.sellPrice != null">
+        sell_price = #{record.sellPrice,jdbcType=DOUBLE},
       </if>
-      <if test="record.salePrice != null">
-        sale_price = #{record.salePrice,jdbcType=DECIMAL},
+      <if test="record.actualPrice != null">
+        actual_price = #{record.actualPrice,jdbcType=DOUBLE},
       </if>
     </set>
     <if test="_parameter != null">
@@ -238,28 +238,25 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update sale_order_dtl
-    set order_dtl_id = #{record.orderDtlId,jdbcType=INTEGER},
-      gmt_created = #{record.gmtCreated,jdbcType=TIMESTAMP},
+    update order_details
+    set id = #{record.id,jdbcType=INTEGER},
       order_id = #{record.orderId,jdbcType=INTEGER},
       goods_id = #{record.goodsId,jdbcType=INTEGER},
       goods_name = #{record.goodsName,jdbcType=VARCHAR},
+      goods_discount = #{record.goodsDiscount,jdbcType=INTEGER},
       goods_specs_id = #{record.goodsSpecsId,jdbcType=INTEGER},
       goods_specs_name = #{record.goodsSpecsName,jdbcType=VARCHAR},
       goods_specs_pic = #{record.goodsSpecsPic,jdbcType=VARCHAR},
-      sale_qty = #{record.saleQty,jdbcType=INTEGER},
-      discount_price = #{record.discountPrice,jdbcType=DECIMAL},
-      sale_price = #{record.salePrice,jdbcType=DECIMAL}
+      goods_number = #{record.goodsNumber,jdbcType=INTEGER},
+      sell_price = #{record.sellPrice,jdbcType=DOUBLE},
+      actual_price = #{record.actualPrice,jdbcType=DOUBLE}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.applet.common.entity.SaleOrderDetails">
-    update sale_order_dtl
+  <update id="updateByPrimaryKeySelective" parameterType="com.applet.common.entity.OrderDetails">
+    update order_details
     <set>
-      <if test="gmtCreated != null">
-        gmt_created = #{gmtCreated,jdbcType=TIMESTAMP},
-      </if>
       <if test="orderId != null">
         order_id = #{orderId,jdbcType=INTEGER},
       </if>
@@ -268,6 +265,9 @@
       </if>
       <if test="goodsName != null">
         goods_name = #{goodsName,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsDiscount != null">
+        goods_discount = #{goodsDiscount,jdbcType=INTEGER},
       </if>
       <if test="goodsSpecsId != null">
         goods_specs_id = #{goodsSpecsId,jdbcType=INTEGER},
@@ -278,35 +278,50 @@
       <if test="goodsSpecsPic != null">
         goods_specs_pic = #{goodsSpecsPic,jdbcType=VARCHAR},
       </if>
-      <if test="saleQty != null">
-        sale_qty = #{saleQty,jdbcType=INTEGER},
+      <if test="goodsNumber != null">
+        goods_number = #{goodsNumber,jdbcType=INTEGER},
       </if>
-      <if test="discountPrice != null">
-        discount_price = #{discountPrice,jdbcType=DECIMAL},
+      <if test="sellPrice != null">
+        sell_price = #{sellPrice,jdbcType=DOUBLE},
       </if>
-      <if test="salePrice != null">
-        sale_price = #{salePrice,jdbcType=DECIMAL},
+      <if test="actualPrice != null">
+        actual_price = #{actualPrice,jdbcType=DOUBLE},
       </if>
     </set>
-    where order_dtl_id = #{orderDtlId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.applet.common.entity.SaleOrderDetails">
-    update sale_order_dtl
-    set gmt_created = #{gmtCreated,jdbcType=TIMESTAMP},
-      order_id = #{orderId,jdbcType=INTEGER},
+  <update id="updateByPrimaryKey" parameterType="com.applet.common.entity.OrderDetails">
+    update order_details
+    set order_id = #{orderId,jdbcType=INTEGER},
       goods_id = #{goodsId,jdbcType=INTEGER},
       goods_name = #{goodsName,jdbcType=VARCHAR},
+      goods_discount = #{goodsDiscount,jdbcType=INTEGER},
       goods_specs_id = #{goodsSpecsId,jdbcType=INTEGER},
       goods_specs_name = #{goodsSpecsName,jdbcType=VARCHAR},
       goods_specs_pic = #{goodsSpecsPic,jdbcType=VARCHAR},
-      sale_qty = #{saleQty,jdbcType=INTEGER},
-      discount_price = #{discountPrice,jdbcType=DECIMAL},
-      sale_price = #{salePrice,jdbcType=DECIMAL}
-    where order_dtl_id = #{orderDtlId,jdbcType=INTEGER}
+      goods_number = #{goodsNumber,jdbcType=INTEGER},
+      sell_price = #{sellPrice,jdbcType=DOUBLE},
+      actual_price = #{actualPrice,jdbcType=DOUBLE}
+    where id = #{id,jdbcType=INTEGER}
   </update>
   <sql id="PageSuffix">
     <if test="page != null">
       limit #{page.rowStart},#{page.pageSize}
     </if>
   </sql>
+
+  <insert id="batchInsert" parameterType="java.util.List" >
+    <selectKey resultType="java.lang.Integer" keyProperty="orderId" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into order_details (order_id, goods_id, goods_name, goods_discount,goods_specs_id,
+    goods_specs_name, goods_specs_pic,goods_number, sell_price, actual_price)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.orderId,jdbcType=INTEGER}, #{item.goodsId,jdbcType=INTEGER}, #{item.goodsName,jdbcType=VARCHAR}, #{item.goodsDiscount,jdbcType=INTEGER},
+      #{item.goodsSpecsId,jdbcType=INTEGER}, #{item.goodsSpecsName,jdbcType=VARCHAR}, #{item.goodsSpecsPic,jdbcType=VARCHAR},
+      #{item.goodsNumber,jdbcType=INTEGER}, #{item.sellPrice,jdbcType=DOUBLE}, #{item.actualPrice,jdbcType=DOUBLE}
+      )
+    </foreach>
+  </insert>
 </mapper>

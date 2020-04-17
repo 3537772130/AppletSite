@@ -4,36 +4,46 @@
   <resultMap id="BaseResultMap" type="com.applet.common.entity.ViewOrderInfo">
     <result column="id" jdbcType="INTEGER" property="id" />
     <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
-    <result column="user_id" jdbcType="INTEGER" property="userId" />
-    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
-    <result column="avatar_url" jdbcType="VARCHAR" property="avatarUrl" />
+    <result column="courier_no" jdbcType="VARCHAR" property="courierNo" />
     <result column="applet_id" jdbcType="INTEGER" property="appletId" />
-    <result column="store_user_id" jdbcType="INTEGER" property="storeUserId" />
     <result column="applet_name" jdbcType="VARCHAR" property="appletName" />
+    <result column="store_user_id" jdbcType="INTEGER" property="storeUserId" />
     <result column="applet_logo" jdbcType="VARCHAR" property="appletLogo" />
-    <result column="applet_lon" jdbcType="DOUBLE" property="appletLon" />
     <result column="applet_lat" jdbcType="DOUBLE" property="appletLat" />
+    <result column="applet_lon" jdbcType="DOUBLE" property="appletLon" />
     <result column="applet_telephone" jdbcType="VARCHAR" property="appletTelephone" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="user_nick_name" jdbcType="VARCHAR" property="userNickName" />
+    <result column="avatar_url" jdbcType="VARCHAR" property="avatarUrl" />
+    <result column="wx_id" jdbcType="INTEGER" property="wxId" />
+    <result column="wx_nick_name" jdbcType="VARCHAR" property="wxNickName" />
     <result column="receiver_name" jdbcType="VARCHAR" property="receiverName" />
-    <result column="receiver_phone" jdbcType="VARCHAR" property="receiverPhone" />
-    <result column="detail_addr" jdbcType="VARCHAR" property="detailAddr" />
-    <result column="lat" jdbcType="DOUBLE" property="lat" />
-    <result column="lon" jdbcType="DOUBLE" property="lon" />
+    <result column="receiver_mobile" jdbcType="VARCHAR" property="receiverMobile" />
+    <result column="receiver_province" jdbcType="VARCHAR" property="receiverProvince" />
+    <result column="receiver_city" jdbcType="VARCHAR" property="receiverCity" />
+    <result column="receiver_county" jdbcType="VARCHAR" property="receiverCounty" />
+    <result column="receiver_address" jdbcType="VARCHAR" property="receiverAddress" />
+    <result column="receiver_lat" jdbcType="VARCHAR" property="receiverLat" />
+    <result column="receiver_lon" jdbcType="VARCHAR" property="receiverLon" />
+    <result column="user_remark" jdbcType="VARCHAR" property="userRemark" />
+    <result column="store_remark" jdbcType="VARCHAR" property="storeRemark" />
     <result column="user_coupon_id" jdbcType="INTEGER" property="userCouponId" />
     <result column="coupon_name" jdbcType="VARCHAR" property="couponName" />
-    <result column="ticket_amount" jdbcType="DECIMAL" property="ticketAmount" />
-    <result column="carriers_fee" jdbcType="DECIMAL" property="carriersFee" />
-    <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
-    <result column="order_remark" jdbcType="VARCHAR" property="orderRemark" />
-    <result column="reason" jdbcType="VARCHAR" property="reason" />
-    <result column="pay_type" jdbcType="TINYINT" property="payType" />
-    <result column="user_see_status" jdbcType="BIT" property="userSeeStatus" />
-    <result column="user_see_time" jdbcType="TIMESTAMP" property="userSeeTime" />
-    <result column="store_see_status" jdbcType="BIT" property="storeSeeStatus" />
-    <result column="store_see_time" jdbcType="TIMESTAMP" property="storeSeeTime" />
+    <result column="coupon_amount" jdbcType="DOUBLE" property="couponAmount" />
+    <result column="freight_amount" jdbcType="DOUBLE" property="freightAmount" />
+    <result column="total_amount" jdbcType="DOUBLE" property="totalAmount" />
+    <result column="actual_amount" jdbcType="DOUBLE" property="actualAmount" />
+    <result column="order_status" jdbcType="INTEGER" property="orderStatus" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="order_status" jdbcType="TINYINT" property="orderStatus" />
+    <result column="pay_type" jdbcType="INTEGER" property="payType" />
+    <result column="pay_status" jdbcType="INTEGER" property="payStatus" />
+    <result column="pay_channel" jdbcType="VARCHAR" property="payChannel" />
+    <result column="pay_relation_id" jdbcType="VARCHAR" property="payRelationId" />
+    <result column="user_see_time" jdbcType="TIMESTAMP" property="userSeeTime" />
+    <result column="user_see_status" jdbcType="BIT" property="userSeeStatus" />
+    <result column="store_see_time" jdbcType="TIMESTAMP" property="storeSeeTime" />
+    <result column="store_see_status" jdbcType="BIT" property="storeSeeStatus" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -65,11 +75,13 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, order_no, user_id, nick_name, avatar_url, applet_id, store_user_id, applet_name, 
-    applet_logo, applet_lon, applet_lat, applet_telephone, receiver_name, receiver_phone, 
-    detail_addr, lat, lon, user_coupon_id, coupon_name, ticket_amount, carriers_fee, 
-    total_amount, order_remark, reason, pay_type, user_see_status, user_see_time, store_see_status, 
-    store_see_time, create_time, update_time, order_status
+    id, order_no, courier_no, applet_id, applet_name, store_user_id, applet_logo, applet_lat, 
+    applet_lon, applet_telephone, user_id, user_nick_name, avatar_url, wx_id, wx_nick_name, 
+    receiver_name, receiver_mobile, receiver_province, receiver_city, receiver_county, 
+    receiver_address, receiver_lat, receiver_lon, user_remark, store_remark, user_coupon_id, 
+    coupon_name, coupon_amount, freight_amount, total_amount, actual_amount, order_status, 
+    create_time, update_time, pay_type, pay_status, pay_channel, pay_relation_id, user_see_time, 
+    user_see_status, store_see_time, store_see_status
   </sql>
   <select id="selectByExample" parameterType="com.applet.common.entity.ViewOrderInfoExample" resultMap="BaseResultMap">
     select

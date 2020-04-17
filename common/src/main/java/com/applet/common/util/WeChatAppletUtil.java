@@ -3,7 +3,6 @@ package com.applet.common.util;
 import com.alibaba.fastjson.JSONObject;
 import com.applet.common.util.encryption.Base64;
 import com.applet.common.util.encryption.RsaUtil;
-import com.applet.common.util.file.PathUtil;
 import com.applet.common.util.http.HttpUtil;
 import jodd.datetime.JDateTime;
 import org.slf4j.Logger;

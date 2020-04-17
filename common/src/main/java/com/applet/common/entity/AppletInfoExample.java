@@ -1136,6 +1136,206 @@ public class AppletInfoExample {
             return (Criteria) this;
         }
 
+        public Criteria andMchIdIsNull() {
+            addCriterion("mch_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMchIdIsNotNull() {
+            addCriterion("mch_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMchIdEqualTo(String value) {
+            addCriterion("mch_id =", value, "mchId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMchIdNotEqualTo(String value) {
+            addCriterion("mch_id <>", value, "mchId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMchIdGreaterThan(String value) {
+            addCriterion("mch_id >", value, "mchId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMchIdGreaterThanOrEqualTo(String value) {
+            addCriterion("mch_id >=", value, "mchId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMchIdLessThan(String value) {
+            addCriterion("mch_id <", value, "mchId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMchIdLessThanOrEqualTo(String value) {
+            addCriterion("mch_id <=", value, "mchId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMchIdLike(String value) {
+            addCriterion("mch_id like", value, "mchId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMchIdNotLike(String value) {
+            addCriterion("mch_id not like", value, "mchId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMchIdIn(List<String> values) {
+            addCriterion("mch_id in", values, "mchId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMchIdNotIn(List<String> values) {
+            addCriterion("mch_id not in", values, "mchId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMchIdBetween(String value1, String value2) {
+            addCriterion("mch_id between", value1, value2, "mchId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMchIdNotBetween(String value1, String value2) {
+            addCriterion("mch_id not between", value1, value2, "mchId");
+            return (Criteria) this;
+        }
+
+        public Criteria andPayKeyIsNull() {
+            addCriterion("pay_key is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPayKeyIsNotNull() {
+            addCriterion("pay_key is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPayKeyEqualTo(String value) {
+            addCriterion("pay_key =", value, "payKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andPayKeyNotEqualTo(String value) {
+            addCriterion("pay_key <>", value, "payKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andPayKeyGreaterThan(String value) {
+            addCriterion("pay_key >", value, "payKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andPayKeyGreaterThanOrEqualTo(String value) {
+            addCriterion("pay_key >=", value, "payKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andPayKeyLessThan(String value) {
+            addCriterion("pay_key <", value, "payKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andPayKeyLessThanOrEqualTo(String value) {
+            addCriterion("pay_key <=", value, "payKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andPayKeyLike(String value) {
+            addCriterion("pay_key like", value, "payKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andPayKeyNotLike(String value) {
+            addCriterion("pay_key not like", value, "payKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andPayKeyIn(List<String> values) {
+            addCriterion("pay_key in", values, "payKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andPayKeyNotIn(List<String> values) {
+            addCriterion("pay_key not in", values, "payKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andPayKeyBetween(String value1, String value2) {
+            addCriterion("pay_key between", value1, value2, "payKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andPayKeyNotBetween(String value1, String value2) {
+            addCriterion("pay_key not between", value1, value2, "payKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andIfOpenPayIsNull() {
+            addCriterion("if_open_pay is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIfOpenPayIsNotNull() {
+            addCriterion("if_open_pay is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIfOpenPayEqualTo(Boolean value) {
+            addCriterion("if_open_pay =", value, "ifOpenPay");
+            return (Criteria) this;
+        }
+
+        public Criteria andIfOpenPayNotEqualTo(Boolean value) {
+            addCriterion("if_open_pay <>", value, "ifOpenPay");
+            return (Criteria) this;
+        }
+
+        public Criteria andIfOpenPayGreaterThan(Boolean value) {
+            addCriterion("if_open_pay >", value, "ifOpenPay");
+            return (Criteria) this;
+        }
+
+        public Criteria andIfOpenPayGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("if_open_pay >=", value, "ifOpenPay");
+            return (Criteria) this;
+        }
+
+        public Criteria andIfOpenPayLessThan(Boolean value) {
+            addCriterion("if_open_pay <", value, "ifOpenPay");
+            return (Criteria) this;
+        }
+
+        public Criteria andIfOpenPayLessThanOrEqualTo(Boolean value) {
+            addCriterion("if_open_pay <=", value, "ifOpenPay");
+            return (Criteria) this;
+        }
+
+        public Criteria andIfOpenPayIn(List<Boolean> values) {
+            addCriterion("if_open_pay in", values, "ifOpenPay");
+            return (Criteria) this;
+        }
+
+        public Criteria andIfOpenPayNotIn(List<Boolean> values) {
+            addCriterion("if_open_pay not in", values, "ifOpenPay");
+            return (Criteria) this;
+        }
+
+        public Criteria andIfOpenPayBetween(Boolean value1, Boolean value2) {
+            addCriterion("if_open_pay between", value1, value2, "ifOpenPay");
+            return (Criteria) this;
+        }
+
+        public Criteria andIfOpenPayNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("if_open_pay not between", value1, value2, "ifOpenPay");
+            return (Criteria) this;
+        }
+
         public Criteria andProvinceIsNull() {
             addCriterion("province is null");
             return (Criteria) this;

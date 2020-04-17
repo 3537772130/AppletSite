@@ -17,6 +17,9 @@
     <result column="manager_password" jdbcType="VARCHAR" property="managerPassword" />
     <result column="app_id" jdbcType="VARCHAR" property="appId" />
     <result column="app_secret" jdbcType="VARCHAR" property="appSecret" />
+    <result column="mch_id" jdbcType="VARCHAR" property="mchId" />
+    <result column="pay_key" jdbcType="VARCHAR" property="payKey" />
+    <result column="if_open_pay" jdbcType="BIT" property="ifOpenPay" />
     <result column="province" jdbcType="VARCHAR" property="province" />
     <result column="city" jdbcType="VARCHAR" property="city" />
     <result column="county" jdbcType="VARCHAR" property="county" />
@@ -91,8 +94,8 @@
   <sql id="Base_Column_List">
     id, user_id, type_id, applet_logo, applet_code, applet_name, applet_simple, license_code, 
     business_scope, license_src, telephone, manager_account, manager_password, app_id, 
-    app_secret, province, city, county, address_simple, address_details, lon, lat, system_color, 
-    if_retail, if_selling, update_time, status
+    app_secret, mch_id, pay_key, if_open_pay, province, city, county, address_simple, 
+    address_details, lon, lat, system_color, if_retail, if_selling, update_time, status
   </sql>
   <select id="selectByExample" parameterType="com.applet.common.entity.AppletInfoExample" resultMap="BaseResultMap">
     select
@@ -131,6 +134,7 @@
       applet_simple, license_code, business_scope, 
       license_src, telephone, manager_account, 
       manager_password, app_id, app_secret, 
+      mch_id, pay_key, if_open_pay, 
       province, city, county, 
       address_simple, address_details, lon, 
       lat, system_color, if_retail, 
@@ -141,6 +145,7 @@
       #{appletSimple,jdbcType=VARCHAR}, #{licenseCode,jdbcType=VARCHAR}, #{businessScope,jdbcType=VARCHAR}, 
       #{licenseSrc,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, #{managerAccount,jdbcType=VARCHAR}, 
       #{managerPassword,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, #{appSecret,jdbcType=VARCHAR}, 
+      #{mchId,jdbcType=VARCHAR}, #{payKey,jdbcType=VARCHAR}, #{ifOpenPay,jdbcType=BIT}, 
       #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{county,jdbcType=VARCHAR}, 
       #{addressSimple,jdbcType=VARCHAR}, #{addressDetails,jdbcType=VARCHAR}, #{lon,jdbcType=DOUBLE}, 
       #{lat,jdbcType=DOUBLE}, #{systemColor,jdbcType=VARCHAR}, #{ifRetail,jdbcType=BIT}, 
@@ -194,6 +199,15 @@
       </if>
       <if test="appSecret != null">
         app_secret,
+      </if>
+      <if test="mchId != null">
+        mch_id,
+      </if>
+      <if test="payKey != null">
+        pay_key,
+      </if>
+      <if test="ifOpenPay != null">
+        if_open_pay,
       </if>
       <if test="province != null">
         province,
@@ -277,6 +291,15 @@
       </if>
       <if test="appSecret != null">
         #{appSecret,jdbcType=VARCHAR},
+      </if>
+      <if test="mchId != null">
+        #{mchId,jdbcType=VARCHAR},
+      </if>
+      <if test="payKey != null">
+        #{payKey,jdbcType=VARCHAR},
+      </if>
+      <if test="ifOpenPay != null">
+        #{ifOpenPay,jdbcType=BIT},
       </if>
       <if test="province != null">
         #{province,jdbcType=VARCHAR},
@@ -370,6 +393,15 @@
       <if test="record.appSecret != null">
         app_secret = #{record.appSecret,jdbcType=VARCHAR},
       </if>
+      <if test="record.mchId != null">
+        mch_id = #{record.mchId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.payKey != null">
+        pay_key = #{record.payKey,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ifOpenPay != null">
+        if_open_pay = #{record.ifOpenPay,jdbcType=BIT},
+      </if>
       <if test="record.province != null">
         province = #{record.province,jdbcType=VARCHAR},
       </if>
@@ -428,6 +460,9 @@
       manager_password = #{record.managerPassword,jdbcType=VARCHAR},
       app_id = #{record.appId,jdbcType=VARCHAR},
       app_secret = #{record.appSecret,jdbcType=VARCHAR},
+      mch_id = #{record.mchId,jdbcType=VARCHAR},
+      pay_key = #{record.payKey,jdbcType=VARCHAR},
+      if_open_pay = #{record.ifOpenPay,jdbcType=BIT},
       province = #{record.province,jdbcType=VARCHAR},
       city = #{record.city,jdbcType=VARCHAR},
       county = #{record.county,jdbcType=VARCHAR},
@@ -489,6 +524,15 @@
       <if test="appSecret != null">
         app_secret = #{appSecret,jdbcType=VARCHAR},
       </if>
+      <if test="mchId != null">
+        mch_id = #{mchId,jdbcType=VARCHAR},
+      </if>
+      <if test="payKey != null">
+        pay_key = #{payKey,jdbcType=VARCHAR},
+      </if>
+      <if test="ifOpenPay != null">
+        if_open_pay = #{ifOpenPay,jdbcType=BIT},
+      </if>
       <if test="province != null">
         province = #{province,jdbcType=VARCHAR},
       </if>
@@ -544,6 +588,9 @@
       manager_password = #{managerPassword,jdbcType=VARCHAR},
       app_id = #{appId,jdbcType=VARCHAR},
       app_secret = #{appSecret,jdbcType=VARCHAR},
+      mch_id = #{mchId,jdbcType=VARCHAR},
+      pay_key = #{payKey,jdbcType=VARCHAR},
+      if_open_pay = #{ifOpenPay,jdbcType=BIT},
       province = #{province,jdbcType=VARCHAR},
       city = #{city,jdbcType=VARCHAR},
       county = #{county,jdbcType=VARCHAR},

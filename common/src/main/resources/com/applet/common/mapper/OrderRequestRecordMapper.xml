@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.applet.common.mapper.OrderRequestRecordMapper">
+  <resultMap id="BaseResultMap" type="com.applet.common.entity.OrderRequestRecord">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="request_type" jdbcType="VARCHAR" property="requestType" />
+    <result column="result_code" jdbcType="VARCHAR" property="resultCode" />
+    <result column="err_code" jdbcType="VARCHAR" property="errCode" />
+    <result column="err_code_des" jdbcType="VARCHAR" property="errCodeDes" />
+    <result column="request_msg" jdbcType="VARCHAR" property="requestMsg" />
+    <result column="encrypt_request_msg" jdbcType="VARCHAR" property="encryptRequestMsg" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, order_id, request_type, result_code, err_code, err_code_des, request_msg, encrypt_request_msg, 
+    create_time
+  </sql>
+  <select id="selectByExample" parameterType="com.applet.common.entity.OrderRequestRecordExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from order_request_record
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <include refid="PageSuffix" />
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from order_request_record
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from order_request_record
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.applet.common.entity.OrderRequestRecordExample">
+    delete from order_request_record
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.applet.common.entity.OrderRequestRecord">
+    insert into order_request_record (id, order_id, request_type, 
+      result_code, err_code, err_code_des, 
+      request_msg, encrypt_request_msg, create_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{requestType,jdbcType=VARCHAR}, 
+      #{resultCode,jdbcType=VARCHAR}, #{errCode,jdbcType=VARCHAR}, #{errCodeDes,jdbcType=VARCHAR}, 
+      #{requestMsg,jdbcType=VARCHAR}, #{encryptRequestMsg,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" keyProperty="id" parameterType="com.applet.common.entity.OrderRequestRecord" useGeneratedKeys="true">
+    insert into order_request_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orderId != null">
+        order_id,
+      </if>
+      <if test="requestType != null">
+        request_type,
+      </if>
+      <if test="resultCode != null">
+        result_code,
+      </if>
+      <if test="errCode != null">
+        err_code,
+      </if>
+      <if test="errCodeDes != null">
+        err_code_des,
+      </if>
+      <if test="requestMsg != null">
+        request_msg,
+      </if>
+      <if test="encryptRequestMsg != null">
+        encrypt_request_msg,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null">
+        #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="requestType != null">
+        #{requestType,jdbcType=VARCHAR},
+      </if>
+      <if test="resultCode != null">
+        #{resultCode,jdbcType=VARCHAR},
+      </if>
+      <if test="errCode != null">
+        #{errCode,jdbcType=VARCHAR},
+      </if>
+      <if test="errCodeDes != null">
+        #{errCodeDes,jdbcType=VARCHAR},
+      </if>
+      <if test="requestMsg != null">
+        #{requestMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="encryptRequestMsg != null">
+        #{encryptRequestMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.applet.common.entity.OrderRequestRecordExample" resultType="java.lang.Long">
+    select count(*) from order_request_record
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update order_request_record
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.orderId != null">
+        order_id = #{record.orderId,jdbcType=INTEGER},
+      </if>
+      <if test="record.requestType != null">
+        request_type = #{record.requestType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.resultCode != null">
+        result_code = #{record.resultCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.errCode != null">
+        err_code = #{record.errCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.errCodeDes != null">
+        err_code_des = #{record.errCodeDes,jdbcType=VARCHAR},
+      </if>
+      <if test="record.requestMsg != null">
+        request_msg = #{record.requestMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="record.encryptRequestMsg != null">
+        encrypt_request_msg = #{record.encryptRequestMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update order_request_record
+    set id = #{record.id,jdbcType=INTEGER},
+      order_id = #{record.orderId,jdbcType=INTEGER},
+      request_type = #{record.requestType,jdbcType=VARCHAR},
+      result_code = #{record.resultCode,jdbcType=VARCHAR},
+      err_code = #{record.errCode,jdbcType=VARCHAR},
+      err_code_des = #{record.errCodeDes,jdbcType=VARCHAR},
+      request_msg = #{record.requestMsg,jdbcType=VARCHAR},
+      encrypt_request_msg = #{record.encryptRequestMsg,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.applet.common.entity.OrderRequestRecord">
+    update order_request_record
+    <set>
+      <if test="orderId != null">
+        order_id = #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="requestType != null">
+        request_type = #{requestType,jdbcType=VARCHAR},
+      </if>
+      <if test="resultCode != null">
+        result_code = #{resultCode,jdbcType=VARCHAR},
+      </if>
+      <if test="errCode != null">
+        err_code = #{errCode,jdbcType=VARCHAR},
+      </if>
+      <if test="errCodeDes != null">
+        err_code_des = #{errCodeDes,jdbcType=VARCHAR},
+      </if>
+      <if test="requestMsg != null">
+        request_msg = #{requestMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="encryptRequestMsg != null">
+        encrypt_request_msg = #{encryptRequestMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.applet.common.entity.OrderRequestRecord">
+    update order_request_record
+    set order_id = #{orderId,jdbcType=INTEGER},
+      request_type = #{requestType,jdbcType=VARCHAR},
+      result_code = #{resultCode,jdbcType=VARCHAR},
+      err_code = #{errCode,jdbcType=VARCHAR},
+      err_code_des = #{errCodeDes,jdbcType=VARCHAR},
+      request_msg = #{requestMsg,jdbcType=VARCHAR},
+      encrypt_request_msg = #{encryptRequestMsg,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <sql id="PageSuffix">
+    <if test="page != null">
+      limit #{page.rowStart},#{page.pageSize}
+    </if>
+  </sql>
+</mapper>
