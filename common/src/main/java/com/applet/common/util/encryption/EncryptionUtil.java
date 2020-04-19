@@ -1,7 +1,7 @@
 package com.applet.common.util.encryption;
 
 import com.alibaba.fastjson.JSONObject;
-import com.applet.common.entity.pay.AppletPay;
+import com.applet.common.entity.pay.WxAppletPay;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.RandomUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -82,7 +82,7 @@ public class EncryptionUtil {
                     .replaceAll("##timeStamp", time_stamp)
                     .replaceAll("##key", payKey);
             String pay_sign = MD5Util.MD5(APPLET_SGIN);
-            AppletPay pay = new AppletPay(appId, nonce_str, package_str, signType, time_stamp, payKey, pay_sign);
+            WxAppletPay pay = new WxAppletPay(appId, nonce_str, package_str, signType, time_stamp, payKey, pay_sign);
             String json = JSONObject.toJSONString(pay);
             log.info("小程序支付信息字符串{}", json);
             if (NullUtil.isNotNullOrEmpty(json)){

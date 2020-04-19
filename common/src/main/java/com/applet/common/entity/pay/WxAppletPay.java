@@ -8,7 +8,7 @@ package com.applet.common.entity.pay;
  * To change this template use File | Settings | File Templates.
  * Description: 小程序支付信息类
  */
-public class AppletPay {
+public class WxAppletPay {
     public String appId;
     public String nonceStr;
     public String packageStr;
@@ -17,11 +17,11 @@ public class AppletPay {
     public String key;
     public String paySign;
 
-    public AppletPay(){
+    public WxAppletPay(){
 
     }
 
-    public AppletPay(String appId, String nonceStr, String packageStr, String signType, String timeStamp, String key, String paySign){
+    public WxAppletPay(String appId, String nonceStr, String packageStr, String signType, String timeStamp, String key, String paySign){
         this.appId = appId;
         this.nonceStr = nonceStr;
         this.packageStr = packageStr;

@@ -37,7 +37,6 @@ import java.util.concurrent.Executors;
  **/
 @Configuration
 @ComponentScan
-@EnableAsync
 public class ApplicationConfigurer extends WebMvcConfigurationSupport {
     private static final Logger log = LoggerFactory.getLogger(ApplicationConfigurer.class);
 
@@ -86,10 +85,6 @@ public class ApplicationConfigurer extends WebMvcConfigurationSupport {
         // 设置value的序列化规则和 key的序列化规则
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new ObjectRedisSerializer());
-//        redisTemplate.setHashKeySerializer(jackson2JsonRedisSerializer);
-//        redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
-//        redisTemplate.setDefaultSerializer(jackson2JsonRedisSerializer);
-//        redisTemplate.setEnableDefaultSerializer(true);
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }

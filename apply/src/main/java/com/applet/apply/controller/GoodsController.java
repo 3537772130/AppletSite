@@ -39,33 +39,6 @@ public class GoodsController {
     private CommentService commentService;
 
     /**
-     * 加载小程序分类页面信息
-     * @param appletInfo
-     * @return
-     */
-    @RequestMapping(value = "loadGoodsClassify")
-    @CancelAuth
-    public Object loadGoodsClassify(@SessionScope("appletInfo") ViewAppletInfo appletInfo) {
-        try {
-            List<ViewGoodsType> typeList = goodsService.selectGoodsTypeList(appletInfo.getId());
-            List<Integer> typeIdList = new ArrayList<>();
-            for (ViewGoodsType type : typeList) {
-                typeIdList.add(type.getId());
-            }
-            List<ViewGoodsInfo> infoList = goodsService.selectGoodsInfoList(appletInfo.getId(), typeIdList);
-            List<ViewCouponInfo> couponList = userCouponService.selectCouponList(appletInfo.getId());
-            Map map = new HashMap();
-            map.put("typeList", typeList);
-            map.put("infoList", infoList);
-            map.put("couponList", couponList);
-            return AjaxResponse.success(map);
-        } catch (Exception e) {
-            log.error("加载小程序分类页面信息出错{}", e);
-            return AjaxResponse.error("加载失败");
-        }
-    }
-
-    /**
      * 加载商品详情信息
      * @param appletInfo
      * @param goodsId

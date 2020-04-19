@@ -38,7 +38,7 @@ public class UserOrderController {
     private CommentService commentService;
 
     /**
-     * 创建订单
+     * 小程序创建订单
      *
      * @param appletInfo
      * @param weChantInfo
@@ -144,6 +144,7 @@ public class UserOrderController {
         info.setActualAmount(actualAmount);
         info.setPayStatus(OrderEnums.PayStatus.WAIT.getCode());
         info.setPayType(payType);
+        info.setPayChannel(OrderEnums.PayChannel.WX_JSAPI.getName());
         userOrderService.addOrderInfo(info, detailsList, cartIdList);
 
         return AjaxResponse.success(info.getId());

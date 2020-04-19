@@ -7,6 +7,7 @@ import com.applet.common.util.EnumUtil;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.Page;
 import com.applet.common.util.encryption.EncryptionUtil;
+import jodd.datetime.JDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -49,6 +50,8 @@ public class UserOrderService {
     @Autowired
     private UserCartService userCartService;
     @Autowired
+    private ViewOrderPayDataMapper viewOrderPayDataMapper;
+    @Autowired
     private CommonMapper commonMapper;
 
     /**
@@ -76,15 +79,6 @@ public class UserOrderService {
     /**
      * 查询订单信息
      * @param id
-     * @return
-     */
-    public OrderInfo selectOrderInfoById(Integer id){
-        return orderInfoMapper.selectByPrimaryKey(id);
-    }
-
-    /**
-     * 查询订单信息
-     * @param id
      * @param appletId
      * @param userId
      * @return
@@ -97,6 +91,61 @@ public class UserOrderService {
     }
 
     /**
+     * 查询订单信息
+     * @param id
+     * @return
+     */
+    public OrderInfo selectOrderInfoById(Integer id){
+        return orderInfoMapper.selectByPrimaryKey(id);
+    }
+
+    /**
+     * 查询订单信息
+     * @param id
+     * @return
+     */
+    public OrderInfo selectOrderInfoByOrderNo(String orderNo){
+        OrderInfoExample example = new OrderInfoExample();
+        example.createCriteria().andOrderNoEqualTo(orderNo).andPayStatusEqualTo(OrderEnums.PayStatus.WAIT.getCode());
+        List<OrderInfo> list = orderInfoMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+    }
+
+
+    /**
+     * 查询订单支付参数信息
+     * @param id
+     * @param orderNo
+     * @return
+     */
+    public ViewOrderPayData selectOrderData(Integer id, String orderNo, Integer appletId, Integer wxId){
+        ViewOrderPayDataExample example = new ViewOrderPayDataExample();
+        ViewOrderPayDataExample.Criteria c = example.createCriteria();
+        if (NullUtil.isNotNullOrEmpty(id)){
+            c.andIdEqualTo(id);
+        }
+        if (NullUtil.isNotNullOrEmpty(orderNo)){
+            c.andOrderNoEqualTo(orderNo);
+        }
+        if (NullUtil.isNotNullOrEmpty(appletId)){
+            c.andAppletIdEqualTo(appletId);
+        }
+        if (NullUtil.isNotNullOrEmpty(wxId)){
+            c.andWxIdEqualTo(wxId);
+        }
+        List<ViewOrderPayData> list = viewOrderPayDataMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+    }
+
+    public ViewOrderPayData selectOrderData(Integer id, Integer appletId, Integer wxId){
+        return selectOrderData(id, null, appletId, wxId);
+    }
+
+    public ViewOrderPayData selectOrderData(String orderNo){
+        return selectOrderData(null, orderNo, null, null);
+    }
+
+    /**
      * 根据支付关联标识查询在线支付尚未付款订单
      * @param payRelationId
      * @return
@@ -106,25 +155,6 @@ public class UserOrderService {
         example.createCriteria().andPayTypeEqualTo(1).andPayStatusEqualTo(0).andPayRelationIdEqualTo(payRelationId).andPayChannelEqualTo(payChannel);
         List<OrderInfo> list = orderInfoMapper.selectByExample(example);
         return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
-    }
-
-    /**
-     * 更新订单支付状态
-     * @param id
-     * @param payStatus
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public void updateOrderInfo(Integer id, String payRelationId, String payChannel, boolean bool){
-        OrderInfo order = new OrderInfo();
-        order.setId(id);
-        order.setPayRelationId(payRelationId);
-        order.setPayChannel(payChannel);
-        // 统一下单成功和余额不足以外的状况，则订单不再继续，支付失败
-        if (!bool){
-            order.setPayStatus(-1);
-            order.setOrderStatus(-1);
-        }
-        orderInfoMapper.updateByPrimaryKeySelective(order);
     }
 
     /**
@@ -400,18 +430,29 @@ public class UserOrderService {
     }
 
     /**
-     * 添加订单请求记录
-     * @param record
-     * @throws Exception
+     * 统计一个小时以内，微信支付请求（同类型请求）发送的次数
+     * @param requestType
+     * @return
      */
-    public void addOrderRequestRecord(OrderRequestRecord record) {
-        try {
-            record.setRequestMsg(EncryptionUtil.encryptAppletRSA(record.getRequestMsg()));
-        } catch (Exception e) {
-            log.error("订单请求报文加密出错{}", e);
-        }
-        record.setCreateTime(new Date());
-        orderRequestRecordMapper.insertSelective(record);
+    public long countOrderRequestRecordByHour(String requestType){
+        JDateTime time = new JDateTime(new Date());
+        time.addHour(-1);
+        OrderRequestRecordExample example = new OrderRequestRecordExample();
+        example.createCriteria().andRequestTypeEqualTo(requestType).andCreateTimeGreaterThan(time.convertToDate());
+        return orderRequestRecordMapper.countByExample(example);
     }
 
+    /**
+     * 更新订单信息
+     * @param record
+     * @param info
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void updateOrder(OrderRequestRecord record, OrderInfo info){
+        record.setCreateTime(new Date());
+        orderRequestRecordMapper.insertSelective(record);
+        if (null != info){
+            orderInfoMapper.updateByPrimaryKeySelective(info);
+        }
+    }
 }

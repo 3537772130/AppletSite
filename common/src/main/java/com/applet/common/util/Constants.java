@@ -106,13 +106,5 @@ public class Constants {
             put(SYSTEM_NOTICE_TYPE_PLAIN, "普通推送");
         }
     };
-
-    // 微信统一下单支付方式
-    // 小程序支付
-    public static final String TRADE_TYPE_JSAPI = "JSAPI";
-    // PC网站、实体店单品或订单、媒体广告支付
-    public static final String TRADE_TYPE_NATIVE = "NATIVE";
-    // APP支付
-    public static final String TRADE_TYPE_APP = "APP";
 }
 

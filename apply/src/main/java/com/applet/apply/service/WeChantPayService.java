@@ -1,25 +1,18 @@
 package com.applet.apply.service;
 
-import com.alibaba.fastjson.JSONObject;
-import com.applet.common.entity.OrderInfo;
-import com.applet.common.entity.OrderRequestRecord;
+import com.applet.common.entity.*;
 import com.applet.common.entity.pay.WxUnifiedOrder;
-import com.applet.common.util.Arith;
-import com.applet.common.util.Constants;
-import com.applet.common.util.NullUtil;
-import com.applet.common.util.RandomUtil;
-import com.applet.common.util.encryption.MD5Util;
-import com.applet.common.util.http.HttpUtil;
+import com.applet.common.entity.pay.WxUnifiedOrderResult;
+import com.applet.common.util.*;
+import com.applet.common.util.encryption.EncryptionUtil;
 import com.applet.common.util.http.IpUtil;
 import jodd.datetime.JDateTime;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
@@ -28,7 +21,8 @@ import java.util.*;
  * Date: 2020/4/16
  * Time: 16:19
  * To change this template use File | Settings | File Templates.
- * Description:
+ * Description: 微信统一下单参
+ * 考文档地址：https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1
  */
 @Slf4j
 @Service
@@ -36,186 +30,190 @@ public class WeChantPayService {
     @Autowired
     private UserOrderService userOrderService;
 
-    // 微信统一下单参考文档地址：https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1
-    // 签名类型
-    private static final String SIGN_TYPE = "MD5";
-    // 微信统一下单接口
-    private static final String UNIFIED_NURL = "https://api.mch.weixin.qq.com/pay/unifiedorder";
-
     /**
      * 微信统一下单
-     * @param appletCode
-     * @param appletName
-     * @param appid
-     * @param mchId
-     * @param payKey
-     * @param openId
-     * @param orderId
-     * @param orderNo
-     * @param totalFee
-     * @param tradeType
+     *
+     * @param data    订单参数信息
      * @param goodsId
      * @param request
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
-    public String sendWeChantUnifiedOrder(String appletCode, String appletName, String appid, String mchId,
-                                                 String payKey, String openId, Integer orderId, String orderNo, Double totalFee,
-                                                 String tradeType, String goodsId, HttpServletRequest request) {
+    public String sendWeChantUnifiedOrder(ViewOrderPayData data, String goodsId, HttpServletRequest request) {
         // 设置微信统一下单信息
-        WxUnifiedOrder wx = new WxUnifiedOrder();
-        wx.setAppid(appid);
-        wx.setMch_id(mchId);
-        wx.setNonce_str(RandomUtil.getRandomStr32());
-        wx.setDevice_info(appletCode);
-        wx.setSign_type(SIGN_TYPE);
-        wx.setBody(orderNo + "-订单支付");
-        wx.setDetail(null);
-        wx.setAttach(appletName);
-        wx.setOut_trade_no(orderNo);
-        wx.setFee_type("CNY");
-        wx.setTotal_fee((int) Arith.mul(totalFee, 100.0d));
-        wx.setSpbill_create_ip(IpUtil.getForIp(request));
+        WxUnifiedOrder wo = new WxUnifiedOrder();
+        wo.setOutTradeNo(data.getOrderNo());
+        wo.setBody(data.getOrderNo() + "-订单支付");
+        wo.setDeviceInfo(data.getAppletCode());
+        wo.setAttach(data.getAppletName());
+        wo.setAppid(data.getAppId());
+        wo.setMchId(data.getMchId());
+        wo.setTotalFee((int) Arith.mul(data.getActualAmount(), 100.0d));
+        wo.setTradeType(data.getPayChannel());
+        wo.setOpenid(data.getOpenId());
+
+        wo.setProductId(goodsId);
+        wo.setNonceStr(RandomUtil.getRandomStr32());
+        wo.setSignType("MD5");
+        wo.setDetail(null);
+        wo.setFeeType("CNY");
+        wo.setSpbillCreateIp(IpUtil.getForIp(request));
         JDateTime time = new JDateTime(new Date());
-        wx.setTime_start(time.toString(Constants.DEFAULT_DATE_FORMAT_STAMP));
-        wx.setTime_expire(time.addHour(2).toString(Constants.DEFAULT_DATE_FORMAT_STAMP));
-        wx.setGoods_tag(null);
-        wx.setNotify_url(getNotifyUrl(tradeType));
-        wx.setTrade_type(tradeType);
-        wx.setProduct_id(tradeType.equals(Constants.TRADE_TYPE_NATIVE) ? goodsId : null);
-        wx.setLimit_pay(null);
-        wx.setOpenid(openId);
-        wx.setReceipt(null);
-        wx.setScene_info(null);
-        // 按照参数名ASCII码从小到大排序，拼接成键值对字符串（即key1=value1&key2=value2…）
-        Map map = convertToMap(wx);
-        SortedMap<String, String> sort = new TreeMap<String, String>(map);
-        wx.setSign(getUnifiedSign(sort, payKey));
-        String xml = getXml(wx);
-        String prepayId = null;
-        Boolean bool = false;
+        wo.setTimeStart(time.toString(Constants.DEFAULT_DATE_FORMAT_STAMP));
+        wo.setTimeExpire(time.addHour(2).toString(Constants.DEFAULT_DATE_FORMAT_STAMP));
+        wo.setGoodsTag(null);
+        wo.setNotifyUrl(NullUtil.getWebSite() + "/api/applet/orderPayNotice");
+        wo.setLimitPay(null);
+        wo.setReceipt(null);
+        wo.setSceneInfo(null);
+
+        wo.setSign(WeChatAppletUtil.getUnifiedSign(wo, data.getPayKey()));
+        // 将订单信息转换成XML
+        String xml = JaxbUtil.convertToXmlIgnoreXmlHead(wo, "UTF-8");
         // 发送微信统一下单请求
-        String result = HttpUtil.doPost(UNIFIED_NURL, xml, "UTF-8");
+        String resultXML = WeChatAppletUtil.sendWeChantUnifiedOrderToPOST(xml);
+        WxUnifiedOrderResult result = JaxbUtil.converyToJavaBean(resultXML, WxUnifiedOrderResult.class);
+        Boolean bool = analysisWeChantUnifiedOrderResult(data.getId(), wo, resultXML, result);
+        return bool ? result.getPrepayId() : null;
+    }
+
+    public String sendWeChantUnifiedOrder(ViewOrderPayData data, HttpServletRequest request) {
+        return sendWeChantUnifiedOrder(data, null, request);
+    }
+
+    /**
+     * 解析返回的斡旋统一下单结果
+     *
+     * @param result
+     * @param orderId
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean analysisWeChantUnifiedOrderResult(Integer orderId, WxUnifiedOrder wo, String resultXML, WxUnifiedOrderResult result) {
+        Boolean bool = false;
         OrderRequestRecord record = new OrderRequestRecord();
-        record.setRequestMsg(result);
-        JSONObject obj = JSONObject.parseObject(result);
-        record.setRequestType("WX_" + tradeType);
-        if (obj.get("return_code").toString().equals("SUCCESS")) {
-            record.setResultCode(obj.get("result_code").toString());
-            if (record.getResultCode().equals("SUCCESS")) {
+        record.setOrderId(orderId);
+        record.setOrderNo(wo.getOutTradeNo());
+        record.setDeviceNo(wo.getDeviceInfo());
+        record.setRequestType("WX_" + wo.getTradeType() + "_REQUEST" + (NullUtil.isNullOrEmpty(orderId) ? "_TEST" : ""));
+        record.setResultCode(result.getReturnCode());
+        if (result.getReturnCode().equals("SUCCESS")) {
+            if (result.getResultCode().equals("SUCCESS")) {
                 bool = true;
+                record.setResultCode(result.getResultCode());
             } else {
-                record.setErrCode(obj.get("err_code").toString());
-                record.setErrCodeDes(obj.get("err_code_des").toString());
                 bool = record.getErrCode().equals("NOTENOUGH");
             }
+            record.setErrCode(result.getErrCode());
+            record.setErrCodeDes(result.getErrCodeDes());
+        } else {
+            record.setErrCodeDes(result.getReturnMsg());
         }
-        prepayId = obj.get("err_code_des").toString();
-        // 添加订单支付请求记录
-        userOrderService.addOrderRequestRecord(record);
-        if (NullUtil.isNotNullOrEmpty(orderId)){
-            // 更新订单信息
-            OrderInfo orderInfo = userOrderService.selectOrderInfoByPayRelationId(prepayId, record.getRequestType());
-            userOrderService.updateOrderInfo(orderInfo.getId(), prepayId, record.getRequestType(), bool);
-        }
-        return bool ? prepayId : null;
-    }
-
-
-    /**
-     * 获取微信统一下单签名
-     * @param parameters
-     * @param key
-     * @return
-     */
-    private static String getUnifiedSign(SortedMap<String, String> parameters, String key) {
-        StringBuffer sb = new StringBuffer();
-        StringBuffer sbkey = new StringBuffer();
-        Set es = parameters.entrySet();  //所有参与传参的参数按照accsii排序（升序）
-        Iterator it = es.iterator();
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
-            String k = (String) entry.getKey();
-            Object v = entry.getValue();
-            //空值不传递，不参与签名组串
-            if (null != v && !"".equals(v)) {
-                sb.append(k + "=" + v + "&");
-                sbkey.append(k + "=" + v + "&");
+        record.setRequestResultMsg(resultXML);
+        OrderInfo order = null;
+        if (NullUtil.isNotNullOrEmpty(orderId)) {
+            OrderInfo orderInfo = userOrderService.selectOrderInfoById(orderId);
+            order = new OrderInfo();
+            order.setId(orderInfo.getId());
+            order.setPayRelationId(result.getPrepayId());
+            order.setPayChannel(record.getRequestType());
+            // 统一下单成功和余额不足以外的状况，则订单不再继续，支付失败
+            if (!bool){
+                order.setPayStatus(-1);
+                order.setOrderStatus(-1);
             }
         }
-        System.out.println("统一下单信息DATA字符串:" + sb.toString());
-        sbkey = sbkey.append("key=" + key);
-        System.out.println("字符串:" + sbkey.toString());
-        //MD5加密,结果转换为大写字符
-        String sign = MD5Util.MD5(sbkey.toString()).toUpperCase();
-        System.out.println("MD5加密值:" + sign);
-        return sb.toString() + "sign=" + sign;
-    }
-
-    /**
-     * 获取支付回调地址
-     * @param tradeType
-     * @return
-     */
-    private static String getNotifyUrl(String tradeType) {
-        String notify_url = NullUtil.getWebSite() + "/api/user/payBack";
-        if (tradeType.equals(Constants.TRADE_TYPE_JSAPI)) {
-            notify_url = NullUtil.getWebSite() + "/api/applet/payBack";
-        } else if (tradeType.equals(Constants.TRADE_TYPE_APP)) {
-            notify_url = NullUtil.getWebSite() + "/api/app/payBack";
-        }
-        return notify_url;
+        // 添加订单支付请求记录，并更新订单信息
+        userOrderService.updateOrder(record, order);
+        return bool;
     }
 
 
     /**
-     * java对象转XML
-     * @param obj
+     * 微信订单支付通知处理
+     * @param xml
      * @return
+     * @throws Exception
      */
-    private static String getXml(Object obj) {
-        Map map = convertToMap(obj);
-//        SortedMap<String, String> parameters = new TreeMap<String, String>(map);
-        StringBuffer str = new StringBuffer();
-        str.append("<xml>");
-//        Set es = parameters.entrySet();  //所有参与传参的参数按照accsii排序（升序）
-        Set es = map.entrySet();
-        Iterator it = es.iterator();
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
-            String k = (String) entry.getKey();
-            Object v = entry.getValue();
-            //空值不传递，不参与签名组串
-            if (null != v && !"".equals(v)) {
-                str.append("<" + k + ">" + v + "</" + k + ">");
+    public WxUnifiedOrderResult orderPayNoticeHandle(String xml) throws Exception {
+        WxUnifiedOrderResult result = JaxbUtil.converyToJavaBean(xml, WxUnifiedOrderResult.class);
+        if (result.getReturnCode().equals("SUCCESS")) {
+            String outTradeNo = result.getOutTradeNo();
+            ViewOrderPayData data = userOrderService.selectOrderData(outTradeNo);
+            if (null != data) {
+                data.setAppId(EncryptionUtil.decryptAppletRSA(data.getAppId()));
+                data.setMchId(EncryptionUtil.decryptAppletRSA(data.getMchId()));
+                data.setPayKey(EncryptionUtil.decryptAppletRSA(data.getPayKey()));
+                Integer totalFee = (int) Arith.mul(data.getActualAmount(), 100.0d);
+                // 对支付回调的信息进行校验
+                if (data.getAppId().equals(result.getAppid()) && data.getMchId().equals(result.getMchId())
+                        && data.getAppletCode().equals(result.getDeviceInfo())
+                        && !data.getPayRelationId().equals(result.getTransactionId())
+                        && totalFee.toString().equals(result.getTotalFee())) {
+                    // 校验通过
+                    result = new WxUnifiedOrderResult();
+                    result.setReturnCode("SUCCESS");
+                    result.setReturnMsg("OK");
+                    // 添加支付请求记录，并更新订单支付状态
+                    OrderRequestRecord record = new OrderRequestRecord();
+                    record.setOrderId(data.getId());
+                    record.setOrderNo(data.getOrderNo());
+                    record.setDeviceNo(data.getAppletCode());
+                    record.setRequestType("WX_" + result.getTradeType() + "_BACK");
+                    record.setResultCode(result.getResultCode());
+                    record.setErrCode(result.getErrCode());
+                    record.setErrCodeDes(result.getErrCodeDes());
+                    record.setRequestResultMsg(xml);
+                    OrderInfo info = new OrderInfo();
+                    info.setId(data.getId());
+                    info.setPayStatus(-1);
+                    if (result.getResultCode().equals("SUCCESS")) {
+                        info.setPayStatus(1);
+                    }
+                    userOrderService.updateOrder(record, info);
+                } else {
+                    // 信息校验不通过
+                    result = new WxUnifiedOrderResult();
+                    result.setReturnCode("FAIL");
+                    result.setReturnMsg("签名失败");
+                }
+            } else {
+                // 交易已成功处理，直接返回
+                result = new WxUnifiedOrderResult();
+                result.setReturnCode("SUCCESS");
+                result.setReturnMsg("OK");
             }
+            return result;
         }
-        str.append("</xml>");
-        log.info("微信统一下单请求参数XML字符串：", str.toString());
-        return str.toString();
+        return null;
     }
 
-    /**
-     * Object对象转Map集合
-     *
-     * @param obj
-     * @return
-     */
-    public static Map<String, Object> convertToMap(Object obj) {
-        try {
-            if (obj instanceof Map) {
-                return (Map) obj;
-            }
-            Map<String, Object> returnMap = BeanUtils.describe(obj);
-            returnMap.remove("class");
-            return returnMap;
-        } catch (IllegalAccessException e1) {
-            e1.getMessage();
-        } catch (InvocationTargetException e2) {
-            e2.getMessage();
-        } catch (NoSuchMethodException e3) {
-            e3.getMessage();
-        }
-        return new HashMap();
+
+    public static void main(String[] arge) {
+        String resultXML = "<xml>\n" +
+                "  <appid><![CDATA[wx2421b1c4370ec43b]]></appid>\n" +
+                "  <attach><![CDATA[支付测试]]></attach>\n" +
+                "  <bank_type><![CDATA[CFT]]></bank_type>\n" +
+                "  <fee_type><![CDATA[CNY]]></fee_type>\n" +
+                "  <is_subscribe><![CDATA[Y]]></is_subscribe>\n" +
+                "  <mch_id><![CDATA[10000100]]></mch_id>\n" +
+                "  <nonce_str><![CDATA[5d2b6c2a8db53831f7eda20af46e531c]]></nonce_str>\n" +
+                "  <openid><![CDATA[oUpF8uMEb4qRXf22hE3X68TekukE]]></openid>\n" +
+                "  <out_trade_no><![CDATA[1409811653]]></out_trade_no>\n" +
+                "  <result_code><![CDATA[SUCCESS]]></result_code>\n" +
+                "  <return_code><![CDATA[SUCCESS]]></return_code>\n" +
+                "  <sign><![CDATA[B552ED6B279343CB493C5DD0D78AB241]]></sign>\n" +
+                "  <time_end><![CDATA[20140903131540]]></time_end>\n" +
+                "  <total_fee>1</total_fee>\n" +
+                "<coupon_fee><![CDATA[10]]></coupon_fee>\n" +
+                "<coupon_count><![CDATA[1]]></coupon_count>\n" +
+                "<coupon_type><![CDATA[CASH]]></coupon_type>\n" +
+                "<coupon_id><![CDATA[10000]]></coupon_id>\n" +
+                "<coupon_fee><![CDATA[100]]></coupon_fee>\n" +
+                "  <trade_type><![CDATA[JSAPI]]></trade_type>\n" +
+                "  <transaction_id><![CDATA[1004400740201409030005092168]]></transaction_id>\n" +
+                "</xml>";
+        WxUnifiedOrderResult result = JaxbUtil.converyToJavaBean(resultXML, WxUnifiedOrderResult.class);
+        System.out.println(result.getReturnCode());
     }
 }

@@ -12,7 +12,24 @@ import lombok.Getter;
 public interface OrderEnums {
 
     /**
-     * 订单状态
+     * 支付通道
+     */
+    @Getter
+    @AllArgsConstructor
+    enum PayChannel implements BaseEnum {
+
+        WX_JSAPI( "JSAPI", "WX_JSAPI"),
+        WX_NATIVE( "NATIVE", "WX_NATIVE"),
+        WX_APP( "APP", "WX_APP"),
+        ;
+
+        private String code;
+        private String name;
+
+    }
+
+    /**
+     * 支付状态
      */
     @Getter
     @AllArgsConstructor

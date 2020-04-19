@@ -38,9 +38,9 @@ public class WeChantController {
     @Autowired
     private SmsService smsService;
     @Autowired
-    private RedisService redisService;
-    @Autowired
     private UserOrderService userOrderService;
+    @Autowired
+    private RedisService redisService;
 
     /**
      * 授权登录

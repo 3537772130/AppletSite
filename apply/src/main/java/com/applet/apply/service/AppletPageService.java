@@ -2,11 +2,15 @@ package com.applet.apply.service;
 
 import com.applet.common.entity.ViewAppletPageContent;
 import com.applet.common.entity.ViewAppletPageContentExample;
+import com.applet.common.entity.ViewGoodsType;
+import com.applet.common.entity.page.GoodsClassify;
 import com.applet.common.mapper.ViewAppletPageContentMapper;
 import com.applet.common.util.NullUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +26,12 @@ import java.util.List;
 public class AppletPageService {
     @Autowired
     private ViewAppletPageContentMapper viewAppletPageContentMapper;
+    @Autowired
+    private GoodsService goodsService;
+    @Autowired
+    private UserCouponService userCouponService;
+    @Autowired
+    private RedisService redisService;
 
     /**
      * 查询小程序页面配置信息
@@ -34,5 +44,24 @@ public class AppletPageService {
         example.createCriteria().andAppletIdEqualTo(appletId).andPageLogoEqualTo(pageLogo);
         List<ViewAppletPageContent> list = viewAppletPageContentMapper.selectByExampleWithBLOBs(example);
         return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+    }
+
+    /**
+     * 预加载商品分类界面信息
+     * @param appletId
+     * @param appletCode
+     */
+    @Async
+    public void loadGoodsClassify(Integer appletId, String appletCode){
+        List<ViewGoodsType> typeList = goodsService.selectGoodsTypeList(appletId);
+        List<Integer> typeIdList = new ArrayList<>();
+        for (ViewGoodsType type : typeList) {
+            typeIdList.add(type.getId());
+        }
+        GoodsClassify gc = new GoodsClassify();
+        gc.setTypeList(typeList);
+        gc.setInfoList(goodsService.selectGoodsInfoList(appletId, typeIdList));
+        gc.setCouponList(userCouponService.selectCouponList(appletId));
+        redisService.setValue(appletCode + "_CLASSIFY", gc);
     }
 }

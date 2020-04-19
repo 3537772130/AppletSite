@@ -14,6 +14,10 @@ public class OrderRequestRecord implements Serializable {
 
     private Integer orderId;
 
+    private String orderNo;
+
+    private String deviceNo;
+
     private String requestType;
 
     private String resultCode;
@@ -22,9 +26,7 @@ public class OrderRequestRecord implements Serializable {
 
     private String errCodeDes;
 
-    private String requestMsg;
-
-    private String encryptRequestMsg;
+    private String requestResultMsg;
 
     @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
     private Date createTime;
@@ -45,6 +47,22 @@ public class OrderRequestRecord implements Serializable {
 
     public void setOrderId(Integer orderId) {
         this.orderId = orderId;
+    }
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo == null ? null : orderNo.trim();
+    }
+
+    public String getDeviceNo() {
+        return deviceNo;
+    }
+
+    public void setDeviceNo(String deviceNo) {
+        this.deviceNo = deviceNo == null ? null : deviceNo.trim();
     }
 
     public String getRequestType() {
@@ -79,20 +97,12 @@ public class OrderRequestRecord implements Serializable {
         this.errCodeDes = errCodeDes == null ? null : errCodeDes.trim();
     }
 
-    public String getRequestMsg() {
-        return requestMsg;
+    public String getRequestResultMsg() {
+        return requestResultMsg;
     }
 
-    public void setRequestMsg(String requestMsg) {
-        this.requestMsg = requestMsg == null ? null : requestMsg.trim();
-    }
-
-    public String getEncryptRequestMsg() {
-        return encryptRequestMsg;
-    }
-
-    public void setEncryptRequestMsg(String encryptRequestMsg) {
-        this.encryptRequestMsg = encryptRequestMsg == null ? null : encryptRequestMsg.trim();
+    public void setRequestResultMsg(String requestResultMsg) {
+        this.requestResultMsg = requestResultMsg == null ? null : requestResultMsg.trim();
     }
 
     public Date getCreateTime() {

@@ -1,5 +1,10 @@
 package com.applet.common.entity.pay;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Mr.周华虎
@@ -8,53 +13,78 @@ package com.applet.common.entity.pay;
  * To change this template use File | Settings | File Templates.
  * Description: 微信统一下单信息
  */
+@XmlRootElement(name="xml")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class WxUnifiedOrder {
     // 公众账号ID
+    @XmlElement(name = "appid")
     private String appid;
     // 商户号
-    private String mch_id;
+    @XmlElement(name = "mch_id")
+    private String mchId;
     // 设备号
-    private String device_info;
+    @XmlElement(name = "device_info")
+    private String deviceInfo;
     // 随机字符串
-    private String nonce_str;
+    @XmlElement(name = "nonce_str")
+    private String nonceStr;
     // 签名
+    @XmlElement(name = "sign")
     private String sign;
     // 签名类型
-    private String sign_type;
+    @XmlElement(name = "sign_type")
+    private String signType;
     // 商品描述
+    @XmlElement(name = "body")
     private String body;
     // 商品详情
+    @XmlElement(name = "detail")
     private String detail;
     // 附加数据
+    @XmlElement(name = "attach")
     private String attach;
     // 商户订单号
-    private String out_trade_no;
+    @XmlElement(name = "out_trade_no")
+    private String outTradeNo;
     // 标价币种
-    private String fee_type;
+    @XmlElement(name = "fee_type")
+    private String feeType;
     // 标价金额
-    private int total_fee;
+    @XmlElement(name = "total_fee")
+    private Integer totalFee;
     // 终端IP
-    private String spbill_create_ip;
+    @XmlElement(name = "spbill_create_ip")
+    private String spbillCreateIp;
     // 交易起始时间
-    private String time_start;
+    @XmlElement(name = "time_start")
+    private String timeStart;
     // 交易结束时间
-    private String time_expire;
+    @XmlElement(name = "time_expire")
+    private String timeExpire;
     // 订单优惠标记
-    private String goods_tag;
+    @XmlElement(name = "goods_tag")
+    private String goodsTag;
     // 通知地址
-    private String notify_url;
+    @XmlElement(name = "notify_url")
+    private String notifyUrl;
     // 交易类型
-    private String trade_type;
+    @XmlElement(name = "trade_type")
+    private String tradeType;
     // 商品ID
-    private String product_id;
+    @XmlElement(name = "product_id")
+    private String productId;
     // 指定支付方式
-    private String limit_pay;
+    @XmlElement(name = "limit_pay")
+    private String limitPay;
     // 用户标识
+    @XmlElement(name = "openid")
     private String openid;
     // 电子发票入口开放标识
+    @XmlElement(name = "receipt")
     private String receipt;
     // 场景信息
-    private String scene_info;
+    @XmlElement(name = "scene_info")
+    private String sceneInfo;
 
     public String getAppid() {
         return appid;
@@ -64,28 +94,28 @@ public class WxUnifiedOrder {
         this.appid = appid;
     }
 
-    public String getMch_id() {
-        return mch_id;
+    public String getMchId() {
+        return mchId;
     }
 
-    public void setMch_id(String mch_id) {
-        this.mch_id = mch_id;
+    public void setMchId(String mchId) {
+        this.mchId = mchId;
     }
 
-    public String getDevice_info() {
-        return device_info;
+    public String getDeviceInfo() {
+        return deviceInfo;
     }
 
-    public void setDevice_info(String device_info) {
-        this.device_info = device_info;
+    public void setDeviceInfo(String deviceInfo) {
+        this.deviceInfo = deviceInfo;
     }
 
-    public String getNonce_str() {
-        return nonce_str;
+    public String getNonceStr() {
+        return nonceStr;
     }
 
-    public void setNonce_str(String nonce_str) {
-        this.nonce_str = nonce_str;
+    public void setNonceStr(String nonceStr) {
+        this.nonceStr = nonceStr;
     }
 
     public String getSign() {
@@ -96,12 +126,12 @@ public class WxUnifiedOrder {
         this.sign = sign;
     }
 
-    public String getSign_type() {
-        return sign_type;
+    public String getSignType() {
+        return signType;
     }
 
-    public void setSign_type(String sign_type) {
-        this.sign_type = sign_type;
+    public void setSignType(String signType) {
+        this.signType = signType;
     }
 
     public String getBody() {
@@ -128,92 +158,92 @@ public class WxUnifiedOrder {
         this.attach = attach;
     }
 
-    public String getOut_trade_no() {
-        return out_trade_no;
+    public String getOutTradeNo() {
+        return outTradeNo;
     }
 
-    public void setOut_trade_no(String out_trade_no) {
-        this.out_trade_no = out_trade_no;
+    public void setOutTradeNo(String outTradeNo) {
+        this.outTradeNo = outTradeNo;
     }
 
-    public String getFee_type() {
-        return fee_type;
+    public String getFeeType() {
+        return feeType;
     }
 
-    public void setFee_type(String fee_type) {
-        this.fee_type = fee_type;
+    public void setFeeType(String feeType) {
+        this.feeType = feeType;
     }
 
-    public int getTotal_fee() {
-        return total_fee;
+    public Integer getTotalFee() {
+        return totalFee;
     }
 
-    public void setTotal_fee(int total_fee) {
-        this.total_fee = total_fee;
+    public void setTotalFee(Integer totalFee) {
+        this.totalFee = totalFee;
     }
 
-    public String getSpbill_create_ip() {
-        return spbill_create_ip;
+    public String getSpbillCreateIp() {
+        return spbillCreateIp;
     }
 
-    public void setSpbill_create_ip(String spbill_create_ip) {
-        this.spbill_create_ip = spbill_create_ip;
+    public void setSpbillCreateIp(String spbillCreateIp) {
+        this.spbillCreateIp = spbillCreateIp;
     }
 
-    public String getTime_start() {
-        return time_start;
+    public String getTimeStart() {
+        return timeStart;
     }
 
-    public void setTime_start(String time_start) {
-        this.time_start = time_start;
+    public void setTimeStart(String timeStart) {
+        this.timeStart = timeStart;
     }
 
-    public String getTime_expire() {
-        return time_expire;
+    public String getTimeExpire() {
+        return timeExpire;
     }
 
-    public void setTime_expire(String time_expire) {
-        this.time_expire = time_expire;
+    public void setTimeExpire(String timeExpire) {
+        this.timeExpire = timeExpire;
     }
 
-    public String getGoods_tag() {
-        return goods_tag;
+    public String getGoodsTag() {
+        return goodsTag;
     }
 
-    public void setGoods_tag(String goods_tag) {
-        this.goods_tag = goods_tag;
+    public void setGoodsTag(String goodsTag) {
+        this.goodsTag = goodsTag;
     }
 
-    public String getNotify_url() {
-        return notify_url;
+    public String getNotifyUrl() {
+        return notifyUrl;
     }
 
-    public void setNotify_url(String notify_url) {
-        this.notify_url = notify_url;
+    public void setNotifyUrl(String notifyUrl) {
+        this.notifyUrl = notifyUrl;
     }
 
-    public String getTrade_type() {
-        return trade_type;
+    public String getTradeType() {
+        return tradeType;
     }
 
-    public void setTrade_type(String trade_type) {
-        this.trade_type = trade_type;
+    public void setTradeType(String tradeType) {
+        this.tradeType = tradeType;
     }
 
-    public String getProduct_id() {
-        return product_id;
+    public String getProductId() {
+        return productId;
     }
 
-    public void setProduct_id(String product_id) {
-        this.product_id = product_id;
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 
-    public String getLimit_pay() {
-        return limit_pay;
+    public String getLimitPay() {
+        return limitPay;
     }
 
-    public void setLimit_pay(String limit_pay) {
-        this.limit_pay = limit_pay;
+    public void setLimitPay(String limitPay) {
+        this.limitPay = limitPay;
     }
 
     public String getOpenid() {
@@ -232,11 +262,11 @@ public class WxUnifiedOrder {
         this.receipt = receipt;
     }
 
-    public String getScene_info() {
-        return scene_info;
+    public String getSceneInfo() {
+        return sceneInfo;
     }
 
-    public void setScene_info(String scene_info) {
-        this.scene_info = scene_info;
+    public void setSceneInfo(String sceneInfo) {
+        this.sceneInfo = sceneInfo;
     }
 }

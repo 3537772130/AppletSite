@@ -236,6 +236,146 @@ public class OrderRequestRecordExample {
             return (Criteria) this;
         }
 
+        public Criteria andOrderNoIsNull() {
+            addCriterion("order_no is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderNoIsNotNull() {
+            addCriterion("order_no is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderNoEqualTo(String value) {
+            addCriterion("order_no =", value, "orderNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderNoNotEqualTo(String value) {
+            addCriterion("order_no <>", value, "orderNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderNoGreaterThan(String value) {
+            addCriterion("order_no >", value, "orderNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderNoGreaterThanOrEqualTo(String value) {
+            addCriterion("order_no >=", value, "orderNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderNoLessThan(String value) {
+            addCriterion("order_no <", value, "orderNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderNoLessThanOrEqualTo(String value) {
+            addCriterion("order_no <=", value, "orderNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderNoLike(String value) {
+            addCriterion("order_no like", value, "orderNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderNoNotLike(String value) {
+            addCriterion("order_no not like", value, "orderNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderNoIn(List<String> values) {
+            addCriterion("order_no in", values, "orderNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderNoNotIn(List<String> values) {
+            addCriterion("order_no not in", values, "orderNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderNoBetween(String value1, String value2) {
+            addCriterion("order_no between", value1, value2, "orderNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderNoNotBetween(String value1, String value2) {
+            addCriterion("order_no not between", value1, value2, "orderNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeviceNoIsNull() {
+            addCriterion("device_no is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeviceNoIsNotNull() {
+            addCriterion("device_no is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeviceNoEqualTo(String value) {
+            addCriterion("device_no =", value, "deviceNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeviceNoNotEqualTo(String value) {
+            addCriterion("device_no <>", value, "deviceNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeviceNoGreaterThan(String value) {
+            addCriterion("device_no >", value, "deviceNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeviceNoGreaterThanOrEqualTo(String value) {
+            addCriterion("device_no >=", value, "deviceNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeviceNoLessThan(String value) {
+            addCriterion("device_no <", value, "deviceNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeviceNoLessThanOrEqualTo(String value) {
+            addCriterion("device_no <=", value, "deviceNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeviceNoLike(String value) {
+            addCriterion("device_no like", value, "deviceNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeviceNoNotLike(String value) {
+            addCriterion("device_no not like", value, "deviceNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeviceNoIn(List<String> values) {
+            addCriterion("device_no in", values, "deviceNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeviceNoNotIn(List<String> values) {
+            addCriterion("device_no not in", values, "deviceNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeviceNoBetween(String value1, String value2) {
+            addCriterion("device_no between", value1, value2, "deviceNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeviceNoNotBetween(String value1, String value2) {
+            addCriterion("device_no not between", value1, value2, "deviceNo");
+            return (Criteria) this;
+        }
+
         public Criteria andRequestTypeIsNull() {
             addCriterion("request_type is null");
             return (Criteria) this;
@@ -516,143 +656,73 @@ public class OrderRequestRecordExample {
             return (Criteria) this;
         }
 
-        public Criteria andRequestMsgIsNull() {
-            addCriterion("request_msg is null");
+        public Criteria andRequestResultMsgIsNull() {
+            addCriterion("request_result_msg is null");
             return (Criteria) this;
         }
 
-        public Criteria andRequestMsgIsNotNull() {
-            addCriterion("request_msg is not null");
+        public Criteria andRequestResultMsgIsNotNull() {
+            addCriterion("request_result_msg is not null");
             return (Criteria) this;
         }
 
-        public Criteria andRequestMsgEqualTo(String value) {
-            addCriterion("request_msg =", value, "requestMsg");
+        public Criteria andRequestResultMsgEqualTo(String value) {
+            addCriterion("request_result_msg =", value, "requestResultMsg");
             return (Criteria) this;
         }
 
-        public Criteria andRequestMsgNotEqualTo(String value) {
-            addCriterion("request_msg <>", value, "requestMsg");
+        public Criteria andRequestResultMsgNotEqualTo(String value) {
+            addCriterion("request_result_msg <>", value, "requestResultMsg");
             return (Criteria) this;
         }
 
-        public Criteria andRequestMsgGreaterThan(String value) {
-            addCriterion("request_msg >", value, "requestMsg");
+        public Criteria andRequestResultMsgGreaterThan(String value) {
+            addCriterion("request_result_msg >", value, "requestResultMsg");
             return (Criteria) this;
         }
 
-        public Criteria andRequestMsgGreaterThanOrEqualTo(String value) {
-            addCriterion("request_msg >=", value, "requestMsg");
+        public Criteria andRequestResultMsgGreaterThanOrEqualTo(String value) {
+            addCriterion("request_result_msg >=", value, "requestResultMsg");
             return (Criteria) this;
         }
 
-        public Criteria andRequestMsgLessThan(String value) {
-            addCriterion("request_msg <", value, "requestMsg");
+        public Criteria andRequestResultMsgLessThan(String value) {
+            addCriterion("request_result_msg <", value, "requestResultMsg");
             return (Criteria) this;
         }
 
-        public Criteria andRequestMsgLessThanOrEqualTo(String value) {
-            addCriterion("request_msg <=", value, "requestMsg");
+        public Criteria andRequestResultMsgLessThanOrEqualTo(String value) {
+            addCriterion("request_result_msg <=", value, "requestResultMsg");
             return (Criteria) this;
         }
 
-        public Criteria andRequestMsgLike(String value) {
-            addCriterion("request_msg like", value, "requestMsg");
+        public Criteria andRequestResultMsgLike(String value) {
+            addCriterion("request_result_msg like", value, "requestResultMsg");
             return (Criteria) this;
         }
 
-        public Criteria andRequestMsgNotLike(String value) {
-            addCriterion("request_msg not like", value, "requestMsg");
+        public Criteria andRequestResultMsgNotLike(String value) {
+            addCriterion("request_result_msg not like", value, "requestResultMsg");
             return (Criteria) this;
         }
 
-        public Criteria andRequestMsgIn(List<String> values) {
-            addCriterion("request_msg in", values, "requestMsg");
+        public Criteria andRequestResultMsgIn(List<String> values) {
+            addCriterion("request_result_msg in", values, "requestResultMsg");
             return (Criteria) this;
         }
 
-        public Criteria andRequestMsgNotIn(List<String> values) {
-            addCriterion("request_msg not in", values, "requestMsg");
+        public Criteria andRequestResultMsgNotIn(List<String> values) {
+            addCriterion("request_result_msg not in", values, "requestResultMsg");
             return (Criteria) this;
         }
 
-        public Criteria andRequestMsgBetween(String value1, String value2) {
-            addCriterion("request_msg between", value1, value2, "requestMsg");
+        public Criteria andRequestResultMsgBetween(String value1, String value2) {
+            addCriterion("request_result_msg between", value1, value2, "requestResultMsg");
             return (Criteria) this;
         }
 
-        public Criteria andRequestMsgNotBetween(String value1, String value2) {
-            addCriterion("request_msg not between", value1, value2, "requestMsg");
-            return (Criteria) this;
-        }
-
-        public Criteria andEncryptRequestMsgIsNull() {
-            addCriterion("encrypt_request_msg is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andEncryptRequestMsgIsNotNull() {
-            addCriterion("encrypt_request_msg is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andEncryptRequestMsgEqualTo(String value) {
-            addCriterion("encrypt_request_msg =", value, "encryptRequestMsg");
-            return (Criteria) this;
-        }
-
-        public Criteria andEncryptRequestMsgNotEqualTo(String value) {
-            addCriterion("encrypt_request_msg <>", value, "encryptRequestMsg");
-            return (Criteria) this;
-        }
-
-        public Criteria andEncryptRequestMsgGreaterThan(String value) {
-            addCriterion("encrypt_request_msg >", value, "encryptRequestMsg");
-            return (Criteria) this;
-        }
-
-        public Criteria andEncryptRequestMsgGreaterThanOrEqualTo(String value) {
-            addCriterion("encrypt_request_msg >=", value, "encryptRequestMsg");
-            return (Criteria) this;
-        }
-
-        public Criteria andEncryptRequestMsgLessThan(String value) {
-            addCriterion("encrypt_request_msg <", value, "encryptRequestMsg");
-            return (Criteria) this;
-        }
-
-        public Criteria andEncryptRequestMsgLessThanOrEqualTo(String value) {
-            addCriterion("encrypt_request_msg <=", value, "encryptRequestMsg");
-            return (Criteria) this;
-        }
-
-        public Criteria andEncryptRequestMsgLike(String value) {
-            addCriterion("encrypt_request_msg like", value, "encryptRequestMsg");
-            return (Criteria) this;
-        }
-
-        public Criteria andEncryptRequestMsgNotLike(String value) {
-            addCriterion("encrypt_request_msg not like", value, "encryptRequestMsg");
-            return (Criteria) this;
-        }
-
-        public Criteria andEncryptRequestMsgIn(List<String> values) {
-            addCriterion("encrypt_request_msg in", values, "encryptRequestMsg");
-            return (Criteria) this;
-        }
-
-        public Criteria andEncryptRequestMsgNotIn(List<String> values) {
-            addCriterion("encrypt_request_msg not in", values, "encryptRequestMsg");
-            return (Criteria) this;
-        }
-
-        public Criteria andEncryptRequestMsgBetween(String value1, String value2) {
-            addCriterion("encrypt_request_msg between", value1, value2, "encryptRequestMsg");
-            return (Criteria) this;
-        }
-
-        public Criteria andEncryptRequestMsgNotBetween(String value1, String value2) {
-            addCriterion("encrypt_request_msg not between", value1, value2, "encryptRequestMsg");
+        public Criteria andRequestResultMsgNotBetween(String value1, String value2) {
+            addCriterion("request_result_msg not between", value1, value2, "requestResultMsg");
             return (Criteria) this;
         }
 

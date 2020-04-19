@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.applet.common.mapper.ViewOrderPayDataMapper">
+  <resultMap id="BaseResultMap" type="com.applet.common.entity.ViewOrderPayData">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="actual_amount" jdbcType="DOUBLE" property="actualAmount" />
+    <result column="pay_status" jdbcType="INTEGER" property="payStatus" />
+    <result column="pay_channel" jdbcType="VARCHAR" property="payChannel" />
+    <result column="pay_relation_id" jdbcType="VARCHAR" property="payRelationId" />
+    <result column="applet_id" jdbcType="INTEGER" property="appletId" />
+    <result column="applet_code" jdbcType="VARCHAR" property="appletCode" />
+    <result column="applet_name" jdbcType="VARCHAR" property="appletName" />
+    <result column="app_id" jdbcType="VARCHAR" property="appId" />
+    <result column="mch_id" jdbcType="VARCHAR" property="mchId" />
+    <result column="pay_key" jdbcType="VARCHAR" property="payKey" />
+    <result column="wx_id" jdbcType="INTEGER" property="wxId" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, order_no, actual_amount, pay_status, pay_channel, pay_relation_id, applet_id, 
+    applet_code, applet_name, app_id, mch_id, pay_key, wx_id, open_id
+  </sql>
+  <select id="selectByExample" parameterType="com.applet.common.entity.ViewOrderPayDataExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from view_order_pay_data
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <include refid="PageSuffix" />
+  </select>
+  <select id="countByExample" parameterType="com.applet.common.entity.ViewOrderPayDataExample" resultType="java.lang.Long">
+    select count(*) from view_order_pay_data
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <sql id="PageSuffix">
+    <if test="page != null">
+      limit #{page.rowStart},#{page.pageSize}
+    </if>
+  </sql>
+</mapper>

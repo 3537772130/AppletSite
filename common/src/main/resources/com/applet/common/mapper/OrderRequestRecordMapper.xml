@@ -4,12 +4,13 @@
   <resultMap id="BaseResultMap" type="com.applet.common.entity.OrderRequestRecord">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="device_no" jdbcType="VARCHAR" property="deviceNo" />
     <result column="request_type" jdbcType="VARCHAR" property="requestType" />
     <result column="result_code" jdbcType="VARCHAR" property="resultCode" />
     <result column="err_code" jdbcType="VARCHAR" property="errCode" />
     <result column="err_code_des" jdbcType="VARCHAR" property="errCodeDes" />
-    <result column="request_msg" jdbcType="VARCHAR" property="requestMsg" />
-    <result column="encrypt_request_msg" jdbcType="VARCHAR" property="encryptRequestMsg" />
+    <result column="request_result_msg" jdbcType="VARCHAR" property="requestResultMsg" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -71,8 +72,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, order_id, request_type, result_code, err_code, err_code_des, request_msg, encrypt_request_msg, 
-    create_time
+    id, order_id, order_no, device_no, request_type, result_code, err_code, err_code_des, 
+    request_result_msg, create_time
   </sql>
   <select id="selectByExample" parameterType="com.applet.common.entity.OrderRequestRecordExample" resultMap="BaseResultMap">
     select
@@ -106,14 +107,14 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.applet.common.entity.OrderRequestRecord">
-    insert into order_request_record (id, order_id, request_type, 
-      result_code, err_code, err_code_des, 
-      request_msg, encrypt_request_msg, create_time
-      )
-    values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{requestType,jdbcType=VARCHAR}, 
-      #{resultCode,jdbcType=VARCHAR}, #{errCode,jdbcType=VARCHAR}, #{errCodeDes,jdbcType=VARCHAR}, 
-      #{requestMsg,jdbcType=VARCHAR}, #{encryptRequestMsg,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
-      )
+    insert into order_request_record (id, order_id, order_no, 
+      device_no, request_type, result_code, 
+      err_code, err_code_des, request_result_msg, 
+      create_time)
+    values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR}, 
+      #{deviceNo,jdbcType=VARCHAR}, #{requestType,jdbcType=VARCHAR}, #{resultCode,jdbcType=VARCHAR}, 
+      #{errCode,jdbcType=VARCHAR}, #{errCodeDes,jdbcType=VARCHAR}, #{requestResultMsg,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyProperty="id" parameterType="com.applet.common.entity.OrderRequestRecord" useGeneratedKeys="true">
     insert into order_request_record
@@ -123,6 +124,12 @@
       </if>
       <if test="orderId != null">
         order_id,
+      </if>
+      <if test="orderNo != null">
+        order_no,
+      </if>
+      <if test="deviceNo != null">
+        device_no,
       </if>
       <if test="requestType != null">
         request_type,
@@ -136,11 +143,8 @@
       <if test="errCodeDes != null">
         err_code_des,
       </if>
-      <if test="requestMsg != null">
-        request_msg,
-      </if>
-      <if test="encryptRequestMsg != null">
-        encrypt_request_msg,
+      <if test="requestResultMsg != null">
+        request_result_msg,
       </if>
       <if test="createTime != null">
         create_time,
@@ -152,6 +156,12 @@
       </if>
       <if test="orderId != null">
         #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceNo != null">
+        #{deviceNo,jdbcType=VARCHAR},
       </if>
       <if test="requestType != null">
         #{requestType,jdbcType=VARCHAR},
@@ -165,11 +175,8 @@
       <if test="errCodeDes != null">
         #{errCodeDes,jdbcType=VARCHAR},
       </if>
-      <if test="requestMsg != null">
-        #{requestMsg,jdbcType=VARCHAR},
-      </if>
-      <if test="encryptRequestMsg != null">
-        #{encryptRequestMsg,jdbcType=VARCHAR},
+      <if test="requestResultMsg != null">
+        #{requestResultMsg,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -191,6 +198,12 @@
       <if test="record.orderId != null">
         order_id = #{record.orderId,jdbcType=INTEGER},
       </if>
+      <if test="record.orderNo != null">
+        order_no = #{record.orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deviceNo != null">
+        device_no = #{record.deviceNo,jdbcType=VARCHAR},
+      </if>
       <if test="record.requestType != null">
         request_type = #{record.requestType,jdbcType=VARCHAR},
       </if>
@@ -203,11 +216,8 @@
       <if test="record.errCodeDes != null">
         err_code_des = #{record.errCodeDes,jdbcType=VARCHAR},
       </if>
-      <if test="record.requestMsg != null">
-        request_msg = #{record.requestMsg,jdbcType=VARCHAR},
-      </if>
-      <if test="record.encryptRequestMsg != null">
-        encrypt_request_msg = #{record.encryptRequestMsg,jdbcType=VARCHAR},
+      <if test="record.requestResultMsg != null">
+        request_result_msg = #{record.requestResultMsg,jdbcType=VARCHAR},
       </if>
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -221,12 +231,13 @@
     update order_request_record
     set id = #{record.id,jdbcType=INTEGER},
       order_id = #{record.orderId,jdbcType=INTEGER},
+      order_no = #{record.orderNo,jdbcType=VARCHAR},
+      device_no = #{record.deviceNo,jdbcType=VARCHAR},
       request_type = #{record.requestType,jdbcType=VARCHAR},
       result_code = #{record.resultCode,jdbcType=VARCHAR},
       err_code = #{record.errCode,jdbcType=VARCHAR},
       err_code_des = #{record.errCodeDes,jdbcType=VARCHAR},
-      request_msg = #{record.requestMsg,jdbcType=VARCHAR},
-      encrypt_request_msg = #{record.encryptRequestMsg,jdbcType=VARCHAR},
+      request_result_msg = #{record.requestResultMsg,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -237,6 +248,12 @@
     <set>
       <if test="orderId != null">
         order_id = #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceNo != null">
+        device_no = #{deviceNo,jdbcType=VARCHAR},
       </if>
       <if test="requestType != null">
         request_type = #{requestType,jdbcType=VARCHAR},
@@ -250,11 +267,8 @@
       <if test="errCodeDes != null">
         err_code_des = #{errCodeDes,jdbcType=VARCHAR},
       </if>
-      <if test="requestMsg != null">
-        request_msg = #{requestMsg,jdbcType=VARCHAR},
-      </if>
-      <if test="encryptRequestMsg != null">
-        encrypt_request_msg = #{encryptRequestMsg,jdbcType=VARCHAR},
+      <if test="requestResultMsg != null">
+        request_result_msg = #{requestResultMsg,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -265,12 +279,13 @@
   <update id="updateByPrimaryKey" parameterType="com.applet.common.entity.OrderRequestRecord">
     update order_request_record
     set order_id = #{orderId,jdbcType=INTEGER},
+      order_no = #{orderNo,jdbcType=VARCHAR},
+      device_no = #{deviceNo,jdbcType=VARCHAR},
       request_type = #{requestType,jdbcType=VARCHAR},
       result_code = #{resultCode,jdbcType=VARCHAR},
       err_code = #{errCode,jdbcType=VARCHAR},
       err_code_des = #{errCodeDes,jdbcType=VARCHAR},
-      request_msg = #{requestMsg,jdbcType=VARCHAR},
-      encrypt_request_msg = #{encryptRequestMsg,jdbcType=VARCHAR},
+      request_result_msg = #{requestResultMsg,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>

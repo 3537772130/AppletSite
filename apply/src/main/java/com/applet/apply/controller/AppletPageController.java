@@ -2,8 +2,10 @@ package com.applet.apply.controller;
 
 import com.applet.apply.config.annotation.CancelAuth;
 import com.applet.apply.config.annotation.SessionScope;
+import com.applet.apply.service.RedisService;
 import com.applet.common.entity.*;
 import com.applet.apply.service.AppletPageService;
+import com.applet.common.entity.page.GoodsClassify;
 import com.applet.common.util.AjaxResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,8 @@ public class AppletPageController {
     private final static Logger log = LoggerFactory.getLogger(AppletPageController.class);
     @Autowired
     private AppletPageService appletPageService;
+    @Autowired
+    private RedisService redisService;
 
     /**
      * 小程序基本信息
@@ -37,11 +41,32 @@ public class AppletPageController {
         try {
             ViewAppletPageContent content = appletPageService.selectViewAppletPageContent(appletInfo.getId(), pageLogo);
             if (null != content){
+                // 刷新分类页面信息缓存
+                appletPageService.loadGoodsClassify(appletInfo.getId(), appletInfo.getAppletCode());
                 return AjaxResponse.success(content.getContentJson());
             }
         } catch (Exception e) {
             log.error("查询小程序页面配置信息出错{}", e);
         }
         return AjaxResponse.error("未找到相关信息");
+    }
+
+    /**
+     * 加载小程序分类页面信息
+     * @param appletInfo
+     * @return
+     */
+    @RequestMapping(value = "loadGoodsClassify")
+    @CancelAuth
+    public Object loadGoodsClassify(@SessionScope("appletInfo") ViewAppletInfo appletInfo) {
+        try {
+            GoodsClassify gc = (GoodsClassify) redisService.getValue(appletInfo.getAppletCode() + "_CLASSIFY");
+            // 刷新分类页面信息缓存
+            appletPageService.loadGoodsClassify(appletInfo.getId(), appletInfo.getAppletCode());
+            return AjaxResponse.success(gc);
+        } catch (Exception e) {
+            log.error("加载小程序分类页面信息出错{}", e);
+            return AjaxResponse.error("加载失败");
+        }
     }
 }

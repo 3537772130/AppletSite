@@ -1,6 +1,5 @@
 package com.applet.apply.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.applet.apply.config.annotation.CancelAuth;
 import com.applet.apply.config.annotation.SessionScope;
 import com.applet.apply.service.AppletService;
@@ -8,10 +7,9 @@ import com.applet.apply.service.UserOrderService;
 import com.applet.apply.service.WeChantPayService;
 import com.applet.apply.service.WeChantService;
 import com.applet.common.entity.*;
-import com.applet.common.util.AjaxResponse;
-import com.applet.common.util.Constants;
-import com.applet.common.util.NullUtil;
-import com.applet.common.util.RandomUtil;
+import com.applet.common.entity.pay.WxUnifiedOrderResult;
+import com.applet.common.enums.OrderEnums;
+import com.applet.common.util.*;
 import com.applet.common.util.encryption.EncryptionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,13 +41,6 @@ public class WeChantPayController {
     @Autowired
     private WeChantPayService weChantPayService;
 
-    @RequestMapping(value = "payBack")
-    @CancelAuth
-    public void payBack(Object object) {
-        String result = JSONObject.toJSONString(object);
-        log.info("支付回调获取到信息{}", result);
-    }
-
     /**
      * 发起微信统一下单请求 - 商家测试
      *
@@ -66,30 +57,34 @@ public class WeChantPayController {
             if (appletInfo.getUserId().intValue() != weChantInfo.getUserId().intValue()) {
                 return AjaxResponse.error("非法操作");
             }
+            long count = userOrderService.countOrderRequestRecordByHour(OrderEnums.PayChannel.WX_JSAPI.getName() + "_REQUEST_TEST");
+            if (count > 5){
+                return AjaxResponse.error("操作频繁，请稍后再来");
+            }
             AppletInfo a = appletService.selectAppletInfo(appletInfo.getId());
             if (NullUtil.isNullOrEmpty(a.getMchId()) || NullUtil.isNullOrEmpty(a.getPayKey())) {
-                return AjaxResponse.msg("0","您交易所需资料缺失，请登录PC端上传【微信支付-商家平台】资料。");
+                return AjaxResponse.msg("0", "您交易所需资料缺失，请上传【微信支付-商家平台】资料。");
             }
             WeChantInfo w = weChantService.selectWeChantInfo(a.getId(), weChantInfo.getUserId());
-            OrderInfo o = new OrderInfo();
-            o.setOrderNo(RandomUtil.getTimeStamp());
-            o.setActualAmount(0.01d);
-            String appletName = NullUtil.isNotNullOrEmpty(a.getAppletSimple()) ? a.getAppletSimple() : a.getAppletName();
-            String appid = EncryptionUtil.decryptAppletRSA(a.getAppId());
-            String mchId = EncryptionUtil.decryptAppletRSA(a.getMchId());
-            String payKey = EncryptionUtil.decryptAppletRSA(a.getPayKey());
-            String tradeType = Constants.TRADE_TYPE_JSAPI;
-            String prepayId = weChantPayService.sendWeChantUnifiedOrder(a.getAppletCode(), appletName, appid,
-                    mchId, payKey, w.getOpenId(), o.getId(), o.getOrderNo(), o.getActualAmount(), tradeType,
-                    null, request);
+            ViewOrderPayData data = new ViewOrderPayData();
+            data.setOrderNo(RandomUtil.getTimeStamp());
+            data.setActualAmount(0.01d);
+            data.setAppletCode(a.getAppletCode());
+            data.setAppletName(NullUtil.isNotNullOrEmpty(a.getAppletSimple()) ? a.getAppletSimple() : a.getAppletName());
+            data.setAppId(EncryptionUtil.decryptAppletRSA(a.getAppId()));
+            data.setMchId(EncryptionUtil.decryptAppletRSA(a.getMchId()));
+            data.setPayKey(EncryptionUtil.decryptAppletRSA(a.getPayKey()));
+            data.setPayChannel(OrderEnums.PayChannel.WX_JSAPI.getCode());
+            data.setOpenId(w.getOpenId());
+            String prepayId = weChantPayService.sendWeChantUnifiedOrder(data, request);
             if (NullUtil.isNotNullOrEmpty(prepayId)) {
-                String msg = EncryptionUtil.encryptAppletPayInfoAES(appid, payKey, prepayId);
+                String msg = EncryptionUtil.encryptAppletPayInfoAES(a.getAppId(), a.getPayKey(), prepayId);
                 return AjaxResponse.success(msg);
             }
         } catch (Exception e) {
             log.error("测试--发送微信统一下单请求出错{}", e);
         }
-        return AjaxResponse.error("发起支付失败");
+        return AjaxResponse.error("支付失败");
     }
 
     /**
@@ -107,27 +102,17 @@ public class WeChantPayController {
                                           @RequestParam("id") String id, HttpServletRequest request) {
         try {
             Integer orderId = NullUtil.isNotNullOrEmpty(id) ? Integer.parseInt(id) : null;
-            AppletInfo a = appletService.selectAppletInfo(appletInfo.getId());
-            if (!a.getIfOpenPay()) {
-                return AjaxResponse.error("尚未开通在线支付");
-            }
-            WeChantInfo w = weChantService.selectWeChantInfo(a.getId(), weChantInfo.getUserId());
-            OrderInfo o = userOrderService.selectOrderInfo(orderId, a.getId(), w.getUserId());
-            if (null == a || w == null || o == null) {
-                return AjaxResponse.error("发起支付出错");
-            }
-
-            String appletName = NullUtil.isNotNullOrEmpty(a.getAppletSimple()) ? a.getAppletSimple() : a.getAppletName();
-            String appid = EncryptionUtil.decryptAppletRSA(a.getAppId());
-            String mchId = EncryptionUtil.decryptAppletRSA(a.getMchId());
-            String payKey = EncryptionUtil.decryptAppletRSA(a.getPayKey());
-            String tradeType = Constants.TRADE_TYPE_JSAPI;
-            String prepayId = weChantPayService.sendWeChantUnifiedOrder(a.getAppletCode(), appletName, appid, mchId,
-                    payKey, w.getOpenId(), o.getId(), o.getOrderNo(), o.getActualAmount(), tradeType,
-                    null, request);
-            if (NullUtil.isNotNullOrEmpty(prepayId)) {
-                String msg = EncryptionUtil.encryptAppletPayInfoAES(appid, payKey, prepayId);
-                return AjaxResponse.success(msg);
+            ViewOrderPayData data = userOrderService.selectOrderData(orderId, appletInfo.getId(), weChantInfo.getId());
+            if (null != data && data.getPayStatus().intValue() == OrderEnums.PayStatus.WAIT.getCode()) {
+                data.setPayChannel(OrderEnums.PayChannel.WX_JSAPI.getCode());
+                data.setAppId(EncryptionUtil.decryptAppletRSA(data.getAppId()));
+                data.setMchId(EncryptionUtil.decryptAppletRSA(data.getMchId()));
+                data.setPayKey(EncryptionUtil.decryptAppletRSA(data.getPayKey()));
+                String prepayId = weChantPayService.sendWeChantUnifiedOrder(data, request);
+                if (NullUtil.isNotNullOrEmpty(prepayId)) {
+                    String msg = EncryptionUtil.encryptAppletPayInfoAES(data.getAppId(), data.getPayKey(), prepayId);
+                    return AjaxResponse.success(msg);
+                }
             }
         } catch (Exception e) {
             log.error("发送微信统一下单请求出错{}", e);
@@ -136,4 +121,30 @@ public class WeChantPayController {
     }
 
 
+    /**
+     * 微信订单支付回调通知
+     *
+     * @param object
+     * @return
+     */
+    @RequestMapping(value = "orderPayNotice")
+    @CancelAuth
+    public Object orderPayNotice(Object object) {
+        WxUnifiedOrderResult result = null;
+        try {
+            String xml = object.toString();
+            log.info("微信订单支付回调信息\n{}", xml);
+            result = weChantPayService.orderPayNoticeHandle(xml);
+        } catch (Exception e) {
+            log.error("微信订单支付回调出错{}", e);
+            result = new WxUnifiedOrderResult();
+            result.setReturnCode("FAIL");
+            result.setReturnMsg("参数格式校验错误");
+        }
+        if (null == result){
+            return null;
+        }
+        String resultXML = JaxbUtil.convertToXmlIgnoreXmlHead(result, "UTF-8");
+        return resultXML;
+    }
 }
