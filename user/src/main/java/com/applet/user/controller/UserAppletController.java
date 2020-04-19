@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -340,5 +341,66 @@ public class UserAppletController {
             log.error("更新小程序营业状态出错{}", e);
             return AjaxResponse.error("更新失败");
         }
+    }
+
+//    /**
+//     * 加载小程序支付信息
+//     * @param user
+//     * @param id
+//     * @return
+//     */
+//    @RequestMapping(value = "loadAppletPayData")
+//    public Object loadAppletPayData(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer id){
+//        try {
+//            AppletInfo appletInfo = appletService.selectAppletInfo(id, user.getId());
+//            if (null == appletInfo){
+//                return AjaxResponse.error("未找到相关信息");
+//            }
+//            AppletInfo info = new AppletInfo();
+//            info.setId(appletInfo.getId());
+//            if (NullUtil.isNotNullOrEmpty(appletInfo.getMchId())){
+//                info.setMchId(EncryptionUtil.decryptAppletRSA(appletInfo.getMchId()));
+//            }
+//            if (NullUtil.isNotNullOrEmpty(appletInfo.getPayKey())){
+//                info.setPayKey(EncryptionUtil.decryptAppletRSA(appletInfo.getPayKey()));
+//            }
+//            return AjaxResponse.success(info);
+//        } catch (Exception e) {
+//            log.error("加载小程序支付资料出错{}", e);
+//        }
+//        return AjaxResponse.error("加载失败");
+//    }
+
+    /**
+     * 上传小程序支付资料
+     * @param user
+     * @param id
+     * @param mchId
+     * @param payKey
+     * @return
+     */
+    @PostMapping(value = "uploadAppletPayData")
+    public Object uploadAppletPayData(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, @RequestParam("id") String id,
+                                      @RequestParam("mchId") String mchId, @RequestParam("payKey") String payKey){
+        try {
+            if (NullUtil.isNullOrEmpty(id) || NullUtil.isNullOrEmpty(mchId) || NullUtil.isNullOrEmpty(payKey)){
+                return AjaxResponse.error("参数缺失");
+            }
+            Integer appletId = Integer.parseInt(id);
+            AppletInfo appletInfo = appletService.selectAppletInfo(appletId, user.getId());
+            if (null == appletInfo){
+                return AjaxResponse.error("未找到相关信息");
+            }
+            AppletInfo info = new AppletInfo();
+            info.setId(appletInfo.getId());
+            info.setMchId(EncryptionUtil.encryptAppletRSA(mchId));
+            info.setPayKey(EncryptionUtil.encryptAppletRSA(payKey));
+            info.setIfOpenPay(false);
+            appletService.updateAppletInfo(info);
+            return AjaxResponse.success("上传成功，请至小程序测试支付，测试成功即可开通支付");
+        } catch (Exception e) {
+            log.error("上传支付资料出错{}", e);
+        }
+        return AjaxResponse.error("上传失败");
     }
 }
