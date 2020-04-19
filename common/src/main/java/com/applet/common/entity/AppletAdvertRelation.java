@@ -24,10 +24,10 @@ public class AppletAdvertRelation implements Serializable {
 
     private String relationName;
 
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_ZH)
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_YMD_JDK)
     private Date startTime;
 
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_ZH)
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_YMD_JDK)
     private Date expireTime;
 
     private Boolean isDefault;

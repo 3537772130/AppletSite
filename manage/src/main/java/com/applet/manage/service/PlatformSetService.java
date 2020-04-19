@@ -1,9 +1,10 @@
 package com.applet.manage.service;
 
-import com.applet.common.entity.SystemNotice;
-import com.applet.common.entity.SystemNoticeExample;
+import com.applet.common.entity.*;
+import com.applet.common.mapper.AppletAdvertRelationMapper;
 import com.applet.common.mapper.CommonMapper;
 import com.applet.common.mapper.SystemNoticeMapper;
+import com.applet.common.mapper.ViewAppletAdvertRelationMapper;
 import com.applet.common.util.Constants;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.Page;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,6 +28,10 @@ import java.util.Date;
 public class PlatformSetService {
     @Autowired
     private SystemNoticeMapper systemNoticeMapper;
+    @Autowired
+    private AppletAdvertRelationMapper appletAdvertRelationMapper;
+    @Autowired
+    private ViewAppletAdvertRelationMapper viewAppletAdvertRelationMapper;
     @Autowired
     private CommonMapper commonMapper;
 
@@ -101,6 +107,117 @@ public class PlatformSetService {
                 newNotice.setNoticeStatus(false);
                 systemNoticeMapper.updateByExampleSelective(newNotice, example);
             }
+        }
+    }
+
+    /**
+     * 分页查询封面广告关联信息
+     * @param relationWebsite
+     * @param relationType
+     * @param relationName
+     * @param relationStatus
+     * @param page
+     * @return
+     */
+    public Page selectAppletAdvertRelationByPage(AppletAdvertRelation relation, Page page){
+        ViewAppletAdvertRelationExample example = new ViewAppletAdvertRelationExample();
+        example.setPage(page);
+        example.setOrderByClause("expire_time desc");
+        ViewAppletAdvertRelationExample.Criteria c = example.createCriteria();
+        if (NullUtil.isNotNullOrEmpty(relation.getAppletTypeId())){
+            c.andAppletTypeIdEqualTo(relation.getAppletTypeId());
+        }
+        if (NullUtil.isNotNullOrEmpty(relation.getAppletPageType())){
+            c.andAppletPageTypeEqualTo(relation.getAppletPageType());
+        }
+        if (NullUtil.isNotNullOrEmpty(relation.getRelationWebsite())){
+            c.andRelationWebsiteLike("%" + relation.getRelationWebsite() + "%");
+        }
+        if (NullUtil.isNotNullOrEmpty(relation.getRelationType())){
+            c.andRelationTypeEqualTo(relation.getRelationType());
+        }
+        if (NullUtil.isNotNullOrEmpty(relation.getRelationName())){
+            c.andRelationNameLike("%"+ relation.getRelationName() + "%");
+        }
+        if (NullUtil.isNotNullOrEmpty(relation.getRelationStatus())){
+            c.andRelationStatusEqualTo(relation.getRelationStatus());
+        }
+        long count = viewAppletAdvertRelationMapper.countByExample(example);
+        if (count > 0){
+            page.setTotalCount(count);
+            page.setDataSource(viewAppletAdvertRelationMapper.selectByExample(example));
+        }
+        return page;
+    }
+
+    /**
+     * 查询封面广告关联信息
+     * @param id
+     * @return
+     */
+    public AppletAdvertRelation selectAppletAdvertRelationById(Integer id){
+        return appletAdvertRelationMapper.selectByPrimaryKey(id);
+    }
+
+    /**
+     * 查询广告位置已安排到的截止日期
+     * @param appletTypeId
+     * @param appletPageType
+     * @return
+     */
+    public Date selectAppletAdvertRelationByLastExpireTime(Integer appletTypeId, Integer appletPageType){
+        Page page = new Page(0, 1);
+        AppletAdvertRelationExample example = new AppletAdvertRelationExample();
+        example.setPage(page);
+        example.setOrderByClause("expire_time desc");
+        example.createCriteria()
+                .andAppletTypeIdEqualTo(appletTypeId)
+                .andAppletPageTypeEqualTo(appletPageType)
+                .andRelationStatusEqualTo(true);
+        List<AppletAdvertRelation> list = appletAdvertRelationMapper.selectByExample(example);
+        if (NullUtil.isNotNullOrEmpty(list)){
+            return list.get(0).getExpireTime();
+        }
+        return null;
+    }
+
+    /**
+     * 校验是否存在时间冲突的记录
+     * @param appletTypeId
+     * @param appletPageType
+     * @param startTime
+     * @return
+     */
+    public Boolean checkAppletAdvertRelation(Integer appletTypeId, Integer appletPageType, Date startTime){
+        AppletAdvertRelationExample example = new AppletAdvertRelationExample();
+        example.createCriteria()
+                .andAppletTypeIdEqualTo(appletTypeId)
+                .andAppletPageTypeEqualTo(appletPageType)
+                .andExpireTimeGreaterThan(startTime)
+                .andRelationStatusEqualTo(true);
+        return appletAdvertRelationMapper.countByExample(example) > 0;
+    }
+
+    /**
+     * 更新封面广告关联信息
+     * @param relation
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void updateAppletAdvertRelation(AppletAdvertRelation relation){
+        relation.setUpdateTime(new Date());
+        if (NullUtil.isNotNullOrEmpty(relation.getId())){
+            appletAdvertRelationMapper.updateByPrimaryKeySelective(relation);
+        } else {
+            appletAdvertRelationMapper.insertSelective(relation);
+        }
+        if (relation.getRelationType().intValue() == 1 && relation.getIsDefault() && relation.getRelationStatus()){
+            // 内部推广默认项只允许在同类型小程序中存在一条有效记录，在其他记录失效、过期后将使用此条记录
+            AppletAdvertRelationExample example = new AppletAdvertRelationExample();
+            example.createCriteria().andIdNotEqualTo(relation.getId()).andIsDefaultEqualTo(true).andRelationStatusEqualTo(true);
+            AppletAdvertRelation record = new AppletAdvertRelation();
+            record.setUpdateTime(new Date());
+            record.setIsDefault(false);
+            appletAdvertRelationMapper.updateByExample(record, example);
         }
     }
 }

@@ -1,15 +1,21 @@
 package com.applet.manage.controller;
 
+import com.applet.common.entity.AppletAdvertRelation;
+import com.applet.common.entity.CheckResult;
 import com.applet.common.entity.SystemNotice;
 import com.applet.common.util.*;
-import com.applet.manage.config.annotation.CancelAuthentication;
+import com.applet.common.util.qiniu.QiNiuUtil;
 import com.applet.manage.service.PlatformSetService;
+import jodd.datetime.JDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,6 +31,28 @@ import javax.servlet.http.HttpServletRequest;
 public class PlatformSetController {
     @Autowired
     private PlatformSetService platformSetService;
+
+    /**
+     * 上传平台图片
+     * @param multipartFile
+     * @return
+     */
+    @RequestMapping(value = "uploadImage")
+    public Object uploadManagerAvatar(@RequestParam("image") MultipartFile multipartFile) {
+        try {
+            //校验文件信息
+            CheckResult result = CheckFileUtil.checkImageFile(multipartFile);
+            if (!result.getBool()) {
+                return AjaxResponse.error(result.getMsg());
+            }
+            String fileKey = "/api/public/platform/" + RandomUtil.getTimeStamp();
+            QiNiuUtil.uploadFile(multipartFile, fileKey);
+            return AjaxResponse.success(fileKey);
+        } catch (Exception e) {
+            log.error("管理员上传头像出错{}", e);
+            return AjaxResponse.error("上传失败");
+        }
+    }
 
     /**
      * 加载系统通知消息
@@ -96,4 +124,114 @@ public class PlatformSetController {
         return AjaxResponse.error("提交失败");
     }
 
+    /**
+     * 分页加载小程序广告位关联记录
+     * @param relation
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "loadAppletAdvertRelationByPage")
+    public Object loadAppletAdvertRelationByPage(AppletAdvertRelation relation, HttpServletRequest request){
+        Page page = PageUtil.initPage(request);
+        page = platformSetService.selectAppletAdvertRelationByPage(relation, page);
+        return AjaxResponse.success(page);
+    }
+
+    /**
+     * 加载小程序广告位关联详情
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "loadAppletAdvertRelationDetails")
+    public Object loadAppletAdvertRelationDetails(Integer id){
+        if (NullUtil.isNullOrEmpty(id)){
+            return AjaxResponse.error("参数错误");
+        }
+        return AjaxResponse.success(platformSetService.selectAppletAdvertRelationById(id));
+    }
+
+    /**
+     * 查询广告位已安排到的最后截止日期
+     * @param appletTypeId
+     * @param appletPageType
+     * @return
+     */
+    @RequestMapping(value = "queryAppletAdvertRelationByLastExpireTime")
+    public Object queryAppletAdvertRelationByLastExpireTime(Integer appletTypeId, Integer appletPageType){
+        Date lastTime = platformSetService.selectAppletAdvertRelationByLastExpireTime(appletTypeId, appletPageType);
+        if (NullUtil.isNullOrEmpty(lastTime)){
+//            lastTime = new JDateTime(new Date()).convertToDate();
+//            JDateTime time = new JDateTime(lastTime);
+//            return AjaxResponse.error(time.toString(Constants.DATE_YMD));
+            return AjaxResponse.error("");
+        }
+        JDateTime time = new JDateTime(lastTime);
+        Map map = new HashMap<>();
+        map.put("lastDate", time.toString(Constants.DATE_YMD));
+        map.put("startDate", time.addDay(1).toString(Constants.DATE_YMD));
+        return AjaxResponse.success(map);
+    }
+
+    /**
+     * 更新小程序广告位关系记录
+     * @param relation
+     * @return
+     */
+    @RequestMapping(value = "updateAppletAdvertRelation", method = RequestMethod.POST)
+    public Object updateAppletAdvertRelation(AppletAdvertRelation relation){
+        try {
+            if (null == relation){
+                return AjaxResponse.error("参数错误");
+            }
+            if (NullUtil.isNullOrEmpty(relation.getAppletTypeId())){
+                return AjaxResponse.error("请选择小程序类型");
+            }
+            if (NullUtil.isNullOrEmpty(relation.getAppletPageType())){
+                return AjaxResponse.error("请选择页面类型");
+            }
+            if (NullUtil.isNullOrEmpty(relation.getRelationImage())){
+                return AjaxResponse.error("请上传广告图片");
+            }
+            if (NullUtil.isNullOrEmpty(relation.getRelationWebsite())){
+                return AjaxResponse.error("请输入关联网址");
+            }
+            if (relation.getRelationType().intValue() == 2){
+                // 外部广告是否默认只能为false
+                relation.setIsDefault(false);
+                if (NullUtil.isNullOrEmpty(relation.getRelationName())){
+                    return AjaxResponse.error("请输入关联对象");
+                }
+            } else {
+                // 平台推广
+                relation.setRelationName("平台推广");
+            }
+            if (NullUtil.isNullOrEmpty(relation.getStartTime())){
+                return AjaxResponse.error("请选择开始日期");
+            }
+            JDateTime nowTime = new JDateTime(new Date());
+            nowTime.setHour(0).setMinute(0).setSecond(0);
+
+            JDateTime startTime = new JDateTime(relation.getStartTime());
+            if (startTime.compareDateTo(new JDateTime(new Date())) < 0){
+                return AjaxResponse.error("开始日期段必须大于等于当前时间");
+            }
+            relation.setStartTime(startTime.setHour(0).setMinute(0).setSecond(0).convertToDate());
+            if (platformSetService.checkAppletAdvertRelation(relation.getAppletTypeId(), relation.getAppletPageType(), relation.getStartTime())){
+                return AjaxResponse.error("开始日期段已存在安排");
+            }
+            if (NullUtil.isNullOrEmpty(relation.getExpireTime())){
+                return AjaxResponse.error("请选择截止日期");
+            }
+            JDateTime expireTime = new JDateTime(relation.getExpireTime());
+            relation.setExpireTime(expireTime.setHour(23).setMinute(59).setSecond(59).convertToDate());
+            if (expireTime.compareDateTo(startTime) > 0){
+                return AjaxResponse.error("截止日期段必须大于开始日期");
+            }
+            platformSetService.updateAppletAdvertRelation(relation);
+            return AjaxResponse.success("提交成功");
+        } catch (Exception e) {
+            log.error("提交小程序广告位安排出错", e);
+        }
+        return AjaxResponse.error("提交失败");
+    }
 }
