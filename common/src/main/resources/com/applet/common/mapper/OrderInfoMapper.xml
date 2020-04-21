@@ -8,16 +8,8 @@
     <result column="applet_id" jdbcType="INTEGER" property="appletId" />
     <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="wx_id" jdbcType="INTEGER" property="wxId" />
-    <result column="receiver_name" jdbcType="VARCHAR" property="receiverName" />
-    <result column="receiver_mobile" jdbcType="VARCHAR" property="receiverMobile" />
-    <result column="receiver_province" jdbcType="VARCHAR" property="receiverProvince" />
-    <result column="receiver_city" jdbcType="VARCHAR" property="receiverCity" />
-    <result column="receiver_county" jdbcType="VARCHAR" property="receiverCounty" />
-    <result column="receiver_address" jdbcType="VARCHAR" property="receiverAddress" />
-    <result column="receiver_lat" jdbcType="VARCHAR" property="receiverLat" />
-    <result column="receiver_lon" jdbcType="VARCHAR" property="receiverLon" />
+    <result column="receiver_id" jdbcType="INTEGER" property="receiverId" />
     <result column="user_remark" jdbcType="VARCHAR" property="userRemark" />
-    <result column="store_remark" jdbcType="VARCHAR" property="storeRemark" />
     <result column="user_coupon_id" jdbcType="INTEGER" property="userCouponId" />
     <result column="coupon_amount" jdbcType="DOUBLE" property="couponAmount" />
     <result column="freight_amount" jdbcType="DOUBLE" property="freightAmount" />
@@ -90,11 +82,9 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, order_no, courier_no, applet_id, user_id, wx_id, receiver_name, receiver_mobile, 
-    receiver_province, receiver_city, receiver_county, receiver_address, receiver_lat, 
-    receiver_lon, user_remark, store_remark, user_coupon_id, coupon_amount, freight_amount, 
-    total_amount, actual_amount, order_status, create_time, update_time, pay_type, pay_status, 
-    pay_channel, pay_relation_id
+    id, order_no, courier_no, applet_id, user_id, wx_id, receiver_id, user_remark, user_coupon_id, 
+    coupon_amount, freight_amount, total_amount, actual_amount, order_status, create_time, 
+    update_time, pay_type, pay_status, pay_channel, pay_relation_id
   </sql>
   <select id="selectByExample" parameterType="com.applet.common.entity.OrderInfoExample" resultMap="BaseResultMap">
     select
@@ -130,24 +120,18 @@
   <insert id="insert" parameterType="com.applet.common.entity.OrderInfo">
     insert into order_info (id, order_no, courier_no, 
       applet_id, user_id, wx_id, 
-      receiver_name, receiver_mobile, receiver_province, 
-      receiver_city, receiver_county, receiver_address, 
-      receiver_lat, receiver_lon, user_remark, 
-      store_remark, user_coupon_id, coupon_amount, 
-      freight_amount, total_amount, actual_amount, 
-      order_status, create_time, update_time, 
-      pay_type, pay_status, pay_channel, 
-      pay_relation_id)
+      receiver_id, user_remark, user_coupon_id, 
+      coupon_amount, freight_amount, total_amount, 
+      actual_amount, order_status, create_time, 
+      update_time, pay_type, pay_status, 
+      pay_channel, pay_relation_id)
     values (#{id,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR}, #{courierNo,jdbcType=VARCHAR}, 
       #{appletId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{wxId,jdbcType=INTEGER}, 
-      #{receiverName,jdbcType=VARCHAR}, #{receiverMobile,jdbcType=VARCHAR}, #{receiverProvince,jdbcType=VARCHAR}, 
-      #{receiverCity,jdbcType=VARCHAR}, #{receiverCounty,jdbcType=VARCHAR}, #{receiverAddress,jdbcType=VARCHAR}, 
-      #{receiverLat,jdbcType=VARCHAR}, #{receiverLon,jdbcType=VARCHAR}, #{userRemark,jdbcType=VARCHAR}, 
-      #{storeRemark,jdbcType=VARCHAR}, #{userCouponId,jdbcType=INTEGER}, #{couponAmount,jdbcType=DOUBLE}, 
-      #{freightAmount,jdbcType=DOUBLE}, #{totalAmount,jdbcType=DOUBLE}, #{actualAmount,jdbcType=DOUBLE}, 
-      #{orderStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{payType,jdbcType=INTEGER}, #{payStatus,jdbcType=INTEGER}, #{payChannel,jdbcType=VARCHAR}, 
-      #{payRelationId,jdbcType=VARCHAR})
+      #{receiverId,jdbcType=INTEGER}, #{userRemark,jdbcType=VARCHAR}, #{userCouponId,jdbcType=INTEGER}, 
+      #{couponAmount,jdbcType=DOUBLE}, #{freightAmount,jdbcType=DOUBLE}, #{totalAmount,jdbcType=DOUBLE}, 
+      #{actualAmount,jdbcType=DOUBLE}, #{orderStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{payType,jdbcType=INTEGER}, #{payStatus,jdbcType=INTEGER}, 
+      #{payChannel,jdbcType=VARCHAR}, #{payRelationId,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" keyProperty="id" parameterType="com.applet.common.entity.OrderInfo" useGeneratedKeys="true">
     insert into order_info
@@ -170,35 +154,11 @@
       <if test="wxId != null">
         wx_id,
       </if>
-      <if test="receiverName != null">
-        receiver_name,
-      </if>
-      <if test="receiverMobile != null">
-        receiver_mobile,
-      </if>
-      <if test="receiverProvince != null">
-        receiver_province,
-      </if>
-      <if test="receiverCity != null">
-        receiver_city,
-      </if>
-      <if test="receiverCounty != null">
-        receiver_county,
-      </if>
-      <if test="receiverAddress != null">
-        receiver_address,
-      </if>
-      <if test="receiverLat != null">
-        receiver_lat,
-      </if>
-      <if test="receiverLon != null">
-        receiver_lon,
+      <if test="receiverId != null">
+        receiver_id,
       </if>
       <if test="userRemark != null">
         user_remark,
-      </if>
-      <if test="storeRemark != null">
-        store_remark,
       </if>
       <if test="userCouponId != null">
         user_coupon_id,
@@ -256,35 +216,11 @@
       <if test="wxId != null">
         #{wxId,jdbcType=INTEGER},
       </if>
-      <if test="receiverName != null">
-        #{receiverName,jdbcType=VARCHAR},
-      </if>
-      <if test="receiverMobile != null">
-        #{receiverMobile,jdbcType=VARCHAR},
-      </if>
-      <if test="receiverProvince != null">
-        #{receiverProvince,jdbcType=VARCHAR},
-      </if>
-      <if test="receiverCity != null">
-        #{receiverCity,jdbcType=VARCHAR},
-      </if>
-      <if test="receiverCounty != null">
-        #{receiverCounty,jdbcType=VARCHAR},
-      </if>
-      <if test="receiverAddress != null">
-        #{receiverAddress,jdbcType=VARCHAR},
-      </if>
-      <if test="receiverLat != null">
-        #{receiverLat,jdbcType=VARCHAR},
-      </if>
-      <if test="receiverLon != null">
-        #{receiverLon,jdbcType=VARCHAR},
+      <if test="receiverId != null">
+        #{receiverId,jdbcType=INTEGER},
       </if>
       <if test="userRemark != null">
         #{userRemark,jdbcType=VARCHAR},
-      </if>
-      <if test="storeRemark != null">
-        #{storeRemark,jdbcType=VARCHAR},
       </if>
       <if test="userCouponId != null">
         #{userCouponId,jdbcType=INTEGER},
@@ -351,35 +287,11 @@
       <if test="record.wxId != null">
         wx_id = #{record.wxId,jdbcType=INTEGER},
       </if>
-      <if test="record.receiverName != null">
-        receiver_name = #{record.receiverName,jdbcType=VARCHAR},
-      </if>
-      <if test="record.receiverMobile != null">
-        receiver_mobile = #{record.receiverMobile,jdbcType=VARCHAR},
-      </if>
-      <if test="record.receiverProvince != null">
-        receiver_province = #{record.receiverProvince,jdbcType=VARCHAR},
-      </if>
-      <if test="record.receiverCity != null">
-        receiver_city = #{record.receiverCity,jdbcType=VARCHAR},
-      </if>
-      <if test="record.receiverCounty != null">
-        receiver_county = #{record.receiverCounty,jdbcType=VARCHAR},
-      </if>
-      <if test="record.receiverAddress != null">
-        receiver_address = #{record.receiverAddress,jdbcType=VARCHAR},
-      </if>
-      <if test="record.receiverLat != null">
-        receiver_lat = #{record.receiverLat,jdbcType=VARCHAR},
-      </if>
-      <if test="record.receiverLon != null">
-        receiver_lon = #{record.receiverLon,jdbcType=VARCHAR},
+      <if test="record.receiverId != null">
+        receiver_id = #{record.receiverId,jdbcType=INTEGER},
       </if>
       <if test="record.userRemark != null">
         user_remark = #{record.userRemark,jdbcType=VARCHAR},
-      </if>
-      <if test="record.storeRemark != null">
-        store_remark = #{record.storeRemark,jdbcType=VARCHAR},
       </if>
       <if test="record.userCouponId != null">
         user_coupon_id = #{record.userCouponId,jdbcType=INTEGER},
@@ -430,16 +342,8 @@
       applet_id = #{record.appletId,jdbcType=INTEGER},
       user_id = #{record.userId,jdbcType=INTEGER},
       wx_id = #{record.wxId,jdbcType=INTEGER},
-      receiver_name = #{record.receiverName,jdbcType=VARCHAR},
-      receiver_mobile = #{record.receiverMobile,jdbcType=VARCHAR},
-      receiver_province = #{record.receiverProvince,jdbcType=VARCHAR},
-      receiver_city = #{record.receiverCity,jdbcType=VARCHAR},
-      receiver_county = #{record.receiverCounty,jdbcType=VARCHAR},
-      receiver_address = #{record.receiverAddress,jdbcType=VARCHAR},
-      receiver_lat = #{record.receiverLat,jdbcType=VARCHAR},
-      receiver_lon = #{record.receiverLon,jdbcType=VARCHAR},
+      receiver_id = #{record.receiverId,jdbcType=INTEGER},
       user_remark = #{record.userRemark,jdbcType=VARCHAR},
-      store_remark = #{record.storeRemark,jdbcType=VARCHAR},
       user_coupon_id = #{record.userCouponId,jdbcType=INTEGER},
       coupon_amount = #{record.couponAmount,jdbcType=DOUBLE},
       freight_amount = #{record.freightAmount,jdbcType=DOUBLE},
@@ -474,35 +378,11 @@
       <if test="wxId != null">
         wx_id = #{wxId,jdbcType=INTEGER},
       </if>
-      <if test="receiverName != null">
-        receiver_name = #{receiverName,jdbcType=VARCHAR},
-      </if>
-      <if test="receiverMobile != null">
-        receiver_mobile = #{receiverMobile,jdbcType=VARCHAR},
-      </if>
-      <if test="receiverProvince != null">
-        receiver_province = #{receiverProvince,jdbcType=VARCHAR},
-      </if>
-      <if test="receiverCity != null">
-        receiver_city = #{receiverCity,jdbcType=VARCHAR},
-      </if>
-      <if test="receiverCounty != null">
-        receiver_county = #{receiverCounty,jdbcType=VARCHAR},
-      </if>
-      <if test="receiverAddress != null">
-        receiver_address = #{receiverAddress,jdbcType=VARCHAR},
-      </if>
-      <if test="receiverLat != null">
-        receiver_lat = #{receiverLat,jdbcType=VARCHAR},
-      </if>
-      <if test="receiverLon != null">
-        receiver_lon = #{receiverLon,jdbcType=VARCHAR},
+      <if test="receiverId != null">
+        receiver_id = #{receiverId,jdbcType=INTEGER},
       </if>
       <if test="userRemark != null">
         user_remark = #{userRemark,jdbcType=VARCHAR},
-      </if>
-      <if test="storeRemark != null">
-        store_remark = #{storeRemark,jdbcType=VARCHAR},
       </if>
       <if test="userCouponId != null">
         user_coupon_id = #{userCouponId,jdbcType=INTEGER},
@@ -550,16 +430,8 @@
       applet_id = #{appletId,jdbcType=INTEGER},
       user_id = #{userId,jdbcType=INTEGER},
       wx_id = #{wxId,jdbcType=INTEGER},
-      receiver_name = #{receiverName,jdbcType=VARCHAR},
-      receiver_mobile = #{receiverMobile,jdbcType=VARCHAR},
-      receiver_province = #{receiverProvince,jdbcType=VARCHAR},
-      receiver_city = #{receiverCity,jdbcType=VARCHAR},
-      receiver_county = #{receiverCounty,jdbcType=VARCHAR},
-      receiver_address = #{receiverAddress,jdbcType=VARCHAR},
-      receiver_lat = #{receiverLat,jdbcType=VARCHAR},
-      receiver_lon = #{receiverLon,jdbcType=VARCHAR},
+      receiver_id = #{receiverId,jdbcType=INTEGER},
       user_remark = #{userRemark,jdbcType=VARCHAR},
-      store_remark = #{storeRemark,jdbcType=VARCHAR},
       user_coupon_id = #{userCouponId,jdbcType=INTEGER},
       coupon_amount = #{couponAmount,jdbcType=DOUBLE},
       freight_amount = #{freightAmount,jdbcType=DOUBLE},

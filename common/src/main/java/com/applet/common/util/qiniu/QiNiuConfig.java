@@ -70,13 +70,13 @@ public class QiNiuConfig {
 
     static {
         if (PropertiesLoadUtils.isRun()) {
-            downURLAppletPublicUrL = "http://public.wscxy.xin/";
-            downURLAppletImageUrl = "http://image.wscxy.xin/";
-            downURLAppletAudioUrl = "http://audio.wscxy.xin/";
-            downURLAppletVideoUrl = "http://video.wscxy.xin/";
-            downURLAppletZipUrl = "http://zip.wscxy.xin/";
+            downURLAppletPublicUrL = "http://public.zmwsf.cn/";
+            downURLAppletImageUrl = "http://image.zmwsf.cn/";
+            downURLAppletAudioUrl = "http://audio.zmwsf.cn/";
+            downURLAppletVideoUrl = "http://video.zmwsf.cn/";
+            downURLAppletZipUrl = "http://zip.zmwsf.cn/";
         } else {
-            downURLAppletPublicUrL = "http://pymkwekvt.bkt.clouddn.com/";
+            downURLAppletPublicUrL = "http://appletpublic.s3-cn-south-1.qiniucs.com/";
             downURLAppletImageUrl = "http://pymksenk7.bkt.clouddn.com/";
             downURLAppletAudioUrl = "http://pymknhbeu.bkt.clouddn.com/";
             downURLAppletVideoUrl = "http://pymkf6d00.bkt.clouddn.com/";

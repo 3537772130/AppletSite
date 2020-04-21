@@ -1,6 +1,8 @@
 package com.applet.common.util.aliyun;
 
 import com.alibaba.fastjson.JSONObject;
+import com.aliyuncs.CommonRequest;
+import com.aliyuncs.CommonResponse;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.IAcsClient;
 import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsRequest;
@@ -8,6 +10,8 @@ import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse;
 import com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest;
 import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.exceptions.ServerException;
+import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
 import org.slf4j.Logger;
@@ -36,8 +40,8 @@ public class SmsUtil {
     static final String domain = "dysmsapi.aliyuncs.com";
 
     // TODO 此处需要替换成开发者自己的AK(在阿里云访问控制台寻找)
-    static final String accessKeyId = "LTAIGt6YGw5egPEh";
-    static final String accessKeySecret = "LTSje49NqkONN6nR0HyPlNjEPsaQGe";
+    static final String accessKeyId = "LTAI4GFNWptq23epHgWrQswK";
+    static final String accessKeySecret = "DAjnGG0yNuDp5ZdkxtMVf0BF8WEG5d";
 
     /**
      * 发送短信
@@ -112,7 +116,7 @@ public class SmsUtil {
     public static void main(String[] args) throws ClientException, InterruptedException {
 
         //发短信
-        SendSmsResponse response = sendSms("13874825632", "周华虎", "SMS_137689866", "{\"code\":\"123456\"}");
+        SendSmsResponse response = sendSms("17601301913", "程序坞", "SMS_137689866", "{\"code\":\"123456\"}");
         System.out.println("短信接口返回的数据----------------");
         System.out.println("Code=" + response.getCode());
         System.out.println("Message=" + response.getMessage());
@@ -141,6 +145,24 @@ public class SmsUtil {
             System.out.println("TotalCount=" + querySendDetailsResponse.getTotalCount());
             System.out.println("RequestId=" + querySendDetailsResponse.getRequestId());
         }
+
+//        DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", accessKeyId, accessKeySecret);
+//        IAcsClient client = new DefaultAcsClient(profile);
+//
+//        CommonRequest request = new CommonRequest();
+//        request.setSysMethod(MethodType.POST);
+//        request.setSysDomain("dysmsapi.aliyuncs.com");
+//        request.setSysVersion("2017-05-25");
+//        request.setSysAction("SendSms");
+//        request.putQueryParameter("RegionId", "cn-hangzhou");
+//        try {
+//            CommonResponse response = client.getCommonResponse(request);
+//            System.out.println(response.getData());
+//        } catch (ServerException e) {
+//            e.printStackTrace();
+//        } catch (ClientException e) {
+//            e.printStackTrace();
+//        }
 
     }
 }

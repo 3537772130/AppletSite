@@ -236,63 +236,133 @@ public class AppletAdvertRelationExample {
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeIsNull() {
-            addCriterion("applet_page_type is null");
+        public Criteria andPageLogoIsNull() {
+            addCriterion("page_logo is null");
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeIsNotNull() {
-            addCriterion("applet_page_type is not null");
+        public Criteria andPageLogoIsNotNull() {
+            addCriterion("page_logo is not null");
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeEqualTo(Integer value) {
-            addCriterion("applet_page_type =", value, "appletPageType");
+        public Criteria andPageLogoEqualTo(String value) {
+            addCriterion("page_logo =", value, "pageLogo");
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeNotEqualTo(Integer value) {
-            addCriterion("applet_page_type <>", value, "appletPageType");
+        public Criteria andPageLogoNotEqualTo(String value) {
+            addCriterion("page_logo <>", value, "pageLogo");
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeGreaterThan(Integer value) {
-            addCriterion("applet_page_type >", value, "appletPageType");
+        public Criteria andPageLogoGreaterThan(String value) {
+            addCriterion("page_logo >", value, "pageLogo");
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeGreaterThanOrEqualTo(Integer value) {
-            addCriterion("applet_page_type >=", value, "appletPageType");
+        public Criteria andPageLogoGreaterThanOrEqualTo(String value) {
+            addCriterion("page_logo >=", value, "pageLogo");
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeLessThan(Integer value) {
-            addCriterion("applet_page_type <", value, "appletPageType");
+        public Criteria andPageLogoLessThan(String value) {
+            addCriterion("page_logo <", value, "pageLogo");
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeLessThanOrEqualTo(Integer value) {
-            addCriterion("applet_page_type <=", value, "appletPageType");
+        public Criteria andPageLogoLessThanOrEqualTo(String value) {
+            addCriterion("page_logo <=", value, "pageLogo");
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeIn(List<Integer> values) {
-            addCriterion("applet_page_type in", values, "appletPageType");
+        public Criteria andPageLogoLike(String value) {
+            addCriterion("page_logo like", value, "pageLogo");
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeNotIn(List<Integer> values) {
-            addCriterion("applet_page_type not in", values, "appletPageType");
+        public Criteria andPageLogoNotLike(String value) {
+            addCriterion("page_logo not like", value, "pageLogo");
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeBetween(Integer value1, Integer value2) {
-            addCriterion("applet_page_type between", value1, value2, "appletPageType");
+        public Criteria andPageLogoIn(List<String> values) {
+            addCriterion("page_logo in", values, "pageLogo");
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeNotBetween(Integer value1, Integer value2) {
-            addCriterion("applet_page_type not between", value1, value2, "appletPageType");
+        public Criteria andPageLogoNotIn(List<String> values) {
+            addCriterion("page_logo not in", values, "pageLogo");
+            return (Criteria) this;
+        }
+
+        public Criteria andPageLogoBetween(String value1, String value2) {
+            addCriterion("page_logo between", value1, value2, "pageLogo");
+            return (Criteria) this;
+        }
+
+        public Criteria andPageLogoNotBetween(String value1, String value2) {
+            addCriterion("page_logo not between", value1, value2, "pageLogo");
+            return (Criteria) this;
+        }
+
+        public Criteria andRelationTypeIsNull() {
+            addCriterion("relation_type is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andRelationTypeIsNotNull() {
+            addCriterion("relation_type is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andRelationTypeEqualTo(Integer value) {
+            addCriterion("relation_type =", value, "relationType");
+            return (Criteria) this;
+        }
+
+        public Criteria andRelationTypeNotEqualTo(Integer value) {
+            addCriterion("relation_type <>", value, "relationType");
+            return (Criteria) this;
+        }
+
+        public Criteria andRelationTypeGreaterThan(Integer value) {
+            addCriterion("relation_type >", value, "relationType");
+            return (Criteria) this;
+        }
+
+        public Criteria andRelationTypeGreaterThanOrEqualTo(Integer value) {
+            addCriterion("relation_type >=", value, "relationType");
+            return (Criteria) this;
+        }
+
+        public Criteria andRelationTypeLessThan(Integer value) {
+            addCriterion("relation_type <", value, "relationType");
+            return (Criteria) this;
+        }
+
+        public Criteria andRelationTypeLessThanOrEqualTo(Integer value) {
+            addCriterion("relation_type <=", value, "relationType");
+            return (Criteria) this;
+        }
+
+        public Criteria andRelationTypeIn(List<Integer> values) {
+            addCriterion("relation_type in", values, "relationType");
+            return (Criteria) this;
+        }
+
+        public Criteria andRelationTypeNotIn(List<Integer> values) {
+            addCriterion("relation_type not in", values, "relationType");
+            return (Criteria) this;
+        }
+
+        public Criteria andRelationTypeBetween(Integer value1, Integer value2) {
+            addCriterion("relation_type between", value1, value2, "relationType");
+            return (Criteria) this;
+        }
+
+        public Criteria andRelationTypeNotBetween(Integer value1, Integer value2) {
+            addCriterion("relation_type not between", value1, value2, "relationType");
             return (Criteria) this;
         }
 
@@ -433,66 +503,6 @@ public class AppletAdvertRelationExample {
 
         public Criteria andRelationWebsiteNotBetween(String value1, String value2) {
             addCriterion("relation_website not between", value1, value2, "relationWebsite");
-            return (Criteria) this;
-        }
-
-        public Criteria andRelationTypeIsNull() {
-            addCriterion("relation_type is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andRelationTypeIsNotNull() {
-            addCriterion("relation_type is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andRelationTypeEqualTo(Integer value) {
-            addCriterion("relation_type =", value, "relationType");
-            return (Criteria) this;
-        }
-
-        public Criteria andRelationTypeNotEqualTo(Integer value) {
-            addCriterion("relation_type <>", value, "relationType");
-            return (Criteria) this;
-        }
-
-        public Criteria andRelationTypeGreaterThan(Integer value) {
-            addCriterion("relation_type >", value, "relationType");
-            return (Criteria) this;
-        }
-
-        public Criteria andRelationTypeGreaterThanOrEqualTo(Integer value) {
-            addCriterion("relation_type >=", value, "relationType");
-            return (Criteria) this;
-        }
-
-        public Criteria andRelationTypeLessThan(Integer value) {
-            addCriterion("relation_type <", value, "relationType");
-            return (Criteria) this;
-        }
-
-        public Criteria andRelationTypeLessThanOrEqualTo(Integer value) {
-            addCriterion("relation_type <=", value, "relationType");
-            return (Criteria) this;
-        }
-
-        public Criteria andRelationTypeIn(List<Integer> values) {
-            addCriterion("relation_type in", values, "relationType");
-            return (Criteria) this;
-        }
-
-        public Criteria andRelationTypeNotIn(List<Integer> values) {
-            addCriterion("relation_type not in", values, "relationType");
-            return (Criteria) this;
-        }
-
-        public Criteria andRelationTypeBetween(Integer value1, Integer value2) {
-            addCriterion("relation_type between", value1, value2, "relationType");
-            return (Criteria) this;
-        }
-
-        public Criteria andRelationTypeNotBetween(Integer value1, Integer value2) {
-            addCriterion("relation_type not between", value1, value2, "relationType");
             return (Criteria) this;
         }
 

@@ -127,8 +127,8 @@ public class PlatformSetService {
         if (NullUtil.isNotNullOrEmpty(relation.getAppletTypeId())){
             c.andAppletTypeIdEqualTo(relation.getAppletTypeId());
         }
-        if (NullUtil.isNotNullOrEmpty(relation.getAppletPageType())){
-            c.andAppletPageTypeEqualTo(relation.getAppletPageType());
+        if (NullUtil.isNotNullOrEmpty(relation.getPageLogo())){
+            c.andPageLogoEqualTo(relation.getPageLogo());
         }
         if (NullUtil.isNotNullOrEmpty(relation.getRelationWebsite())){
             c.andRelationWebsiteLike("%" + relation.getRelationWebsite() + "%");
@@ -162,17 +162,17 @@ public class PlatformSetService {
     /**
      * 查询广告位置已安排到的截止日期
      * @param appletTypeId
-     * @param appletPageType
+     * @param pageLogo
      * @return
      */
-    public Date selectAppletAdvertRelationByLastExpireTime(Integer appletTypeId, Integer appletPageType){
+    public Date selectAppletAdvertRelationByLastExpireTime(Integer appletTypeId, String pageLogo){
         Page page = new Page(0, 1);
         AppletAdvertRelationExample example = new AppletAdvertRelationExample();
         example.setPage(page);
         example.setOrderByClause("expire_time desc");
         example.createCriteria()
                 .andAppletTypeIdEqualTo(appletTypeId)
-                .andAppletPageTypeEqualTo(appletPageType)
+                .andPageLogoEqualTo(pageLogo)
                 .andRelationStatusEqualTo(true);
         List<AppletAdvertRelation> list = appletAdvertRelationMapper.selectByExample(example);
         if (NullUtil.isNotNullOrEmpty(list)){
@@ -184,15 +184,15 @@ public class PlatformSetService {
     /**
      * 校验是否存在时间冲突的记录
      * @param appletTypeId
-     * @param appletPageType
+     * @param pageLogo
      * @param startTime
      * @return
      */
-    public Boolean checkAppletAdvertRelation(Integer appletTypeId, Integer appletPageType, Date startTime){
+    public Boolean checkAppletAdvertRelation(Integer appletTypeId, String pageLogo, Date startTime){
         AppletAdvertRelationExample example = new AppletAdvertRelationExample();
         example.createCriteria()
                 .andAppletTypeIdEqualTo(appletTypeId)
-                .andAppletPageTypeEqualTo(appletPageType)
+                .andPageLogoEqualTo(pageLogo)
                 .andExpireTimeGreaterThan(startTime)
                 .andRelationStatusEqualTo(true);
         return appletAdvertRelationMapper.countByExample(example) > 0;

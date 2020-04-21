@@ -5,8 +5,7 @@
     <result column="id" jdbcType="INTEGER" property="id" />
     <result column="applet_type_id" jdbcType="INTEGER" property="appletTypeId" />
     <result column="applet_type_name" jdbcType="VARCHAR" property="appletTypeName" />
-    <result column="applet_page_type" jdbcType="INTEGER" property="appletPageType" />
-    <result column="applet_page_type_name" jdbcType="VARCHAR" property="appletPageTypeName" />
+    <result column="page_logo" jdbcType="VARCHAR" property="pageLogo" />
     <result column="relation_image" jdbcType="VARCHAR" property="relationImage" />
     <result column="relation_website" jdbcType="VARCHAR" property="relationWebsite" />
     <result column="relation_type" jdbcType="INTEGER" property="relationType" />
@@ -48,9 +47,9 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, applet_type_id, applet_type_name, applet_page_type, applet_page_type_name, relation_image, 
-    relation_website, relation_type, relation_type_name, relation_name, start_time, expire_time, 
-    is_default, update_time, relation_status
+    id, applet_type_id, applet_type_name, page_logo, relation_image, relation_website, 
+    relation_type, relation_type_name, relation_name, start_time, expire_time, is_default, 
+    update_time, relation_status
   </sql>
   <select id="selectByExample" parameterType="com.applet.common.entity.ViewAppletAdvertRelationExample" resultMap="BaseResultMap">
     select

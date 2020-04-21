@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.applet.common.mapper.ViewStoreUserOrderCountMapper">
-  <resultMap id="BaseResultMap" type="com.applet.common.entity.ViewStoreUserOrderCount">
-    <result column="store_user_id" jdbcType="INTEGER" property="storeUserId" />
+<mapper namespace="com.applet.common.mapper.ViewAppletUserOrderCountMapper">
+  <resultMap id="BaseResultMap" type="com.applet.common.entity.ViewAppletUserOrderCount">
+    <result column="applet_id" jdbcType="INTEGER" property="appletId" />
     <result column="cancel_count" jdbcType="DECIMAL" property="cancelCount" />
     <result column="wait_count" jdbcType="DECIMAL" property="waitCount" />
     <result column="refuse_count" jdbcType="DECIMAL" property="refuseCount" />
@@ -40,16 +40,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    store_user_id, cancel_count, wait_count, refuse_count, accept_count, deliver_count, 
-    finish_count
+    applet_id, cancel_count, wait_count, refuse_count, accept_count, deliver_count, finish_count
   </sql>
-  <select id="selectByExample" parameterType="com.applet.common.entity.ViewStoreUserOrderCountExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.applet.common.entity.ViewAppletUserOrderCountExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from view_store_user_order_count
+    from view_applet_user_order_count
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -58,8 +57,8 @@
     </if>
     <include refid="PageSuffix" />
   </select>
-  <select id="countByExample" parameterType="com.applet.common.entity.ViewStoreUserOrderCountExample" resultType="java.lang.Long">
-    select count(*) from view_store_user_order_count
+  <select id="countByExample" parameterType="com.applet.common.entity.ViewAppletUserOrderCountExample" resultType="java.lang.Long">
+    select count(*) from view_applet_user_order_count
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>

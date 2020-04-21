@@ -4,10 +4,10 @@
   <resultMap id="BaseResultMap" type="com.applet.common.entity.AppletAdvertRelation">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="applet_type_id" jdbcType="INTEGER" property="appletTypeId" />
-    <result column="applet_page_type" jdbcType="INTEGER" property="appletPageType" />
+    <result column="page_logo" jdbcType="VARCHAR" property="pageLogo" />
+    <result column="relation_type" jdbcType="INTEGER" property="relationType" />
     <result column="relation_image" jdbcType="VARCHAR" property="relationImage" />
     <result column="relation_website" jdbcType="VARCHAR" property="relationWebsite" />
-    <result column="relation_type" jdbcType="INTEGER" property="relationType" />
     <result column="relation_name" jdbcType="VARCHAR" property="relationName" />
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="expire_time" jdbcType="TIMESTAMP" property="expireTime" />
@@ -74,8 +74,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, applet_type_id, applet_page_type, relation_image, relation_website, relation_type, 
-    relation_name, start_time, expire_time, is_default, update_time, relation_status
+    id, applet_type_id, page_logo, relation_type, relation_image, relation_website, relation_name, 
+    start_time, expire_time, is_default, update_time, relation_status
   </sql>
   <select id="selectByExample" parameterType="com.applet.common.entity.AppletAdvertRelationExample" resultMap="BaseResultMap">
     select
@@ -109,13 +109,13 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.applet.common.entity.AppletAdvertRelation">
-    insert into applet_advert_relation (id, applet_type_id, applet_page_type, 
-      relation_image, relation_website, relation_type, 
+    insert into applet_advert_relation (id, applet_type_id, page_logo, 
+      relation_type, relation_image, relation_website, 
       relation_name, start_time, expire_time, 
       is_default, update_time, relation_status
       )
-    values (#{id,jdbcType=INTEGER}, #{appletTypeId,jdbcType=INTEGER}, #{appletPageType,jdbcType=INTEGER}, 
-      #{relationImage,jdbcType=VARCHAR}, #{relationWebsite,jdbcType=VARCHAR}, #{relationType,jdbcType=INTEGER}, 
+    values (#{id,jdbcType=INTEGER}, #{appletTypeId,jdbcType=INTEGER}, #{pageLogo,jdbcType=VARCHAR}, 
+      #{relationType,jdbcType=INTEGER}, #{relationImage,jdbcType=VARCHAR}, #{relationWebsite,jdbcType=VARCHAR}, 
       #{relationName,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, #{expireTime,jdbcType=TIMESTAMP}, 
       #{isDefault,jdbcType=BIT}, #{updateTime,jdbcType=TIMESTAMP}, #{relationStatus,jdbcType=BIT}
       )
@@ -129,17 +129,17 @@
       <if test="appletTypeId != null">
         applet_type_id,
       </if>
-      <if test="appletPageType != null">
-        applet_page_type,
+      <if test="pageLogo != null">
+        page_logo,
+      </if>
+      <if test="relationType != null">
+        relation_type,
       </if>
       <if test="relationImage != null">
         relation_image,
       </if>
       <if test="relationWebsite != null">
         relation_website,
-      </if>
-      <if test="relationType != null">
-        relation_type,
       </if>
       <if test="relationName != null">
         relation_name,
@@ -167,17 +167,17 @@
       <if test="appletTypeId != null">
         #{appletTypeId,jdbcType=INTEGER},
       </if>
-      <if test="appletPageType != null">
-        #{appletPageType,jdbcType=INTEGER},
+      <if test="pageLogo != null">
+        #{pageLogo,jdbcType=VARCHAR},
+      </if>
+      <if test="relationType != null">
+        #{relationType,jdbcType=INTEGER},
       </if>
       <if test="relationImage != null">
         #{relationImage,jdbcType=VARCHAR},
       </if>
       <if test="relationWebsite != null">
         #{relationWebsite,jdbcType=VARCHAR},
-      </if>
-      <if test="relationType != null">
-        #{relationType,jdbcType=INTEGER},
       </if>
       <if test="relationName != null">
         #{relationName,jdbcType=VARCHAR},
@@ -214,17 +214,17 @@
       <if test="record.appletTypeId != null">
         applet_type_id = #{record.appletTypeId,jdbcType=INTEGER},
       </if>
-      <if test="record.appletPageType != null">
-        applet_page_type = #{record.appletPageType,jdbcType=INTEGER},
+      <if test="record.pageLogo != null">
+        page_logo = #{record.pageLogo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.relationType != null">
+        relation_type = #{record.relationType,jdbcType=INTEGER},
       </if>
       <if test="record.relationImage != null">
         relation_image = #{record.relationImage,jdbcType=VARCHAR},
       </if>
       <if test="record.relationWebsite != null">
         relation_website = #{record.relationWebsite,jdbcType=VARCHAR},
-      </if>
-      <if test="record.relationType != null">
-        relation_type = #{record.relationType,jdbcType=INTEGER},
       </if>
       <if test="record.relationName != null">
         relation_name = #{record.relationName,jdbcType=VARCHAR},
@@ -253,10 +253,10 @@
     update applet_advert_relation
     set id = #{record.id,jdbcType=INTEGER},
       applet_type_id = #{record.appletTypeId,jdbcType=INTEGER},
-      applet_page_type = #{record.appletPageType,jdbcType=INTEGER},
+      page_logo = #{record.pageLogo,jdbcType=VARCHAR},
+      relation_type = #{record.relationType,jdbcType=INTEGER},
       relation_image = #{record.relationImage,jdbcType=VARCHAR},
       relation_website = #{record.relationWebsite,jdbcType=VARCHAR},
-      relation_type = #{record.relationType,jdbcType=INTEGER},
       relation_name = #{record.relationName,jdbcType=VARCHAR},
       start_time = #{record.startTime,jdbcType=TIMESTAMP},
       expire_time = #{record.expireTime,jdbcType=TIMESTAMP},
@@ -273,17 +273,17 @@
       <if test="appletTypeId != null">
         applet_type_id = #{appletTypeId,jdbcType=INTEGER},
       </if>
-      <if test="appletPageType != null">
-        applet_page_type = #{appletPageType,jdbcType=INTEGER},
+      <if test="pageLogo != null">
+        page_logo = #{pageLogo,jdbcType=VARCHAR},
+      </if>
+      <if test="relationType != null">
+        relation_type = #{relationType,jdbcType=INTEGER},
       </if>
       <if test="relationImage != null">
         relation_image = #{relationImage,jdbcType=VARCHAR},
       </if>
       <if test="relationWebsite != null">
         relation_website = #{relationWebsite,jdbcType=VARCHAR},
-      </if>
-      <if test="relationType != null">
-        relation_type = #{relationType,jdbcType=INTEGER},
       </if>
       <if test="relationName != null">
         relation_name = #{relationName,jdbcType=VARCHAR},
@@ -309,10 +309,10 @@
   <update id="updateByPrimaryKey" parameterType="com.applet.common.entity.AppletAdvertRelation">
     update applet_advert_relation
     set applet_type_id = #{appletTypeId,jdbcType=INTEGER},
-      applet_page_type = #{appletPageType,jdbcType=INTEGER},
+      page_logo = #{pageLogo,jdbcType=VARCHAR},
+      relation_type = #{relationType,jdbcType=INTEGER},
       relation_image = #{relationImage,jdbcType=VARCHAR},
       relation_website = #{relationWebsite,jdbcType=VARCHAR},
-      relation_type = #{relationType,jdbcType=INTEGER},
       relation_name = #{relationName,jdbcType=VARCHAR},
       start_time = #{startTime,jdbcType=TIMESTAMP},
       expire_time = #{expireTime,jdbcType=TIMESTAMP},

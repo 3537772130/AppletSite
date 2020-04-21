@@ -5,6 +5,7 @@ import com.applet.common.util.Constants;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.file.VerifyCodeUtil;
 import com.applet.common.util.file.ImageUtil;
+import com.applet.user.config.annotation.CancelAuth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -23,18 +24,19 @@ import java.awt.image.BufferedImage;
  * @create: 2019-08-12 17:16
  **/
 @Controller
-@RequestMapping(value = "/api/images/")
+@RequestMapping(value = "/api/user/")
 public class ImageController {
     private static final Logger log = LoggerFactory.getLogger(ImageController.class);
 
     /**
-     * 获取指定文字创建的透明背景图片
+     * 设置指定文字创建的透明背景图片
      *
      * @param response
      * @throws Exception
      */
-    @RequestMapping("getImage")
-    public void getImage(ImageInfo info, HttpServletResponse response) throws Exception {
+    @RequestMapping("setImageText")
+    @CancelAuth
+    public void setImageText(ImageInfo info, HttpServletResponse response) throws Exception {
         if (NullUtil.isNullOrEmpty(info.getText())) {
             throw new Exception("生成图片失败，缺少内容");
         }
@@ -58,26 +60,17 @@ public class ImageController {
      *
      * @param request
      */
-    @RequestMapping("/image/loadFigureCode")
+    @RequestMapping("/loadFigureCode")
+    @CancelAuth
     public void loadFigureCode(HttpServletRequest request, HttpServletResponse response) {
         try {
             VerifyCodeUtil imgUtil = new VerifyCodeUtil();
             BufferedImage image = imgUtil.getBuffImg();
-            request.getSession().setAttribute(Constants.FIGURE_CODE, imgUtil.getCode());
+            request.getSession().setAttribute(Constants.FIGURE_CODE, imgUtil.getCode().toUpperCase());
             ImageIO.write(image, "JPEG", response.getOutputStream());
         } catch (Exception e) {
             log.info("图形验证码生成失败{}", e);
         }
-    }
-
-    /**
-     * 客户端加载图形验证码
-     *
-     * @return
-     */
-    @RequestMapping("/api/image/loadFigureCode")
-    public String loadFigureCode() {
-        return "redirect:/image/loadFigureCode";
     }
 
 }

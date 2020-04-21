@@ -28,7 +28,7 @@ public class FileInterceptor implements HandlerInterceptor {
         if (NullUtil.isNotNullOrEmpty(uri)) {
             String url = "";
             if (uri.indexOf("/public") >= 0) {
-                url = QiNiuUtil.getPublicDownURL(uri) + "?1=1";
+                url = QiNiuUtil.getPublicDownURL(uri);
             } else if (uri.indexOf("/image") >= 0) {
                 url = QiNiuUtil.getImageDownURL(uri);
             } else if (uri.indexOf("/audio") >= 0) {
@@ -42,7 +42,7 @@ public class FileInterceptor implements HandlerInterceptor {
                 request.getRequestDispatcher(uri).forward(request, response);
                 return true;
             }
-            response.sendRedirect(url + "&appletToken=" + RandomUtil.getRandomStr32());
+            response.sendRedirect(url);
             log.info("七牛云文件路径：" + url);
         }
         return false;

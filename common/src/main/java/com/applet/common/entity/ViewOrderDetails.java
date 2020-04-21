@@ -1,15 +1,9 @@
 package com.applet.common.entity;
 
-import com.applet.common.util.Constants;
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * 订单信息 - 视图
- */
-public class ViewOrderInfo implements Serializable {
+public class ViewOrderDetails implements Serializable {
     private Integer id;
 
     private String orderNo;
@@ -42,20 +36,52 @@ public class ViewOrderInfo implements Serializable {
 
     private String wxNickName;
 
+    private String openId;
+
+    private Integer receiverId;
+
+    private String receiverName;
+
+    private String receiverMobile;
+
+    private String receiverProvince;
+
+    private String receiverCity;
+
+    private String receiverCounty;
+
+    private String receiverAddress;
+
+    private String receiverLat;
+
+    private String receiverLon;
+
+    private String userRemark;
+
     private Integer userCouponId;
+
+    private String couponName;
+
+    private Double couponAmount;
+
+    private Double freightAmount;
+
+    private Double totalAmount;
 
     private Double actualAmount;
 
     private Integer operateId;
 
+    private String operateRemark;
+
+    private Date operateTime;
+
     private Integer operateStatus;
 
     private Integer orderStatus;
 
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
     private Date createTime;
 
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
     private Date updateTime;
 
     private Integer payType;
@@ -66,12 +92,10 @@ public class ViewOrderInfo implements Serializable {
 
     private String payRelationId;
 
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
     private Date userSeeTime;
 
     private Boolean userSeeStatus;
 
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
     private Date storeSeeTime;
 
     private Boolean storeSeeStatus;
@@ -206,12 +230,132 @@ public class ViewOrderInfo implements Serializable {
         this.wxNickName = wxNickName == null ? null : wxNickName.trim();
     }
 
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId == null ? null : openId.trim();
+    }
+
+    public Integer getReceiverId() {
+        return receiverId;
+    }
+
+    public void setReceiverId(Integer receiverId) {
+        this.receiverId = receiverId;
+    }
+
+    public String getReceiverName() {
+        return receiverName;
+    }
+
+    public void setReceiverName(String receiverName) {
+        this.receiverName = receiverName == null ? null : receiverName.trim();
+    }
+
+    public String getReceiverMobile() {
+        return receiverMobile;
+    }
+
+    public void setReceiverMobile(String receiverMobile) {
+        this.receiverMobile = receiverMobile == null ? null : receiverMobile.trim();
+    }
+
+    public String getReceiverProvince() {
+        return receiverProvince;
+    }
+
+    public void setReceiverProvince(String receiverProvince) {
+        this.receiverProvince = receiverProvince == null ? null : receiverProvince.trim();
+    }
+
+    public String getReceiverCity() {
+        return receiverCity;
+    }
+
+    public void setReceiverCity(String receiverCity) {
+        this.receiverCity = receiverCity == null ? null : receiverCity.trim();
+    }
+
+    public String getReceiverCounty() {
+        return receiverCounty;
+    }
+
+    public void setReceiverCounty(String receiverCounty) {
+        this.receiverCounty = receiverCounty == null ? null : receiverCounty.trim();
+    }
+
+    public String getReceiverAddress() {
+        return receiverAddress;
+    }
+
+    public void setReceiverAddress(String receiverAddress) {
+        this.receiverAddress = receiverAddress == null ? null : receiverAddress.trim();
+    }
+
+    public String getReceiverLat() {
+        return receiverLat;
+    }
+
+    public void setReceiverLat(String receiverLat) {
+        this.receiverLat = receiverLat == null ? null : receiverLat.trim();
+    }
+
+    public String getReceiverLon() {
+        return receiverLon;
+    }
+
+    public void setReceiverLon(String receiverLon) {
+        this.receiverLon = receiverLon == null ? null : receiverLon.trim();
+    }
+
+    public String getUserRemark() {
+        return userRemark;
+    }
+
+    public void setUserRemark(String userRemark) {
+        this.userRemark = userRemark == null ? null : userRemark.trim();
+    }
+
     public Integer getUserCouponId() {
         return userCouponId;
     }
 
     public void setUserCouponId(Integer userCouponId) {
         this.userCouponId = userCouponId;
+    }
+
+    public String getCouponName() {
+        return couponName;
+    }
+
+    public void setCouponName(String couponName) {
+        this.couponName = couponName == null ? null : couponName.trim();
+    }
+
+    public Double getCouponAmount() {
+        return couponAmount;
+    }
+
+    public void setCouponAmount(Double couponAmount) {
+        this.couponAmount = couponAmount;
+    }
+
+    public Double getFreightAmount() {
+        return freightAmount;
+    }
+
+    public void setFreightAmount(Double freightAmount) {
+        this.freightAmount = freightAmount;
+    }
+
+    public Double getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(Double totalAmount) {
+        this.totalAmount = totalAmount;
     }
 
     public Double getActualAmount() {
@@ -228,6 +372,22 @@ public class ViewOrderInfo implements Serializable {
 
     public void setOperateId(Integer operateId) {
         this.operateId = operateId;
+    }
+
+    public String getOperateRemark() {
+        return operateRemark;
+    }
+
+    public void setOperateRemark(String operateRemark) {
+        this.operateRemark = operateRemark == null ? null : operateRemark.trim();
+    }
+
+    public Date getOperateTime() {
+        return operateTime;
+    }
+
+    public void setOperateTime(Date operateTime) {
+        this.operateTime = operateTime;
     }
 
     public Integer getOperateStatus() {

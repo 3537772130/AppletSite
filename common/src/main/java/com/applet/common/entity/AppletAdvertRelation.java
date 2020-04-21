@@ -14,13 +14,13 @@ public class AppletAdvertRelation implements Serializable {
 
     private Integer appletTypeId;
 
-    private Integer appletPageType;
+    private String pageLogo;
+
+    private Integer relationType;
 
     private String relationImage;
 
     private String relationWebsite;
-
-    private Integer relationType;
 
     private String relationName;
 
@@ -55,12 +55,20 @@ public class AppletAdvertRelation implements Serializable {
         this.appletTypeId = appletTypeId;
     }
 
-    public Integer getAppletPageType() {
-        return appletPageType;
+    public String getPageLogo() {
+        return pageLogo;
     }
 
-    public void setAppletPageType(Integer appletPageType) {
-        this.appletPageType = appletPageType;
+    public void setPageLogo(String pageLogo) {
+        this.pageLogo = pageLogo == null ? null : pageLogo.trim();
+    }
+
+    public Integer getRelationType() {
+        return relationType;
+    }
+
+    public void setRelationType(Integer relationType) {
+        this.relationType = relationType;
     }
 
     public String getRelationImage() {
@@ -77,14 +85,6 @@ public class AppletAdvertRelation implements Serializable {
 
     public void setRelationWebsite(String relationWebsite) {
         this.relationWebsite = relationWebsite == null ? null : relationWebsite.trim();
-    }
-
-    public Integer getRelationType() {
-        return relationType;
-    }
-
-    public void setRelationType(Integer relationType) {
-        this.relationType = relationType;
     }
 
     public String getRelationName() {

@@ -3,8 +3,11 @@ package com.applet.common.mapper;
 import com.applet.common.entity.OrderInfo;
 import com.applet.common.entity.OrderInfoExample;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+@Mapper
 public interface OrderInfoMapper {
     long countByExample(OrderInfoExample example);
 

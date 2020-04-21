@@ -175,8 +175,10 @@ public class RandomUtil {
 
 
     public static void main(String[] args) {
-        for (int i = 0; i < 100; i++) {
-            System.out.println(getMshRdmRatio());
-        }
+//        for (int i = 0; i < 100; i++) {
+//            System.out.println(getMshRdmRatio());
+//        }
+        String str = getRandomStr32().toUpperCase();
+        System.out.println(str);
     }
 }

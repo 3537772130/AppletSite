@@ -153,16 +153,13 @@ public class PlatformSetController {
     /**
      * 查询广告位已安排到的最后截止日期
      * @param appletTypeId
-     * @param appletPageType
+     * @param pageLogo
      * @return
      */
     @RequestMapping(value = "queryAppletAdvertRelationByLastExpireTime")
-    public Object queryAppletAdvertRelationByLastExpireTime(Integer appletTypeId, Integer appletPageType){
-        Date lastTime = platformSetService.selectAppletAdvertRelationByLastExpireTime(appletTypeId, appletPageType);
+    public Object queryAppletAdvertRelationByLastExpireTime(Integer appletTypeId,  String pageLogo){
+        Date lastTime = platformSetService.selectAppletAdvertRelationByLastExpireTime(appletTypeId, pageLogo);
         if (NullUtil.isNullOrEmpty(lastTime)){
-//            lastTime = new JDateTime(new Date()).convertToDate();
-//            JDateTime time = new JDateTime(lastTime);
-//            return AjaxResponse.error(time.toString(Constants.DATE_YMD));
             return AjaxResponse.error("");
         }
         JDateTime time = new JDateTime(lastTime);
@@ -186,7 +183,7 @@ public class PlatformSetController {
             if (NullUtil.isNullOrEmpty(relation.getAppletTypeId())){
                 return AjaxResponse.error("请选择小程序类型");
             }
-            if (NullUtil.isNullOrEmpty(relation.getAppletPageType())){
+            if (NullUtil.isNullOrEmpty(relation.getPageLogo())){
                 return AjaxResponse.error("请选择页面类型");
             }
             if (NullUtil.isNullOrEmpty(relation.getRelationImage())){
@@ -216,7 +213,7 @@ public class PlatformSetController {
                 return AjaxResponse.error("开始日期段必须大于等于当前时间");
             }
             relation.setStartTime(startTime.setHour(0).setMinute(0).setSecond(0).convertToDate());
-            if (platformSetService.checkAppletAdvertRelation(relation.getAppletTypeId(), relation.getAppletPageType(), relation.getStartTime())){
+            if (platformSetService.checkAppletAdvertRelation(relation.getAppletTypeId(), relation.getPageLogo(), relation.getStartTime())){
                 return AjaxResponse.error("开始日期段已存在安排");
             }
             if (NullUtil.isNullOrEmpty(relation.getExpireTime())){

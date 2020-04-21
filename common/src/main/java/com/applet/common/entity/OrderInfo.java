@@ -1,14 +1,8 @@
 package com.applet.common.entity;
 
-import com.applet.common.util.Constants;
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * 订单信息
- */
 public class OrderInfo implements Serializable {
     private Integer id;
 
@@ -22,25 +16,9 @@ public class OrderInfo implements Serializable {
 
     private Integer wxId;
 
-    private String receiverName;
-
-    private String receiverMobile;
-
-    private String receiverProvince;
-
-    private String receiverCity;
-
-    private String receiverCounty;
-
-    private String receiverAddress;
-
-    private String receiverLat;
-
-    private String receiverLon;
+    private Integer receiverId;
 
     private String userRemark;
-
-    private String storeRemark;
 
     private Integer userCouponId;
 
@@ -54,10 +32,8 @@ public class OrderInfo implements Serializable {
 
     private Integer orderStatus;
 
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
     private Date createTime;
 
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
     private Date updateTime;
 
     private Integer payType;
@@ -118,68 +94,12 @@ public class OrderInfo implements Serializable {
         this.wxId = wxId;
     }
 
-    public String getReceiverName() {
-        return receiverName;
+    public Integer getReceiverId() {
+        return receiverId;
     }
 
-    public void setReceiverName(String receiverName) {
-        this.receiverName = receiverName == null ? null : receiverName.trim();
-    }
-
-    public String getReceiverMobile() {
-        return receiverMobile;
-    }
-
-    public void setReceiverMobile(String receiverMobile) {
-        this.receiverMobile = receiverMobile == null ? null : receiverMobile.trim();
-    }
-
-    public String getReceiverProvince() {
-        return receiverProvince;
-    }
-
-    public void setReceiverProvince(String receiverProvince) {
-        this.receiverProvince = receiverProvince == null ? null : receiverProvince.trim();
-    }
-
-    public String getReceiverCity() {
-        return receiverCity;
-    }
-
-    public void setReceiverCity(String receiverCity) {
-        this.receiverCity = receiverCity == null ? null : receiverCity.trim();
-    }
-
-    public String getReceiverCounty() {
-        return receiverCounty;
-    }
-
-    public void setReceiverCounty(String receiverCounty) {
-        this.receiverCounty = receiverCounty == null ? null : receiverCounty.trim();
-    }
-
-    public String getReceiverAddress() {
-        return receiverAddress;
-    }
-
-    public void setReceiverAddress(String receiverAddress) {
-        this.receiverAddress = receiverAddress == null ? null : receiverAddress.trim();
-    }
-
-    public String getReceiverLat() {
-        return receiverLat;
-    }
-
-    public void setReceiverLat(String receiverLat) {
-        this.receiverLat = receiverLat == null ? null : receiverLat.trim();
-    }
-
-    public String getReceiverLon() {
-        return receiverLon;
-    }
-
-    public void setReceiverLon(String receiverLon) {
-        this.receiverLon = receiverLon == null ? null : receiverLon.trim();
+    public void setReceiverId(Integer receiverId) {
+        this.receiverId = receiverId;
     }
 
     public String getUserRemark() {
@@ -188,14 +108,6 @@ public class OrderInfo implements Serializable {
 
     public void setUserRemark(String userRemark) {
         this.userRemark = userRemark == null ? null : userRemark.trim();
-    }
-
-    public String getStoreRemark() {
-        return storeRemark;
-    }
-
-    public void setStoreRemark(String storeRemark) {
-        this.storeRemark = storeRemark == null ? null : storeRemark.trim();
     }
 
     public Integer getUserCouponId() {

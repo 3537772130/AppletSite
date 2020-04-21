@@ -16,9 +16,7 @@ public class ViewAppletAdvertRelation implements Serializable {
 
     private String appletTypeName;
 
-    private Integer appletPageType;
-
-    private String appletPageTypeName;
+    private String pageLogo;
 
     private String relationImage;
 
@@ -69,20 +67,12 @@ public class ViewAppletAdvertRelation implements Serializable {
         this.appletTypeName = appletTypeName == null ? null : appletTypeName.trim();
     }
 
-    public Integer getAppletPageType() {
-        return appletPageType;
+    public String getPageLogo() {
+        return pageLogo;
     }
 
-    public void setAppletPageType(Integer appletPageType) {
-        this.appletPageType = appletPageType;
-    }
-
-    public String getAppletPageTypeName() {
-        return appletPageTypeName;
-    }
-
-    public void setAppletPageTypeName(String appletPageTypeName) {
-        this.appletPageTypeName = appletPageTypeName == null ? null : appletPageTypeName.trim();
+    public void setPageLogo(String pageLogo) {
+        this.pageLogo = pageLogo == null ? null : pageLogo.trim();
     }
 
     public String getRelationImage() {

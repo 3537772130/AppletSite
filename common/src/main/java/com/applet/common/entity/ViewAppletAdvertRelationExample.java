@@ -306,133 +306,73 @@ public class ViewAppletAdvertRelationExample {
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeIsNull() {
-            addCriterion("applet_page_type is null");
+        public Criteria andPageLogoIsNull() {
+            addCriterion("page_logo is null");
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeIsNotNull() {
-            addCriterion("applet_page_type is not null");
+        public Criteria andPageLogoIsNotNull() {
+            addCriterion("page_logo is not null");
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeEqualTo(Integer value) {
-            addCriterion("applet_page_type =", value, "appletPageType");
+        public Criteria andPageLogoEqualTo(String value) {
+            addCriterion("page_logo =", value, "pageLogo");
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeNotEqualTo(Integer value) {
-            addCriterion("applet_page_type <>", value, "appletPageType");
+        public Criteria andPageLogoNotEqualTo(String value) {
+            addCriterion("page_logo <>", value, "pageLogo");
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeGreaterThan(Integer value) {
-            addCriterion("applet_page_type >", value, "appletPageType");
+        public Criteria andPageLogoGreaterThan(String value) {
+            addCriterion("page_logo >", value, "pageLogo");
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeGreaterThanOrEqualTo(Integer value) {
-            addCriterion("applet_page_type >=", value, "appletPageType");
+        public Criteria andPageLogoGreaterThanOrEqualTo(String value) {
+            addCriterion("page_logo >=", value, "pageLogo");
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeLessThan(Integer value) {
-            addCriterion("applet_page_type <", value, "appletPageType");
+        public Criteria andPageLogoLessThan(String value) {
+            addCriterion("page_logo <", value, "pageLogo");
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeLessThanOrEqualTo(Integer value) {
-            addCriterion("applet_page_type <=", value, "appletPageType");
+        public Criteria andPageLogoLessThanOrEqualTo(String value) {
+            addCriterion("page_logo <=", value, "pageLogo");
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeIn(List<Integer> values) {
-            addCriterion("applet_page_type in", values, "appletPageType");
+        public Criteria andPageLogoLike(String value) {
+            addCriterion("page_logo like", value, "pageLogo");
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeNotIn(List<Integer> values) {
-            addCriterion("applet_page_type not in", values, "appletPageType");
+        public Criteria andPageLogoNotLike(String value) {
+            addCriterion("page_logo not like", value, "pageLogo");
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeBetween(Integer value1, Integer value2) {
-            addCriterion("applet_page_type between", value1, value2, "appletPageType");
+        public Criteria andPageLogoIn(List<String> values) {
+            addCriterion("page_logo in", values, "pageLogo");
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeNotBetween(Integer value1, Integer value2) {
-            addCriterion("applet_page_type not between", value1, value2, "appletPageType");
+        public Criteria andPageLogoNotIn(List<String> values) {
+            addCriterion("page_logo not in", values, "pageLogo");
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeNameIsNull() {
-            addCriterion("applet_page_type_name is null");
+        public Criteria andPageLogoBetween(String value1, String value2) {
+            addCriterion("page_logo between", value1, value2, "pageLogo");
             return (Criteria) this;
         }
 
-        public Criteria andAppletPageTypeNameIsNotNull() {
-            addCriterion("applet_page_type_name is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andAppletPageTypeNameEqualTo(String value) {
-            addCriterion("applet_page_type_name =", value, "appletPageTypeName");
-            return (Criteria) this;
-        }
-
-        public Criteria andAppletPageTypeNameNotEqualTo(String value) {
-            addCriterion("applet_page_type_name <>", value, "appletPageTypeName");
-            return (Criteria) this;
-        }
-
-        public Criteria andAppletPageTypeNameGreaterThan(String value) {
-            addCriterion("applet_page_type_name >", value, "appletPageTypeName");
-            return (Criteria) this;
-        }
-
-        public Criteria andAppletPageTypeNameGreaterThanOrEqualTo(String value) {
-            addCriterion("applet_page_type_name >=", value, "appletPageTypeName");
-            return (Criteria) this;
-        }
-
-        public Criteria andAppletPageTypeNameLessThan(String value) {
-            addCriterion("applet_page_type_name <", value, "appletPageTypeName");
-            return (Criteria) this;
-        }
-
-        public Criteria andAppletPageTypeNameLessThanOrEqualTo(String value) {
-            addCriterion("applet_page_type_name <=", value, "appletPageTypeName");
-            return (Criteria) this;
-        }
-
-        public Criteria andAppletPageTypeNameLike(String value) {
-            addCriterion("applet_page_type_name like", value, "appletPageTypeName");
-            return (Criteria) this;
-        }
-
-        public Criteria andAppletPageTypeNameNotLike(String value) {
-            addCriterion("applet_page_type_name not like", value, "appletPageTypeName");
-            return (Criteria) this;
-        }
-
-        public Criteria andAppletPageTypeNameIn(List<String> values) {
-            addCriterion("applet_page_type_name in", values, "appletPageTypeName");
-            return (Criteria) this;
-        }
-
-        public Criteria andAppletPageTypeNameNotIn(List<String> values) {
-            addCriterion("applet_page_type_name not in", values, "appletPageTypeName");
-            return (Criteria) this;
-        }
-
-        public Criteria andAppletPageTypeNameBetween(String value1, String value2) {
-            addCriterion("applet_page_type_name between", value1, value2, "appletPageTypeName");
-            return (Criteria) this;
-        }
-
-        public Criteria andAppletPageTypeNameNotBetween(String value1, String value2) {
-            addCriterion("applet_page_type_name not between", value1, value2, "appletPageTypeName");
+        public Criteria andPageLogoNotBetween(String value1, String value2) {
+            addCriterion("page_logo not between", value1, value2, "pageLogo");
             return (Criteria) this;
         }
 

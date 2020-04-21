@@ -11,6 +11,6 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CancelAuthentication {
+public @interface CancelAuth {
     boolean value() default true;
 }

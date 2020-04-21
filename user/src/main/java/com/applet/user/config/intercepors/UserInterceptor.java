@@ -1,6 +1,6 @@
 package com.applet.user.config.intercepors;
 
-import com.applet.user.config.annotation.CancelAuthentication;
+import com.applet.user.config.annotation.CancelAuth;
 import com.applet.common.entity.UserInfo;
 import com.applet.common.util.Constants;
 import com.applet.common.util.SerializeUtil;
@@ -29,7 +29,7 @@ public class UserInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (handler instanceof HandlerMethod) {
             HandlerMethod handleMethod = (HandlerMethod) handler;
-            CancelAuthentication cancel = handleMethod.getMethodAnnotation(CancelAuthentication.class);
+            CancelAuth cancel = handleMethod.getMethodAnnotation(CancelAuth.class);
             if (cancel != null) {
                 return true;
             }

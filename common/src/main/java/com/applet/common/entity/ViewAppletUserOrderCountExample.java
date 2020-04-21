@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewStoreUserOrderCountExample {
+public class ViewAppletUserOrderCountExample {
     protected String orderByClause;
 
     protected boolean distinct;
@@ -14,7 +14,7 @@ public class ViewStoreUserOrderCountExample {
 
     protected Page page;
 
-    public ViewStoreUserOrderCountExample() {
+    public ViewAppletUserOrderCountExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
 
@@ -116,63 +116,63 @@ public class ViewStoreUserOrderCountExample {
             criteria.add(new Criterion(condition, value1, value2));
         }
 
-        public Criteria andStoreUserIdIsNull() {
-            addCriterion("store_user_id is null");
+        public Criteria andAppletIdIsNull() {
+            addCriterion("applet_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andStoreUserIdIsNotNull() {
-            addCriterion("store_user_id is not null");
+        public Criteria andAppletIdIsNotNull() {
+            addCriterion("applet_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andStoreUserIdEqualTo(Integer value) {
-            addCriterion("store_user_id =", value, "storeUserId");
+        public Criteria andAppletIdEqualTo(Integer value) {
+            addCriterion("applet_id =", value, "appletId");
             return (Criteria) this;
         }
 
-        public Criteria andStoreUserIdNotEqualTo(Integer value) {
-            addCriterion("store_user_id <>", value, "storeUserId");
+        public Criteria andAppletIdNotEqualTo(Integer value) {
+            addCriterion("applet_id <>", value, "appletId");
             return (Criteria) this;
         }
 
-        public Criteria andStoreUserIdGreaterThan(Integer value) {
-            addCriterion("store_user_id >", value, "storeUserId");
+        public Criteria andAppletIdGreaterThan(Integer value) {
+            addCriterion("applet_id >", value, "appletId");
             return (Criteria) this;
         }
 
-        public Criteria andStoreUserIdGreaterThanOrEqualTo(Integer value) {
-            addCriterion("store_user_id >=", value, "storeUserId");
+        public Criteria andAppletIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("applet_id >=", value, "appletId");
             return (Criteria) this;
         }
 
-        public Criteria andStoreUserIdLessThan(Integer value) {
-            addCriterion("store_user_id <", value, "storeUserId");
+        public Criteria andAppletIdLessThan(Integer value) {
+            addCriterion("applet_id <", value, "appletId");
             return (Criteria) this;
         }
 
-        public Criteria andStoreUserIdLessThanOrEqualTo(Integer value) {
-            addCriterion("store_user_id <=", value, "storeUserId");
+        public Criteria andAppletIdLessThanOrEqualTo(Integer value) {
+            addCriterion("applet_id <=", value, "appletId");
             return (Criteria) this;
         }
 
-        public Criteria andStoreUserIdIn(List<Integer> values) {
-            addCriterion("store_user_id in", values, "storeUserId");
+        public Criteria andAppletIdIn(List<Integer> values) {
+            addCriterion("applet_id in", values, "appletId");
             return (Criteria) this;
         }
 
-        public Criteria andStoreUserIdNotIn(List<Integer> values) {
-            addCriterion("store_user_id not in", values, "storeUserId");
+        public Criteria andAppletIdNotIn(List<Integer> values) {
+            addCriterion("applet_id not in", values, "appletId");
             return (Criteria) this;
         }
 
-        public Criteria andStoreUserIdBetween(Integer value1, Integer value2) {
-            addCriterion("store_user_id between", value1, value2, "storeUserId");
+        public Criteria andAppletIdBetween(Integer value1, Integer value2) {
+            addCriterion("applet_id between", value1, value2, "appletId");
             return (Criteria) this;
         }
 
-        public Criteria andStoreUserIdNotBetween(Integer value1, Integer value2) {
-            addCriterion("store_user_id not between", value1, value2, "storeUserId");
+        public Criteria andAppletIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("applet_id not between", value1, value2, "appletId");
             return (Criteria) this;
         }
 

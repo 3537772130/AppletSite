@@ -230,6 +230,7 @@ public class MenuService implements ApplicationRunner {
                     (record.getStatus() == false && menuInfo.getStatus() == true)) {
                 // 非三级菜单，则更新菜单下所有子菜单状态
                 List<Integer> idList = new ArrayList<>();
+                idList.add(menuInfo.getId());
                 if (record.getMenuLevel().intValue() != 3) { // 获取所有子级的ID
                     List<MenuInfo> list = this.selectMenuChildrenList(record.getId());
                     // 二级菜单，下属只有一级

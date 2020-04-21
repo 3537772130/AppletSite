@@ -114,7 +114,7 @@ public class AppletService {
         ViewAppletInfoExample example = new ViewAppletInfoExample();
         example.setPage(page);
         example.setOrderByClause("id desc");
-        ViewAppletInfoExample.Criteria c = example.createCriteria();
+        ViewAppletInfoExample.Criteria c = example.createCriteria().andUserIdEqualTo(info.getUserId());
         if (NullUtil.isNotNullOrEmpty(info.getAppletCode())) {
             c.andAppletCodeLike("%" + info.getAppletCode() + "%");
         }

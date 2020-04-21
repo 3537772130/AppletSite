@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.applet.common.mapper.ViewOrderInfoMapper">
-  <resultMap id="BaseResultMap" type="com.applet.common.entity.ViewOrderInfo">
+<mapper namespace="com.applet.common.mapper.ViewOrderDetailsMapper">
+  <resultMap id="BaseResultMap" type="com.applet.common.entity.ViewOrderDetails">
     <result column="id" jdbcType="INTEGER" property="id" />
     <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
     <result column="courier_no" jdbcType="VARCHAR" property="courierNo" />
@@ -18,9 +18,26 @@
     <result column="avatar_url" jdbcType="VARCHAR" property="avatarUrl" />
     <result column="wx_id" jdbcType="INTEGER" property="wxId" />
     <result column="wx_nick_name" jdbcType="VARCHAR" property="wxNickName" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="receiver_id" jdbcType="INTEGER" property="receiverId" />
+    <result column="receiver_name" jdbcType="VARCHAR" property="receiverName" />
+    <result column="receiver_mobile" jdbcType="VARCHAR" property="receiverMobile" />
+    <result column="receiver_province" jdbcType="VARCHAR" property="receiverProvince" />
+    <result column="receiver_city" jdbcType="VARCHAR" property="receiverCity" />
+    <result column="receiver_county" jdbcType="VARCHAR" property="receiverCounty" />
+    <result column="receiver_address" jdbcType="VARCHAR" property="receiverAddress" />
+    <result column="receiver_lat" jdbcType="VARCHAR" property="receiverLat" />
+    <result column="receiver_lon" jdbcType="VARCHAR" property="receiverLon" />
+    <result column="user_remark" jdbcType="VARCHAR" property="userRemark" />
     <result column="user_coupon_id" jdbcType="INTEGER" property="userCouponId" />
+    <result column="coupon_name" jdbcType="VARCHAR" property="couponName" />
+    <result column="coupon_amount" jdbcType="DOUBLE" property="couponAmount" />
+    <result column="freight_amount" jdbcType="DOUBLE" property="freightAmount" />
+    <result column="total_amount" jdbcType="DOUBLE" property="totalAmount" />
     <result column="actual_amount" jdbcType="DOUBLE" property="actualAmount" />
     <result column="operate_id" jdbcType="INTEGER" property="operateId" />
+    <result column="operate_remark" jdbcType="VARCHAR" property="operateRemark" />
+    <result column="operate_time" jdbcType="TIMESTAMP" property="operateTime" />
     <result column="operate_status" jdbcType="INTEGER" property="operateStatus" />
     <result column="order_status" jdbcType="INTEGER" property="orderStatus" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -66,17 +83,20 @@
   <sql id="Base_Column_List">
     id, order_no, courier_no, applet_id, applet_name, store_user_id, applet_logo, applet_lat, 
     applet_lon, applet_telephone, user_id, user_mobile, user_nick_name, avatar_url, wx_id, 
-    wx_nick_name, user_coupon_id, actual_amount, operate_id, operate_status, order_status, 
-    create_time, update_time, pay_type, pay_status, pay_channel, pay_relation_id, user_see_time, 
-    user_see_status, store_see_time, store_see_status
+    wx_nick_name, open_id, receiver_id, receiver_name, receiver_mobile, receiver_province, 
+    receiver_city, receiver_county, receiver_address, receiver_lat, receiver_lon, user_remark, 
+    user_coupon_id, coupon_name, coupon_amount, freight_amount, total_amount, actual_amount, 
+    operate_id, operate_remark, operate_time, operate_status, order_status, create_time, 
+    update_time, pay_type, pay_status, pay_channel, pay_relation_id, user_see_time, user_see_status, 
+    store_see_time, store_see_status
   </sql>
-  <select id="selectByExample" parameterType="com.applet.common.entity.ViewOrderInfoExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.applet.common.entity.ViewOrderDetailsExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from view_order_info
+    from view_order_details
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -85,8 +105,8 @@
     </if>
     <include refid="PageSuffix" />
   </select>
-  <select id="countByExample" parameterType="com.applet.common.entity.ViewOrderInfoExample" resultType="java.lang.Long">
-    select count(*) from view_order_info
+  <select id="countByExample" parameterType="com.applet.common.entity.ViewOrderDetailsExample" resultType="java.lang.Long">
+    select count(*) from view_order_details
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
