@@ -9,6 +9,7 @@ import com.applet.common.util.Constants;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -120,6 +121,9 @@ public class PlatformSetService {
      * @return
      */
     public Page selectAppletAdvertRelationByPage(AppletAdvertRelation relation, Page page){
+        // 异步更新小程序推广关联状态
+        updateAppletAdvertRelationStatus();
+
         ViewAppletAdvertRelationExample example = new ViewAppletAdvertRelationExample();
         example.setPage(page);
         example.setOrderByClause("expire_time desc");
@@ -148,6 +152,15 @@ public class PlatformSetService {
             page.setDataSource(viewAppletAdvertRelationMapper.selectByExample(example));
         }
         return page;
+    }
+
+    @Async
+    private void updateAppletAdvertRelationStatus(){
+        AppletAdvertRelation relation = new AppletAdvertRelation();
+        relation.setRelationStatus(false);
+        AppletAdvertRelationExample example = new AppletAdvertRelationExample();
+        example.createCriteria().andExpireTimeLessThan(new Date()).andRelationStatusEqualTo(true);
+        appletAdvertRelationMapper.updateByExampleSelective(relation, example);
     }
 
     /**
