@@ -9,6 +9,7 @@ import com.applet.common.util.*;
 import jodd.datetime.JDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -123,14 +124,6 @@ public class UserOrderController {
         info.setAppletId(appletInfo.getId());
         info.setUserId(weChantInfo.getUserId());
         info.setWxId(weChantInfo.getId());
-        info.setReceiverName(address.getName());
-        info.setReceiverMobile(address.getMobile());
-        info.setReceiverProvince(address.getProvince());
-        info.setReceiverCity(address.getCity());
-        info.setReceiverCounty(address.getCounty());
-        info.setReceiverAddress(address.getAddress());
-        info.setReceiverLat(address.getLat());
-        info.setReceiverLon(address.getLon());
         info.setUserRemark(userRemark);
         info.setOrderStatus(OrderEnums.OrderStatus.PENDING.getCode());
         info.setCouponAmount(0.0d);
@@ -145,7 +138,18 @@ public class UserOrderController {
         info.setPayStatus(OrderEnums.PayStatus.WAIT.getCode());
         info.setPayType(payType);
         info.setPayChannel(OrderEnums.PayChannel.WX_JSAPI.getName());
-        userOrderService.addOrderInfo(info, detailsList, cartIdList);
+
+        OrderReceiver receiver = new OrderReceiver();
+        receiver.setReceiverName(address.getName());
+        receiver.setReceiverMobile(address.getMobile());
+        receiver.setReceiverProvince(address.getProvince());
+        receiver.setReceiverCity(address.getCity());
+        receiver.setReceiverCounty(address.getCounty());
+        receiver.setReceiverAddress(address.getAddress());
+        receiver.setReceiverLat(address.getLat());
+        receiver.setReceiverLon(address.getLon());
+
+        userOrderService.addOrderInfo(info, detailsList, cartIdList, receiver);
 
         return AjaxResponse.success(info.getId());
     }
@@ -187,13 +191,12 @@ public class UserOrderController {
      * @return
      */
     @RequestMapping(value = "queryOrderInfo")
-    public Object queryOrderInfo(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo,
-                                 Integer id) {
-        ViewOrderInfo order = userOrderService.selectViewOrderInfoByUser(id, weChantInfo.getUserId());
+    public Object queryOrderInfo(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer id) {
+        ViewOrderDetails order = userOrderService.selectViewOrderDetailsByUser(id, weChantInfo.getUserId());
         if (null != order) {
-            if (!order.getOrderStatus().toString().equals("0")
-                    && !order.getOrderStatus().toString().equals("3")
-                    && !order.getOrderStatus().toString().equals("6")) {
+            if (order.getOperateStatus().intValue() != 0
+                    && order.getOperateStatus().intValue() != 3
+                    && order.getOperateStatus().intValue() != 6) {
                 userOrderService.updateOrderSeeRecord(order.getId(), true, null);
                 return AjaxResponse.success(order);
             }
@@ -253,7 +256,8 @@ public class UserOrderController {
             OrderInfo order = userOrderService.selectOrderInfoInfoByUser(id, weChantInfo.getUserId());
             if (null != order) {
                 if (order.getOrderStatus().toString().equals("1")) {
-                    userOrderService.updateOrderInfoStatus(order.getId(), 0);
+                    userOrderService.updateOrderInfoStatus(order.getId(), weChantInfo.getUserId(), 0);
+                    userCouponService.updateUserCouponStatus(order.getUserCouponId(), 0);
                     userOrderService.updateOrderSeeRecord(order.getId(), true, false);
                     return AjaxResponse.success("取消成功");
                 } else if (order.getOrderStatus().toString().equals("2")) {
@@ -282,7 +286,7 @@ public class UserOrderController {
             OrderInfo order = userOrderService.selectOrderInfoInfoByUser(id, weChantInfo.getUserId());
             if (null != order) {
                 if (order.getOrderStatus().toString().equals("5")) {
-                    userOrderService.updateOrderInfoStatus(order.getId(), 6);
+                    userOrderService.updateOrderInfoStatus(order.getId(), weChantInfo.getUserId(), 6);
                     userOrderService.updateOrderSeeRecord(order.getId(), true, false);
                     return AjaxResponse.success("签收成功");
                 }
@@ -457,18 +461,18 @@ public class UserOrderController {
                     if (order.getOrderStatus().toString().equals("0")) {
                         return AjaxResponse.error("买家已取消订单");
                     } else if (order.getOrderStatus().toString().equals("1") && status.intValue() == 2) {
-                        userOrderService.updateOrderInfoStatus(order.getId(), 2);
+                        userOrderService.updateOrderInfoStatus(order.getId(), weChantInfo.getUserId(), 2);
                         userCouponService.updateUserCouponStatus(order.getUserCouponId(), 2);
                         return AjaxResponse.success("已成功接受订单，准备好商品去配送吧 ^_^");
                     } else if (order.getOrderStatus().toString().equals("1") && status.intValue() == 3) {
-                        userOrderService.updateOrderInfoStatus(order.getId(), 3, remark);
+                        userOrderService.updateOrderInfoStatus(order.getId(),  weChantInfo.getUserId(),3, remark);
                         userCouponService.updateUserCouponStatus(order.getUserCouponId(), 0);
                         return AjaxResponse.success("已成功取消订单");
                     } else if (order.getOrderStatus().toString().equals("2") && status.intValue() == 4) {
-                        userOrderService.updateOrderInfoStatus(order.getId(), 4);
+                        userOrderService.updateOrderInfoStatus(order.getId(), weChantInfo.getUserId(), 4);
                         return AjaxResponse.success("准备准备，咱就开始配送吧 ^_^");
                     } else if (order.getOrderStatus().toString().equals("4") && status.intValue() == 5) {
-                        userOrderService.updateOrderInfoStatus(order.getId(), 5);
+                        userOrderService.updateOrderInfoStatus(order.getId(), weChantInfo.getUserId(), 5);
                         return AjaxResponse.success("辛苦啦，又完成了一单 ^_^");
                     }
                 }

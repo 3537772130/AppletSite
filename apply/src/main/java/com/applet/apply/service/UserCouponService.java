@@ -219,11 +219,13 @@ public class UserCouponService {
      * @param status
      */
     public void updateUserCouponStatus(Integer id, Integer status){
-        UserCoupon coupon = new UserCoupon();
-        coupon.setId(id);
-        coupon.setUseTime(new Date());
-        coupon.setStatus(status);
-        userCouponMapper.updateByPrimaryKeySelective(coupon);
+        if (NullUtil.isNotNullOrEmpty(id)){
+            UserCoupon coupon = new UserCoupon();
+            coupon.setId(id);
+            coupon.setUseTime(new Date());
+            coupon.setStatus(status);
+            userCouponMapper.updateByPrimaryKeySelective(coupon);
+        }
     }
 
 

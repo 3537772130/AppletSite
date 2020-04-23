@@ -2,6 +2,7 @@ package com.applet.apply.controller;
 
 import com.applet.apply.config.annotation.CancelAuth;
 import com.applet.apply.config.annotation.SessionScope;
+import com.applet.apply.service.AppletPageService;
 import com.applet.common.entity.*;
 import com.applet.apply.service.AppletService;
 import com.applet.apply.service.RedisService;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,6 +34,8 @@ public class AppletController {
     @Autowired
     private AppletService appletService;
     @Autowired
+    private AppletPageService appletPageService;
+    @Autowired
     private RedisService redisService;
 
     /**
@@ -41,7 +45,7 @@ public class AppletController {
      */
     @RequestMapping(value = "/getAppletInfo")
     @CancelAuth
-    public Object getAppletInfo(@SessionScope("appletInfo") ViewAppletInfo appletInfo){
+    public Object getAppletInfo(@SessionScope("appletInfo") ViewAppletInfo appletInfo, String pageLogo){
         appletInfo = appletService.selectAppletInfo(appletInfo.getAppletCode());
         if (appletInfo.getStatus().intValue() == 0) {
             return AjaxResponse.error("小程序尚未开通");
@@ -68,7 +72,14 @@ public class AppletController {
         map.put("businessScope", appletInfo.getBusinessScope());
         map.put("systemColor", appletInfo.getSystemColor());
         map.put("ifOpenPay", appletInfo.getIfOpenPay());
-        return AjaxResponse.success(map);
+        Map map1 = new HashMap();
+        map1.put("info", map);
+        // 加载页面推广信息
+        if (NullUtil.isNotNullOrEmpty(pageLogo)){
+            List<AppletAdvertRelation> list = appletPageService.selectAppletAdvertRelationByPage(appletInfo.getTypeId(), pageLogo);
+            map1.put("advert", NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null);
+        }
+        return AjaxResponse.success(map1);
     }
 
 

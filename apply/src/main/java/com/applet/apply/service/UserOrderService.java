@@ -36,7 +36,11 @@ public class UserOrderService {
     @Autowired
     private OrderInfoMapper orderInfoMapper;
     @Autowired
+    private OrderReceiverMapper orderReceiverMapper;
+    @Autowired
     private OrderDetailsMapper orderDetailsMapper;
+    @Autowired
+    private OrderOperateRecordMapper orderOperateRecordMapper;
     @Autowired
     private OrderRequestRecordMapper orderRequestRecordMapper;
     @Autowired
@@ -46,25 +50,38 @@ public class UserOrderService {
     @Autowired
     private ViewUserOrderCountMapper viewUserOrderCountMapper;
     @Autowired
-    private ViewStoreUserOrderCountMapper viewStoreUserOrderCountMapper;
+    private ViewAppletUserOrderCountMapper viewAppletUserOrderCountMapper;
     @Autowired
     private UserCartService userCartService;
     @Autowired
     private ViewOrderPayDataMapper viewOrderPayDataMapper;
     @Autowired
+    private ViewOrderDetailsMapper viewOrderDetailsMapper;
+    @Autowired
     private CommonMapper commonMapper;
 
     /**
      * 添加订单信息，并更新相关记录
+     *
      * @param info
      * @param list
      * @param cartIdList
      */
     @Transactional(rollbackFor = Exception.class)
-    public void addOrderInfo(OrderInfo info, List<OrderDetails> list, List<Integer> cartIdList) {
+    public void addOrderInfo(OrderInfo info, List<OrderDetails> list, List<Integer> cartIdList, OrderReceiver receiver) {
         info.setCreateTime(new Date());
         info.setUpdateTime(new Date());
         orderInfoMapper.insertSelective(info);
+        // 添加收货人信息
+        receiver.setOrderId(info.getId());
+        orderReceiverMapper.insertSelective(receiver);
+        // 添加订单操作记录
+        OrderOperateRecord record = new OrderOperateRecord();
+        record.setOrderId(info.getId());
+        record.setOperateUserId(info.getUserId());
+        record.setOperateTime(new Date());
+        record.setOperateStatus(1);
+        orderOperateRecordMapper.insertSelective(record);
         // 批量插入订单商品详情信息
         list.forEach(it -> it.setOrderId(info.getId()));
         orderDetailsMapper.batchInsert(list);
@@ -78,12 +95,13 @@ public class UserOrderService {
 
     /**
      * 查询订单信息
+     *
      * @param id
      * @param appletId
      * @param userId
      * @return
      */
-    public OrderInfo selectOrderInfo(Integer id, Integer appletId, Integer userId){
+    public OrderInfo selectOrderInfo(Integer id, Integer appletId, Integer userId) {
         OrderInfoExample example = new OrderInfoExample();
         example.createCriteria().andIdEqualTo(id).andAppletIdEqualTo(appletId).andUserIdEqualTo(userId);
         List<OrderInfo> list = orderInfoMapper.selectByExample(example);
@@ -92,19 +110,21 @@ public class UserOrderService {
 
     /**
      * 查询订单信息
+     *
      * @param id
      * @return
      */
-    public OrderInfo selectOrderInfoById(Integer id){
+    public OrderInfo selectOrderInfoById(Integer id) {
         return orderInfoMapper.selectByPrimaryKey(id);
     }
 
     /**
      * 查询订单信息
+     *
      * @param id
      * @return
      */
-    public OrderInfo selectOrderInfoByOrderNo(String orderNo){
+    public OrderInfo selectOrderInfoByOrderNo(String orderNo) {
         OrderInfoExample example = new OrderInfoExample();
         example.createCriteria().andOrderNoEqualTo(orderNo).andPayStatusEqualTo(OrderEnums.PayStatus.WAIT.getCode());
         List<OrderInfo> list = orderInfoMapper.selectByExample(example);
@@ -114,39 +134,41 @@ public class UserOrderService {
 
     /**
      * 查询订单支付参数信息
+     *
      * @param id
      * @param orderNo
      * @return
      */
-    public ViewOrderPayData selectOrderData(Integer id, String orderNo, Integer appletId, Integer wxId){
+    public ViewOrderPayData selectOrderData(Integer id, String orderNo, Integer appletId, Integer wxId) {
         ViewOrderPayDataExample example = new ViewOrderPayDataExample();
         ViewOrderPayDataExample.Criteria c = example.createCriteria();
-        if (NullUtil.isNotNullOrEmpty(id)){
+        if (NullUtil.isNotNullOrEmpty(id)) {
             c.andIdEqualTo(id);
         }
-        if (NullUtil.isNotNullOrEmpty(orderNo)){
+        if (NullUtil.isNotNullOrEmpty(orderNo)) {
             c.andOrderNoEqualTo(orderNo);
         }
-        if (NullUtil.isNotNullOrEmpty(appletId)){
+        if (NullUtil.isNotNullOrEmpty(appletId)) {
             c.andAppletIdEqualTo(appletId);
         }
-        if (NullUtil.isNotNullOrEmpty(wxId)){
+        if (NullUtil.isNotNullOrEmpty(wxId)) {
             c.andWxIdEqualTo(wxId);
         }
         List<ViewOrderPayData> list = viewOrderPayDataMapper.selectByExample(example);
         return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
     }
 
-    public ViewOrderPayData selectOrderData(Integer id, Integer appletId, Integer wxId){
+    public ViewOrderPayData selectOrderData(Integer id, Integer appletId, Integer wxId) {
         return selectOrderData(id, null, appletId, wxId);
     }
 
-    public ViewOrderPayData selectOrderData(String orderNo){
+    public ViewOrderPayData selectOrderData(String orderNo) {
         return selectOrderData(null, orderNo, null, null);
     }
 
     /**
      * 根据支付关联标识查询在线支付尚未付款订单
+     *
      * @param payRelationId
      * @return
      */
@@ -229,7 +251,7 @@ public class UserOrderService {
     }
 
     /**
-     * 用户查询订单详情
+     * 用户查询订单信息
      *
      * @param orderId
      * @param userId
@@ -245,16 +267,32 @@ public class UserOrderService {
     /**
      * 用户查询订单详情
      *
+     * @param orderId
      * @param orderNo
      * @param userId
      * @return
      */
-    public ViewOrderInfo selectViewOrderInfoByUser(String orderNo, Integer userId) {
-        ViewOrderInfoExample example = new ViewOrderInfoExample();
-        example.createCriteria().andOrderNoEqualTo(orderNo).andUserIdEqualTo(userId);
-        List<ViewOrderInfo> list = viewOrderInfoMapper.selectByExample(example);
+    public ViewOrderDetails selectViewOrderDetailsByUser(Integer orderId, String orderNo, Integer userId) {
+        ViewOrderDetailsExample example = new ViewOrderDetailsExample();
+        ViewOrderDetailsExample.Criteria c = example.createCriteria().andUserIdEqualTo(userId);
+        if (NullUtil.isNotNullOrEmpty(orderId)) {
+            c.andIdEqualTo(orderId);
+        }
+        if (NullUtil.isNotNullOrEmpty(orderNo)) {
+            c.andOrderNoEqualTo(orderNo);
+        }
+        List<ViewOrderDetails> list = viewOrderDetailsMapper.selectByExample(example);
         return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
     }
+
+    public ViewOrderDetails selectViewOrderDetailsByUser(Integer orderId, Integer userId) {
+        return selectViewOrderDetailsByUser(orderId, null, userId);
+    }
+
+    public ViewOrderDetails selectViewOrderDetailsByUser(String orderNo, Integer userId) {
+        return selectViewOrderDetailsByUser(null, orderNo, userId);
+    }
+
 
     /**
      * 商家查询订单详情
@@ -291,21 +329,35 @@ public class UserOrderService {
      * @param id
      * @param status
      */
-    public void updateOrderInfoStatus(Integer id, Integer status, String remark) {
-        OrderInfo record = new OrderInfo();
-        record.setId(id);
-        record.setOrderStatus(status);
-        if (status.intValue() == 3){
-            record.setStoreRemark(remark);
+    @Transactional(rollbackFor = Exception.class)
+    public void updateOrderInfoStatus(Integer id, Integer userId, Integer status, String remark) {
+        OrderOperateRecord record = new OrderOperateRecord();
+        record.setOrderId(id);
+        record.setOperateUserId(userId);
+        record.setOperateTime(new Date());
+        record.setOperateRemark(remark);
+        record.setOperateStatus(status);
+        orderOperateRecordMapper.insertSelective(record);
+
+        if (status.intValue() == 5) {
+            OrderInfo order = new OrderInfo();
+            order.setId(id);
+            order.setOrderStatus(1);
+            order.setUpdateTime(new Date());
+            orderInfoMapper.updateByPrimaryKeySelective(order);
+        } else if (status.intValue() == 0) {
+            OrderInfo order = new OrderInfo();
+            order.setId(id);
+            order.setOrderStatus(-1);
+            order.setUpdateTime(new Date());
+            orderInfoMapper.updateByPrimaryKeySelective(order);
         }
-        record.setUpdateTime(new Date());
-        orderInfoMapper.updateByPrimaryKeySelective(record);
 
         updateOrderSeeRecord(id, false, false);
     }
 
-    public void updateOrderInfoStatus(Integer id, Integer status) {
-        updateOrderInfoStatus(id, status, null);
+    public void updateOrderInfoStatus(Integer id, Integer userId, Integer status) {
+        updateOrderInfoStatus(id, userId, status, null);
     }
 
     /**
@@ -322,15 +374,15 @@ public class UserOrderService {
     }
 
     /**
-     * 统计订单数量 - 商户
+     * 统计订单数量 - 小程序
      *
-     * @param userId
+     * @param appletId
      * @return
      */
-    public ViewStoreUserOrderCount countStoreOrder(Integer userId) {
-        ViewStoreUserOrderCountExample example = new ViewStoreUserOrderCountExample();
-        example.createCriteria().andStoreUserIdEqualTo(userId);
-        List<ViewStoreUserOrderCount> list = viewStoreUserOrderCountMapper.selectByExample(example);
+    public ViewAppletUserOrderCount countAppletOrder(Integer appletId) {
+        ViewAppletUserOrderCountExample example = new ViewAppletUserOrderCountExample();
+        example.createCriteria().andAppletIdEqualTo(appletId);
+        List<ViewAppletUserOrderCount> list = viewAppletUserOrderCountMapper.selectByExample(example);
         return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
     }
 
@@ -349,7 +401,8 @@ public class UserOrderService {
         example.createCriteria()
                 .andAppletIdEqualTo(appletId)
                 .andStoreUserIdEqualTo(userId)
-                .andOrderStatusEqualTo(status);
+                .andOperateIdEqualTo(status)
+                .andPayStatusEqualTo(1);
         long count = viewOrderInfoMapper.countByExample(example);
         if (count > 0) {
             page.setTotalCount(count);
@@ -397,7 +450,9 @@ public class UserOrderService {
         ViewOrderInfoExample example = new ViewOrderInfoExample();
         example.setPage(page);
         example.setOrderByClause("user_see_status,user_see_time DESC");
-        ViewOrderInfoExample.Criteria c = example.createCriteria().andStoreUserIdEqualTo(userId).andOrderStatusIn(statusList);
+        example.createCriteria()
+                .andUserIdEqualTo(userId)
+                .andOperateStatusIn(statusList);
         long count = viewOrderInfoMapper.countByExample(example);
         if (count > 0) {
             page.setTotalCount(count);
@@ -431,10 +486,11 @@ public class UserOrderService {
 
     /**
      * 统计一个小时以内，微信支付请求（同类型请求）发送的次数
+     *
      * @param requestType
      * @return
      */
-    public long countOrderRequestRecordByHour(String requestType){
+    public long countOrderRequestRecordByHour(String requestType) {
         JDateTime time = new JDateTime(new Date());
         time.addHour(-1);
         OrderRequestRecordExample example = new OrderRequestRecordExample();
@@ -444,14 +500,15 @@ public class UserOrderService {
 
     /**
      * 更新订单信息
+     *
      * @param record
      * @param info
      */
     @Transactional(rollbackFor = Exception.class)
-    public void updateOrder(OrderRequestRecord record, OrderInfo info){
+    public void updateOrder(OrderRequestRecord record, OrderInfo info) {
         record.setCreateTime(new Date());
         orderRequestRecordMapper.insertSelective(record);
-        if (null != info){
+        if (null != info) {
             orderInfoMapper.updateByPrimaryKeySelective(info);
         }
     }

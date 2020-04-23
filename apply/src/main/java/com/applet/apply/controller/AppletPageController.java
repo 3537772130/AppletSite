@@ -7,11 +7,16 @@ import com.applet.common.entity.*;
 import com.applet.apply.service.AppletPageService;
 import com.applet.common.entity.page.GoodsClassify;
 import com.applet.common.util.AjaxResponse;
+import com.applet.common.util.NullUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -41,9 +46,18 @@ public class AppletPageController {
         try {
             ViewAppletPageContent content = appletPageService.selectViewAppletPageContent(appletInfo.getId(), pageLogo);
             if (null != content){
+                Map map = new HashMap();
+                map.put("contentJson", content.getContentJson());
+                if (pageLogo.equals("MAIN")){
+                    // 查询小程序推荐商品
+                    List<UserAppletRecommendGoods> list = appletPageService.selectUserAppletRecommendGoodsList(appletInfo.getId());
+                    if (NullUtil.isNotNullOrEmpty(list)){
+                        map.put("recommendList", list);
+                    }
+                }
                 // 刷新分类页面信息缓存
                 appletPageService.loadGoodsClassify(appletInfo.getId(), appletInfo.getAppletCode());
-                return AjaxResponse.success(content.getContentJson());
+                return AjaxResponse.success(map);
             }
         } catch (Exception e) {
             log.error("查询小程序页面配置信息出错{}", e);

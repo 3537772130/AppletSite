@@ -85,7 +85,7 @@ public class GoodsController {
         } catch (Exception e) {
             log.error("加载商品详情信息出错{}", e);
         }
-        return AjaxResponse.error("加载信息失败");
+        return AjaxResponse.error("未找到相关记录");
     }
 
     /**

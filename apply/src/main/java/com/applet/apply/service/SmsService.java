@@ -57,11 +57,13 @@ public class SmsService {
                 param = "{\"userName\":\"" + authCode.getMobile() + "\",\"operate\":\"" + authCode.getRemark() + "\",\"code\":\"" + authCode.getAuthCode() + "\"}";
             } else if (SMSType.UPDATE_PASS.toString().equals(authCode.getAuthType())){
                 param = "{\"code\":\"" + authCode.getAuthCode() + "\"}";
+            } else if (SMSType.REGISTER_ACCOUNT.toString().equals(authCode.getAuthType())){
+                param = "{\"code\":\"" + authCode.getAuthCode() + "\"}";
             } else {
                 log.error("未匹配到相关验证码类型.......");
                 return false;
             }
-//            SmsUtil.sendSms(authCode.getMobile(), template.getSingName(), template.getCode(), param);
+            SmsUtil.sendSms(authCode.getMobile(), template.getSingName(), template.getCode(), param);
             return true;
         } catch (Exception e) {
             log.error("发送验证码出错");

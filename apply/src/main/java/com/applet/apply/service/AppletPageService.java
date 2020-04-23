@@ -1,9 +1,9 @@
 package com.applet.apply.service;
 
-import com.applet.common.entity.ViewAppletPageContent;
-import com.applet.common.entity.ViewAppletPageContentExample;
-import com.applet.common.entity.ViewGoodsType;
+import com.applet.common.entity.*;
 import com.applet.common.entity.page.GoodsClassify;
+import com.applet.common.mapper.AppletAdvertRelationMapper;
+import com.applet.common.mapper.UserAppletRecommendGoodsMapper;
 import com.applet.common.mapper.ViewAppletPageContentMapper;
 import com.applet.common.util.NullUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,10 +32,15 @@ public class AppletPageService {
     @Autowired
     private UserCouponService userCouponService;
     @Autowired
+    private UserAppletRecommendGoodsMapper userAppletRecommendGoodsMapper;
+    @Autowired
+    private AppletAdvertRelationMapper appletAdvertRelationMapper;
+    @Autowired
     private RedisService redisService;
 
     /**
      * 查询小程序页面配置信息
+     *
      * @param appletId
      * @param pageLogo
      * @return
@@ -48,11 +54,12 @@ public class AppletPageService {
 
     /**
      * 预加载商品分类界面信息
+     *
      * @param appletId
      * @param appletCode
      */
     @Async
-    public void loadGoodsClassify(Integer appletId, String appletCode){
+    public void loadGoodsClassify(Integer appletId, String appletCode) {
         List<ViewGoodsType> typeList = goodsService.selectGoodsTypeList(appletId);
         List<Integer> typeIdList = new ArrayList<>();
         for (ViewGoodsType type : typeList) {
@@ -63,5 +70,49 @@ public class AppletPageService {
         gc.setInfoList(goodsService.selectGoodsInfoList(appletId, typeIdList));
         gc.setCouponList(userCouponService.selectCouponList(appletId));
         redisService.setValue(appletCode + "_CLASSIFY", gc);
+    }
+
+    /**
+     * 查询页面推广信息
+     *
+     * @param appletType
+     * @param pageLogo
+     * @return
+     */
+    public List<AppletAdvertRelation> selectAppletAdvertRelationByPage(Integer appletType, String pageLogo) {
+        AppletAdvertRelationExample example = new AppletAdvertRelationExample();
+        AppletAdvertRelationExample.Criteria c = example.createCriteria()
+                .andAppletTypeIdEqualTo(appletType)
+                .andPageLogoEqualTo(pageLogo)
+                .andStartTimeLessThanOrEqualTo(new Date())
+                .andExpireTimeGreaterThanOrEqualTo(new Date())
+                .andRelationStatusEqualTo(true);
+        List<AppletAdvertRelation> list = appletAdvertRelationMapper.selectByExample(example);
+        if (NullUtil.isNullOrEmpty(list)) {
+            example = new AppletAdvertRelationExample();
+            c = example.createCriteria()
+                    .andAppletTypeIdEqualTo(appletType)
+                    .andPageLogoEqualTo(pageLogo)
+                    .andIsDefaultEqualTo(true)
+                    .andRelationStatusEqualTo(true);
+            return appletAdvertRelationMapper.selectByExample(example);
+        }
+        return list;
+    }
+
+    /**
+     * 查询小程序推荐商品
+     * @param appletId
+     * @return
+     */
+    public List<UserAppletRecommendGoods> selectUserAppletRecommendGoodsList(Integer appletId) {
+        UserAppletRecommendGoodsExample example = new UserAppletRecommendGoodsExample();
+        example.setOrderByClause("update_time desc");
+        example.createCriteria()
+                .andAppletIdEqualTo(appletId)
+                .andStartTimeLessThanOrEqualTo(new Date())
+                .andExpireTimeGreaterThanOrEqualTo(new Date())
+                .andRecommendStatusEqualTo(true);
+        return userAppletRecommendGoodsMapper.selectByExample(example);
     }
 }
