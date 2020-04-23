@@ -41,6 +41,10 @@ public class GoodsService {
     @Autowired
     private ViewGoodsSpecsMapper viewGoodsSpecsMapper;
     @Autowired
+    private UserAppletRecommendGoodsMapper userAppletRecommendGoodsMapper;
+    @Autowired
+    private ViewUserAppletRecommendGoodsMapper viewUserAppletRecommendGoodsMapper;
+    @Autowired
     private CommonMapper commonMapper;
     @Autowired
     private AppletPageService appletPageService;
@@ -529,5 +533,72 @@ public class GoodsService {
     public List<Map> selectAppletToMap(Integer userId){
         String sql = "SELECT id,applet_name AS name FROM applet_info WHERE user_id = "+ userId + " AND `status` <> 0;";
         return commonMapper.selectListMap(sql);
+    }
+
+    /**
+     * 分页查询用户小程序推荐商品
+     * @param appletId
+     * @param goodsName
+     * @param page
+     * @return
+     */
+    public Page selectUserAppletRecommendGoodsByPage(ViewUserAppletRecommendGoods rg, Page page){
+        // 异步更新推荐商品状态
+        updateupdateUserAppletRecommendGoodsStatus();
+
+        ViewUserAppletRecommendGoodsExample example = new ViewUserAppletRecommendGoodsExample();
+        example.setPage(page);
+        example.setOrderByClause("update_time desc");
+        ViewUserAppletRecommendGoodsExample.Criteria c = example.createCriteria().andUserIdEqualTo(rg.getUserId());
+        if (NullUtil.isNotNullOrEmpty(rg.getAppletId())){
+            c.andAppletIdEqualTo(rg.getAppletId());
+        }
+        if (NullUtil.isNotNullOrEmpty(rg.getGoodsName())){
+            c.andGoodsNameLike("%" + rg.getGoodsName() + "%");
+        }
+        if (NullUtil.isNotNullOrEmpty(rg.getRecommendStatus())) {
+            c.andRecommendStatusEqualTo(rg.getRecommendStatus());
+        }
+        long count = viewUserAppletRecommendGoodsMapper.countByExample(example);
+        if (count > 0){
+            page.setTotalCount(count);
+            page.setDataSource(viewUserAppletRecommendGoodsMapper.selectByExample(example));
+        }
+        return page;
+    }
+
+    @Async
+    private void updateupdateUserAppletRecommendGoodsStatus(){
+        UserAppletRecommendGoods rg = new UserAppletRecommendGoods();
+        rg.setRecommendStatus(false);
+        UserAppletRecommendGoodsExample example = new UserAppletRecommendGoodsExample();
+        example.createCriteria().andExpireTimeLessThan(new Date()).andRecommendStatusEqualTo(true);
+        userAppletRecommendGoodsMapper.updateByExample(rg, example);
+    }
+
+    /**
+     * 查询小程序推荐商品信息
+     * @param id
+     * @param userId
+     * @return
+     */
+    public UserAppletRecommendGoods selectUserAppletRecommendGoods(Integer id, Integer userId){
+        UserAppletRecommendGoodsExample example = new UserAppletRecommendGoodsExample();
+        example.createCriteria().andIdEqualTo(id).andUserIdEqualTo(userId);
+        List<UserAppletRecommendGoods> list = userAppletRecommendGoodsMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+    }
+
+    /**
+     * 更新用户小程序推荐商品信息
+     * @param rg
+     */
+    public void updateUserAppletRecommendGoods(UserAppletRecommendGoods rg){
+        rg.setUpdateTime(new Date());
+        if (NullUtil.isNotNullOrEmpty(rg.getId())){
+            userAppletRecommendGoodsMapper.updateByPrimaryKeySelective(rg);
+        } else {
+            userAppletRecommendGoodsMapper.insertSelective(rg);
+        }
     }
 }

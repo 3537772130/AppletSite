@@ -3,10 +3,12 @@ package com.applet.user.controller;
 import com.applet.common.entity.CheckResult;
 import com.applet.user.config.annotation.SessionScope;
 import com.applet.common.entity.*;
+import com.applet.user.service.AppletService;
 import com.applet.user.service.GoodsService;
 import com.applet.common.util.*;
 import com.applet.common.util.file.FileUtil;
 import com.applet.common.util.qiniu.QiNiuUtil;
+import jodd.datetime.JDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,8 @@ public class UserGoodsController {
     private static final Logger log = LoggerFactory.getLogger(UserGoodsController.class);
     @Autowired
     private GoodsService goodsService;
+    @Autowired
+    private AppletService appletService;
 
     /**
      * 上传商品图片文件
@@ -236,8 +240,8 @@ public class UserGoodsController {
      */
     @RequestMapping(value = "queryInfoPage")
     public Object queryInfoToPage(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, ViewGoodsInfo goods, HttpServletRequest request) {
-        Page page = PageUtil.initPage(request);
         goods.setUserId(user.getId());
+        Page page = PageUtil.initPage(request);
         page = goodsService.selectInfoPage(goods, page);
         return AjaxResponse.success(page);
     }
@@ -335,14 +339,6 @@ public class UserGoodsController {
             log.error("更新商品信息出错{}", e);
             return AjaxResponse.error("提交失败");
         }
-    }
-
-    public GoodsInfo setGoodsCoverSrc(String oldCoverSrc, GoodsInfo newInfo) {
-        // 更新封面图地址
-        newInfo.setCoverSrc(newInfo.getCoverSrc().replace("api/", ""));
-        String newPath = FileUtil.copyGoodsCoverSrc(newInfo.getId(), newInfo.getCoverSrc(), oldCoverSrc);
-        newInfo.setCoverSrc(newPath);
-        return newInfo;
     }
 
     /**
@@ -601,8 +597,8 @@ public class UserGoodsController {
      */
     @RequestMapping(value = "querySpecsPage")
     public Object querySpecsPage(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, ViewGoodsSpecs specs, HttpServletRequest request) {
-        Page page = PageUtil.initPage(request);
         specs.setUserId(user.getId());
+        Page page = PageUtil.initPage(request);
         page = goodsService.selectSpecsList(specs, page);
         return AjaxResponse.success(page);
     }
@@ -750,5 +746,96 @@ public class UserGoodsController {
             return AjaxResponse.error("未找到相关记录");
         }
         return AjaxResponse.success(list);
+    }
+
+    /**
+     * 分享查询用户小程序推荐商品
+     * @param user
+     * @param rg
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "queryUserAppletRecommendGoodsByPage")
+    public Object queryUserAppletRecommendGoodsByPage(@SessionScope(Constants.VUE_USER_INFO) UserInfo user,
+                                                      ViewUserAppletRecommendGoods rg, HttpServletRequest request){
+        rg.setUserId(user.getId());
+        Page page = PageUtil.initPage(request);
+        page = goodsService.selectUserAppletRecommendGoodsByPage(rg, page);
+        return AjaxResponse.success(page);
+    }
+
+    /**
+     * 加载用户小程序推荐商品详情
+     * @param user
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "loadUserAppletRecommendGoodsDetails")
+    public Object loadUserAppletRecommendGoodsDetails(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer id){
+        UserAppletRecommendGoods rg = goodsService.selectUserAppletRecommendGoods(id, user.getId());
+        if (null != rg){
+            ViewGoodsInfo goodsInfo = goodsService.selectViewGoodsInfo(rg.getGoodsId(), user.getId());
+            Map map = new HashMap();
+            map.put("info", rg);
+            map.put("goods", goodsInfo);
+            return AjaxResponse.success(map);
+        }
+        return AjaxResponse.error("未找到相关记录");
+    }
+
+    /**
+     * 更新小程序推荐商品信息
+     * @param user
+     * @param rg
+     * @return
+     */
+    @RequestMapping(value = "updateUserAppletRecommendGoods")
+    public Object updateUserAppletRecommendGoods(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, UserAppletRecommendGoods rg){
+        try {
+            if (null == rg){
+                return AjaxResponse.error("参数错误");
+            }
+            if (NullUtil.isNullOrEmpty(rg.getRecommendImg())){
+                return AjaxResponse.error("请上传推荐图片");
+            }
+            if (NullUtil.isNullOrEmpty(rg.getAppletId())){
+                return AjaxResponse.error("请选择小程序");
+            }
+            AppletInfo appletInfo = appletService.selectAppletInfo(rg.getAppletId(), user.getId());
+            if (null == appletInfo){
+                return AjaxResponse.error("未找到相关小程序");
+            }
+            if (NullUtil.isNullOrEmpty(rg.getGoodsId())){
+                return AjaxResponse.error("请选择关联商品");
+            }
+            ViewGoodsInfo goodsInfo = goodsService.selectViewGoodsInfo(rg.getGoodsId(), user.getId());
+            if (null == goodsInfo){
+                return AjaxResponse.error("未找到相关商品");
+            }
+            if (appletInfo.getId().intValue() != goodsInfo.getAppletId()){
+                return AjaxResponse.error("小程序与商品信息不匹配");
+            }
+            if (NullUtil.isNullOrEmpty(rg.getStartTime())){
+                return AjaxResponse.error("请选择生效日期");
+            }
+            if (NullUtil.isNullOrEmpty(rg.getExpireTime())){
+                return AjaxResponse.error("请选择截止日期");
+            }
+            JDateTime start = new JDateTime(rg.getStartTime());
+            start.setHour(0).setMinute(0).setSecond(0);
+            JDateTime expire = new JDateTime(rg.getExpireTime());
+            expire.setHour(23).setMinute(59).setSecond(59);
+            if (expire.compareDateTo(start) != 1){
+                return AjaxResponse.error("日期选择错误");
+            }
+            rg.setStartTime(start.convertToDate());
+            rg.setExpireTime(expire.convertToDate());
+            rg.setUserId(user.getId());
+            goodsService.updateUserAppletRecommendGoods(rg);
+            return AjaxResponse.success("提交成功");
+        } catch (Exception e) {
+            log.error("提交小程序推荐商品信息出错{}", e);
+        }
+        return AjaxResponse.error("提交失败");
     }
 }
