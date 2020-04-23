@@ -39,6 +39,9 @@ public class UserCouponController {
     public Object queryUserCouponPage(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, HttpServletRequest request) {
         Page page = PageUtil.initPage(request);
         page = userCouponService.selectUserCouponList(weChantInfo.getUserId(), page);
+        if (null == page.getDataSource()){
+            return AjaxResponse.error("未找到相关记录");
+        }
         return AjaxResponse.success(page);
     }
 

@@ -189,8 +189,8 @@ public class PlatformSetController {
             if (NullUtil.isNullOrEmpty(relation.getRelationImage())){
                 return AjaxResponse.error("请上传广告图片");
             }
-            if (NullUtil.isNullOrEmpty(relation.getRelationWebsite())){
-                return AjaxResponse.error("请输入关联网址");
+            if (NullUtil.isNotNullOrEmpty(relation.getRelationWebsite()) && relation.getRelationWebsite().getBytes().length > 100){
+                return AjaxResponse.error("关联网址输入长度0-100个字符");
             }
             if (relation.getRelationType().intValue() == 2){
                 // 外部广告是否默认只能为false
@@ -213,8 +213,10 @@ public class PlatformSetController {
                 return AjaxResponse.error("开始日期段必须大于等于当前时间");
             }
             relation.setStartTime(startTime.setHour(0).setMinute(0).setSecond(0).convertToDate());
-            if (platformSetService.checkAppletAdvertRelation(relation.getAppletTypeId(), relation.getPageLogo(), relation.getStartTime())){
-                return AjaxResponse.error("开始日期段已存在安排");
+            if (relation.getRelationType().intValue() != 1){
+                if (platformSetService.checkAppletAdvertRelation(relation.getAppletTypeId(), relation.getPageLogo(), relation.getStartTime())){
+                    return AjaxResponse.error("开始日期段已存在安排");
+                }
             }
             if (NullUtil.isNullOrEmpty(relation.getExpireTime())){
                 return AjaxResponse.error("请选择截止日期");

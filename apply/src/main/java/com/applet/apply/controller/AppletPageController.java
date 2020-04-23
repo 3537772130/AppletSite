@@ -49,11 +49,7 @@ public class AppletPageController {
                 Map map = new HashMap();
                 map.put("contentJson", content.getContentJson());
                 if (pageLogo.equals("MAIN")){
-                    // 查询小程序推荐商品
-                    List<UserAppletRecommendGoods> list = appletPageService.selectUserAppletRecommendGoodsList(appletInfo.getId());
-                    if (NullUtil.isNotNullOrEmpty(list)){
-                        map.put("recommendList", list);
-                    }
+
                 }
                 // 刷新分类页面信息缓存
                 appletPageService.loadGoodsClassify(appletInfo.getId(), appletInfo.getAppletCode());

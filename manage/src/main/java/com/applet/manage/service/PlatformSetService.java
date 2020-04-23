@@ -159,7 +159,7 @@ public class PlatformSetService {
         AppletAdvertRelation relation = new AppletAdvertRelation();
         relation.setRelationStatus(false);
         AppletAdvertRelationExample example = new AppletAdvertRelationExample();
-        example.createCriteria().andExpireTimeLessThan(new Date()).andRelationStatusEqualTo(true);
+        example.createCriteria().andExpireTimeLessThan(new Date()).andRelationStatusEqualTo(true).andIsDefaultEqualTo(false);
         appletAdvertRelationMapper.updateByExampleSelective(relation, example);
     }
 

@@ -72,12 +72,18 @@ public class AppletController {
         map.put("businessScope", appletInfo.getBusinessScope());
         map.put("systemColor", appletInfo.getSystemColor());
         map.put("ifOpenPay", appletInfo.getIfOpenPay());
+
         Map map1 = new HashMap();
         map1.put("info", map);
         // 加载页面推广信息
         if (NullUtil.isNotNullOrEmpty(pageLogo)){
-            List<AppletAdvertRelation> list = appletPageService.selectAppletAdvertRelationByPage(appletInfo.getTypeId(), pageLogo);
-            map1.put("advert", NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null);
+            List<AppletAdvertRelation> relationList = appletPageService.selectAppletAdvertRelationByPage(appletInfo.getTypeId(), pageLogo);
+            map1.put("advert", NullUtil.isNotNullOrEmpty(relationList) ? relationList.get(0) : null);
+            // 查询小程序推荐商品
+            List<UserAppletRecommendGoods> recommendGoodsList = appletPageService.selectUserAppletRecommendGoodsList(appletInfo.getId());
+            if (NullUtil.isNotNullOrEmpty(recommendGoodsList)){
+                map1.put("recommendGoodsList", recommendGoodsList);
+            }
         }
         return AjaxResponse.success(map1);
     }

@@ -237,10 +237,10 @@ public class UserOrderController {
                 return AjaxResponse.error("未找到相关记录");
         }
         page = userOrderService.selectOrderInfoByUserToPage(weChantInfo.getUserId(), list, page);
-        if (null != page.getDataSource()) {
-            return AjaxResponse.success(page);
+        if (null == page.getDataSource()) {
+            return AjaxResponse.error("未找到相关记录");
         }
-        return AjaxResponse.error("未找到相关记录");
+        return AjaxResponse.success(page);
     }
 
     /**

@@ -447,6 +447,9 @@ public class UserController {
                     break;
             }
         }
+        if (null == page.getDataSource()){
+            return AjaxResponse.error("未找到相关记录");
+        }
         return AjaxResponse.success(page);
     }
 

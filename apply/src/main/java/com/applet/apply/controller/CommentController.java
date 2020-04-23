@@ -99,6 +99,9 @@ public class CommentController {
     public Object queryCommentListByPage(Integer id, HttpServletRequest request){
         Page page = PageUtil.initPage(request);
         page = commentService.selectCommentListByPage(id, page);
+        if (null == page.getDataSource()){
+            return AjaxResponse.error("未找到相关记录");
+        }
         return AjaxResponse.success(page);
     }
 
