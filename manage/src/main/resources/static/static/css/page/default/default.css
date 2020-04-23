@@ -1,0 +1,89 @@
+.config-operation {
+  width: 260px;
+  height: 50px;
+  line-height: 50px;
+  position: absolute;
+  top: 0px;
+  right: 50px;
+  z-index: 99;
+}
+
+.config-operation button {
+  font-size: 16px;
+}
+
+.left-menu {
+  width: 320px;
+  border: 1px #DCDFE6 solid;
+  border-radius: 5px;
+  text-align: left;
+  position: absolute;
+  z-index: 99;
+  background-color: #FFFFFF;
+}
+
+.left-menu .style-choose {
+  width: 65px;
+  height: 65px;
+  margin: 5px;
+  color: #8c939d;
+  font-size: 14px;
+  border: 1px #DCDFE6 solid;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.left-menu .style-choose:hover {
+  cursor: pointer;
+  padding: 2px;
+  color: #67C23A;
+  border: 1px #67C23A solid;
+  transition: all 0.5s;
+}
+
+.left-menu .style-choose > .box {
+  width: 65px;
+  height: 65px;
+  display: table;
+}
+
+.left-menu .style-choose > .box > .wrap {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.center-menu {
+  text-align: center;
+  margin: auto;
+  position: relative;
+  top: -80px;
+}
+
+.center-menu > .center-img {
+  width: 620px;
+  height: 1028px;
+}
+
+.center-menu > .center-content {
+  margin: auto;
+  width: 375px;
+  height: 667px;
+  background-color: #d9d9d9;
+  /*border: 1px red solid;*/
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  top: -876px;
+  left: -5px;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.el-drawer__header {
+  margin-bottom: 10px;
+}

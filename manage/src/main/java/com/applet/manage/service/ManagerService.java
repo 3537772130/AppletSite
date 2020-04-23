@@ -193,7 +193,7 @@ public class ManagerService {
             log.setAfterJson(JSONObject.fromObject(oldInfo).toString());
             log.setBeforeJson(JSONObject.fromObject(oldInfo).toString());
             log.setOperatorId(operateId);
-            log.setOperatorIp(IpUtil.getForIp(request));
+            log.setOperatorIp(IpUtil.getRequestIp(request));
             log.setOperateTime(new Date());
             managerLogMapper.insertSelective(log);
         } else {

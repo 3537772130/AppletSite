@@ -1,0 +1,369 @@
+.el-col {
+  border-radius: 4px;
+}
+
+img:hover {
+  cursor: pointer;
+}
+
+.bg-purple-dark {
+  background: #545c64;
+}
+
+.bg-purple {
+  background: #d3dce6;
+}
+
+.bg-purple-light {
+  background: #e5e9f2;
+}
+
+.grid-content {
+  min-height: 36px;
+}
+
+.row-bg {
+  padding: 10px 0;
+  background-color: #f9fafc;
+}
+
+.top-menu {
+  text-align: right;
+}
+
+.el-carousel__item h3 {
+  color: #475669;
+  font-size: 18px;
+  opacity: 0.75;
+
+  margin: 0;
+}
+
+.el-carousel__item:nth-child(2n) {
+  background-color: #99a9bf;
+}
+
+.el-carousel__item:nth-child(2n+1) {
+  background-color: #d3dce6;
+}
+
+.back-top {
+  width: 46px;
+  height: 46px;
+  line-height: 46px;
+  border-radius: 23px;
+  background-color: #e5e9f2;
+  color: #FFFFFF;
+  font-size: 26px;
+  position: fixed;
+  right: 40px;
+  bottom: 100px;
+  z-index: 999;
+}
+
+.back-top:hover {
+  border: 1px #303133 solid;
+  background-color: #303133;
+  cursor: pointer;
+}
+
+.server-title {
+  font-size: 30px;
+  font-weight: bold;
+  font-family: '黑体';
+}
+
+.server-describe {
+  height: 50px;
+  line-height: 50px;
+  font-size: 18px;
+  color: rgb(102, 102, 102);
+  text-align: center;
+}
+
+.server-introduce {
+  height: 360px;
+  line-height: 360px;
+  text-align: center;
+}
+
+.server-introduce > .introduce {
+  display: inline-block;
+  width: 260px;
+  height: 200px;
+  font-size: 16px;
+  color: #999999;
+  margin: 0px 10px;
+  padding: 20px;
+  border-radius: 5px;
+  position: relative;
+  top: 60px;
+}
+
+.server-introduce > .introduce:hover {
+  cursor: pointer;
+  background-color: #e6e6e6;
+  transition: all 1s;
+  transform: scale(1.1);
+}
+
+.server-introduce > .introduce > .img {
+  height: 130px;
+  line-height: 130px;
+}
+
+.server-introduce > .introduce > .img > img {
+  width: 128px;
+  height: 128px;
+}
+
+.server-introduce > .introduce > .text {
+  margin-top: 20px;
+  height: 50px;
+  line-height: normal;
+}
+
+.advantage {
+  height: 800px;
+  display: block;
+  position: relative;
+}
+
+.advantage::before {
+  content: "";
+  background-image: url('../../static/images/background/force-potential.jpg');
+  background-repeat: no-repeat;
+  background-size: 100% 800px;
+  opacity: 0.5;
+  -webkit-filter: opacity(50%);
+  filter: opacity(50%);
+  width: 100%;
+  height: 800px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: -1;
+}
+
+.advantage-title {
+  font-size: 30px;
+  font-weight: bold;
+  font-family: '黑体';
+  opacity: 1;
+}
+
+.advantage-describe {
+  height: 50px;
+  line-height: 50px;
+  font-size: 18px;
+  color: rgb(102, 102, 102);
+  text-align: center;
+  opacity: 1;
+}
+
+.advantage-introduce {
+  height: 360px;
+  line-height: 360px;
+  text-align: center;
+  opacity: 1;
+}
+
+.advantage-introduce > .introduce {
+  margin: auto;
+  display: inline-block;
+  width: 260px;
+  height: 300px;
+  padding-top: 80px;
+  margin: 10px;
+  font-size: 18px;
+  letter-spacing: 2px;
+  text-align: center;
+  background-color: #f5260b;
+  opacity: 0.5;
+  position: relative;
+  top: 80px;
+}
+
+.advantage-introduce > .introduce:hover {
+  cursor: pointer;
+  opacity: 0.8;
+  font-weight: bold;
+  transition: all 1s;
+  transform:translateY(-20px);
+}
+
+.advantage-introduce > .introduce > .img {
+  margin: auto;
+  width: 120px;
+  height: 120px;
+  line-height: 120px;
+  border: 2px #FFFFFF solid;
+  border-radius: 60px;
+}
+
+.advantage-introduce > .introduce > .img > img {
+  width: 64px;
+  height: 64px;
+  position: relative;
+  top: 28px;
+}
+
+.advantage-introduce > .introduce > .text {
+  margin-top: 60px;
+  height: 50px;
+  line-height: normal;
+  color: #FFFFFF;
+  border-top: 2px #FFFFFF solid;
+  padding-top: 40px;
+}
+
+.product{
+  height: 900px;
+  display: block;
+  position: relative;
+}
+
+.product::before {
+  content: "";
+  background-image: url('../../static/images/home/business/business-affairs-1.jpg');
+  background-repeat: no-repeat;
+  background-size: 100% 900px;
+  opacity: 0.5;
+  -webkit-filter: opacity(50%);
+  filter: opacity(50%);
+  width: 100%;
+  height: 900px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: -1;
+}
+
+.product-title{
+  font-size: 30px;
+  font-weight: bold;
+  color: #000000;
+  letter-spacing: 2px;
+  margin-top: 220px;
+}
+
+.product-describe{
+  height: 50px;
+  line-height: 50px;
+  font-size: 18px;
+  color: rgb(102, 102, 102);
+}
+
+.product-register{
+  height: 141px;
+  line-height: 216px;
+  text-align: center;
+  padding-top: 75px;
+}
+
+.product-register>div{
+  width: 180px;
+  height: 50px;
+  line-height: 50px;
+  font-size: 24px;
+  font-weight: bold;
+  border-radius: 25px;
+  color: #FFFFFF;
+  background-color: #f5260b;
+  opacity: 0.6;
+  margin: auto;
+}
+
+.product-register>div:hover{
+  cursor: pointer;
+  opacity: 0.8;
+  transition: all 1s;
+  transform: scale(1.2);
+}
+
+.product-img{
+  height: 350px;
+  vertical-align: bottom;
+}
+
+.product-img>img{
+  width: 771px;
+  height: 248px;
+  position: relative;
+  top: 102px;
+}
+
+.product-img>img:hover{
+  transition: all 1s;
+  transform: scale(1.2) translateY(-21px);
+}
+
+.team{
+  height: 650px;
+}
+
+.team-title {
+  font-size: 30px;
+  font-weight: bold;
+  font-family: '黑体';
+  position: relative;
+}
+
+.team-describe {
+  height: 50px;
+  line-height: 50px;
+  font-size: 18px;
+  color: rgb(102, 102, 102);
+  text-align: center;
+}
+.team-introduce{
+  margin: auto;
+  margin-top: 60px;
+}
+.team-introduce-img{
+  width: 180px;
+  height: 180px;
+  border-radius: 90px;
+  position: relative;
+  top: 20px;
+}
+
+.recommend{
+  background-color: #e6e6e6;
+  height: 400px;
+}
+
+.recommend-title{
+  font-size: 30px;
+  letter-spacing: 2px;
+  text-align: center;
+  color: #000000;
+}
+
+.recommend-describe{
+  height: 50px;
+  line-height: 50px;
+  font-size: 18px;
+  color: rgb(102, 102, 102);
+  margin-bottom: 40px;
+}
+
+.recommend-button{
+  margin: auto;
+  width: 180px;
+  height: 50px;
+  line-height: 50px;
+  font-size: 24px;
+  font-weight: bold;
+  border-radius: 25px;
+  color: #FFFFFF;
+  background-color: #f5260b;
+  opacity: 0.6;
+}
+
+.recommend-button:hover{
+  cursor: pointer;
+  opacity: 0.8;
+  transition: all 1s;
+  transform: scale(1.2);
+}

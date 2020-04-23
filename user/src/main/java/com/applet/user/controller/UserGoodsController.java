@@ -72,7 +72,7 @@ public class UserGoodsController {
      * @param newKey
      * @throws Exception
      */
-    @Async
+    @Async("taskExecutor")
     public void removeFile(String oldKey, String newKey) throws Exception {
         QiNiuUtil.removeFile(oldKey, newKey);
     }
@@ -732,20 +732,6 @@ public class UserGoodsController {
             log.error("更新商品排序出错{}", e);
             return AjaxResponse.error("操作失败");
         }
-    }
-
-    /**
-     * 查询摇号小程序Map信息集合
-     * @param user
-     * @return
-     */
-    @RequestMapping(value = "queryAppletToMap")
-    public Object queryAppletToMap(@SessionScope(Constants.VUE_USER_INFO) UserInfo user){
-        List<Map> list = goodsService.selectAppletToMap(user.getId());
-        if (NullUtil.isNullOrEmpty(list)) {
-            return AjaxResponse.error("未找到相关记录");
-        }
-        return AjaxResponse.success(list);
     }
 
     /**

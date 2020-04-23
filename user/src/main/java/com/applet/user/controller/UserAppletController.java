@@ -41,6 +41,20 @@ public class UserAppletController {
     private AppletPageService appletPageService;
 
     /**
+     * 查询摇号小程序Map信息集合
+     * @param user
+     * @return
+     */
+    @RequestMapping(value = "queryAppletToMap")
+    public Object queryAppletToMap(@SessionScope(Constants.VUE_USER_INFO) UserInfo user){
+        List<Map> list = appletService.selectAppletToMap(user.getId());
+        if (NullUtil.isNullOrEmpty(list)) {
+            return AjaxResponse.error("未找到相关记录");
+        }
+        return AjaxResponse.success(list);
+    }
+
+    /**
      * 查询用户小程序审核列表
      *
      * @param user
@@ -70,17 +84,6 @@ public class UserAppletController {
         appletInfo.setUserId(user.getId());
         page = appletService.selectAppletInfoToPage(appletInfo, page);
         return AjaxResponse.success(page);
-    }
-
-    /**
-     * 查询用户所有小程序信息
-     * @param user 用户
-     * @return
-     */
-    @RequestMapping(value = "queryApplets")
-    public Object queryApplets(@SessionScope(Constants.VUE_USER_INFO) UserInfo user) {
-        List<AppletInfo> appletInfos = appletService.selectAppletInfo(user.getId());
-        return AjaxResponse.success(appletInfos);
     }
 
     /**

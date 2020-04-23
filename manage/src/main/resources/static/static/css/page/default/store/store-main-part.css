@@ -1,0 +1,478 @@
+.store-main-part-form {
+  margin-bottom: 180px;
+  padding-top: 10px;
+}
+
+.store-main-part .part-input {
+  width: 290px;
+}
+
+.store-main-part .part-button {
+  width: 80px;
+}
+
+
+.store-main-part .img-carousel-badge {
+  position: relative;
+  top: -5px;
+}
+
+.store-main-part .img-carousel-badge .el-badge__content {
+  width: 18px;
+  top: 0px;
+  right: 10px;
+  padding: 0px;
+}
+
+.store-main-part .img-carousel-badge .el-badge__content:hover {
+  cursor: pointer;
+  background-color: #409EFF;
+}
+
+.store-main-part .img-carousel-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.store-main-part .img-carousel-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+
+.store-main-part .img-carousel-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 244px;
+  height: 97px;
+  line-height: 97px;
+  text-align: center;
+}
+
+.store-main-part .img-carousel {
+  width: 375px;
+  height: 150px;
+  display: block;
+}
+
+.store-main-part .type-frame-three-badge {
+  height: 20px;
+  line-height: 20px;
+  float: right;
+  top: -123px;
+  left: 10px;
+}
+
+.store-main-part .type-frame-three-badge .el-badge__content {
+  width: 18px;
+  top: 0px;
+  right: 16px;
+  padding: 0px;
+}
+
+.store-main-part .type-frame-three-badge .el-badge__content:hover {
+  cursor: pointer;
+  background-color: #409EFF;
+}
+
+.store-main-part .type-three-element {
+  width: 100px;
+  height: 100px;
+  margin: 0px 5px;
+  text-align: center;
+  display: inline-block;
+  border: 1px #cdcdcd dashed;
+  border-radius: 5px;
+}
+
+.store-main-part .type-three-element:hover {
+  cursor: pointer;
+  border: 1px #409EFF dashed;
+}
+
+.store-main-part .type-three-element > div > .type-icon-div {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.store-main-part .type-three-element > div > .type-name {
+  width: 100%;
+  height: 20px;
+  line-height: 20px;
+  display: inline-block;
+  font-size: 14px;
+  position: relative;
+  top: -15px;
+}
+
+
+.store-main-part .type-frame-four-badge {
+  height: 20px;
+  line-height: 20px;
+  float: right;
+  top: -103px;
+  left: 10px;
+}
+
+.store-main-part .type-frame-four-badge .el-badge__content {
+  width: 18px;
+  top: 0px;
+  right: 16px;
+  padding: 0px;
+}
+
+.store-main-part .type-frame-four-badge .el-badge__content:hover {
+  cursor: pointer;
+  background-color: #409EFF;
+}
+
+.store-main-part .type-four-element {
+  width: 80px;
+  height: 80px;
+  margin: 0px 5px;
+  text-align: center;
+  display: inline-block;
+  border: 1px #cdcdcd dashed;
+  border-radius: 5px;
+}
+
+.store-main-part .type-four-element:hover {
+  cursor: pointer;
+  border: 1px #409EFF dashed;
+}
+
+.store-main-part .type-four-element > div > .type-icon-div {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.store-main-part .type-four-element > div > .type-name {
+  width: 100%;
+  height: 20px;
+  line-height: 20px;
+  display: inline-block;
+  font-size: 14px;
+  position: relative;
+  top: -15px;
+}
+
+.store-main-part .img-text-title-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.store-main-part .img-text-title-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+
+.store-main-part .img-text-title {
+  width: 48px;
+  height: 48px;
+  display: block;
+}
+
+.store-main-part .img-text-title-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 48px;
+  height: 48px;
+  line-height: 48px;
+  text-align: center;
+}
+
+.store-main-part .img-title-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.store-main-part .img-title-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+
+.store-main-part .img-title {
+  width: 244px;
+  height: 95px;
+  display: block;
+}
+
+.store-main-part .img-title-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 244px;
+  height: 95px;
+  line-height: 95px;
+  text-align: center;
+}
+
+
+.store-main-part .goods-two-badge {
+  height: 20px;
+  line-height: 20px;
+  float: left;
+  top: -202px;
+  left: 160px;
+}
+
+.store-main-part .goods-two-badge .el-badge__content {
+  width: 18px;
+  top: 0px;
+  right: 16px;
+  padding: 0px;
+  margin: auto;
+  margin-bottom: 10px;
+}
+
+.store-main-part .goods-two-badge .el-badge__content:hover {
+  cursor: pointer;
+  background-color: #409EFF;
+}
+
+.store-main-part .goods-two-element {
+  width: 172px;
+  height: 185px;
+  margin: 10px 5px;
+  text-align: center;
+  display: inline-block;
+  border: 1px #cdcdcd dashed;
+  border-radius: 5px;
+  float: left;
+}
+
+.store-main-part .goods-two-element:hover {
+  cursor: pointer;
+  border: 1px #409EFF dashed;
+}
+
+.store-main-part .goods-two-element > div > .goods-icon-div {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.store-main-part .goods-two-element > div > .goods-name {
+  margin: auto;
+  width: 140px;
+  height: 30px;
+  font-size: 12px;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  position: relative;
+  top: -15px;
+}
+
+
+.store-main-part .goods-three-badge {
+  float: left;
+  top: -158px;
+  left: 100px;
+}
+
+.store-main-part .goods-three-badge .el-badge__content {
+  width: 18px;
+  top: 0px;
+  right: 16px;
+  padding: 0px;
+  margin: auto;
+  margin-bottom: 10px;
+}
+
+.store-main-part .goods-three-badge .el-badge__content:hover {
+  cursor: pointer;
+  background-color: #409EFF;
+}
+
+.store-main-part .goods-three-element {
+  width: 110px;
+  height: 135px;
+  margin: 10px 5px;
+  text-align: center;
+  display: inline-block;
+  border: 1px #cdcdcd dashed;
+  border-radius: 5px;
+  float: left;
+}
+
+.store-main-part .goods-three-element:hover {
+  cursor: pointer;
+  border: 1px #409EFF dashed;
+}
+
+.store-main-part .goods-three-element > div > .goods-icon-div {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.store-main-part .goods-three-element > div > .goods-name {
+  margin: auto;
+  width: 95px;
+  height: 30px;
+  font-size: 12px;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  position: relative;
+  top: -15px;
+}
+
+
+.store-main-part .imgX-scroll-badge {
+  position: relative;
+  top: -40px;
+}
+
+.store-main-part .imgX-scroll-badge .el-badge__content {
+  width: 18px;
+  top: 0px;
+  right: 10px;
+  padding: 0px;
+}
+
+.store-main-part .imgX-scroll-badge .el-badge__content:hover {
+  cursor: pointer;
+  background-color: #409EFF;
+}
+
+.store-main-part .imgX-scroll-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  margin-left: 10px;
+}
+
+.store-main-part .imgX-scroll-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+
+.store-main-part .imgX-scroll-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 244px;
+  height: 95px;
+  line-height: 95px;
+  text-align: center;
+}
+
+.store-main-part .imgX-scroll {
+  width: 244px;
+  height: 95px;
+  display: block;
+}
+
+
+.store-main-part .imgY-scroll-badge {
+  position: relative;
+  top: -110px;
+}
+
+.store-main-part .imgY-scroll-badge .el-badge__content {
+  width: 18px;
+  top: 0px;
+  right: 10px;
+  padding: 0px;
+}
+
+.store-main-part .imgY-scroll-badge .el-badge__content:hover {
+  cursor: pointer;
+  background-color: #409EFF;
+}
+
+.store-main-part .imgY-scroll-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  margin-left: 10px;
+}
+
+.store-main-part .imgY-scroll-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+
+.store-main-part .imgY-scroll-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 118px;
+  height: 218px;
+  line-height: 218px;
+  text-align: center;
+}
+
+.store-main-part .imgX-scroll {
+  width: 220px;
+  height: 120px;
+  display: block;
+}
+
+
+.bind-goods > .goods-img {
+  width: 95px;
+  height: 95px;
+  margin-left: 10px;
+  position: relative;
+  top: -4px;
+}
+
+.bind-goods > .goods-img:hover {
+  cursor: pointer;
+}
+
+.bind-goods > .add-goods {
+  width: 93px;
+  height: 93px;
+  margin-left: 10px;
+  border: 1px #cdcdcd dashed;
+  border-radius: 5px;
+  text-align: center;
+  position: relative;
+  top: -5px;
+}
+
+.bind-goods > .add-goods:hover {
+  cursor: pointer;
+  border: 1px #409EFF dashed;
+}
+
+.bind-goods > .add-goods > .goods-icon {
+  width: 40px;
+  height: 40px;
+  margin-top: 20px;
+}
+
+.bind-goods > .add-goods > .goods-text {
+  color: #cdcdcd;
+  font-size: 12px;
+}
+
+
+.part-operation {
+  width: 170px;
+  border: 1px #cdcdcd dashed;
+  border-radius: 3px;
+  text-align: center;
+  display: inline-block;
+  padding-bottom: 20px;
+}
+
+.part-choose-dialog .el-dialog {
+  width: 680px;
+}
+
+.part-choose-dialog .el-dialog > .el-dialog__body {
+  padding: 0px 0px;
+}

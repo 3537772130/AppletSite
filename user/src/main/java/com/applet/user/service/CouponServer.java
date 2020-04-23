@@ -6,6 +6,7 @@ import com.applet.common.entity.*;
 import com.applet.common.mapper.*;
 import jodd.datetime.JDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -41,6 +42,9 @@ public class CouponServer {
      * @return
      */
     public Page selectCouponInfoByPage(Integer userId, String couponName, Integer couponType, String startDate, String endDate, Integer status, Page page){
+        // 异步更新优惠券状态
+        updateCouponStatus();
+
         ViewCouponInfoExample example = new ViewCouponInfoExample();
         example.setOrderByClause("id desc");
         ViewCouponInfoExample.Criteria c = example.createCriteria();
@@ -68,6 +72,15 @@ public class CouponServer {
             page.setDataSource(viewCouponInfoMapper.selectByExample(example));
         }
         return page;
+    }
+
+    @Async("taskExecutor")
+    public void updateCouponStatus(){
+        CouponInfo info = new CouponInfo();
+        info.setStatus(3);
+        CouponInfoExample example = new CouponInfoExample();
+        example.createCriteria().andActivityOverLessThan(new Date()).andStatusEqualTo(1);
+        couponInfoMapper.updateByExampleSelective(info, example);
     }
 
     /**

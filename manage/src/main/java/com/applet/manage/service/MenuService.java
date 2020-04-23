@@ -55,7 +55,7 @@ public class MenuService implements ApplicationRunner {
      *
      * @param roleId
      */
-    @Async
+    @Async("taskExecutor")
     public void getReadyRole(Integer roleId) {
         log.info("----------开始准备角色权限信息，进行打包封装处理----------");
         if (NullUtil.isNullOrEmpty(roleId)) {

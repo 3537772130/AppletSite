@@ -197,7 +197,7 @@ public class UserOrderService {
      *
      * @param orderId
      */
-    @Async
+    @Async("taskExecutor")
     public void addOrderSeeRecord(Integer orderId) {
         OrderSeeRecord record = selectOrderSeeRecord(orderId);
         if (null == record) {
@@ -218,7 +218,7 @@ public class UserOrderService {
      * @param userStatus
      * @param storeStatus
      */
-    @Async
+    @Async("taskExecutor")
     public void updateOrderSeeRecord(Integer orderId, Boolean userStatus, Boolean storeStatus) {
         OrderSeeRecord record = selectOrderSeeRecord(orderId);
 

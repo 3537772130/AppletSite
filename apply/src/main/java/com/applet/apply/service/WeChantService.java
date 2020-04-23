@@ -1,6 +1,7 @@
 package com.applet.apply.service;
 
 import com.applet.common.entity.*;
+import com.applet.common.entity.page.GeoLocation;
 import com.applet.common.mapper.*;
 import com.applet.common.util.Constants;
 import com.applet.common.util.NullUtil;
@@ -9,17 +10,24 @@ import com.applet.common.util.encryption.DesUtil;
 import com.applet.common.util.encryption.MD5Util;
 import com.applet.common.util.enums.UserOperationType;
 import com.applet.common.util.file.GetImageUtil;
+import com.applet.common.util.http.IpUtil;
 import com.applet.common.util.qiniu.QiNiuUtil;
+import jodd.datetime.JDateTime;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Date;
@@ -29,17 +37,74 @@ import java.util.List;
  * Created by zhouhuahu on 2018/6/26.
  */
 @SuppressWarnings("ALL")
+@Slf4j
 @Service
-public class WeChantService {
-    private final static Logger log = LoggerFactory.getLogger(WeChantService.class);
-    @Autowired(required=true)
+@Component
+public class WeChantService implements ApplicationRunner {
+    @Autowired(required = true)
     private WeChantInfoMapper weChantInfoMapper;
-    @Autowired(required=true)
+    @Autowired(required = true)
     private ViewWeChantInfoMapper viewWeChantInfoMapper;
-    @Autowired(required=true)
+    @Autowired(required = true)
     private UserOperationLogMapper userOperationLogMapper;
-    @Autowired(required=true)
+    @Autowired(required = true)
     private UserService userService;
+    @Autowired(required = true)
+    private UserLoginLogMapper userLoginLogMapper;
+    @Autowired(required = true)
+    private ViewUserLoginLogNewestMapper viewUserLoginLogNewestMapper;
+
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        IpUtil.init();
+    }
+
+    /**
+     * 添加用户登录日志
+     *
+     * @param id
+     * @param request
+     */
+    @Async("taskExecutor")
+    public void saveUserLoginLog(Integer id, HttpServletRequest request) {
+        String ip = IpUtil.getRequestIp(request);
+        // 查询用户上次登录情况
+        ViewUserLoginLogNewestExample example = new ViewUserLoginLogNewestExample();
+        example.createCriteria().andUserIdEqualTo(id);
+        List<ViewUserLoginLogNewest> list = viewUserLoginLogNewestMapper.selectByExample(example);
+        boolean bool = false;
+        if (NullUtil.isNotNullOrEmpty(list)) {
+            if (list.get(0).getIpAddress().equals(ip)){
+                // 与上次登录地址相同，检测是否为当天记录
+                JDateTime time1 = new JDateTime(list.get(0).getLoginTime());
+                String loginDay = time1.toString(Constants.DATE_YMD_JDK);
+                JDateTime time2 = new JDateTime(new Date());
+                String nowDay = time2.toString(Constants.DATE_YMD_JDK);
+                // 为当天记录不添加记录，否则添加记录
+                bool = !loginDay.equals(nowDay);
+            } else {
+                // 与上次登录地址不相同，允许添加记录
+                bool = true;
+            }
+        } else {
+            // 不存在登录记录，允许添加记录
+            bool = true;
+        }
+        if (bool) {
+            UserLoginLog record = new UserLoginLog();
+            record.setUserId(id);
+            record.setIpAddress(ip);
+            record.setLoginTime(new Date());
+            GeoLocation geoLocation = IpUtil.getLocationFromRequest(ip);
+            if (null != geoLocation) {
+                record.setCountryId(geoLocation.getCountryCode());
+                record.setCountry(geoLocation.getCountryName());
+                record.setRegion(geoLocation.getRegionName());
+                record.setCity(geoLocation.getCity());
+                userLoginLogMapper.insertSelective(record);
+            }
+        }
+    }
 
     /**
      * 查询微信信息
@@ -239,7 +304,7 @@ public class WeChantService {
         userService.setSystemNoticeByNewUser(userInfo.getId());
     }
 
-    @Async
+    @Async("taskExecutor")
     public void addBindMobileLog(ViewAppletInfo appletInfo, ViewWeChantInfo weChantInfo, UserInfo userInfo) {
         UserOperationLog log = new UserOperationLog();
         log.setUserId(userInfo.getId());
@@ -268,7 +333,7 @@ public class WeChantService {
      * @param netUrl
      * @param key
      */
-    @Async
+    @Async("taskExecutor")
     public String updateUserAvatar(String netUrl, String key) {
         try {
             byte[] pdfFile = GetImageUtil.getImageFromNetByUrl(netUrl);

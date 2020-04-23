@@ -173,7 +173,7 @@ public class UserService {
      * 设置新用户系统消息推送
      * @param userId
      */
-    @Async
+    @Async("taskExecutor")
     @Transactional(rollbackFor = Exception.class)
     public void setSystemNoticeByNewUser(Integer userId) {
         SystemNoticeExample example = new SystemNoticeExample();

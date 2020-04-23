@@ -5,6 +5,7 @@ import com.applet.user.config.annotation.SessionScope;
 import com.applet.common.entity.*;
 import com.applet.user.service.AppletService;
 import com.applet.user.service.CouponServer;
+import jodd.datetime.JDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -158,6 +159,15 @@ public class UserCouponController {
             }
             if (NullUtil.isNullOrEmpty(coupon.getActivityOver())) {
                 return AjaxResponse.error("活动过期时间不能为空");
+            }
+            JDateTime start = new JDateTime(coupon.getActivityStart());
+            start.setHour(0).setMinute(0).setSecond(0);
+            coupon.setActivityStart(start.convertToDate());
+            JDateTime over = new JDateTime(coupon.getActivityOver());
+            over.setHour(23).setMinute(59).setSecond(59);
+            coupon.setActivityOver(over.convertToDate());
+            if (coupon.getActivityOver().compareTo(coupon.getActivityStart()) < 0){
+                return AjaxResponse.error("活动日期选择错误");
             }
             coupon.setUserId(user.getId());
             couponServer.updateCouponInfo(coupon);

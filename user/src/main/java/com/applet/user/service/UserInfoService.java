@@ -1,12 +1,16 @@
 package com.applet.user.service;
 
 import com.applet.common.entity.*;
+import com.applet.common.entity.page.GeoLocation;
 import com.applet.common.mapper.*;
 import com.applet.common.util.*;
 import com.applet.common.util.encryption.EncryptionUtil;
 import com.applet.common.util.http.IpUtil;
 import jodd.datetime.JDateTime;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -24,15 +28,21 @@ import java.util.Map;
  * @create: 2019-06-14 14:52
  **/
 @SuppressWarnings("ALL")
+@Slf4j
 @Service
 @Component
-public class UserInfoService {
+public class UserInfoService implements ApplicationRunner {
     @Autowired
     private UserInfoMapper userInfoMapper;
     @Autowired
     private UserLoginLogMapper userLoginLogMapper;
     @Autowired
     private CommonMapper commonMapper;
+
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        IpUtil.init();
+    }
 
     /**
      * 查询web用户信息
@@ -143,23 +153,17 @@ public class UserInfoService {
     public void saveUserLoginLog(Integer id, HttpServletRequest request) {
         UserLoginLog record = new UserLoginLog();
         record.setUserId(id);
-        String ip = IpUtil.getForIp(request);
+        String ip = IpUtil.getRequestIp(request);
         record.setIpAddress(ip);
         record.setLoginTime(new Date());
-//        String json_result = null;
-//        json_result = IpUtil.getAddresses("ip=" + ip, "UTF-8");
-//        if (NullUtil.isNotNullOrEmpty(json_result)) {
-//            JSONObject json = JSONObject.fromObject(json_result);
-//            System.out.println("json数据： " + json);
-//            JSONObject obj = JSONObject.fromObject(json.get("data"));
-//            record.setCountry(obj.get("country").toString());
-//            record.setRegion(obj.get("region").toString());
-//            record.setCity(obj.get("city").toString());
-//            record.setCounty(obj.get("county").toString());
-//            record.setArea(obj.get("area").toString());
-//            record.setIsp(obj.get("isp").toString());
-//        }
-        userLoginLogMapper.insertSelective(record);
+        GeoLocation geoLocation = IpUtil.getLocationFromRequest(ip);
+        if (null != geoLocation){
+            record.setCountryId(geoLocation.getCountryCode());
+            record.setCountry(geoLocation.getCountryName());
+            record.setRegion(geoLocation.getRegionName());
+            record.setCity(geoLocation.getCity());
+            userLoginLogMapper.insertSelective(record);
+        }
     }
 
     /**

@@ -154,7 +154,7 @@ public class PlatformSetService {
         return page;
     }
 
-    @Async
+    @Async("taskExecutor")
     private void updateAppletAdvertRelationStatus(){
         AppletAdvertRelation relation = new AppletAdvertRelation();
         relation.setRelationStatus(false);

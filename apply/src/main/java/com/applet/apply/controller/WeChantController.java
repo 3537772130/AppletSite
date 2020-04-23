@@ -55,11 +55,11 @@ public class WeChantController {
     @CancelAuth
     public Object login(@SessionScope("appletInfo") ViewAppletInfo appletInfo, @RequestParam("loginCode") String loginCode,
                         @RequestParam("nickName") String nickName, @RequestParam("avatarUrl") String avatarUrl,
-                        @RequestParam("gender") boolean gender) {
+                        @RequestParam("gender") boolean gender, HttpServletRequest request) {
         try {
             String openId = WeChatAppletUtil.getOpenId(loginCode, appletInfo.getAppId(), appletInfo.getAppSecret());
             ViewWeChantInfo weChantInfo = weChantService.selectViewWeChantInfo(appletInfo.getId(), openId, nickName, avatarUrl, gender);
-            return getWeChantInfo(appletInfo, weChantInfo);
+            return getWeChantInfo(appletInfo, weChantInfo, request);
         } catch (Exception e) {
             logger.info("授权登录出错{}", e);
         }
@@ -73,14 +73,19 @@ public class WeChantController {
      * @return
      */
     @RequestMapping(value = "loadUserInfo")
-    public Object loadUserInfo(@SessionScope("appletInfo") ViewAppletInfo appletInfo, @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo){
-        return getWeChantInfo(appletInfo, weChantInfo);
+    public Object loadUserInfo(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
+                               @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo,
+                               HttpServletRequest request){
+        return getWeChantInfo(appletInfo, weChantInfo, request);
     }
 
-    private Object getWeChantInfo(ViewAppletInfo appletInfo, ViewWeChantInfo weChantInfo){
+    private Object getWeChantInfo(ViewAppletInfo appletInfo, ViewWeChantInfo weChantInfo, HttpServletRequest request){
         if (weChantInfo != null) {
             if (weChantInfo.getStatus().intValue() == 0) {
                 return AjaxResponse.error("您的账户已经冻结，请联系客服进行处理");
+            }
+            if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())){
+                weChantService.saveUserLoginLog(weChantInfo.getUserId(), request);
             }
             weChantInfo.setOpenId(null);
             Map<String, Object> map = new HashMap<>();
@@ -147,7 +152,7 @@ public class WeChantController {
                     return AjaxResponse.error("已绑定该账户");
                 }
             }
-            String ipAddress = IpUtil.getForIp(request);
+            String ipAddress = IpUtil.getRequestIp(request);
 
             AuthCode authCode = new AuthCode();
             authCode.setUserId(userInfo.getId());

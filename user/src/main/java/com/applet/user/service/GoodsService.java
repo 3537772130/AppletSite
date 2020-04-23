@@ -499,7 +499,7 @@ public class GoodsService {
      * @param goodsId
      * @param userId
      */
-    @Async
+    @Async("taskExecutor")
     @Transactional(rollbackFor = Exception.class)
     public void checkGoodsValue(Integer goodsId, Integer userId, boolean ifPrice) {
         GoodsInfo goods = new GoodsInfo();
@@ -523,16 +523,6 @@ public class GoodsService {
 
 //        ViewGoodsInfo goodsInfo = selectViewGoodsInfo(goodsId, userId);
 //        appletPageService.updatePageContext(goodsInfo.getAppletId(), goodsInfo.getUserId(), null, goodsInfo);
-    }
-
-    /**
-     * 查询用户审核通过小程序Map集合
-     * @param userId
-     * @return
-     */
-    public List<Map> selectAppletToMap(Integer userId){
-        String sql = "SELECT id,applet_name AS name FROM applet_info WHERE user_id = "+ userId + " AND `status` <> 0;";
-        return commonMapper.selectListMap(sql);
     }
 
     /**
@@ -567,7 +557,7 @@ public class GoodsService {
         return page;
     }
 
-    @Async
+    @Async("taskExecutor")
     private void updateupdateUserAppletRecommendGoodsStatus(){
         UserAppletRecommendGoods rg = new UserAppletRecommendGoods();
         rg.setRecommendStatus(false);

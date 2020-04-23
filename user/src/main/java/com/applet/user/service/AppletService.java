@@ -86,6 +86,16 @@ public class AppletService {
     }
 
     /**
+     * 查询用户审核通过小程序Map集合
+     * @param userId
+     * @return
+     */
+    public List<Map> selectAppletToMap(Integer userId){
+        String sql = "SELECT id,applet_name AS name FROM applet_info WHERE user_id = "+ userId + " AND `status` <> 0;";
+        return commonMapper.selectListMap(sql);
+    }
+
+    /**
      * 查询小程序信息
      *
      * @param id

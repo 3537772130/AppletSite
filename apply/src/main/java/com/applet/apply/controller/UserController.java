@@ -101,7 +101,7 @@ public class UserController {
             }
             String channel = SMSChannel.ALIYUN.toString();
             String remark = "修改密码";
-            String ipAddress = IpUtil.getForIp(request);
+            String ipAddress = IpUtil.getRequestIp(request);
 
             AuthCode authCode = new AuthCode();
             authCode.setUserId(userInfo.getId());

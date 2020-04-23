@@ -245,7 +245,7 @@ public class AppletPageService {
      * @param goods
      * @throws Exception
      */
-    @Async
+    @Async("taskExecutor")
     public void updatePageContext(Integer appletId, Integer userId, GoodsType type, ViewGoodsInfo goods) {
         try {
             List<ViewAppletPageContent> contentList = selectAppletPageContent(userId, appletId);

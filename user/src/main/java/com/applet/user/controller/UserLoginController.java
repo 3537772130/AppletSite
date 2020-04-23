@@ -151,7 +151,7 @@ public class UserLoginController {
                 return AjaxResponse.error("操作频繁，请稍后再试");
             }
             String channel = SMSChannel.ALIYUN.toString();
-            String ipAddress = IpUtil.getForIp(request);
+            String ipAddress = IpUtil.getRequestIp(request);
 
             AuthCode authCode = new AuthCode();
             authCode.setMobile(mobile);

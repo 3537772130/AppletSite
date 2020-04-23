@@ -57,7 +57,7 @@ public class WeChantPayService {
         wo.setSignType("MD5");
         wo.setDetail(null);
         wo.setFeeType("CNY");
-        wo.setSpbillCreateIp(IpUtil.getForIp(request));
+        wo.setSpbillCreateIp(IpUtil.getRequestIp(request));
         JDateTime time = new JDateTime(new Date());
         wo.setTimeStart(time.toString(Constants.DEFAULT_DATE_FORMAT_STAMP));
         wo.setTimeExpire(time.addHour(2).toString(Constants.DEFAULT_DATE_FORMAT_STAMP));

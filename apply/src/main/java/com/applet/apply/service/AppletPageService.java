@@ -58,7 +58,7 @@ public class AppletPageService {
      * @param appletId
      * @param appletCode
      */
-    @Async
+    @Async("taskExecutor")
     public void loadGoodsClassify(Integer appletId, String appletCode) {
         List<ViewGoodsType> typeList = goodsService.selectGoodsTypeList(appletId);
         List<Integer> typeIdList = new ArrayList<>();
