@@ -178,10 +178,10 @@ public class ManagerService {
      * 更新管理员信息
      * @param newInfo
      * @param operateId
-     * @param request
+     * @param ipAddress
      */
     @Transactional(rollbackFor = Exception.class)
-    public void updateManagerInfo(ManagerInfo newInfo, Integer operateId, HttpServletRequest request) {
+    public void updateManagerInfo(ManagerInfo newInfo, Integer operateId, String ipAddress) {
         if (NullUtil.isNotNullOrEmpty(newInfo.getId())) {
             // 原管理员信息
             ManagerInfo oldInfo = managerInfoMapper.selectByPrimaryKey(newInfo.getId());
@@ -193,7 +193,7 @@ public class ManagerService {
             log.setAfterJson(JSONObject.fromObject(oldInfo).toString());
             log.setBeforeJson(JSONObject.fromObject(oldInfo).toString());
             log.setOperatorId(operateId);
-            log.setOperatorIp(IpUtil.getRequestIp(request));
+            log.setOperatorIp(ipAddress);
             log.setOperateTime(new Date());
             managerLogMapper.insertSelective(log);
         } else {

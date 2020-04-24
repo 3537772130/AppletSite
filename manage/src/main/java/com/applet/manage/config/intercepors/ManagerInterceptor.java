@@ -10,8 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,10 +24,15 @@ import java.util.Map;
  * @create: 2019-08-17 16:22
  **/
 @Component
-public class ManagerInterceptor implements HandlerInterceptor {
+public class ManagerInterceptor extends HandlerInterceptorAdapter {
     private static final Logger log = LoggerFactory.getLogger(ManagerInterceptor.class);
 
+    @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String ipAddress = request.getHeader("ipAddress");
+        if (NullUtil.isNotNullOrEmpty(ipAddress)){
+            request.getSession().setAttribute(Constants.CLIENT_PUBLIC_IP, ipAddress);
+        }
         if (handler instanceof HandlerMethod) {
             HandlerMethod handleMethod = (HandlerMethod) handler;
             CancelAuthentication cancel = handleMethod.getMethodAnnotation(CancelAuthentication.class);
@@ -43,12 +47,6 @@ public class ManagerInterceptor implements HandlerInterceptor {
             request.getRequestDispatcher("/api/loginOverdue").forward(request, response);
             return false;
         } else {
-//                if (menuService == null) {//解决service为null无法注入问题
-//                    System.out.println("menuService is null!!!");
-//                    BeanFactory factory = WebApplicationContextUtils
-//                            .getRequiredWebApplicationContext(request.getServletContext());
-//                    menuService = (MenuService) factory.getBean("menuService");
-//                }
             String uri = request.getRequestURI();
             int lastIndex = uri.lastIndexOf("/");
             String logo = uri.substring((lastIndex + 1), uri.length());
@@ -69,11 +67,8 @@ public class ManagerInterceptor implements HandlerInterceptor {
         }
     }
 
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable ModelAndView modelAndView) throws Exception {
-
-    }
-
+    @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable Exception ex) throws Exception {
-
+        request.getSession().removeAttribute(Constants.CLIENT_PUBLIC_IP);
     }
 }

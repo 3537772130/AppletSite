@@ -98,11 +98,14 @@ public class ManagerInfoController {
     /**
      * 更新管理员信息
      *
+     * @param info
      * @param managerInfo
+     * @param ipAddress
      * @return
      */
     @RequestMapping(value = "updateManagerInfo")
-    public Object updateManagerInfo(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo info, ManagerInfo managerInfo, HttpServletRequest request) {
+    public Object updateManagerInfo(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo info, ManagerInfo managerInfo,
+                                    @SessionScope(Constants.CLIENT_PUBLIC_IP) String ipAddress) {
         if (null == managerInfo) {
             return AjaxResponse.error("未获取到相关信息");
         }
@@ -147,7 +150,7 @@ public class ManagerInfoController {
             managerInfo.setRoleId(3);
         }
         try {
-            managerService.updateManagerInfo(managerInfo, info.getId(), request);
+            managerService.updateManagerInfo(managerInfo, info.getId(), ipAddress);
             return AjaxResponse.success("提交成功");
         } catch (Exception e) {
             return AjaxResponse.error("提交失败");
@@ -170,6 +173,7 @@ public class ManagerInfoController {
      * 更新管理员基础信息
      *
      * @param manager
+     * @param ipAddress
      * @param nickName
      * @param mobile
      * @param email
@@ -179,8 +183,10 @@ public class ManagerInfoController {
      * @return
      */
     @RequestMapping(value = "updateManagerBase")
-    public Object updateManagerBase(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo manager, String nickName, String mobile,
-                                    String email, String qqAccount, String weChatAccount, HttpServletRequest request) {
+    public Object updateManagerBase(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo manager,
+                                    @SessionScope(Constants.CLIENT_PUBLIC_IP) String ipAddress,
+                                    String nickName, String mobile, String email, String qqAccount,
+                                    String weChatAccount, HttpServletRequest request) {
         try {
             if (NullUtil.isNullOrEmpty(nickName)) {
                 return AjaxResponse.error("昵称不能为空");
@@ -204,7 +210,7 @@ public class ManagerInfoController {
             manager.setEmail(email);
             manager.setQqAccount(qqAccount);
             manager.setWeChatAccount(weChatAccount);
-            managerService.updateManagerInfo(manager, manager.getId(), request);
+            managerService.updateManagerInfo(manager, manager.getId(), ipAddress);
             request.getSession().setAttribute(Constants.WEB_MANAGER_INFO, SerializeUtil.serialize(manager.getManagerInfo(manager)));
             return AjaxResponse.success(manager.getManagerInfo(manager));
         } catch (Exception e) {
@@ -217,12 +223,15 @@ public class ManagerInfoController {
      * 修改管理员登录密码
      *
      * @param info
+     * @param ipAddress
      * @param oldPass
      * @param newPass
      * @return
      */
     @RequestMapping(value = "updateManagerPassword")
-    public Object updateManagerPassword(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo info, String oldPass, String newPass, HttpServletRequest request) {
+    public Object updateManagerPassword(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo info,
+                                        @SessionScope(Constants.CLIENT_PUBLIC_IP) String ipAddress,
+                                        String oldPass, String newPass) {
         ManagerInfo manager = managerService.selectManagerInfoById(info.getId());
         String cipher = DesUtil.encrypt(oldPass, manager.getEncrypted());
         cipher = MD5Util.MD5(cipher);
@@ -235,7 +244,7 @@ public class ManagerInfoController {
         newInfo.setId(info.getId());
         newInfo.setPassword(cipher);
         try {
-            managerService.updateManagerInfo(newInfo, info.getId(), request);
+            managerService.updateManagerInfo(newInfo, info.getId(), ipAddress);
             return AjaxResponse.success("修改成功");
         } catch (Exception e) {
             return AjaxResponse.error("修改失败");
@@ -246,12 +255,15 @@ public class ManagerInfoController {
      * 修改管理员头像
      *
      * @param manager
+     * @param ipAddress
      * @param multipartFile
      * @param request
      * @return
      */
     @RequestMapping(value = "uploadManagerAvatar")
-    public Object uploadManagerAvatar(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo manager, @RequestParam("avatar") MultipartFile multipartFile,
+    public Object uploadManagerAvatar(@SessionScope(Constants.WEB_MANAGER_INFO) ManagerInfo manager,
+                                      @SessionScope(Constants.CLIENT_PUBLIC_IP) String ipAddress,
+                                      @RequestParam("avatar") MultipartFile multipartFile,
                                       HttpServletRequest request) {
         try {
             //校验文件信息
@@ -264,7 +276,7 @@ public class ManagerInfoController {
             QiNiuUtil.uploadFile(multipartFile, fileKey);
             if (NullUtil.isNullOrEmpty(manager.getAvatarUrl())) {
                 manager.setAvatarUrl(fileKey);
-                managerService.updateManagerInfo(manager, manager.getId(), request);
+                managerService.updateManagerInfo(manager, manager.getId(), ipAddress);
                 request.getSession().setAttribute(Constants.WEB_MANAGER_INFO, SerializeUtil.serialize(manager.getManagerInfo(manager)));
             }
             return AjaxResponse.success(manager.getAvatarUrl() + "&token=" + RandomUtil.getRandomStr32());
