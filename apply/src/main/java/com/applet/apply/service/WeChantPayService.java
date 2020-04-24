@@ -9,6 +9,7 @@ import com.applet.common.util.http.IpUtil;
 import jodd.datetime.JDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,7 @@ import java.util.*;
 @Service
 public class WeChantPayService {
     @Autowired
+    @Lazy
     private UserOrderService userOrderService;
 
     /**
@@ -35,11 +37,11 @@ public class WeChantPayService {
      *
      * @param data    订单参数信息
      * @param goodsId
-     * @param request
+     * @param ipAddress
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
-    public String sendWeChantUnifiedOrder(ViewOrderPayData data, String goodsId, HttpServletRequest request) {
+    public String sendWeChantUnifiedOrder(ViewOrderPayData data, String goodsId, String ipAddress) {
         // 设置微信统一下单信息
         WxUnifiedOrder wo = new WxUnifiedOrder();
         wo.setOutTradeNo(data.getOrderNo());
@@ -57,7 +59,7 @@ public class WeChantPayService {
         wo.setSignType("MD5");
         wo.setDetail(null);
         wo.setFeeType("CNY");
-        wo.setSpbillCreateIp(IpUtil.getRequestIp(request));
+        wo.setSpbillCreateIp(ipAddress);
         JDateTime time = new JDateTime(new Date());
         wo.setTimeStart(time.toString(Constants.DEFAULT_DATE_FORMAT_STAMP));
         wo.setTimeExpire(time.addHour(2).toString(Constants.DEFAULT_DATE_FORMAT_STAMP));
@@ -77,8 +79,8 @@ public class WeChantPayService {
         return bool ? result.getPrepayId() : null;
     }
 
-    public String sendWeChantUnifiedOrder(ViewOrderPayData data, HttpServletRequest request) {
-        return sendWeChantUnifiedOrder(data, null, request);
+    public String sendWeChantUnifiedOrder(ViewOrderPayData data, String ipAddress) {
+        return sendWeChantUnifiedOrder(data, null, ipAddress);
     }
 
     /**

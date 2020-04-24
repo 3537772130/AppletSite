@@ -2,10 +2,7 @@ package com.applet.apply.controller;
 
 import com.applet.apply.config.annotation.CancelAuth;
 import com.applet.apply.config.annotation.SessionScope;
-import com.applet.apply.service.AppletService;
-import com.applet.apply.service.UserOrderService;
-import com.applet.apply.service.WeChantPayService;
-import com.applet.apply.service.WeChantService;
+import com.applet.apply.service.*;
 import com.applet.common.entity.*;
 import com.applet.common.entity.pay.WxUnifiedOrderResult;
 import com.applet.common.enums.OrderEnums;
@@ -13,6 +10,7 @@ import com.applet.common.util.*;
 import com.applet.common.util.encryption.EncryptionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(value = "/api/applet/pay/")
 public class WeChantPayController {
     @Autowired
+    @Lazy
     private UserOrderService userOrderService;
     @Autowired
     private AppletService appletService;
@@ -46,13 +45,13 @@ public class WeChantPayController {
      *
      * @param appletInfo
      * @param weChantInfo
-     * @param request
+     * @param ipAddress
      * @return
      */
     @RequestMapping(value = "sendWeChantUnifiedOrderTest")
     public Object sendWeChantUnifiedOrderTest(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
                                               @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo,
-                                              HttpServletRequest request) {
+                                              @SessionScope(Constants.CLIENT_PUBLIC_IP) String ipAddress) {
         try {
             if (appletInfo.getUserId().intValue() != weChantInfo.getUserId().intValue()) {
                 return AjaxResponse.error("非法操作");
@@ -76,7 +75,7 @@ public class WeChantPayController {
             data.setPayKey(EncryptionUtil.decryptAppletRSA(a.getPayKey()));
             data.setPayChannel(OrderEnums.PayChannel.WX_JSAPI.getCode());
             data.setOpenId(w.getOpenId());
-            String prepayId = weChantPayService.sendWeChantUnifiedOrder(data, request);
+            String prepayId = weChantPayService.sendWeChantUnifiedOrder(data, ipAddress);
             if (NullUtil.isNotNullOrEmpty(prepayId)) {
                 String msg = EncryptionUtil.encryptAppletPayInfoAES(a.getAppId(), a.getPayKey(), prepayId);
                 return AjaxResponse.success(msg);
@@ -92,14 +91,15 @@ public class WeChantPayController {
      *
      * @param appletInfo
      * @param weChantInfo
+     * @param ipAddress
      * @param id
-     * @param request
      * @return
      */
     @PostMapping(value = "sendWeChantUnifiedOrder")
     public Object sendWeChantUnifiedOrder(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
                                           @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo,
-                                          @RequestParam("id") String id, HttpServletRequest request) {
+                                          @SessionScope(Constants.CLIENT_PUBLIC_IP) String ipAddress,
+                                          @RequestParam("id") String id) {
         try {
             Integer orderId = NullUtil.isNotNullOrEmpty(id) ? Integer.parseInt(id) : null;
             ViewOrderPayData data = userOrderService.selectOrderData(orderId, appletInfo.getId(), weChantInfo.getId());
@@ -108,7 +108,7 @@ public class WeChantPayController {
                 data.setAppId(EncryptionUtil.decryptAppletRSA(data.getAppId()));
                 data.setMchId(EncryptionUtil.decryptAppletRSA(data.getMchId()));
                 data.setPayKey(EncryptionUtil.decryptAppletRSA(data.getPayKey()));
-                String prepayId = weChantPayService.sendWeChantUnifiedOrder(data, request);
+                String prepayId = weChantPayService.sendWeChantUnifiedOrder(data, ipAddress);
                 if (NullUtil.isNotNullOrEmpty(prepayId)) {
                     String msg = EncryptionUtil.encryptAppletPayInfoAES(data.getAppId(), data.getPayKey(), prepayId);
                     return AjaxResponse.success(msg);

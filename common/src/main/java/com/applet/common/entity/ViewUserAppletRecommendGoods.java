@@ -26,10 +26,10 @@ public class ViewUserAppletRecommendGoods implements Serializable {
 
     private String recommendImg;
 
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_YMD_JDK)
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_ZH)
     private Date startTime;
 
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_YMD_JDK)
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_ZH)
     private Date expireTime;
 
     @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)

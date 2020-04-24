@@ -12,6 +12,7 @@ import jodd.datetime.JDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,6 +39,7 @@ public class WeChantController {
     @Autowired
     private SmsService smsService;
     @Autowired
+    @Lazy
     private UserOrderService userOrderService;
     @Autowired
     private RedisService redisService;
@@ -49,17 +51,18 @@ public class WeChantController {
      * @param nickName
      * @param avatarUrl
      * @param gender
+     * @param ipAddress
      * @return
      */
     @PostMapping(value = "login")
     @CancelAuth
     public Object login(@SessionScope("appletInfo") ViewAppletInfo appletInfo, @RequestParam("loginCode") String loginCode,
                         @RequestParam("nickName") String nickName, @RequestParam("avatarUrl") String avatarUrl,
-                        @RequestParam("gender") boolean gender, HttpServletRequest request) {
+                        @RequestParam("gender") boolean gender, @SessionScope(Constants.CLIENT_PUBLIC_IP) String ipAddress) {
         try {
             String openId = WeChatAppletUtil.getOpenId(loginCode, appletInfo.getAppId(), appletInfo.getAppSecret());
             ViewWeChantInfo weChantInfo = weChantService.selectViewWeChantInfo(appletInfo.getId(), openId, nickName, avatarUrl, gender);
-            return getWeChantInfo(appletInfo, weChantInfo, request);
+            return getWeChantInfo(appletInfo, weChantInfo, ipAddress);
         } catch (Exception e) {
             logger.info("授权登录出错{}", e);
         }
@@ -70,22 +73,23 @@ public class WeChantController {
      * 加载用户登陆信息
      * @param appletInfo
      * @param weChantInfo
+     * @param ipAddress
      * @return
      */
     @RequestMapping(value = "loadUserInfo")
     public Object loadUserInfo(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
                                @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo,
-                               HttpServletRequest request){
-        return getWeChantInfo(appletInfo, weChantInfo, request);
+                               @SessionScope(Constants.CLIENT_PUBLIC_IP) String ipAddress){
+        return getWeChantInfo(appletInfo, weChantInfo, ipAddress);
     }
 
-    private Object getWeChantInfo(ViewAppletInfo appletInfo, ViewWeChantInfo weChantInfo, HttpServletRequest request){
+    private Object getWeChantInfo(ViewAppletInfo appletInfo, ViewWeChantInfo weChantInfo, String ipAddress){
         if (weChantInfo != null) {
             if (weChantInfo.getStatus().intValue() == 0) {
                 return AjaxResponse.error("您的账户已经冻结，请联系客服进行处理");
             }
             if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())){
-                weChantService.saveUserLoginLog(weChantInfo.getUserId(), request);
+                weChantService.saveUserLoginLog(weChantInfo.getUserId(), ipAddress);
             }
             weChantInfo.setOpenId(null);
             Map<String, Object> map = new HashMap<>();
@@ -114,12 +118,14 @@ public class WeChantController {
      * 发送绑定微信验证码
      *
      * @param weChantInfo
+     * @param ipAddress
      * @param mobile
-     * @param request
      * @return
      */
     @RequestMapping(value = "sendBindAppletCode")
-    public Object sendBindAppletCode(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, @RequestParam("mobile") String mobile, HttpServletRequest request) {
+    public Object sendBindAppletCode(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo,
+                                     @SessionScope(Constants.CLIENT_PUBLIC_IP) String ipAddress,
+                                     @RequestParam("mobile") String mobile) {
         try {
             if (NullUtil.isNullOrEmpty(mobile)) {
                 return AjaxResponse.error("账号不能为空");
@@ -152,7 +158,6 @@ public class WeChantController {
                     return AjaxResponse.error("已绑定该账户");
                 }
             }
-            String ipAddress = IpUtil.getRequestIp(request);
 
             AuthCode authCode = new AuthCode();
             authCode.setUserId(userInfo.getId());

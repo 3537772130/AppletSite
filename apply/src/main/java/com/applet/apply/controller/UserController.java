@@ -77,12 +77,12 @@ public class UserController {
      * 发送修改密码验证码
      *
      * @param weChantInfo
-     * @param request
+     * @param ipAddress
      * @return
      */
     @RequestMapping(value = "sendUpdatePassVerifyCode")
     public Object sendUpdatePassVerifyCode(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo,
-                                           HttpServletRequest request) {
+                                           @SessionScope(Constants.CLIENT_PUBLIC_IP) String ipAddress) {
         try {
             UserInfo userInfo = userService.getUserInfo(weChantInfo.getUserId());
             if (null == userInfo) {
@@ -101,7 +101,6 @@ public class UserController {
             }
             String channel = SMSChannel.ALIYUN.toString();
             String remark = "修改密码";
-            String ipAddress = IpUtil.getRequestIp(request);
 
             AuthCode authCode = new AuthCode();
             authCode.setUserId(userInfo.getId());

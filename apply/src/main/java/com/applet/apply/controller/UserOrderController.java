@@ -9,7 +9,7 @@ import com.applet.common.util.*;
 import jodd.datetime.JDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +30,7 @@ public class UserOrderController {
     @Autowired
     private UserService userService;
     @Autowired
+    @Lazy
     private UserOrderService userOrderService;
     @Autowired
     private UserCartService userCartService;

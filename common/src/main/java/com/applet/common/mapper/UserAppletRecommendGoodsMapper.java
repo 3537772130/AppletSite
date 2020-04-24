@@ -3,8 +3,11 @@ package com.applet.common.mapper;
 import com.applet.common.entity.UserAppletRecommendGoods;
 import com.applet.common.entity.UserAppletRecommendGoodsExample;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+@Mapper
 public interface UserAppletRecommendGoodsMapper {
     long countByExample(UserAppletRecommendGoodsExample example);
 

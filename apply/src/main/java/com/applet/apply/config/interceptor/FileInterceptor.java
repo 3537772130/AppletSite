@@ -44,7 +44,7 @@ public class FileInterceptor implements HandlerInterceptor {
             }
 //            response.sendRedirect(url + "&appletToken=" + RandomUtil.getRandomStr32());
             response.sendRedirect(url);
-            log.info("七牛云文件路径：" + url);
+//            log.info("七牛云文件路径：" + url);
         }
         return false;
     }

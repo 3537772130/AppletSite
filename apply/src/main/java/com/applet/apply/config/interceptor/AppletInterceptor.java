@@ -6,6 +6,7 @@ import com.applet.common.entity.*;
 import com.applet.apply.service.AppletService;
 import com.applet.apply.service.RedisService;
 import com.applet.apply.service.WeChantService;
+import com.applet.common.util.Constants;
 import com.applet.common.util.NullUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,10 @@ public class AppletInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         try {
+            String ipAddress = request.getHeader("ipAddress");
+            if (NullUtil.isNotNullOrEmpty(ipAddress)){
+                request.getSession().setAttribute(Constants.CLIENT_PUBLIC_IP, ipAddress);
+            }
             log.info("访问控制拦截\nURI: {} \n Params: {}", request.getRequestURI(), JSONObject.toJSONString(request.getParameterMap()));
             String appletCode = request.getHeader("appletCode");
             if (NullUtil.isNullOrEmpty(appletCode)) {
@@ -123,5 +128,6 @@ public class AppletInterceptor extends HandlerInterceptorAdapter {
         log.info("清除访问者信息...");
         request.getSession().removeAttribute("appletInfo");
         request.getSession().removeAttribute("weChantInfo");
+        request.getSession().removeAttribute(Constants.CLIENT_PUBLIC_IP);
     }
 }

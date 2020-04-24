@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -123,5 +124,10 @@ public class ShareController {
     @RequestMapping(value = "selectRegionJson")
     public Object selectRegionJson() {
         return AjaxResponse.success(new JSONArray(Constants.REGION_MAP_TO_NAME).toString());
+    }
+
+    @RequestMapping(value = "getClientIp")
+    public void getClientIp(HttpServletResponse response) throws Exception{
+        response.sendRedirect("http://pv.sohu.com/cityjson?ie=utf-8");
     }
 }

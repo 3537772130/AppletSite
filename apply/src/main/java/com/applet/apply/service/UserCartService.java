@@ -4,6 +4,7 @@ import com.applet.common.entity.*;
 import com.applet.common.mapper.*;
 import com.applet.common.util.NullUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -25,6 +26,7 @@ public class UserCartService {
     @Autowired
     private ViewUserCartMapper viewUserCartMapper;
     @Autowired
+    @Lazy
     private UserOrderService userOrderService;
 
     /**

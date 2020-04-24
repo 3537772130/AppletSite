@@ -1,6 +1,6 @@
 package com.applet.common.util.http;
 
-import com.applet.common.entity.page.GeoLocation;
+import com.applet.common.entity.other.GeoLocation;
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.model.CityResponse;
 import com.maxmind.geoip2.record.City;
@@ -20,25 +20,22 @@ import java.net.*;
  **/
 @Slf4j
 public class IpUtil {
-    private static DatabaseReader reader;
     public static final String GEO_LITE2_CITY_PATH = "/localLibrary/GeoLite2-City.mmdb";
 
     /**
      * 初始化信息
      */
-    public static void init(){
-        URL url = IpUtil.class.getResource(IpUtil.GEO_LITE2_CITY_PATH);
-        if (url == null) {
+    private DatabaseReader initReader(){
+        InputStream inputStream = this.getClass().getResourceAsStream(GEO_LITE2_CITY_PATH);
+        if (inputStream == null) {
             log.error("----------初始化IP工具类失败----------");
-            log.error("location database is not found - " + IpUtil.GEO_LITE2_CITY_PATH);
-        } else {
-            try {
-                File database = new File(url.getPath());
-                reader = new DatabaseReader.Builder(database).build();
-                log.info("----------初始化IP工具类成功----------");
-            } catch (Exception e) {
-                log.error("----------初始化IP工具类出错----------{}", e);
-            }
+            return null;
+        }
+        try {
+            return new DatabaseReader.Builder(inputStream).build();
+        } catch (Exception e) {
+            log.error("----------初始化IP工具类出错----------{}", e);
+            return null;
         }
     }
 
@@ -49,7 +46,8 @@ public class IpUtil {
      * @return
      */
     public static GeoLocation getLocationFromRequest(String ipAddress) {
-        GeoLocation location = getLocationV2(ipAddress);
+        IpUtil ipUtil = new IpUtil();
+        GeoLocation location = ipUtil.getLocationV2(ipAddress);
         return location;
     }
 
@@ -59,8 +57,9 @@ public class IpUtil {
      * @param ipAddress
      * @return
      */
-    private static GeoLocation getLocationV2(String ipAddress) {
+    private GeoLocation getLocationV2(String ipAddress) {
         GeoLocation geoLocation = null;
+        DatabaseReader reader = initReader();
         if (null == reader) {
             log.error("location database is not found.");
         } else {
@@ -94,7 +93,7 @@ public class IpUtil {
     }
 
     /**
-     * 获取本地IP地址
+     * 获取客户端请求IP地址
      * @return
      */
     public static String getLocalIp() {
@@ -107,11 +106,11 @@ public class IpUtil {
     }
 
     /**
-     * 获取请求IP地址
+     * 获取客户端请求IP地址
      * @param request
      * @return
      */
-    public static String getRequestIp(HttpServletRequest request) {
+    public static String getLocalIp(HttpServletRequest request) {
         String ipAddress = request.getHeader("x-forwarded-for");
         if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getHeader("Proxy-Client-IP");
@@ -138,6 +137,8 @@ public class IpUtil {
                 ipAddress = ipAddress.substring(0, ipAddress.indexOf(","));
             }
         }
+        log.info("获取到当前请求的IP地址为：" + ipAddress);
         return ipAddress;
     }
+
 }

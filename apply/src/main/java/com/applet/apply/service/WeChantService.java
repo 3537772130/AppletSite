@@ -1,7 +1,7 @@
 package com.applet.apply.service;
 
 import com.applet.common.entity.*;
-import com.applet.common.entity.page.GeoLocation;
+import com.applet.common.entity.other.GeoLocation;
 import com.applet.common.mapper.*;
 import com.applet.common.util.Constants;
 import com.applet.common.util.NullUtil;
@@ -15,14 +15,9 @@ import com.applet.common.util.qiniu.QiNiuUtil;
 import jodd.datetime.JDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.entity.ContentType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,25 +34,19 @@ import java.util.List;
 @SuppressWarnings("ALL")
 @Slf4j
 @Service
-@Component
-public class WeChantService implements ApplicationRunner {
-    @Autowired(required = true)
+public class WeChantService {
+    @Autowired
     private WeChantInfoMapper weChantInfoMapper;
-    @Autowired(required = true)
+    @Autowired
     private ViewWeChantInfoMapper viewWeChantInfoMapper;
-    @Autowired(required = true)
+    @Autowired
     private UserOperationLogMapper userOperationLogMapper;
-    @Autowired(required = true)
+    @Autowired
     private UserService userService;
-    @Autowired(required = true)
+    @Autowired
     private UserLoginLogMapper userLoginLogMapper;
-    @Autowired(required = true)
+    @Autowired
     private ViewUserLoginLogNewestMapper viewUserLoginLogNewestMapper;
-
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
-        IpUtil.init();
-    }
 
     /**
      * 添加用户登录日志
@@ -66,15 +55,14 @@ public class WeChantService implements ApplicationRunner {
      * @param request
      */
     @Async("taskExecutor")
-    public void saveUserLoginLog(Integer id, HttpServletRequest request) {
-        String ip = IpUtil.getRequestIp(request);
+    public void saveUserLoginLog(Integer id, String ipAddress) {
         // 查询用户上次登录情况
         ViewUserLoginLogNewestExample example = new ViewUserLoginLogNewestExample();
         example.createCriteria().andUserIdEqualTo(id);
         List<ViewUserLoginLogNewest> list = viewUserLoginLogNewestMapper.selectByExample(example);
         boolean bool = false;
         if (NullUtil.isNotNullOrEmpty(list)) {
-            if (list.get(0).getIpAddress().equals(ip)){
+            if (list.get(0).getIpAddress().equals(ipAddress)){
                 // 与上次登录地址相同，检测是否为当天记录
                 JDateTime time1 = new JDateTime(list.get(0).getLoginTime());
                 String loginDay = time1.toString(Constants.DATE_YMD_JDK);
@@ -93,9 +81,9 @@ public class WeChantService implements ApplicationRunner {
         if (bool) {
             UserLoginLog record = new UserLoginLog();
             record.setUserId(id);
-            record.setIpAddress(ip);
+            record.setIpAddress(ipAddress);
             record.setLoginTime(new Date());
-            GeoLocation geoLocation = IpUtil.getLocationFromRequest(ip);
+            GeoLocation geoLocation = IpUtil.getLocationFromRequest(ipAddress);
             if (null != geoLocation) {
                 record.setCountryId(geoLocation.getCountryCode());
                 record.setCountry(geoLocation.getCountryName());

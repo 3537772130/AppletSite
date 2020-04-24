@@ -1,4 +1,4 @@
-package com.applet.common.entity.page;
+package com.applet.common.entity.other;
 
 /**
  * Created with IntelliJ IDEA.

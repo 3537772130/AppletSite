@@ -18,7 +18,7 @@ public class Constants {
     public static final String DATE_TIME_YMDHM = "YYYY-MM-DD hh:mm";
     public static final String DEFAULT_DATE_FORMAT_STAMP = "YYYYMMDDhhmmss";
     public static final String DATE_YMD = "YYYY-MM-DD";
-    public static final String DATE_YMD_JDK = "yyyy-MM-dd";
+    public static final String DATE_YMD_JDK = "yyyy/MM/dd";
     public static final String DATE_TIME_ZH = "yyyy年MM月dd日";
     public static final String DATE_TIME_ZH_HM = "YYYY年MM月dd日 hh:mm";
     public static final String JODD_FMT_YYYYMMDD = "YYYYMMDD";
@@ -31,6 +31,8 @@ public class Constants {
     public static final String WEB_MANAGER_MENU_LIST = "EXAMPLE_WEB_MENU_LIST";
     // 前端普通用户信息
     public static final String VUE_USER_INFO = "EXAMPLE_VUE_USER_INFO";
+    // 客户端的外网IP
+    public static final String CLIENT_PUBLIC_IP = "CLIENT_PUBLIC_IP";
 
     // 小程序上传
     // logo路径
