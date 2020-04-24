@@ -1,7 +1,7 @@
 package com.applet.user.service;
 
 import com.applet.common.entity.*;
-import com.applet.common.entity.page.GeoLocation;
+import com.applet.common.entity.other.GeoLocation;
 import com.applet.common.mapper.*;
 import com.applet.common.util.*;
 import com.applet.common.util.encryption.EncryptionUtil;
@@ -9,10 +9,7 @@ import com.applet.common.util.http.IpUtil;
 import jodd.datetime.JDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,19 +27,13 @@ import java.util.Map;
 @SuppressWarnings("ALL")
 @Slf4j
 @Service
-@Component
-public class UserInfoService implements ApplicationRunner {
+public class UserInfoService {
     @Autowired
     private UserInfoMapper userInfoMapper;
     @Autowired
     private UserLoginLogMapper userLoginLogMapper;
     @Autowired
     private CommonMapper commonMapper;
-
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
-        IpUtil.init();
-    }
 
     /**
      * 查询web用户信息
@@ -150,19 +141,20 @@ public class UserInfoService implements ApplicationRunner {
      * @param request
      */
     @Async("taskExecutor")
-    public void saveUserLoginLog(Integer id, HttpServletRequest request) {
-        UserLoginLog record = new UserLoginLog();
-        record.setUserId(id);
-        String ip = IpUtil.getRequestIp(request);
-        record.setIpAddress(ip);
-        record.setLoginTime(new Date());
-        GeoLocation geoLocation = IpUtil.getLocationFromRequest(ip);
-        if (null != geoLocation){
-            record.setCountryId(geoLocation.getCountryCode());
-            record.setCountry(geoLocation.getCountryName());
-            record.setRegion(geoLocation.getRegionName());
-            record.setCity(geoLocation.getCity());
-            userLoginLogMapper.insertSelective(record);
+    public void saveUserLoginLog(Integer id, String ipAddress) {
+        if (NullUtil.isNotNullOrEmpty(ipAddress)){
+            UserLoginLog record = new UserLoginLog();
+            record.setUserId(id);
+            record.setIpAddress(ipAddress);
+            record.setLoginTime(new Date());
+            GeoLocation geoLocation = IpUtil.getLocationFromRequest(ipAddress);
+            if (null != geoLocation){
+                record.setCountryId(geoLocation.getCountryCode());
+                record.setCountry(geoLocation.getCountryName());
+                record.setRegion(geoLocation.getRegionName());
+                record.setCity(geoLocation.getCity());
+                userLoginLogMapper.insertSelective(record);
+            }
         }
     }
 

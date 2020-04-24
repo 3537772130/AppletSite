@@ -563,7 +563,7 @@ public class GoodsService {
         rg.setRecommendStatus(false);
         UserAppletRecommendGoodsExample example = new UserAppletRecommendGoodsExample();
         example.createCriteria().andExpireTimeLessThan(new Date()).andRecommendStatusEqualTo(true);
-        userAppletRecommendGoodsMapper.updateByExample(rg, example);
+        userAppletRecommendGoodsMapper.updateByExampleSelective(rg, example);
     }
 
     /**

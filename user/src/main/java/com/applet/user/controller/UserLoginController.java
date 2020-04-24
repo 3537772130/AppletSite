@@ -61,12 +61,14 @@ public class UserLoginController {
      * 登录校验
      *
      * @param info
+     * @param ipAddress
      * @param request
      * @return
      */
     @RequestMapping(value = "doLogin", method = RequestMethod.POST)
     @CancelAuth
-    public Object doLogin(UserInfo info, HttpServletRequest request) {
+    public Object doLogin(UserInfo info, @SessionScope(Constants.CLIENT_PUBLIC_IP) String ipAddress,
+                          HttpServletRequest request) {
         try {
             if (NullUtil.isNullOrEmpty(info.getMobile())) {
                 return AjaxResponse.error("用户名不能为空");
@@ -89,7 +91,7 @@ public class UserLoginController {
             }
             request.getSession().setAttribute(Constants.VUE_USER_INFO, SerializeUtil.serialize(userInfo.getUserInfo(userInfo)));
             try {
-                userInfoService.saveUserLoginLog(userInfo.getId(), request);
+                userInfoService.saveUserLoginLog(userInfo.getId(), ipAddress);
             } catch (Exception e) {
                 log.error("添加登录日志出错{}", e);
             }
@@ -125,8 +127,8 @@ public class UserLoginController {
      */
     @RequestMapping(value = "sendRegisterCode")
     @CancelAuth
-    public Object sendRegisterCode(@RequestParam("mobile") String mobile,
-                                   @RequestParam("figureCode") String figureCode,
+    public Object sendRegisterCode(@RequestParam("mobile") String mobile, @RequestParam("figureCode") String figureCode,
+                                   @SessionScope(Constants.CLIENT_PUBLIC_IP) String ipAddress,
                                    HttpServletRequest request) {
         try {
             if (NullUtil.isNullOrEmpty(mobile)) {
@@ -151,7 +153,6 @@ public class UserLoginController {
                 return AjaxResponse.error("操作频繁，请稍后再试");
             }
             String channel = SMSChannel.ALIYUN.toString();
-            String ipAddress = IpUtil.getRequestIp(request);
 
             AuthCode authCode = new AuthCode();
             authCode.setMobile(mobile);
