@@ -7,7 +7,6 @@ import com.applet.common.mapper.UserAppletRecommendGoodsMapper;
 import com.applet.common.mapper.ViewAppletPageContentMapper;
 import com.applet.common.util.NullUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,8 +34,6 @@ public class AppletPageService {
     private UserAppletRecommendGoodsMapper userAppletRecommendGoodsMapper;
     @Autowired
     private AppletAdvertRelationMapper appletAdvertRelationMapper;
-    @Autowired
-    private RedisService redisService;
 
     /**
      * 查询小程序页面配置信息
@@ -53,13 +50,12 @@ public class AppletPageService {
     }
 
     /**
-     * 预加载商品分类界面信息
+     * 加载商品分类界面信息
      *
      * @param appletId
      * @param appletCode
      */
-    @Async("taskExecutor")
-    public void loadGoodsClassify(Integer appletId, String appletCode) {
+    public GoodsClassify selectGoodsClassify(Integer appletId, String appletCode) {
         List<ViewGoodsType> typeList = goodsService.selectGoodsTypeList(appletId);
         List<Integer> typeIdList = new ArrayList<>();
         for (ViewGoodsType type : typeList) {
@@ -69,7 +65,7 @@ public class AppletPageService {
         gc.setTypeList(typeList);
         gc.setInfoList(goodsService.selectGoodsInfoList(appletId, typeIdList));
         gc.setCouponList(userCouponService.selectCouponList(appletId));
-        redisService.setValue(appletCode + "_CLASSIFY", gc);
+        return gc;
     }
 
     /**

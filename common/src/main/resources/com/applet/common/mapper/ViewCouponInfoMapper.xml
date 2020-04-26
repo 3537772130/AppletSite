@@ -8,6 +8,7 @@
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
     <result column="coupon_name" jdbcType="VARCHAR" property="couponName" />
     <result column="coupon_type" jdbcType="INTEGER" property="couponType" />
+    <result column="gain_type" jdbcType="INTEGER" property="gainType" />
     <result column="gain_applet_id" jdbcType="INTEGER" property="gainAppletId" />
     <result column="gain_applet_name" jdbcType="VARCHAR" property="gainAppletName" />
     <result column="gain_price" jdbcType="DOUBLE" property="gainPrice" />
@@ -53,9 +54,10 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, user_id, nick_name, mobile, coupon_name, coupon_type, gain_applet_id, gain_applet_name, 
-    gain_price, use_applet_id, use_applet_name, use_applet_logo, use_price, denomination, 
-    make_issue_num, already_issue_num, activity_start, activity_over, create_time, status
+    id, user_id, nick_name, mobile, coupon_name, coupon_type, gain_type, gain_applet_id, 
+    gain_applet_name, gain_price, use_applet_id, use_applet_name, use_applet_logo, use_price, 
+    denomination, make_issue_num, already_issue_num, activity_start, activity_over, create_time, 
+    status
   </sql>
   <select id="selectByExample" parameterType="com.applet.common.entity.ViewCouponInfoExample" resultMap="BaseResultMap">
     select

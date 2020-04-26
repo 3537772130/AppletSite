@@ -194,11 +194,13 @@ public class UserCartController {
      *
      * @param appletInfo
      * @param distance
+     * @param goodsAmount
      * @return
      */
     @RequestMapping(value = "getOrderFreight")
-    public Object getOrderFreight(@SessionScope("appletInfo") ViewAppletInfo appletInfo, Integer distance) {
-        Double freight = userCouponService.countFreight(appletInfo.getId(), distance);
+    public Object getOrderFreight(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
+                                  Integer distance, Double goodsAmount) {
+        Double freight = userCouponService.countFreight(appletInfo.getId(), distance, goodsAmount);
         if (freight.doubleValue() < 0) {
             return AjaxResponse.error("超出配送范围，请重新选择收货地址！");
         }

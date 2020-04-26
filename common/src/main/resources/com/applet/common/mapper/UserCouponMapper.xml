@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.applet.common.entity.UserCoupon">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="order_id" jdbcType="INTEGER" property="orderId" />
     <result column="coupon_id" jdbcType="INTEGER" property="couponId" />
     <result column="gain_time" jdbcType="TIMESTAMP" property="gainTime" />
     <result column="use_time" jdbcType="TIMESTAMP" property="useTime" />
@@ -68,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, user_id, coupon_id, gain_time, use_time, status
+    id, user_id, order_id, coupon_id, gain_time, use_time, status
   </sql>
   <select id="selectByExample" parameterType="com.applet.common.entity.UserCouponExample" resultMap="BaseResultMap">
     select
@@ -102,12 +103,12 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.applet.common.entity.UserCoupon">
-    insert into user_coupon (id, user_id, coupon_id, 
-      gain_time, use_time, status
-      )
-    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{couponId,jdbcType=INTEGER}, 
-      #{gainTime,jdbcType=TIMESTAMP}, #{useTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}
-      )
+    insert into user_coupon (id, user_id, order_id, 
+      coupon_id, gain_time, use_time, 
+      status)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, 
+      #{couponId,jdbcType=INTEGER}, #{gainTime,jdbcType=TIMESTAMP}, #{useTime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" keyProperty="id" parameterType="com.applet.common.entity.UserCoupon" useGeneratedKeys="true">
     insert into user_coupon
@@ -117,6 +118,9 @@
       </if>
       <if test="userId != null">
         user_id,
+      </if>
+      <if test="orderId != null">
+        order_id,
       </if>
       <if test="couponId != null">
         coupon_id,
@@ -137,6 +141,9 @@
       </if>
       <if test="userId != null">
         #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null">
+        #{orderId,jdbcType=INTEGER},
       </if>
       <if test="couponId != null">
         #{couponId,jdbcType=INTEGER},
@@ -167,6 +174,9 @@
       <if test="record.userId != null">
         user_id = #{record.userId,jdbcType=INTEGER},
       </if>
+      <if test="record.orderId != null">
+        order_id = #{record.orderId,jdbcType=INTEGER},
+      </if>
       <if test="record.couponId != null">
         coupon_id = #{record.couponId,jdbcType=INTEGER},
       </if>
@@ -188,6 +198,7 @@
     update user_coupon
     set id = #{record.id,jdbcType=INTEGER},
       user_id = #{record.userId,jdbcType=INTEGER},
+      order_id = #{record.orderId,jdbcType=INTEGER},
       coupon_id = #{record.couponId,jdbcType=INTEGER},
       gain_time = #{record.gainTime,jdbcType=TIMESTAMP},
       use_time = #{record.useTime,jdbcType=TIMESTAMP},
@@ -201,6 +212,9 @@
     <set>
       <if test="userId != null">
         user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null">
+        order_id = #{orderId,jdbcType=INTEGER},
       </if>
       <if test="couponId != null">
         coupon_id = #{couponId,jdbcType=INTEGER},
@@ -220,6 +234,7 @@
   <update id="updateByPrimaryKey" parameterType="com.applet.common.entity.UserCoupon">
     update user_coupon
     set user_id = #{userId,jdbcType=INTEGER},
+      order_id = #{orderId,jdbcType=INTEGER},
       coupon_id = #{couponId,jdbcType=INTEGER},
       gain_time = #{gainTime,jdbcType=TIMESTAMP},
       use_time = #{useTime,jdbcType=TIMESTAMP},

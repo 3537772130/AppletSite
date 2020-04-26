@@ -13,7 +13,7 @@ import java.util.Map;
  **/
 public class Constants {
     // 时间格式
-    public static final String DATE_TIME_JDK = "yyyy-MM-dd hh:mm:ss";
+    public static final String DATE_TIME_JDK = "yyyy-MM-dd HH:mm:ss";
     public static final String DATE_TIME_JODD = "YYYY-MM-DD HH:mm:ss";
     public static final String DATE_TIME_YMDHM = "YYYY-MM-DD hh:mm";
     public static final String DEFAULT_DATE_FORMAT_STAMP = "YYYYMMDDhhmmss";

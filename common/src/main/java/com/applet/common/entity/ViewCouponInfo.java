@@ -6,6 +6,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 优惠券信息 - 视图
+ */
 public class ViewCouponInfo implements Serializable {
     private Integer id;
 
@@ -18,6 +21,8 @@ public class ViewCouponInfo implements Serializable {
     private String couponName;
 
     private Integer couponType;
+
+    private Integer gainType;
 
     private Integer gainAppletId;
 
@@ -98,6 +103,14 @@ public class ViewCouponInfo implements Serializable {
 
     public void setCouponType(Integer couponType) {
         this.couponType = couponType;
+    }
+
+    public Integer getGainType() {
+        return gainType;
+    }
+
+    public void setGainType(Integer gainType) {
+        this.gainType = gainType;
     }
 
     public Integer getGainAppletId() {

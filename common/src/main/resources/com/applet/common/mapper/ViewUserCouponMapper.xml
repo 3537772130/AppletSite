@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.applet.common.entity.ViewUserCoupon">
     <result column="id" jdbcType="INTEGER" property="id" />
     <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="order_id" jdbcType="INTEGER" property="orderId" />
     <result column="coupon_id" jdbcType="INTEGER" property="couponId" />
     <result column="coupon_name" jdbcType="VARCHAR" property="couponName" />
     <result column="coupon_type" jdbcType="INTEGER" property="couponType" />
@@ -47,7 +48,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, user_id, coupon_id, coupon_name, coupon_type, use_applet_id, use_applet_name, 
+    id, user_id, order_id, coupon_id, coupon_name, coupon_type, use_applet_id, use_applet_name, 
     use_applet_logo, use_price, denomination, gain_time, use_time, activity_over, status
   </sql>
   <select id="selectByExample" parameterType="com.applet.common.entity.ViewUserCouponExample" resultMap="BaseResultMap">

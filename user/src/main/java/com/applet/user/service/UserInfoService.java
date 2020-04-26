@@ -33,6 +33,8 @@ public class UserInfoService {
     @Autowired
     private UserLoginLogMapper userLoginLogMapper;
     @Autowired
+    private ViewUserLoginLogNewestMapper viewUserLoginLogNewestMapper;
+    @Autowired
     private CommonMapper commonMapper;
 
     /**
@@ -142,13 +144,35 @@ public class UserInfoService {
      */
     @Async("taskExecutor")
     public void saveUserLoginLog(Integer id, String ipAddress) {
-        if (NullUtil.isNotNullOrEmpty(ipAddress)){
+        // 查询用户上次登录情况
+        ViewUserLoginLogNewestExample example = new ViewUserLoginLogNewestExample();
+        example.createCriteria().andUserIdEqualTo(id);
+        List<ViewUserLoginLogNewest> list = viewUserLoginLogNewestMapper.selectByExample(example);
+        boolean bool = false;
+        if (NullUtil.isNotNullOrEmpty(list)) {
+            if (list.get(0).getIpAddress().equals(ipAddress)){
+                // 与上次登录地址相同，检测是否为当天记录
+                JDateTime time1 = new JDateTime(list.get(0).getLoginTime());
+                String loginDay = time1.toString(Constants.DATE_YMD_JDK);
+                JDateTime time2 = new JDateTime(new Date());
+                String nowDay = time2.toString(Constants.DATE_YMD_JDK);
+                // 为当天记录不添加记录，否则添加记录
+                bool = !loginDay.equals(nowDay);
+            } else {
+                // 与上次登录地址不相同，允许添加记录
+                bool = true;
+            }
+        } else {
+            // 不存在登录记录，允许添加记录
+            bool = true;
+        }
+        if (bool) {
             UserLoginLog record = new UserLoginLog();
             record.setUserId(id);
             record.setIpAddress(ipAddress);
             record.setLoginTime(new Date());
             GeoLocation geoLocation = IpUtil.getLocationFromRequest(ipAddress);
-            if (null != geoLocation){
+            if (null != geoLocation) {
                 record.setCountryId(geoLocation.getCountryCode());
                 record.setCountry(geoLocation.getCountryName());
                 record.setRegion(geoLocation.getRegionName());

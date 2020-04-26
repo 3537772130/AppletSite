@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -39,6 +40,8 @@ public class WeChantPayController {
     private WeChantService weChantService;
     @Autowired
     private WeChantPayService weChantPayService;
+    @Autowired
+    private UserCouponService userCouponService;
 
     /**
      * 发起微信统一下单请求 - 商家测试
@@ -120,6 +123,64 @@ public class WeChantPayController {
         return AjaxResponse.error("发起支付失败");
     }
 
+
+    /**
+     * 支付成功，更新预下单状态
+     * @param appletInfo
+     * @param weChantInfo
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "updateOrderOperateStatusByPaySuccess")
+    public Object updateOrderOperateStatusByPaySuccess(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
+                                          @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo,
+                                          @RequestParam("id") String id){
+        try {
+            if (NullUtil.isNullOrEmpty(appletInfo.getId()) || NullUtil.isNullOrEmpty(weChantInfo.getUserId()) || NullUtil.isNullOrEmpty(id)){
+                return AjaxResponse.error("参数错误");
+            }
+            Integer orderId = Integer.parseInt(id);
+            ViewOrderDetails order = userOrderService.selectViewOrderDetailsByReady(appletInfo.getId(), weChantInfo.getUserId(), orderId);
+            if (null != order){
+                weChantPayService.updateOrderOperateStatusByPaySuccess(order);
+                boolean bool = userCouponService.userGainCoupon(order.getAppletId(), order.getUserId(), order.getId(), order.getTotalAmount());
+                if (bool){
+                    return AjaxResponse.msg("0", "下单成功");
+                }
+                return AjaxResponse.success("下单成功");
+            }
+        } catch (NumberFormatException e) {
+            log.error("更新预下单状态出错{}", e);
+        }
+        return AjaxResponse.success("下单异常");
+    }
+
+    /**
+     * 支付失败，更新预下单状态
+     * @param appletInfo
+     * @param weChantInfo
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "updateOrderOperateStatusByPayFail")
+    public Object updateOrderOperateStatusByPayFail(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
+                                                  @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo,
+                                                  @RequestParam("id") String id){
+        try {
+            if (NullUtil.isNullOrEmpty(appletInfo.getId()) || NullUtil.isNullOrEmpty(weChantInfo.getUserId()) || NullUtil.isNullOrEmpty(id)){
+                return AjaxResponse.error("参数错误");
+            }
+            Integer orderId = Integer.parseInt(id);
+            ViewOrderDetails order = userOrderService.selectViewOrderDetailsByReady(appletInfo.getId(), weChantInfo.getUserId(), orderId);
+            if (null != order){
+                weChantPayService.updateOrderOperateStatusByPayFail(order);
+                return AjaxResponse.error("支付失败");
+            }
+        } catch (NumberFormatException e) {
+            log.error("订单支付失败，更新订单记录出错{}", e);
+        }
+        return AjaxResponse.error("订单出错");
+    }
 
     /**
      * 微信订单支付回调通知

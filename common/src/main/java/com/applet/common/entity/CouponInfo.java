@@ -5,7 +5,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+/**
+ * 优惠券信息
+ */
 public class CouponInfo implements Serializable {
     private Integer id;
 
@@ -14,6 +19,8 @@ public class CouponInfo implements Serializable {
     private String couponName;
 
     private Integer couponType;
+
+    private Integer gainType;
 
     private Integer gainAppletId;
 
@@ -72,6 +79,14 @@ public class CouponInfo implements Serializable {
 
     public void setCouponType(Integer couponType) {
         this.couponType = couponType;
+    }
+
+    public Integer getGainType() {
+        return gainType;
+    }
+
+    public void setGainType(Integer gainType) {
+        this.gainType = gainType;
     }
 
     public Integer getGainAppletId() {
@@ -160,5 +175,13 @@ public class CouponInfo implements Serializable {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Map getCouponMap(){
+        Map map = new HashMap();
+        map.put("id", this.id);
+        map.put("makeIssueNum", this.makeIssueNum);
+        map.put("alreadyIssueNum", this.alreadyIssueNum);
+        return map;
     }
 }

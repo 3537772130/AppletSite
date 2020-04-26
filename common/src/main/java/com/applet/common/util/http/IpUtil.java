@@ -84,8 +84,7 @@ public class IpUtil {
                 geoLocation.setLatitude(String.valueOf(response.getLocation().getLatitude()));
                 geoLocation.setLongitude(String.valueOf(response.getLocation().getLongitude()));
             } catch (Exception e) {
-                e.printStackTrace();
-                log.error(e.getMessage());
+                log.error("获取IP地域信息出错{}", e);
                 return null;
             }
         }

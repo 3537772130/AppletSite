@@ -51,8 +51,6 @@ public class AppletPageController {
                 if (pageLogo.equals("MAIN")){
 
                 }
-                // 刷新分类页面信息缓存
-                appletPageService.loadGoodsClassify(appletInfo.getId(), appletInfo.getAppletCode());
                 return AjaxResponse.success(map);
             }
         } catch (Exception e) {
@@ -70,9 +68,7 @@ public class AppletPageController {
     @CancelAuth
     public Object loadGoodsClassify(@SessionScope("appletInfo") ViewAppletInfo appletInfo) {
         try {
-            GoodsClassify gc = (GoodsClassify) redisService.getValue(appletInfo.getAppletCode() + "_CLASSIFY");
-            // 刷新分类页面信息缓存
-            appletPageService.loadGoodsClassify(appletInfo.getId(), appletInfo.getAppletCode());
+            GoodsClassify gc = appletPageService.selectGoodsClassify(appletInfo.getId(), appletInfo.getAppletCode());
             return AjaxResponse.success(gc);
         } catch (Exception e) {
             log.error("加载小程序分类页面信息出错{}", e);

@@ -1,7 +1,9 @@
 package com.applet.apply.service;
 
 import com.applet.common.entity.*;
+import com.applet.common.enums.OrderEnums;
 import com.applet.common.mapper.*;
+import com.applet.common.util.Arith;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.Page;
 import jodd.datetime.JDateTime;
@@ -9,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -75,6 +79,23 @@ public class UserCouponService {
     }
 
     /**
+     * 查询用户订单获取的优惠券集合
+     * @param userId
+     * @param orderId
+     * @return
+     */
+    public List<ViewUserCoupon> selectUserCouponListByOrder(Integer userId, Integer orderId){
+        ViewUserCouponExample example = new ViewUserCouponExample();
+        example.setOrderByClause("denomination desc");
+        example.createCriteria()
+                .andUserIdEqualTo(userId)
+                .andOrderIdEqualTo(orderId)
+                .andActivityOverGreaterThan(new Date())
+                .andStatusEqualTo(0);
+        return viewUserCouponMapper.selectByExample(example);
+    }
+
+    /**
      * 查询用户优惠券详情
      * @param id
      * @param userId
@@ -107,20 +128,74 @@ public class UserCouponService {
     }
 
     /**
-     * 查询小程序当前可获取的优惠券 面额由高到低
-     * @param gainAppletId
+     * 订单支付成功，查询小程序当前可获取的优惠券
+     * 最大面额 (商家自己发布的满送优惠券)
+     * @param appletId
      * @return
      */
-    public List<CouponInfo> selectGainAppletCouponList(Integer gainAppletId){
+    public CouponInfo selectCouponListByPaySuccessToMy(Integer appletId, Double totalAmount){
         CouponInfoExample example = new CouponInfoExample();
         example.setOrderByClause("denomination desc");
         example.createCriteria()
-                .andGainAppletIdEqualTo(gainAppletId)
+                .andCouponTypeEqualTo(3)
+                .andGainTypeEqualTo(2)
+                .andGainAppletIdEqualTo(appletId)
+                .andGainPriceLessThanOrEqualTo(totalAmount)
+                .andUseAppletIdEqualTo(appletId)
                 .andActivityStartLessThan(new Date())
                 .andActivityOverGreaterThan(new Date())
                 .andStatusEqualTo(1);
-        return couponInfoMapper.selectByExample(example);
+        List<CouponInfo> list = couponInfoMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
     }
+
+    public List<Map> selectCouponListByPaySuccessToOther(Integer appletId, Double totalAmount){
+
+        return new ArrayList<>();
+    }
+
+    /**
+     * 用户支付成功，被动获取优惠券
+     * @param appletId
+     * @param userId
+     * @param totalAmount
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public boolean userGainCoupon(Integer appletId, Integer userId, Integer orderId, Double totalAmount){
+        // 查询其它商家发布的点对点优惠券
+        List<Map> list = selectCouponListByPaySuccessToOther(appletId, totalAmount);
+        // 查询商家自己发布的满送优惠券
+        CouponInfo couponInfo = selectCouponListByPaySuccessToMy(appletId, totalAmount);
+        if (null != couponInfo){
+            list.add(couponInfo.getCouponMap());
+        }
+        List<Integer> userCouponIdList = new ArrayList<>();
+        for (Map map:list) {
+            int makeIssueNum = Integer.parseInt(map.get("makeIssueNum").toString());
+            int alreadyIssueNum = Integer.parseInt(map.get("alreadyIssueNum").toString());
+            if (makeIssueNum == 0 || makeIssueNum > alreadyIssueNum){
+                int couponId = Integer.parseInt(map.get("id").toString());
+                // 存在可以获取的优惠券，并且不限量或未派发完毕
+                UserCoupon record = new UserCoupon();
+                record.setUserId(userId);
+                record.setOrderId(orderId);
+                record.setCouponId(couponId);
+                record.setGainTime(new Date());
+                record.setStatus(OrderEnums.UserCouponStatus.UNUSED.getCode());
+                userCouponMapper.insertSelective(record);
+                userCouponIdList.add(record.getId());
+
+                int status = (alreadyIssueNum + 1) == makeIssueNum ? 3 : null;
+                CouponInfo info = new CouponInfo();
+                info.setId(couponId);
+                info.setAlreadyIssueNum(alreadyIssueNum + 1);
+                info.setStatus(status);
+                couponInfoMapper.updateByPrimaryKeySelective(info);
+            }
+        }
+        return list.size() > 0;
+    }
+
 
     /**
      * 添加用户优惠券
@@ -133,10 +208,10 @@ public class UserCouponService {
         record.setUserId(userId);
         record.setCouponId(couponInfo.getId());
         record.setGainTime(new Date());
-        record.setStatus(0);
+        record.setStatus(OrderEnums.UserCouponStatus.UNUSED.getCode());
         userCouponMapper.insertSelective(record);
 
-        int status = (couponInfo.getAlreadyIssueNum().intValue() + 1) == couponInfo.getMakeIssueNum() ? 2 : 1;
+        int status = (couponInfo.getAlreadyIssueNum().intValue() + 1) == couponInfo.getMakeIssueNum() ? 3 : null;
         CouponInfo info = new CouponInfo();
         info.setId(couponInfo.getId());
         info.setAlreadyIssueNum(couponInfo.getAlreadyIssueNum() + 1);
@@ -153,7 +228,7 @@ public class UserCouponService {
         ViewCouponInfoExample example = new ViewCouponInfoExample();
         example.setOrderByClause("denomination asc");
         example.createCriteria()
-                .andGainAppletIdEqualTo(appletId)
+                .andGainTypeEqualTo(1)
                 .andUseAppletIdEqualTo(appletId)
                 .andActivityStartLessThan(new Date())
                 .andActivityOverGreaterThan(new Date())
@@ -204,7 +279,7 @@ public class UserCouponService {
         CouponInfoExample example = new CouponInfoExample();
         example.createCriteria()
                 .andIdEqualTo(id)
-                .andGainAppletIdEqualTo(appletId)
+                .andGainTypeEqualTo(1)
                 .andUseAppletIdEqualTo(appletId)
                 .andActivityStartLessThan(new Date())
                 .andActivityOverGreaterThan(new Date())
@@ -222,7 +297,9 @@ public class UserCouponService {
         if (NullUtil.isNotNullOrEmpty(id)){
             UserCoupon coupon = new UserCoupon();
             coupon.setId(id);
-            coupon.setUseTime(new Date());
+            if (status == OrderEnums.UserCouponStatus.USED.getCode()){
+                coupon.setUseTime(new Date());
+            }
             coupon.setStatus(status);
             userCouponMapper.updateByPrimaryKeySelective(coupon);
         }
@@ -234,18 +311,26 @@ public class UserCouponService {
      * 计算运费
      * @param appletId 小程序ID
      * @param distance 距离（米）
+     * @param goodsAmount 商品总金额
      * @return
      */
-    public Double countFreight(Integer appletId, Integer distance) {
+    public Double countFreight(Integer appletId, Integer distance, Double goodsAmount) {
+        //计算公里
         FreightDeployExample example = new FreightDeployExample();
-        FreightDeployExample.Criteria c = example.createCriteria();
-        c.andAppletIdEqualTo(appletId);
-        long count = freightDeployMapper.countByExample(example);
-        if (count > 0){
-            c.andMinimumLessThanOrEqualTo(distance).andMaximumGreaterThanOrEqualTo(distance);
-            List<FreightDeploy> list = freightDeployMapper.selectByExample(example);
-            if (NullUtil.isNotNullOrEmpty(list)) {
-                return list.get(0).getFreight();
+        example.setOrderByClause("minimum desc");
+        example.createCriteria().andAppletIdEqualTo(appletId).andStatusEqualTo(1);
+        List<FreightDeploy> list = freightDeployMapper.selectByExample(example);
+        if (NullUtil.isNotNullOrEmpty(list)){
+            for (FreightDeploy fd:list) {
+                // 开始检索范围
+                if (fd.getMinimum().intValue() <= distance && fd.getMaximum().intValue() >= distance.intValue()){
+                    if (fd.getExemptAmount().doubleValue() > 0){
+                        // 排查是否免额
+                        return goodsAmount.doubleValue() >= fd.getExemptAmount().doubleValue() ? 0.0d : fd.getFreight();
+                    } else{
+                        return fd.getFreight();
+                    }
+                }
             }
             // 超出配送范围
             return -1.0d;

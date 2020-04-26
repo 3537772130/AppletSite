@@ -366,6 +366,66 @@ public class CouponInfoExample {
             return (Criteria) this;
         }
 
+        public Criteria andGainTypeIsNull() {
+            addCriterion("gain_type is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGainTypeIsNotNull() {
+            addCriterion("gain_type is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGainTypeEqualTo(Integer value) {
+            addCriterion("gain_type =", value, "gainType");
+            return (Criteria) this;
+        }
+
+        public Criteria andGainTypeNotEqualTo(Integer value) {
+            addCriterion("gain_type <>", value, "gainType");
+            return (Criteria) this;
+        }
+
+        public Criteria andGainTypeGreaterThan(Integer value) {
+            addCriterion("gain_type >", value, "gainType");
+            return (Criteria) this;
+        }
+
+        public Criteria andGainTypeGreaterThanOrEqualTo(Integer value) {
+            addCriterion("gain_type >=", value, "gainType");
+            return (Criteria) this;
+        }
+
+        public Criteria andGainTypeLessThan(Integer value) {
+            addCriterion("gain_type <", value, "gainType");
+            return (Criteria) this;
+        }
+
+        public Criteria andGainTypeLessThanOrEqualTo(Integer value) {
+            addCriterion("gain_type <=", value, "gainType");
+            return (Criteria) this;
+        }
+
+        public Criteria andGainTypeIn(List<Integer> values) {
+            addCriterion("gain_type in", values, "gainType");
+            return (Criteria) this;
+        }
+
+        public Criteria andGainTypeNotIn(List<Integer> values) {
+            addCriterion("gain_type not in", values, "gainType");
+            return (Criteria) this;
+        }
+
+        public Criteria andGainTypeBetween(Integer value1, Integer value2) {
+            addCriterion("gain_type between", value1, value2, "gainType");
+            return (Criteria) this;
+        }
+
+        public Criteria andGainTypeNotBetween(Integer value1, Integer value2) {
+            addCriterion("gain_type not between", value1, value2, "gainType");
+            return (Criteria) this;
+        }
+
         public Criteria andGainAppletIdIsNull() {
             addCriterion("gain_applet_id is null");
             return (Criteria) this;

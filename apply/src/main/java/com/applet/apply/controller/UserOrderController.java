@@ -113,7 +113,7 @@ public class UserOrderController {
         // 运费
         Double freightFee = 0.0d;
         if (NullUtil.isNotNullOrEmpty(distance)) {
-            freightFee = userCouponService.countFreight(appletInfo.getId(), distance);
+            freightFee = userCouponService.countFreight(appletInfo.getId(), distance, goodsAmount);
             if (freightFee < 0) {
                 return AjaxResponse.error("超出配送范围");
             }
@@ -159,32 +159,6 @@ public class UserOrderController {
     /******************************************用户对订单的操作***********************************************/
 
     /**
-     * 更新购物车状态 - 用户
-     *
-     * @param appletInfo
-     * @param weChantInfo
-     * @param id
-     */
-    @RequestMapping(value = "editUserCartStatus")
-    public void editUserCartStatus(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
-                                   @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer id) {
-        try {
-            OrderInfo order = userOrderService.selectOrderInfoInfoByUser(id, weChantInfo.getUserId());
-            if (null != order) {
-                List<OrderDetails> list = userOrderService.selectOrderDetailsList(order.getId());
-                List<Integer> idList = new ArrayList<>();
-                for (OrderDetails details : list) {
-                    idList.add(details.getGoodsSpecsId());
-                }
-                userCartService.updateUserCartStatus(order.getId(), appletInfo.getId(), weChantInfo.getId(), idList);
-            }
-        } catch (Exception e) {
-            log.error("更新购物车状态出错{}", e);
-        }
-    }
-
-
-    /**
      * 查询订单信息 - 用户
      *
      * @param weChantInfo
@@ -193,7 +167,7 @@ public class UserOrderController {
      */
     @RequestMapping(value = "queryOrderInfo")
     public Object queryOrderInfo(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer id) {
-        ViewOrderDetails order = userOrderService.selectViewOrderDetailsByUser(id, weChantInfo.getUserId());
+        ViewOrderDetails order = userOrderService.selectViewOrderDetailsByUser(weChantInfo.getUserId(), id);
         if (null != order) {
             if (order.getOperateStatus().intValue() != 0
                     && order.getOperateStatus().intValue() != 3
@@ -258,7 +232,7 @@ public class UserOrderController {
             if (null != order) {
                 if (order.getOrderStatus().toString().equals("1")) {
                     userOrderService.updateOrderInfoStatus(order.getId(), weChantInfo.getUserId(), 0);
-                    userCouponService.updateUserCouponStatus(order.getUserCouponId(), 0);
+                    userCouponService.updateUserCouponStatus(order.getUserCouponId(), OrderEnums.UserCouponStatus.UNUSED.getCode());
                     userOrderService.updateOrderSeeRecord(order.getId(), true, false);
                     return AjaxResponse.success("取消成功");
                 } else if (order.getOrderStatus().toString().equals("2")) {
@@ -463,11 +437,10 @@ public class UserOrderController {
                         return AjaxResponse.error("买家已取消订单");
                     } else if (order.getOrderStatus().toString().equals("1") && status.intValue() == 2) {
                         userOrderService.updateOrderInfoStatus(order.getId(), weChantInfo.getUserId(), 2);
-                        userCouponService.updateUserCouponStatus(order.getUserCouponId(), 2);
                         return AjaxResponse.success("已成功接受订单，准备好商品去配送吧 ^_^");
                     } else if (order.getOrderStatus().toString().equals("1") && status.intValue() == 3) {
                         userOrderService.updateOrderInfoStatus(order.getId(),  weChantInfo.getUserId(),3, remark);
-                        userCouponService.updateUserCouponStatus(order.getUserCouponId(), 0);
+                        userCouponService.updateUserCouponStatus(order.getUserCouponId(), OrderEnums.UserCouponStatus.UNUSED.getCode());
                         return AjaxResponse.success("已成功取消订单");
                     } else if (order.getOrderStatus().toString().equals("2") && status.intValue() == 4) {
                         userOrderService.updateOrderInfoStatus(order.getId(), weChantInfo.getUserId(), 4);

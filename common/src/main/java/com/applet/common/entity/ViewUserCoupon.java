@@ -6,10 +6,15 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 用户优惠券信息 - 视图
+ */
 public class ViewUserCoupon implements Serializable {
     private Integer id;
 
     private Integer userId;
+
+    private Integer orderId;
 
     private Integer couponId;
 
@@ -54,6 +59,14 @@ public class ViewUserCoupon implements Serializable {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public Integer getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
     }
 
     public Integer getCouponId() {

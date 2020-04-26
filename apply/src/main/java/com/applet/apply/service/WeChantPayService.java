@@ -3,9 +3,9 @@ package com.applet.apply.service;
 import com.applet.common.entity.*;
 import com.applet.common.entity.pay.WxUnifiedOrder;
 import com.applet.common.entity.pay.WxUnifiedOrderResult;
+import com.applet.common.enums.OrderEnums;
 import com.applet.common.util.*;
 import com.applet.common.util.encryption.EncryptionUtil;
-import com.applet.common.util.http.IpUtil;
 import jodd.datetime.JDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -31,11 +30,15 @@ public class WeChantPayService {
     @Autowired
     @Lazy
     private UserOrderService userOrderService;
+    @Autowired
+    private UserCartService userCartService;
+    @Autowired
+    private UserCouponService userCouponService;
 
     /**
      * 微信统一下单
      *
-     * @param data    订单参数信息
+     * @param data      订单参数信息
      * @param goodsId
      * @param ipAddress
      * @return
@@ -120,7 +123,7 @@ public class WeChantPayService {
             order.setPayRelationId(result.getPrepayId());
             order.setPayChannel(record.getRequestType());
             // 统一下单成功和余额不足以外的状况，则订单不再继续，支付失败
-            if (!bool){
+            if (!bool) {
                 order.setPayStatus(-1);
                 order.setOrderStatus(-1);
             }
@@ -133,6 +136,7 @@ public class WeChantPayService {
 
     /**
      * 微信订单支付通知处理
+     *
      * @param xml
      * @return
      * @throws Exception
@@ -188,6 +192,53 @@ public class WeChantPayService {
             return result;
         }
         return null;
+    }
+
+    /**
+     * 支付成功，更新预下订单操作记录
+     * @param order
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void updateOrderOperateStatusByPaySuccess(ViewOrderDetails order) {
+        // 更新预下单状态
+        OrderOperateRecord record = new OrderOperateRecord();
+        record.setOrderId(order.getId());
+        record.setOperateUserId(order.getUserId());
+        record.setOperateTime(new Date());
+        record.setOperateStatus(1);
+        userOrderService.addOrderOperateRecord(record);
+        // 更新购物车状态
+        List<OrderDetails> list = userOrderService.selectOrderDetailsList(order.getId());
+        List<Integer> idList = new ArrayList<>();
+        for (OrderDetails details : list) {
+            idList.add(details.getGoodsSpecsId());
+        }
+        userCartService.updateUserCartStatus(order.getId(), order.getAppletId(), order.getWxId(), idList);
+        if (NullUtil.isNotNullOrEmpty(order.getUserCouponId())) {
+            // 更新优惠券状态为已使用
+            userCouponService.updateUserCouponStatus(order.getUserCouponId(), OrderEnums.UserCouponStatus.USED.getCode());
+        }
+    }
+
+    /**
+     * 支付失败，更新预下订单操作记录
+     * @param order
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void updateOrderOperateStatusByPayFail(ViewOrderDetails order) {
+        // 更新预下单状态
+        OrderOperateRecord record = new OrderOperateRecord();
+        record.setOrderId(order.getId());
+        record.setOperateUserId(order.getUserId());
+        record.setOperateTime(new Date());
+        record.setOperateStatus(-2);
+        userOrderService.addOrderOperateRecord(record);
+        if (NullUtil.isNotNullOrEmpty(order.getUserCouponId())) {
+            // 更新优惠券状态为未使用
+            userCouponService.updateUserCouponStatus(order.getUserCouponId(), OrderEnums.UserCouponStatus.UNUSED.getCode());
+        }
     }
 
 

@@ -51,6 +51,6 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable Exception ex) throws Exception {
-        request.getSession().removeAttribute(Constants.CLIENT_PUBLIC_IP);
+//        request.getSession().removeAttribute(Constants.CLIENT_PUBLIC_IP);
     }
 }

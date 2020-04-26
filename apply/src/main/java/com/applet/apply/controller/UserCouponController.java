@@ -82,7 +82,8 @@ public class UserCouponController {
      * @return
      */
     @RequestMapping(value = "userGainCoupon")
-    public Object userGainCoupon(@SessionScope("appletInfo") ViewAppletInfo appletInfo, @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer couponId){
+    public Object userGainCoupon(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
+                                 @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer couponId){
         try {
             if (NullUtil.isNullOrEmpty(weChantInfo.getUserId())){
                 return AjaxResponse.error("为了您的使用体验，请绑定手机号码");
@@ -104,5 +105,19 @@ public class UserCouponController {
             log.error("领取优惠券出错{}", e);
             return AjaxResponse.error("领取失败");
         }
+    }
+
+    /**
+     * 加载订单获取到的优惠券
+     * @param weChantInfo
+     * @param orderId
+     * @return
+     */
+    @RequestMapping(value = "loadUserOrderCoupon")
+    public Object loadUserOrderCoupon(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer orderId){
+        if (NullUtil.isNotNullOrEmpty(orderId)){
+            return AjaxResponse.success(userCouponService.selectUserCouponListByOrder(weChantInfo.getUserId(), orderId));
+        }
+        return AjaxResponse.error("参数错误");
     }
 }

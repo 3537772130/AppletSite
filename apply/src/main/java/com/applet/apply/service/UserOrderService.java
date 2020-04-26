@@ -78,18 +78,16 @@ public class UserOrderService {
         record.setOrderId(info.getId());
         record.setOperateUserId(info.getUserId());
         record.setOperateTime(new Date());
-        record.setOperateStatus(1);
-        orderOperateRecordMapper.insertSelective(record);
+        record.setOperateStatus(0);
+        addOrderOperateRecord(record);
         // 批量插入订单商品详情信息
         list.forEach(it -> it.setOrderId(info.getId()));
         orderDetailsMapper.batchInsert(list);
-        if (NullUtil.isNotNullOrEmpty(info.getUserCouponId())) {
-            // 更新优惠券状态
-            userCouponService.updateUserCouponStatus(info.getUserCouponId(), OrderEnums.UserCouponStatus.USING.getCode());
-        }
-        // 更新购物车状态
-        userCartService.updateUserCartStatus(info.getId(), info.getAppletId(), info.getWxId(), cartIdList);
+        // 更新优惠券状态
+        userCouponService.updateUserCouponStatus(info.getUserCouponId(), OrderEnums.UserCouponStatus.USING.getCode());
     }
+
+
 
     /**
      * 查询订单信息
@@ -270,9 +268,12 @@ public class UserOrderService {
      * @param userId
      * @return
      */
-    public ViewOrderDetails selectViewOrderDetailsByUser(Integer orderId, String orderNo, Integer userId) {
+    public ViewOrderDetails selectViewOrderDetailsByUser(Integer appletId, Integer userId, Integer orderId, String orderNo) {
         ViewOrderDetailsExample example = new ViewOrderDetailsExample();
         ViewOrderDetailsExample.Criteria c = example.createCriteria().andUserIdEqualTo(userId);
+        if (NullUtil.isNotNullOrEmpty(appletId)){
+            c.andAppletIdEqualTo(appletId);
+        }
         if (NullUtil.isNotNullOrEmpty(orderId)) {
             c.andIdEqualTo(orderId);
         }
@@ -283,13 +284,34 @@ public class UserOrderService {
         return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
     }
 
-    public ViewOrderDetails selectViewOrderDetailsByUser(Integer orderId, Integer userId) {
-        return selectViewOrderDetailsByUser(orderId, null, userId);
+    public ViewOrderDetails selectViewOrderDetailsByUser(Integer userId, Integer orderId) {
+        return selectViewOrderDetailsByUser(null, userId, orderId, null);
     }
 
-    public ViewOrderDetails selectViewOrderDetailsByUser(String orderNo, Integer userId) {
-        return selectViewOrderDetailsByUser(null, orderNo, userId);
+    public ViewOrderDetails selectViewOrderDetailsByUser(Integer userId, String orderNo) {
+        return selectViewOrderDetailsByUser(null, userId, null, orderNo);
     }
+
+    /**
+     * 查询预备订单
+     * @param appletId
+     * @param userId
+     * @param orderId
+     * @return
+     */
+    public ViewOrderDetails selectViewOrderDetailsByReady(Integer appletId, Integer userId, Integer orderId){
+        ViewOrderDetailsExample example = new ViewOrderDetailsExample();
+        example.createCriteria()
+                .andIdEqualTo(orderId)
+                .andAppletIdEqualTo(appletId)
+                .andUserIdEqualTo(userId)
+                .andOrderStatusEqualTo(0)
+                .andOperateStatusEqualTo(0);
+        List<ViewOrderDetails> list = viewOrderDetailsMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+    }
+
+
 
 
     /**
@@ -335,7 +357,7 @@ public class UserOrderService {
         record.setOperateTime(new Date());
         record.setOperateRemark(remark);
         record.setOperateStatus(status);
-        orderOperateRecordMapper.insertSelective(record);
+        addOrderOperateRecord(record);
 
         if (status.intValue() == 5) {
             OrderInfo order = new OrderInfo();
@@ -509,5 +531,13 @@ public class UserOrderService {
         if (null != info) {
             orderInfoMapper.updateByPrimaryKeySelective(info);
         }
+    }
+
+    /**
+     * 添加订单操作记录
+     * @param record
+     */
+    public void addOrderOperateRecord(OrderOperateRecord record){
+        orderOperateRecordMapper.insertSelective(record);
     }
 }

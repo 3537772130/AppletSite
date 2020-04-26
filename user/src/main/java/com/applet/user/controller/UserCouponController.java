@@ -108,30 +108,44 @@ public class UserCouponController {
             if (NullUtil.isNotNullOrEmpty(coupon.getId())) {
                 return AjaxResponse.error("优惠券不允许修改,若信息填写有误，请下架后重新发布新的优惠券");
             }
+            if (NullUtil.isNullOrEmpty(coupon.getCouponType())) {
+                return AjaxResponse.error("优惠券类型参数丢失");
+            }
             if (NullUtil.isNullOrEmpty(coupon.getCouponName())) {
                 return AjaxResponse.error("优惠券名称不能为空");
             }
             if (coupon.getCouponName().getBytes().length > 60) {
                 return AjaxResponse.error("优惠券名称长度为1-20个字符");
             }
-            if (NullUtil.isNullOrEmpty(coupon.getCouponType())) {
-                return AjaxResponse.error("优惠券类型参数丢失");
+            if (NullUtil.isNullOrEmpty(coupon.getDenomination())) {
+                return AjaxResponse.error("面额不能为空");
+            }
+            if (coupon.getDenomination().doubleValue() <= 0.0d) {
+                return AjaxResponse.error("面额必须大于0");
+            }
+            if (coupon.getCouponType().intValue() == 1 || coupon.getCouponType().intValue() == 2){
+                coupon.setGainType(1);
+            } else {
+                coupon.setGainType(2);
             }
             coupon.setStatus(1);
-            if (coupon.getCouponType().intValue() != 1) {
-                // 非通用优惠券必须参数
+            if (coupon.getGainType().intValue() == 1) {
+                coupon.setGainAppletId(null);
+                coupon.setGainPrice(0.0d);
+            } else {
+                // 非主动获取优惠券必须参数
                 if (NullUtil.isNullOrEmpty(coupon.getGainAppletId())) {
                     return AjaxResponse.error("获取途径不能为空");
                 }
-                if (coupon.getCouponType().intValue() == 3) {
+                if (NullUtil.isNullOrEmpty(coupon.getGainPrice())) {
+                    return AjaxResponse.error("获取额度不能为空");
+                }
+                if (coupon.getGainPrice().doubleValue() <= 0.0d) {
+                    return AjaxResponse.error("获取额度必须大于0");
+                }
+                if (coupon.getCouponType().intValue() == 4) {
                     coupon.setStatus(0);
                 }
-            }
-            if (NullUtil.isNullOrEmpty(coupon.getGainPrice())) {
-                return AjaxResponse.error("获取额度不能为空");
-            }
-            if (coupon.getGainPrice().doubleValue() < 0.0d) {
-                return AjaxResponse.error("获取金额限制必须大于等于0");
             }
             if (NullUtil.isNullOrEmpty(coupon.getUseAppletId())) {
                 return AjaxResponse.error("应用途径不能为空");
@@ -139,14 +153,8 @@ public class UserCouponController {
             if (NullUtil.isNullOrEmpty(coupon.getUsePrice())) {
                 return AjaxResponse.error("使用额度不能为空");
             }
-            if (coupon.getGainPrice().doubleValue() < 0.0d) {
-                return AjaxResponse.error("获取额度必须大于等于0");
-            }
-            if (NullUtil.isNullOrEmpty(coupon.getDenomination())) {
-                return AjaxResponse.error("面额不能为空");
-            }
-            if (coupon.getDenomination().doubleValue() <= 0.0d) {
-                return AjaxResponse.error("面额必须大于0");
+            if (coupon.getUsePrice().doubleValue() < 0.0d) {
+                return AjaxResponse.error("使用额度必须大于等于0");
             }
             if (NullUtil.isNullOrEmpty(coupon.getMakeIssueNum())) {
                 return AjaxResponse.error("预颁发数量不能为空");
@@ -155,10 +163,10 @@ public class UserCouponController {
                 return AjaxResponse.error("预派发数量必须大于等于0");
             }
             if (NullUtil.isNullOrEmpty(coupon.getActivityStart())) {
-                return AjaxResponse.error("活动开始时间不能为空");
+                return AjaxResponse.error("活动日期不能为空");
             }
             if (NullUtil.isNullOrEmpty(coupon.getActivityOver())) {
-                return AjaxResponse.error("活动过期时间不能为空");
+                return AjaxResponse.error("截止日期不能为空");
             }
             JDateTime start = new JDateTime(coupon.getActivityStart());
             start.setHour(0).setMinute(0).setSecond(0);
