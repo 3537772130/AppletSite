@@ -70,17 +70,17 @@ public class QiNiuConfig {
 
     static {
         if (PropertiesLoadUtils.isRun()) {
+            downURLAppletPublicUrL = "http://public.appletsite.com/";
+            downURLAppletImageUrl = "http://image.appletsite.com/";
+            downURLAppletAudioUrl = "http://audio.appletsite.com/";
+            downURLAppletVideoUrl = "http://video.appletsite.com/";
+            downURLAppletZipUrl = "http://zip.appletsite.com/";
+        } else {
             downURLAppletPublicUrL = "http://public.zmwsf.cn/";
             downURLAppletImageUrl = "http://image.zmwsf.cn/";
             downURLAppletAudioUrl = "http://audio.zmwsf.cn/";
             downURLAppletVideoUrl = "http://video.zmwsf.cn/";
             downURLAppletZipUrl = "http://zip.zmwsf.cn/";
-        } else {
-            downURLAppletPublicUrL = "http://appletpublic.s3-cn-south-1.qiniucs.com/";
-            downURLAppletImageUrl = "http://pymksenk7.bkt.clouddn.com/";
-            downURLAppletAudioUrl = "http://pymknhbeu.bkt.clouddn.com/";
-            downURLAppletVideoUrl = "http://pymkf6d00.bkt.clouddn.com/";
-            downURLAppletZipUrl = "http://pymkskun5.bkt.clouddn.com/";
         }
     }
 }

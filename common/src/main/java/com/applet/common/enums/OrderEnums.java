@@ -50,15 +50,35 @@ public interface OrderEnums {
      */
     @Getter
     @AllArgsConstructor
-    enum OrderStatus implements BaseEnum {
+    enum OperateStatus implements BaseEnum {
+        DELETE(-2, "删除订单"),
+        CANCEL( -1, "取消订单"),
+        MAKE(0, "预下单"),
+        LAUNCH_PAY(1, "发起支付"),
+        SUBMIT( 2, "提交订单"),
+        SUBMIT_FAIL(3, "提交失败"),
+        MERCHANT_CONFIRM( 4, "商家接单"),
+        MERCHANT_DELIVERY( 5, "商家配送"),
+        INSTANT_DELIVERY(6, "即时配送"),
+        LOGISTICS_DELIVERY(7, "物流配送"),
+        CONFIRM_ARRIVE(8, "确认送达"),
+        SIGN_FOR(9, "用户签收"),
+        ;
 
-        CANCEL( 0, "取消"),
-        PENDING( 1, "待处理"),
-        MERCHANT_CONFIRM( 2, "商户确认"),
-        DENIAL( 3, "拒绝"),
-        STARTS_HIPPING( 4, "开始配送"),
-        CONFIRM_DELIVERY(5, "确认送达"),
-        RECEIVED(6, "已签收"),
+        private Integer code;
+        private String name;
+
+    }
+
+    /**
+     * 订单状态
+     */
+    @Getter
+    @AllArgsConstructor
+    enum OrderStatus implements BaseEnum {
+        FAIL( -1, "订单失败"),
+        WAIT(0, "预下单"),
+        SUCCESS( 1, "订单成功"),
         ;
 
         private Integer code;

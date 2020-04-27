@@ -56,13 +56,15 @@ public class WeChantController {
      */
     @PostMapping(value = "login")
     @CancelAuth
-    public Object login(@SessionScope("appletInfo") ViewAppletInfo appletInfo, @RequestParam("loginCode") String loginCode,
-                        @RequestParam("nickName") String nickName, @RequestParam("avatarUrl") String avatarUrl,
-                        @RequestParam("gender") boolean gender, @SessionScope(Constants.CLIENT_PUBLIC_IP) String ipAddress) {
+    public Object login(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
+                        @SessionScope(Constants.CLIENT_PUBLIC_IP) String ipAddress,
+                        @RequestParam("loginCode") String loginCode, @RequestParam("nickName") String nickName,
+                        @RequestParam("avatarUrl") String avatarUrl, @RequestParam("gender") boolean gender,
+                        @RequestParam("lon") String lon, @RequestParam("lat") String lat) {
         try {
             String openId = WeChatAppletUtil.getOpenId(loginCode, appletInfo.getAppId(), appletInfo.getAppSecret());
             ViewWeChantInfo weChantInfo = weChantService.selectViewWeChantInfo(appletInfo.getId(), openId, nickName, avatarUrl, gender);
-            return getWeChantInfo(appletInfo, weChantInfo, ipAddress);
+            return getWeChantInfo(appletInfo, weChantInfo, ipAddress, lon, lat);
         } catch (Exception e) {
             logger.info("授权登录出错{}", e);
         }
@@ -79,17 +81,20 @@ public class WeChantController {
     @RequestMapping(value = "loadUserInfo")
     public Object loadUserInfo(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
                                @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo,
-                               @SessionScope(Constants.CLIENT_PUBLIC_IP) String ipAddress){
-        return getWeChantInfo(appletInfo, weChantInfo, ipAddress);
+                               @SessionScope(Constants.CLIENT_PUBLIC_IP) String ipAddress,
+                               @RequestParam("lon") String lon, @RequestParam("lat") String lat){
+        return getWeChantInfo(appletInfo, weChantInfo, ipAddress, lon, lat);
     }
 
-    private Object getWeChantInfo(ViewAppletInfo appletInfo, ViewWeChantInfo weChantInfo, String ipAddress){
+    private Object getWeChantInfo(ViewAppletInfo appletInfo, ViewWeChantInfo weChantInfo,
+                                  String ipAddress, String lon, String lat){
         if (weChantInfo != null) {
             if (weChantInfo.getStatus().intValue() == 0) {
                 return AjaxResponse.error("您的账户已经冻结，请联系客服进行处理");
             }
-            if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())){
-                weChantService.saveUserLoginLog(weChantInfo.getUserId(), ipAddress);
+            if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())
+                    && NullUtil.isNotNullOrEmpty(lon) && NullUtil.isNotNullOrEmpty(lat)){
+                weChantService.saveUserLoginLog(weChantInfo.getUserId(), ipAddress, lon, lat);
             }
             weChantInfo.setOpenId(null);
             Map<String, Object> map = new HashMap<>();

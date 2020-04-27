@@ -78,7 +78,7 @@ public class UserOrderService {
         record.setOrderId(info.getId());
         record.setOperateUserId(info.getUserId());
         record.setOperateTime(new Date());
-        record.setOperateStatus(0);
+        record.setOperateStatus(OrderEnums.OperateStatus.MAKE.getCode());
         addOrderOperateRecord(record);
         // 批量插入订单商品详情信息
         list.forEach(it -> it.setOrderId(info.getId()));
@@ -344,40 +344,130 @@ public class UserOrderService {
     }
 
     /**
-     * 更新订单状态
+     * 更新订单信息
      *
-     * @param id
-     * @param status
+     * @param record
+     * @param info
      */
-    @Transactional(rollbackFor = Exception.class)
-    public void updateOrderInfoStatus(Integer id, Integer userId, Integer status, String remark) {
+    public void updateOrder(OrderRequestRecord record, OrderInfo info) {
+        record.setCreateTime(new Date());
+        orderRequestRecordMapper.insertSelective(record);
+        if (null != info) {
+            orderInfoMapper.updateByPrimaryKeySelective(info);
+        }
+    }
+
+    /**
+     * 更新订单信息
+     * @param info
+     */
+    public void updateOrderInfo(OrderInfo info) {
+        orderInfoMapper.updateByPrimaryKeySelective(info);
+    }
+
+    /**
+     * 添加订单操作记录
+     * @param record
+     */
+    public void addOrderOperateRecord(OrderOperateRecord record){
+        orderOperateRecordMapper.insertSelective(record);
+    }
+
+    /**
+     * 更新订单相关
+     * @param id
+     * @param userId
+     * @param userCouponId
+     * @param operateStatus
+     * @param remark
+     */
+    public void updateOrderRelevant(Integer id, Integer userId, Integer userCouponId, Integer operateStatus, String remark) {
+        OrderInfo order = new OrderInfo();
+        order.setId(id);
+        if (operateStatus.intValue() == OrderEnums.OperateStatus.SUBMIT.getCode()){
+            // 订单提交成功处理
+            order.setPayStatus(OrderEnums.PayStatus.SUCCESS.getCode());
+            // 更新购物车状态
+            List<OrderDetails> list = selectOrderDetailsList(order.getId());
+            List<Integer> idList = new ArrayList<>();
+            for (OrderDetails details : list) {
+                idList.add(details.getGoodsSpecsId());
+            }
+            if (NullUtil.isNotNullOrEmpty(userCouponId)){
+                // 更新用户优惠券状态
+                userCouponService.updateUserCouponStatus(userCouponId, OrderEnums.UserCouponStatus.USED.getCode());
+            }
+        } else if (operateStatus.intValue() == OrderEnums.OperateStatus.SUBMIT_FAIL.getCode()) {
+            // 订单提交失败处理
+            order.setPayStatus(OrderEnums.PayStatus.FAIL.getCode());
+        } else if (operateStatus.intValue() == OrderEnums.OperateStatus.SIGN_FOR.getCode()) {
+            // 订单签收处理
+            order.setOrderStatus(OrderEnums.OrderStatus.SUCCESS.getCode());
+        } else if (operateStatus.intValue() == OrderEnums.OperateStatus.CANCEL.getCode()) {
+            // 订单取消处理
+            order.setOrderStatus(OrderEnums.OrderStatus.FAIL.getCode());
+            if (NullUtil.isNotNullOrEmpty(userCouponId)){
+                // 更新用户优惠券状态
+                userCouponService.updateUserCouponStatus(userCouponId, OrderEnums.UserCouponStatus.UNUSED.getCode());
+            }
+        }
+        order.setUpdateTime(new Date());
+        updateOrderInfo(order);
+
         OrderOperateRecord record = new OrderOperateRecord();
         record.setOrderId(id);
         record.setOperateUserId(userId);
         record.setOperateTime(new Date());
         record.setOperateRemark(remark);
-        record.setOperateStatus(status);
+        record.setOperateStatus(operateStatus);
         addOrderOperateRecord(record);
-
-        if (status.intValue() == 5) {
-            OrderInfo order = new OrderInfo();
-            order.setId(id);
-            order.setOrderStatus(1);
-            order.setUpdateTime(new Date());
-            orderInfoMapper.updateByPrimaryKeySelective(order);
-        } else if (status.intValue() == 0) {
-            OrderInfo order = new OrderInfo();
-            order.setId(id);
-            order.setOrderStatus(-1);
-            order.setUpdateTime(new Date());
-            orderInfoMapper.updateByPrimaryKeySelective(order);
-        }
-
-        updateOrderSeeRecord(id, false, false);
     }
 
-    public void updateOrderInfoStatus(Integer id, Integer userId, Integer status) {
-        updateOrderInfoStatus(id, userId, status, null);
+    /**
+     * 更新订单状态 - 商家取消
+     * @param id
+     * @param storeUserId
+     * @param userCouponId
+     * @param operateStatus
+     * @param remark
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void updateOrderStatusByStore(Integer id, Integer storeUserId, Integer userCouponId, Integer operateStatus, String remark) {
+        updateOrderRelevant(id, storeUserId, userCouponId, operateStatus, remark);
+        updateOrderSeeRecord(id, false, true);
+    }
+
+    /**
+     * 更新订单状态 - 商家进行
+     * @param id
+     * @param storeUserId
+     * @param operateStatus
+     */
+    public void updateOrderStatusByStore(Integer id, Integer storeUserId, Integer operateStatus) {
+        updateOrderStatusByStore(id, storeUserId, null, operateStatus, null);
+    }
+
+    /**
+     * 更新订单状态 - 消费者取消
+     * @param id
+     * @param userId
+     * @param userCouponId
+     * @param operateStatus
+     * @param remark
+     */
+    public void updateOrderStatusByUser(Integer id, Integer userId, Integer userCouponId, Integer operateStatus) {
+        updateOrderRelevant(id, userId, userCouponId, operateStatus, null);
+        updateOrderSeeRecord(id, true, false);
+    }
+
+    /**
+     * 更新订单状态 - 消费者进行
+     * @param id
+     * @param userId
+     * @param operateStatus
+     */
+    public void updateOrderStatusByUser(Integer id, Integer userId, Integer operateStatus) {
+        updateOrderStatusByUser(id, userId, null, operateStatus);
     }
 
     /**
@@ -516,28 +606,5 @@ public class UserOrderService {
         OrderRequestRecordExample example = new OrderRequestRecordExample();
         example.createCriteria().andRequestTypeEqualTo(requestType).andCreateTimeGreaterThan(time.convertToDate());
         return orderRequestRecordMapper.countByExample(example);
-    }
-
-    /**
-     * 更新订单信息
-     *
-     * @param record
-     * @param info
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public void updateOrder(OrderRequestRecord record, OrderInfo info) {
-        record.setCreateTime(new Date());
-        orderRequestRecordMapper.insertSelective(record);
-        if (null != info) {
-            orderInfoMapper.updateByPrimaryKeySelective(info);
-        }
-    }
-
-    /**
-     * 添加订单操作记录
-     * @param record
-     */
-    public void addOrderOperateRecord(OrderOperateRecord record){
-        orderOperateRecordMapper.insertSelective(record);
     }
 }

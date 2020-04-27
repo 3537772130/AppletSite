@@ -1,16 +1,14 @@
 package com.applet.apply.service;
 
 import com.applet.common.entity.*;
-import com.applet.common.entity.other.GeoLocation;
 import com.applet.common.mapper.*;
-import com.applet.common.util.Constants;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.RandomUtil;
+import com.applet.common.util.TencentLocationUtils;
 import com.applet.common.util.encryption.DesUtil;
 import com.applet.common.util.encryption.MD5Util;
 import com.applet.common.util.enums.UserOperationType;
 import com.applet.common.util.file.GetImageUtil;
-import com.applet.common.util.http.IpUtil;
 import com.applet.common.util.qiniu.QiNiuUtil;
 import jodd.datetime.JDateTime;
 import lombok.extern.slf4j.Slf4j;
@@ -22,11 +20,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhouhuahu on 2018/6/26.
@@ -55,7 +53,7 @@ public class WeChantService {
      * @param request
      */
     @Async("taskExecutor")
-    public void saveUserLoginLog(Integer id, String ipAddress) {
+    public void saveUserLoginLog(Integer id, String ipAddress, String lon, String lat) {
         // 查询用户上次登录情况
         ViewUserLoginLogNewestExample example = new ViewUserLoginLogNewestExample();
         example.createCriteria().andUserIdEqualTo(id);
@@ -63,13 +61,12 @@ public class WeChantService {
         boolean bool = false;
         if (NullUtil.isNotNullOrEmpty(list)) {
             if (list.get(0).getIpAddress().equals(ipAddress)){
-                // 与上次登录地址相同，检测是否为当天记录
+                // 与上次登录地址相同，检测是否为俩小时以内记录
                 JDateTime time1 = new JDateTime(list.get(0).getLoginTime());
-                String loginDay = time1.toString(Constants.DATE_YMD_JDK);
                 JDateTime time2 = new JDateTime(new Date());
-                String nowDay = time2.toString(Constants.DATE_YMD_JDK);
-                // 为当天记录不添加记录，否则添加记录
-                bool = !loginDay.equals(nowDay);
+                // 为当天记录俩小时以内不添加记录，否则添加记录
+                time1.addHour(2);
+                bool = time2.getTimeInMillis() > time1.getTimeInMillis();
             } else {
                 // 与上次登录地址不相同，允许添加记录
                 bool = true;
@@ -83,14 +80,14 @@ public class WeChantService {
             record.setUserId(id);
             record.setIpAddress(ipAddress);
             record.setLoginTime(new Date());
-            GeoLocation geoLocation = IpUtil.getLocationFromRequest(ipAddress);
-            if (null != geoLocation) {
-                record.setCountryId(geoLocation.getCountryCode());
-                record.setCountry(geoLocation.getCountryName());
-                record.setRegion(geoLocation.getRegionName());
-                record.setCity(geoLocation.getCity());
-                userLoginLogMapper.insertSelective(record);
-            }
+            Map<String, Object> map = TencentLocationUtils.getLocation(lon, lat);
+            record.setCountry(map.get("nation").toString());
+            record.setRegionId(map.get("provinceCode").toString());
+            record.setRegion(map.get("province").toString());
+            record.setCityId(map.get("cityCode").toString());
+            record.setCity(map.get("city").toString());
+            record.setCounty(map.get("district").toString());
+            userLoginLogMapper.insertSelective(record);
         }
     }
 

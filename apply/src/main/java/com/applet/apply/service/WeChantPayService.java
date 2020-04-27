@@ -35,6 +35,11 @@ public class WeChantPayService {
     @Autowired
     private UserCouponService userCouponService;
 
+
+    public String sendWeChantUnifiedOrder(ViewOrderPayData data, String ipAddress) {
+        return sendWeChantUnifiedOrder(data, null, ipAddress);
+    }
+
     /**
      * 微信统一下单
      *
@@ -43,7 +48,6 @@ public class WeChantPayService {
      * @param ipAddress
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
     public String sendWeChantUnifiedOrder(ViewOrderPayData data, String goodsId, String ipAddress) {
         // 设置微信统一下单信息
         WxUnifiedOrder wo = new WxUnifiedOrder();
@@ -82,12 +86,8 @@ public class WeChantPayService {
         return bool ? result.getPrepayId() : null;
     }
 
-    public String sendWeChantUnifiedOrder(ViewOrderPayData data, String ipAddress) {
-        return sendWeChantUnifiedOrder(data, null, ipAddress);
-    }
-
     /**
-     * 解析返回的斡旋统一下单结果
+     * 解析返回的微信统一下单结果
      *
      * @param result
      * @param orderId
@@ -122,10 +122,17 @@ public class WeChantPayService {
             order.setId(orderInfo.getId());
             order.setPayRelationId(result.getPrepayId());
             order.setPayChannel(record.getRequestType());
-            // 统一下单成功和余额不足以外的状况，则订单不再继续，支付失败
+            // 添加订单操作记录 - 发起支付
+            OrderOperateRecord record1 = new OrderOperateRecord();
+            record1.setOrderId(orderInfo.getId());
+            record1.setOperateUserId(orderInfo.getUserId());
+            record1.setOperateTime(new Date());
+            record1.setOperateStatus(OrderEnums.OperateStatus.LAUNCH_PAY.getCode());
+            userOrderService.addOrderOperateRecord(record1);
             if (!bool) {
-                order.setPayStatus(-1);
-                order.setOrderStatus(-1);
+                // 统一下单成功和余额不足以外的状况，则订单不再继续，支付失败且订单失败
+                order.setPayStatus(OrderEnums.PayStatus.FAIL.getCode());
+                order.setOrderStatus(OrderEnums.OrderStatus.FAIL.getCode());
             }
         }
         // 添加订单支付请求记录，并更新订单信息
@@ -141,6 +148,7 @@ public class WeChantPayService {
      * @return
      * @throws Exception
      */
+    @Transactional(rollbackFor = Exception.class)
     public WxUnifiedOrderResult orderPayNoticeHandle(String xml) throws Exception {
         WxUnifiedOrderResult result = JaxbUtil.converyToJavaBean(xml, WxUnifiedOrderResult.class);
         if (result.getReturnCode().equals("SUCCESS")) {
@@ -199,26 +207,8 @@ public class WeChantPayService {
      * @param order
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
-    public void updateOrderOperateStatusByPaySuccess(ViewOrderDetails order) {
-        // 更新预下单状态
-        OrderOperateRecord record = new OrderOperateRecord();
-        record.setOrderId(order.getId());
-        record.setOperateUserId(order.getUserId());
-        record.setOperateTime(new Date());
-        record.setOperateStatus(1);
-        userOrderService.addOrderOperateRecord(record);
-        // 更新购物车状态
-        List<OrderDetails> list = userOrderService.selectOrderDetailsList(order.getId());
-        List<Integer> idList = new ArrayList<>();
-        for (OrderDetails details : list) {
-            idList.add(details.getGoodsSpecsId());
-        }
-        userCartService.updateUserCartStatus(order.getId(), order.getAppletId(), order.getWxId(), idList);
-        if (NullUtil.isNotNullOrEmpty(order.getUserCouponId())) {
-            // 更新优惠券状态为已使用
-            userCouponService.updateUserCouponStatus(order.getUserCouponId(), OrderEnums.UserCouponStatus.USED.getCode());
-        }
+    public void updateOrderStatusByPaySuccess(ViewOrderDetails order) {
+        userOrderService.updateOrderStatusByUser(order.getId(), order.getUserId(), OrderEnums.OperateStatus.SUBMIT.getCode());
     }
 
     /**
@@ -226,19 +216,8 @@ public class WeChantPayService {
      * @param order
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
-    public void updateOrderOperateStatusByPayFail(ViewOrderDetails order) {
-        // 更新预下单状态
-        OrderOperateRecord record = new OrderOperateRecord();
-        record.setOrderId(order.getId());
-        record.setOperateUserId(order.getUserId());
-        record.setOperateTime(new Date());
-        record.setOperateStatus(-2);
-        userOrderService.addOrderOperateRecord(record);
-        if (NullUtil.isNotNullOrEmpty(order.getUserCouponId())) {
-            // 更新优惠券状态为未使用
-            userCouponService.updateUserCouponStatus(order.getUserCouponId(), OrderEnums.UserCouponStatus.UNUSED.getCode());
-        }
+    public void updateOrderStatusByPayFail(ViewOrderDetails order) {
+        userOrderService.updateOrderStatusByUser(order.getId(), order.getUserId(), OrderEnums.OperateStatus.SUBMIT_FAIL.getCode());
     }
 
 

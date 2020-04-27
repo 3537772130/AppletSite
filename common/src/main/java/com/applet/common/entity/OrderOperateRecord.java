@@ -1,8 +1,14 @@
 package com.applet.common.entity;
 
+import com.applet.common.util.Constants;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 订单操作记录
+ */
 public class OrderOperateRecord implements Serializable {
     private Integer id;
 
@@ -10,6 +16,7 @@ public class OrderOperateRecord implements Serializable {
 
     private Integer operateUserId;
 
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
     private Date operateTime;
 
     private String operateRemark;

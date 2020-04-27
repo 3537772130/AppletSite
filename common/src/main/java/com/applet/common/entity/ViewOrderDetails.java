@@ -3,6 +3,9 @@ package com.applet.common.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 订单信息详情 - 视图
+ */
 public class ViewOrderDetails implements Serializable {
     private Integer id;
 

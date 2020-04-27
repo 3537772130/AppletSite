@@ -142,7 +142,7 @@ public class WeChantPayController {
             Integer orderId = Integer.parseInt(id);
             ViewOrderDetails order = userOrderService.selectViewOrderDetailsByReady(appletInfo.getId(), weChantInfo.getUserId(), orderId);
             if (null != order){
-                weChantPayService.updateOrderOperateStatusByPaySuccess(order);
+                weChantPayService.updateOrderStatusByPaySuccess(order);
                 boolean bool = userCouponService.userGainCoupon(order.getAppletId(), order.getUserId(), order.getId(), order.getTotalAmount());
                 if (bool){
                     return AjaxResponse.msg("0", "下单成功");
@@ -173,7 +173,7 @@ public class WeChantPayController {
             Integer orderId = Integer.parseInt(id);
             ViewOrderDetails order = userOrderService.selectViewOrderDetailsByReady(appletInfo.getId(), weChantInfo.getUserId(), orderId);
             if (null != order){
-                weChantPayService.updateOrderOperateStatusByPayFail(order);
+                weChantPayService.updateOrderStatusByPayFail(order);
                 return AjaxResponse.error("支付失败");
             }
         } catch (NumberFormatException e) {
