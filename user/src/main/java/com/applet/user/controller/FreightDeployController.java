@@ -98,10 +98,10 @@ public class FreightDeployController {
             return AjaxResponse.error("截止距离不能小于等于开始距离");
         }
         if (NullUtil.isNullOrEmpty(freightDeploy.getFreight())) {
-            return AjaxResponse.error("运费不能为空");
+            return AjaxResponse.error("快递费不能为空");
         }
         if (freightDeploy.getFreight().intValue() < 0 || freightDeploy.getFreight().intValue() > 9999){
-            return AjaxResponse.error("运费为0-9999");
+            return AjaxResponse.error("快递费为0-9999");
         }
         if (NullUtil.isNullOrEmpty(freightDeploy.getExemptAmount())){
             return AjaxResponse.error("免额限制不能为空");

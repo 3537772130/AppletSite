@@ -161,11 +161,11 @@ public class UserInfoController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "selectUserLoginLogToPage")
-    public Object selectUserLoginLogToPage(@SessionScope(Constants.VUE_USER_INFO) UserInfo userInfo, UserLoginLog log,
+    @RequestMapping(value = "queryUserLoginLogToPage")
+    public Object queryUserLoginLogToPage(@SessionScope(Constants.VUE_USER_INFO) UserInfo userInfo, UserLoginLog log,
                                            String startDate, String endDate, HttpServletRequest request) {
-        Page page = PageUtil.initPage(request);
         log.setUserId(userInfo.getId());
+        Page page = PageUtil.initPage(request);
         page = userInfoService.selectUserLoginLogToPage(log, startDate, endDate, page);
         return AjaxResponse.success(page);
     }

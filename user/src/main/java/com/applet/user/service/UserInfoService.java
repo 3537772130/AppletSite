@@ -151,13 +151,12 @@ public class UserInfoService {
         boolean bool = false;
         if (NullUtil.isNotNullOrEmpty(list)) {
             if (list.get(0).getIpAddress().equals(ipAddress)){
-                // 与上次登录地址相同，检测是否为当天记录
+                // 与上次登录地址相同，检测是否为俩小时以内记录
                 JDateTime time1 = new JDateTime(list.get(0).getLoginTime());
-                String loginDay = time1.toString(Constants.DATE_YMD_JDK);
                 JDateTime time2 = new JDateTime(new Date());
-                String nowDay = time2.toString(Constants.DATE_YMD_JDK);
-                // 为当天记录不添加记录，否则添加记录
-                bool = !loginDay.equals(nowDay);
+                // 为当天记录俩小时以内不添加记录，否则添加记录
+                time1.addHour(2);
+                bool = time2.getTimeInMillis() > time1.getTimeInMillis();
             } else {
                 // 与上次登录地址不相同，允许添加记录
                 bool = true;
@@ -173,10 +172,14 @@ public class UserInfoService {
             record.setLoginTime(new Date());
             GeoLocation geoLocation = IpUtil.getLocationFromRequest(ipAddress);
             if (null != geoLocation) {
+                Map<String, Object> map = TencentLocationUtils.getLocation(geoLocation.getLongitude(), geoLocation.getLatitude());
                 record.setCountryId(geoLocation.getCountryCode());
-                record.setCountry(geoLocation.getCountryName());
-                record.setRegion(geoLocation.getRegionName());
-                record.setCity(geoLocation.getCity());
+                record.setCountry(map.get("nation").toString());
+                record.setRegionId(map.get("provinceCode").toString());
+                record.setRegion(map.get("province").toString());
+                record.setCityId(map.get("cityCode").toString());
+                record.setCity(map.get("city").toString());
+                record.setCounty(map.get("district").toString());
                 userLoginLogMapper.insertSelective(record);
             }
         }
@@ -212,10 +215,12 @@ public class UserInfoService {
         }
         if (NullUtil.isNotNullOrEmpty(startDate)) {
             JDateTime time = new JDateTime(startDate);
+            time.setHour(0).setMinute(0).setSecond(0);
             c.andLoginTimeGreaterThanOrEqualTo(time.convertToDate());
         }
         if (NullUtil.isNotNullOrEmpty(endDate)) {
             JDateTime time = new JDateTime(endDate);
+            time.setHour(23).setMinute(59).setSecond(59);
             c.andLoginTimeLessThanOrEqualTo(time.convertToDate());
         }
         long count = userLoginLogMapper.countByExample(example);
