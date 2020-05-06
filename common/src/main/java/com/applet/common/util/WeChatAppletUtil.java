@@ -37,7 +37,7 @@ public class WeChatAppletUtil {
         appSecret = EncryptionUtil.decryptAppletRSA(appSecret);
         //获取微信授权信息
         String result = toSendOutHttpRequest(loginCode, appId, appSecret);
-        log.info("获取用户OPENID:\n{}",result);
+//        log.info("获取用户OPENID:\n{}",result);
         JSONObject obj = JSONObject.parseObject(result);
         if (obj.containsKey("errcode")) {
             log.error("code:{},换取sessionKey失败", obj.get("errmsg"));

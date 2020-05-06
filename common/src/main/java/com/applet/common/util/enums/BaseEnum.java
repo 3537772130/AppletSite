@@ -1,4 +1,4 @@
-package com.applet.common.enums;
+package com.applet.common.util.enums;
 
 /**
  * 枚举基类

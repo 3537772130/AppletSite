@@ -28,7 +28,7 @@ public class NavigationInterceptor implements HandlerInterceptor {
         if (uri.equals("/")) {
             String url = "http://localhost:8080/index.html";
             if (PropertiesLoadUtils.isRun()){
-                url = "http://182.92.172.103:2274/index.html";
+                url = "http://www.appletsite.com:2274/index.html";
             }
             response.sendRedirect(url);
             log.info("默认访问路径：" + url);

@@ -1,6 +1,6 @@
-package com.applet.common.util;
+package com.applet.common.util.enums;
 
-import com.applet.common.enums.BaseEnum;
+import com.applet.common.util.enums.BaseEnum;
 
 /**
  * 枚举工具类
