@@ -5,9 +5,7 @@ import com.applet.apply.config.annotation.SessionScope;
 import com.applet.apply.service.*;
 import com.applet.common.util.*;
 import com.applet.common.entity.*;
-import com.applet.common.util.enums.SMSChannel;
-import com.applet.common.util.enums.SMSType;
-import com.applet.common.util.http.IpUtil;
+import com.applet.common.util.enums.SMSEnum;
 import jodd.datetime.JDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -147,15 +144,15 @@ public class WeChantController {
             if (!userInfo.getStatus()) {
                 return AjaxResponse.error("账号已禁用");
             }
-            int senNum = authCodeService.getTodaySendCodeCount(userInfo.getMobile(), SMSType.BIND_APPLET.toString());
+            int senNum = authCodeService.getTodaySendCodeCount(userInfo.getMobile(), SMSEnum.type.BIND_APPLET.toString());
             if (senNum >= Constants.SMS_CODE_AMOUNT.intValue()) {
                 return AjaxResponse.error("今日短信发送次数已达上限，请明日再试");
             }
-            int validityNum = authCodeService.selectVerifyCodeValidityCount(userInfo.getMobile(), SMSType.BIND_APPLET.toString());
+            int validityNum = authCodeService.selectVerifyCodeValidityCount(userInfo.getMobile(), SMSEnum.type.BIND_APPLET.toString());
             if (validityNum > 0) {
                 return AjaxResponse.error("操作频繁，请稍后再试");
             }
-            String channel = SMSChannel.ALIYUN.toString();
+            String channel = SMSEnum.channel.ALIYUN.toString();
             String remark = "绑定小程序";
             if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())) {
                 remark = "换绑小程序";
@@ -167,7 +164,7 @@ public class WeChantController {
             AuthCode authCode = new AuthCode();
             authCode.setUserId(userInfo.getId());
             authCode.setMobile(userInfo.getMobile());
-            authCode.setAuthType(SMSType.BIND_APPLET.toString());
+            authCode.setAuthType(SMSEnum.type.BIND_APPLET.toString());
             authCode.setAuthCode(RandomUtil.getRandomStr(6));
             JDateTime time = new JDateTime(new Date());
             authCode.setSendTime(time.convertToDate());
@@ -223,7 +220,7 @@ public class WeChantController {
                     return AjaxResponse.error("推荐号码不可用");
                 }
             }
-            AuthCode authCode = authCodeService.selectAuthCodeByMobile(mobile, SMSType.BIND_APPLET.toString());
+            AuthCode authCode = authCodeService.selectAuthCodeByMobile(mobile, SMSEnum.type.BIND_APPLET.toString());
             if (null == authCode) {
                 return AjaxResponse.error("验证码已过期，请重新发送");
             }

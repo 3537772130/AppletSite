@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.applet.apply.config.annotation.SessionScope;
 import com.applet.apply.service.*;
 import com.applet.common.entity.*;
-import com.applet.common.enums.OrderEnums;
+import com.applet.common.util.enums.OrderEnums;
 import com.applet.common.util.*;
 import jodd.datetime.JDateTime;
 import lombok.extern.slf4j.Slf4j;

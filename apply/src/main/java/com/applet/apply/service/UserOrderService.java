@@ -2,7 +2,7 @@ package com.applet.apply.service;
 
 import com.applet.common.entity.*;
 import com.applet.common.mapper.*;
-import com.applet.common.enums.OrderEnums;
+import com.applet.common.util.enums.OrderEnums;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.Page;
 import jodd.datetime.JDateTime;

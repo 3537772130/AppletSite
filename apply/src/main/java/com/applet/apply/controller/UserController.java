@@ -8,9 +8,7 @@ import com.applet.common.entity.CheckResult;
 import com.applet.common.util.*;
 import com.applet.common.util.encryption.DesUtil;
 import com.applet.common.util.encryption.MD5Util;
-import com.applet.common.util.enums.SMSChannel;
-import com.applet.common.util.enums.SMSType;
-import com.applet.common.util.http.IpUtil;
+import com.applet.common.util.enums.SMSEnum;
 import com.applet.common.util.qiniu.QiNiuUtil;
 import jodd.datetime.JDateTime;
 import lombok.extern.slf4j.Slf4j;
@@ -91,21 +89,21 @@ public class UserController {
             if (!userInfo.getStatus()) {
                 return AjaxResponse.error("账号已禁用");
             }
-            int senNum = authCodeService.getTodaySendCodeCount(userInfo.getMobile(), SMSType.UPDATE_PASS.toString());
+            int senNum = authCodeService.getTodaySendCodeCount(userInfo.getMobile(), SMSEnum.type.UPDATE_PASS.toString());
             if (senNum >= Constants.SMS_CODE_AMOUNT.intValue()) {
                 return AjaxResponse.error("今日短信发送次数已达上限，请明日再试");
             }
-            int validityNum = authCodeService.selectVerifyCodeValidityCount(userInfo.getMobile(), SMSType.UPDATE_PASS.toString());
+            int validityNum = authCodeService.selectVerifyCodeValidityCount(userInfo.getMobile(), SMSEnum.type.UPDATE_PASS.toString());
             if (validityNum > 0) {
                 return AjaxResponse.error("操作频繁，请稍后再试");
             }
-            String channel = SMSChannel.ALIYUN.toString();
+            String channel = SMSEnum.channel.ALIYUN.toString();
             String remark = "修改密码";
 
             AuthCode authCode = new AuthCode();
             authCode.setUserId(userInfo.getId());
             authCode.setMobile(userInfo.getMobile());
-            authCode.setAuthType(SMSType.UPDATE_PASS.toString());
+            authCode.setAuthType(SMSEnum.type.UPDATE_PASS.toString());
             authCode.setAuthCode(RandomUtil.getRandomStr(6));
             JDateTime time = new JDateTime(new Date());
             authCode.setSendTime(time.convertToDate());
@@ -152,7 +150,7 @@ public class UserController {
             if (!userInfo.getStatus()) {
                 return AjaxResponse.error("账号已禁用");
             }
-            AuthCode authCode = authCodeService.selectAuthCodeByMobile(userInfo.getMobile(), SMSType.UPDATE_PASS.toString());
+            AuthCode authCode = authCodeService.selectAuthCodeByMobile(userInfo.getMobile(), SMSEnum.type.UPDATE_PASS.toString());
             if (null == authCode) {
                 return AjaxResponse.error("验证码已过期，请重新发送");
             }

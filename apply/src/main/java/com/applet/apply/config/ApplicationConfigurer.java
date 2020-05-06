@@ -3,6 +3,7 @@ package com.applet.apply.config;
 import com.applet.apply.config.argumentResolver.SessionScopeMethod;
 import com.applet.apply.config.interceptor.AppletInterceptor;
 import com.applet.apply.config.interceptor.FileInterceptor;
+import com.applet.apply.config.interceptor.NavigationInterceptor;
 import com.applet.common.util.ObjectRedisSerializer;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -124,6 +125,7 @@ public class ApplicationConfigurer extends WebMvcConfigurationSupport {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new NavigationInterceptor()).addPathPatterns("/");
         registry.addInterceptor(myAppletInterceptor()).addPathPatterns("/api/applet/**");
         registry.addInterceptor(new FileInterceptor()).addPathPatterns("/api/public/**");
         registry.addInterceptor(new FileInterceptor()).addPathPatterns("/api/image/**");
@@ -133,5 +135,4 @@ public class ApplicationConfigurer extends WebMvcConfigurationSupport {
         super.addInterceptors(registry);
         log.info("已注入拦截器");
     }
-
 }

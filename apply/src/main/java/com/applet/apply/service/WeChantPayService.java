@@ -3,7 +3,7 @@ package com.applet.apply.service;
 import com.applet.common.entity.*;
 import com.applet.common.entity.pay.WxUnifiedOrder;
 import com.applet.common.entity.pay.WxUnifiedOrderResult;
-import com.applet.common.enums.OrderEnums;
+import com.applet.common.util.enums.OrderEnums;
 import com.applet.common.util.*;
 import com.applet.common.util.encryption.EncryptionUtil;
 import jodd.datetime.JDateTime;

@@ -5,7 +5,7 @@ import com.applet.apply.config.annotation.SessionScope;
 import com.applet.apply.service.*;
 import com.applet.common.entity.*;
 import com.applet.common.entity.pay.WxUnifiedOrderResult;
-import com.applet.common.enums.OrderEnums;
+import com.applet.common.util.enums.OrderEnums;
 import com.applet.common.util.*;
 import com.applet.common.util.encryption.EncryptionUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -15,9 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.

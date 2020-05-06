@@ -186,7 +186,7 @@ public class RedisService {
         try {
             return redisTemplate.opsForValue().get(key);
         } catch (Exception ex) {
-            log.error("取缓存异常, key = {}, ex = {}", key, ex);
+            log.error("Redis取缓存异常, key = {}", key);
         }
         return null;
     }
@@ -204,7 +204,7 @@ public class RedisService {
             redisTemplate.expire(key, expire, unit);
             return true;
         } catch (Exception ex) {
-            log.error("取缓存异常, key = {}, ex = {}", key, ex);
+            log.error("Redis设置缓存异常, key = {}", key);
         }
         return false;
     }
