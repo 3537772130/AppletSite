@@ -8,7 +8,7 @@ import com.applet.common.mapper.AuthCodeMapper;
 import com.applet.common.mapper.SmsTemplateMapper;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.aliyun.SmsUtil;
-import com.applet.common.util.enums.SMSType;
+import com.applet.common.util.enums.SMSEnum;
 import jodd.datetime.JDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,11 +123,11 @@ public class AuthCodeService {
         try {
             SmsTemplate template = selectSmsTemplateByType(authCode.getAuthType(), authCode.getChannel());
             String param = "";
-            if (SMSType.BIND_APPLET.toString().equals(authCode.getAuthType())){
+            if (SMSEnum.type.BIND_APPLET.toString().equals(authCode.getAuthType())){
                 param = "{\"userName\":\"" + authCode.getMobile() + "\",\"operate\":\"" + authCode.getRemark() + "\",\"code\":\"" + authCode.getAuthCode() + "\"}";
-            } else if (SMSType.UPDATE_PASS.toString().equals(authCode.getAuthType())){
+            } else if (SMSEnum.type.UPDATE_PASS.toString().equals(authCode.getAuthType())){
                 param = "{\"code\":\"" + authCode.getAuthCode() + "\"}";
-            } else if (SMSType.REGISTER_ACCOUNT.toString().equals(authCode.getAuthType())){
+            } else if (SMSEnum.type.REGISTER_ACCOUNT.toString().equals(authCode.getAuthType())){
                 param = "{\"code\":\"" + authCode.getAuthCode() + "\"}";
             }  else {
                 log.error("未匹配到相关验证码类型.......");

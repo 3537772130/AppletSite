@@ -30,7 +30,7 @@ public class NavigationInterceptor extends HandlerInterceptorAdapter {
         if (uri.equals("/")) {
             String url = "http://localhost:8080/index.html";
             if (PropertiesLoadUtils.isRun()){
-                url = "http://182.92.172.103:2273/index.html";
+                url = "http://www.appletsite.com:2273/index.html";
             }
             response.sendRedirect(url);
             log.info("默认访问路径：" + url);

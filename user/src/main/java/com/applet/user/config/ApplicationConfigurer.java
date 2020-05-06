@@ -84,7 +84,7 @@ public class ApplicationConfigurer extends WebMvcConfigurationSupport {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new NavigationInterceptor()).addPathPatterns("/**");
+        registry.addInterceptor(new NavigationInterceptor()).addPathPatterns("/");
         registry.addInterceptor(new UserInterceptor()).addPathPatterns("/api/user/**");
         registry.addInterceptor(new FileInterceptor()).addPathPatterns("/api/public/**");
         registry.addInterceptor(new FileInterceptor()).addPathPatterns("/api/image/**");

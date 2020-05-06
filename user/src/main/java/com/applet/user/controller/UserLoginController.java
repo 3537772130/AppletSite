@@ -1,8 +1,6 @@
 package com.applet.user.controller;
 
-import com.applet.common.util.enums.SMSChannel;
-import com.applet.common.util.enums.SMSType;
-import com.applet.common.util.http.IpUtil;
+import com.applet.common.util.enums.SMSEnum;
 import com.applet.user.config.annotation.CancelAuth;
 import com.applet.user.config.annotation.SessionScope;
 import com.applet.user.service.AuthCodeService;
@@ -144,19 +142,19 @@ public class UserLoginController {
             if (!sessionFigureCode.equals(figureCode.toUpperCase())) {
                 return AjaxResponse.error("图形码输入错误");
             }
-            int senNum = authCodeService.getTodaySendCodeCount(mobile, SMSType.REGISTER_ACCOUNT.toString());
+            int senNum = authCodeService.getTodaySendCodeCount(mobile, SMSEnum.type.REGISTER_ACCOUNT.toString());
             if (senNum >= Constants.SMS_CODE_AMOUNT.intValue()) {
                 return AjaxResponse.error("今日短信发送次数已达上限，请明日再试");
             }
-            int validityNum = authCodeService.selectVerifyCodeValidityCount(mobile, SMSType.REGISTER_ACCOUNT.toString());
+            int validityNum = authCodeService.selectVerifyCodeValidityCount(mobile, SMSEnum.type.REGISTER_ACCOUNT.toString());
             if (validityNum > 0) {
                 return AjaxResponse.error("操作频繁，请稍后再试");
             }
-            String channel = SMSChannel.ALIYUN.toString();
+            String channel = SMSEnum.channel.ALIYUN.toString();
 
             AuthCode authCode = new AuthCode();
             authCode.setMobile(mobile);
-            authCode.setAuthType(SMSType.REGISTER_ACCOUNT.toString());
+            authCode.setAuthType(SMSEnum.type.REGISTER_ACCOUNT.toString());
             authCode.setAuthCode(RandomUtil.getRandomStr(6));
             JDateTime time = new JDateTime(new Date());
             authCode.setSendTime(time.convertToDate());
@@ -218,7 +216,7 @@ public class UserLoginController {
                 return AjaxResponse.error("图形码输入错误");
             }
             request.getSession().removeAttribute(Constants.FIGURE_CODE);
-            AuthCode auth = authCodeService.selectAuthCodeByMobile(mobile, SMSType.REGISTER_ACCOUNT.toString());
+            AuthCode auth = authCodeService.selectAuthCodeByMobile(mobile, SMSEnum.type.REGISTER_ACCOUNT.toString());
             if (null == authCode) {
                 return AjaxResponse.error("验证码已过期，请重新发送");
             }
