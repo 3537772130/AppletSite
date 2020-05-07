@@ -33,7 +33,7 @@ public class NavigationInterceptor extends HandlerInterceptorAdapter {
                 url = "http://www.appletsite.com:2273/index.html";
             }
             response.sendRedirect(url);
-            log.info("默认访问路径：" + url);
+//            log.info("默认访问路径：" + url);
             return false;
         } else {
             return true;

@@ -163,6 +163,11 @@ public class PlatformSetController {
             return AjaxResponse.error("");
         }
         JDateTime time = new JDateTime(lastTime);
+        JDateTime nowTime = new JDateTime(new Date());
+        nowTime.setHour(0).setMinute(0).setSecond(0);
+        if (time.compareDateTo(nowTime) < 0){
+            time = nowTime;
+        }
         Map map = new HashMap<>();
         map.put("startDate", time.toString(Constants.DATE_YMD_JDK));
         map.put("expireTime", time.addDay(1).toString(Constants.DATE_YMD_JDK));
@@ -207,25 +212,26 @@ public class PlatformSetController {
             }
             JDateTime nowTime = new JDateTime(new Date());
             nowTime.setHour(0).setMinute(0).setSecond(0);
-
             JDateTime startTime = new JDateTime(relation.getStartTime());
-            if (startTime.compareDateTo(new JDateTime(new Date())) < 0){
-                return AjaxResponse.error("开始日期段必须大于等于当前时间");
+            if (startTime.convertToDate().getTime() >= nowTime.convertToDate().getTime()){
+                return AjaxResponse.error("开始日期段必须大于等于当前日期");
             }
-            relation.setStartTime(startTime.setHour(0).setMinute(0).setSecond(0).convertToDate());
+            startTime.setHour(0).setMinute(0).setSecond(0);
             if (relation.getRelationType().intValue() != 1){
                 if (platformSetService.checkAppletAdvertRelation(relation.getAppletTypeId(), relation.getPageLogo(), relation.getStartTime())){
                     return AjaxResponse.error("开始日期段已存在安排");
                 }
             }
+            relation.setStartTime(startTime.convertToDate());
             if (NullUtil.isNullOrEmpty(relation.getExpireTime())){
                 return AjaxResponse.error("请选择截止日期");
             }
             JDateTime expireTime = new JDateTime(relation.getExpireTime());
-            relation.setExpireTime(expireTime.setHour(23).setMinute(59).setSecond(59).convertToDate());
-            if (expireTime.compareDateTo(startTime) > 0){
+            expireTime.setHour(23).setMinute(59).setSecond(59);
+            if (expireTime.convertToDate().getTime() <= startTime.convertToDate().getTime()){
                 return AjaxResponse.error("截止日期段必须大于开始日期");
             }
+            relation.setExpireTime(expireTime.convertToDate());
             platformSetService.updateAppletAdvertRelation(relation);
             return AjaxResponse.success("提交成功");
         } catch (Exception e) {

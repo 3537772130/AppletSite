@@ -31,7 +31,7 @@ public class NavigationInterceptor implements HandlerInterceptor {
                 url = "http://www.appletsite.com:2274/index.html";
             }
             response.sendRedirect(url);
-            log.info("默认访问路径：" + url);
+//            log.info("默认访问路径：" + url);
             return false;
         } else {
             return true;

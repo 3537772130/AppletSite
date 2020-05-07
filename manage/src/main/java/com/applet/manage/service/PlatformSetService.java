@@ -186,6 +186,7 @@ public class PlatformSetService {
         example.createCriteria()
                 .andAppletTypeIdEqualTo(appletTypeId)
                 .andPageLogoEqualTo(pageLogo)
+                .andIsDefaultEqualTo(false)
                 .andRelationStatusEqualTo(true);
         List<AppletAdvertRelation> list = appletAdvertRelationMapper.selectByExample(example);
         if (NullUtil.isNotNullOrEmpty(list)){
@@ -230,7 +231,7 @@ public class PlatformSetService {
             AppletAdvertRelation record = new AppletAdvertRelation();
             record.setUpdateTime(new Date());
             record.setIsDefault(false);
-            appletAdvertRelationMapper.updateByExample(record, example);
+            appletAdvertRelationMapper.updateByExampleSelective(record, example);
         }
     }
 }
