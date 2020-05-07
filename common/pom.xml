@@ -171,13 +171,6 @@
             <artifactId>bcprov-jdk16</artifactId>
             <version>1.46</version>
         </dependency>
-        <!-- 本地地域信息库 -->
-        <dependency>
-            <groupId>com.maxmind.geoip2</groupId>
-            <artifactId>geoip2</artifactId>
-            <version>2.2.0</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
 
 </project>

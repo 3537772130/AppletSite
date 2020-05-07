@@ -143,7 +143,7 @@ public class UserInfoService {
      * @param request
      */
     @Async("taskExecutor")
-    public void saveUserLoginLog(Integer id, String ipAddress) {
+    public void saveUserLoginLog(Integer id, String ipAddress, String cityCode) {
         // 查询用户上次登录情况
         ViewUserLoginLogNewestExample example = new ViewUserLoginLogNewestExample();
         example.createCriteria().andUserIdEqualTo(id);
@@ -170,19 +170,34 @@ public class UserInfoService {
             record.setUserId(id);
             record.setIpAddress(ipAddress);
             record.setLoginTime(new Date());
-            GeoLocation geoLocation = IpUtil.getLocationFromRequest(ipAddress);
-            if (null != geoLocation) {
-                Map<String, Object> map = TencentLocationUtils.getLocation(geoLocation.getLongitude(), geoLocation.getLatitude());
-                record.setCountryId(geoLocation.getCountryCode());
-                record.setCountry(map.get("nation").toString());
+            Map map = selectRegionInfoByCityCode(cityCode);
+            if (null != map) {
+                record.setCountryId("156");
+                record.setCountry("中国");
                 record.setRegionId(map.get("provinceCode").toString());
                 record.setRegion(map.get("province").toString());
                 record.setCityId(map.get("cityCode").toString());
                 record.setCity(map.get("city").toString());
-                record.setCounty(map.get("district").toString());
                 userLoginLogMapper.insertSelective(record);
             }
         }
+    }
+
+    /**
+     * 查询城市信息
+     * @param cityCode
+     * @return
+     */
+    public Map selectRegionInfoByCityCode(String cityCode){
+        String sql = "SELECT \n" +
+                "r1.id as provinceCode,\n" +
+                "r1.area_name as province,\n" +
+                "r2.id as cityCode,\n" +
+                "r2.area_name as city \n" +
+                "FROM region_info as r2\n" +
+                "INNER JOIN region_info as r1 on r1.id = r2.parent_id\n" +
+                "WHERE r2.id = " + cityCode;
+        return commonMapper.selectSingleLine(sql);
     }
 
     /**
@@ -248,4 +263,5 @@ public class UserInfoService {
                 "GROUP BY log.login_time ORDER BY log.login_time DESC LIMIT " + monthNumber;
         return commonMapper.selectListMap(sql);
     }
+
 }

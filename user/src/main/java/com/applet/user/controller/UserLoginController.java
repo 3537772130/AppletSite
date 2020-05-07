@@ -65,7 +65,9 @@ public class UserLoginController {
      */
     @RequestMapping(value = "doLogin", method = RequestMethod.POST)
     @CancelAuth
-    public Object doLogin(UserInfo info, @SessionScope(Constants.CLIENT_PUBLIC_IP) String ipAddress,
+    public Object doLogin(UserInfo info,
+                          @SessionScope(Constants.CLIENT_PUBLIC_IP) String ipAddress,
+                          @SessionScope(Constants.CLIENT_CITY_CODE) String cityCode,
                           HttpServletRequest request) {
         try {
             if (NullUtil.isNullOrEmpty(info.getMobile())) {
@@ -89,7 +91,7 @@ public class UserLoginController {
             }
             request.getSession().setAttribute(Constants.VUE_USER_INFO, SerializeUtil.serialize(userInfo.getUserInfo(userInfo)));
             try {
-                userInfoService.saveUserLoginLog(userInfo.getId(), ipAddress);
+                userInfoService.saveUserLoginLog(userInfo.getId(), ipAddress, cityCode);
             } catch (Exception e) {
                 log.error("添加登录日志出错{}", e);
             }

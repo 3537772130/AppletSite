@@ -32,6 +32,10 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
         if (NullUtil.isNotNullOrEmpty(ipAddress)){
             request.getSession().setAttribute(Constants.CLIENT_PUBLIC_IP, ipAddress);
         }
+        String cityCode = request.getHeader("cityCode");
+        if (NullUtil.isNotNullOrEmpty(cityCode)){
+            request.getSession().setAttribute(Constants.CLIENT_CITY_CODE, cityCode);
+        }
         if (handler instanceof HandlerMethod) {
             HandlerMethod handleMethod = (HandlerMethod) handler;
             CancelAuth cancel = handleMethod.getMethodAnnotation(CancelAuth.class);

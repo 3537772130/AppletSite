@@ -81,11 +81,12 @@ public class WeChantService {
             record.setIpAddress(ipAddress);
             record.setLoginTime(new Date());
             Map<String, Object> map = TencentLocationUtils.getLocation(lon, lat);
+            record.setCountryId(map.get("nationCode").toString());
             record.setCountry(map.get("nation").toString());
-            record.setRegionId(map.get("provinceCode").toString());
             record.setRegion(map.get("province").toString());
             record.setCityId(map.get("cityCode").toString());
             record.setCity(map.get("city").toString());
+            record.setCountyId(map.get("countyCode").toString());
             record.setCounty(map.get("district").toString());
             userLoginLogMapper.insertSelective(record);
         }

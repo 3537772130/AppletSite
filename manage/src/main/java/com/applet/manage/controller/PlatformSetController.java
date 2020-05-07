@@ -164,8 +164,8 @@ public class PlatformSetController {
         }
         JDateTime time = new JDateTime(lastTime);
         Map map = new HashMap<>();
-        map.put("lastDate", time.toString(Constants.DATE_YMD));
-        map.put("startDate", time.addDay(1).toString(Constants.DATE_YMD));
+        map.put("startDate", time.toString(Constants.DATE_YMD_JDK));
+        map.put("expireTime", time.addDay(1).toString(Constants.DATE_YMD_JDK));
         return AjaxResponse.success(map);
     }
 

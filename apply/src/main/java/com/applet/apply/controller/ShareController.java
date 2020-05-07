@@ -5,6 +5,7 @@ import com.applet.apply.service.RegionService;
 import com.applet.common.util.AjaxResponse;
 import com.applet.common.util.Constants;
 import com.applet.common.util.NullUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ import java.util.List;
  * @author: zhouhuahu
  * @create: 2019-08-17 16:59
  **/
+@Slf4j
 @RestController
 @RequestMapping(value = "/api/")
 public class ShareController {
@@ -126,8 +128,13 @@ public class ShareController {
         return AjaxResponse.success(new JSONArray(Constants.REGION_MAP_TO_NAME).toString());
     }
 
+    /**
+     * 获取IP位置信息
+     * @return
+     */
     @RequestMapping(value = "getClientIp")
     public void getClientIp(HttpServletResponse response) throws Exception{
-        response.sendRedirect("http://pv.sohu.com/cityjson?ie=utf-8");
+        String url = "https://pv.sohu.com/cityjson?ie=utf-8";
+        response.sendRedirect(url);
     }
 }
