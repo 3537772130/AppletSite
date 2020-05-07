@@ -1,6 +1,6 @@
 package com.applet.manage.controller;
 
-import com.applet.common.entity.ImageInfo;
+import com.applet.common.entity.other.ImageInfo;
 import com.applet.common.util.Constants;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.file.ImageUtil;

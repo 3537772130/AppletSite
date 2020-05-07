@@ -1,6 +1,6 @@
 package com.applet.common.util.file;
 
-import com.applet.common.entity.ImageInfo;
+import com.applet.common.entity.other.ImageInfo;
 import com.applet.common.util.NullUtil;
 
 import javax.imageio.ImageIO;
@@ -15,7 +15,7 @@ import java.util.StringTokenizer;
 
 /**
  * @program: SpringBootDemo
- * @description: 图片工具类
+ * @description: 图片工具类 - 文字生成透明背景图片
  * @author: Mr.ZhouHuaHu
  * @create: 2019-08-12 14:44
  **/

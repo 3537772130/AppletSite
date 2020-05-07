@@ -110,5 +110,14 @@ public class Constants {
             put(SYSTEM_NOTICE_TYPE_PLAIN, "普通推送");
         }
     };
+
+    public static final Map<Integer, String> MATERIEL_TYPE_MAP = new HashMap<Integer, String>() {
+        {
+            put(1, "扫码_搜索联合传播样式");
+            put(2, "搜索框传播样式");
+            put(3, "普通二维码");
+            put(4, "小程序二维码");
+        }
+    };
 }
 

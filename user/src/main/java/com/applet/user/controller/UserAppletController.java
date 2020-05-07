@@ -1,5 +1,6 @@
 package com.applet.user.controller;
 
+import com.applet.common.entity.other.CheckResult;
 import com.applet.user.config.annotation.SessionScope;
 import com.applet.common.entity.*;
 import com.applet.user.service.AppletPageService;
@@ -160,7 +161,7 @@ public class UserAppletController {
     public Object uploadAppletLogo(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, @RequestParam("appletLogo") MultipartFile multipartFile) {
         try {
             //校验文件信息
-            com.applet.common.entity.CheckResult result = CheckFileUtil.checkImageFile(multipartFile);
+            CheckResult result = CheckFileUtil.checkImageFile(multipartFile);
             if (!result.getBool()) {
                 return AjaxResponse.error(result.getMsg());
             }
@@ -184,7 +185,7 @@ public class UserAppletController {
     public Object uploadAppletLicense(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, @RequestParam("appletLicense") MultipartFile multipartFile) {
         try {
             //校验文件信息
-            com.applet.common.entity.CheckResult result = CheckFileUtil.checkImageFile(multipartFile);
+            CheckResult result = CheckFileUtil.checkImageFile(multipartFile);
             if (!result.getBool()) {
                 return AjaxResponse.error(result.getMsg());
             }

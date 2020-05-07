@@ -1,4 +1,4 @@
-package com.applet.common.entity;
+package com.applet.common.entity.other;
 
 /**
  * @program: SpringBootDemo

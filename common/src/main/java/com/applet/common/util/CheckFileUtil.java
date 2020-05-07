@@ -1,7 +1,6 @@
 package com.applet.common.util;
 
-import com.applet.common.entity.CheckResult;
-import com.applet.common.util.file.FileUtil;
+import com.applet.common.entity.other.CheckResult;
 import org.springframework.web.multipart.MultipartFile;
 
 /**

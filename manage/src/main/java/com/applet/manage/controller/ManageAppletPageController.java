@@ -1,6 +1,6 @@
 package com.applet.manage.controller;
 
-import com.applet.common.entity.CheckResult;
+import com.applet.common.entity.other.CheckResult;
 import com.applet.common.util.*;
 import com.applet.common.util.qiniu.QiNiuUtil;
 import com.applet.manage.config.annotation.SessionScope;

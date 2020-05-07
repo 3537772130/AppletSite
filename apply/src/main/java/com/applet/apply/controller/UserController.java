@@ -4,7 +4,7 @@ import com.applet.apply.config.annotation.CancelAuth;
 import com.applet.apply.config.annotation.SessionScope;
 import com.applet.common.entity.*;
 import com.applet.apply.service.*;
-import com.applet.common.entity.CheckResult;
+import com.applet.common.entity.other.CheckResult;
 import com.applet.common.util.*;
 import com.applet.common.util.encryption.DesUtil;
 import com.applet.common.util.encryption.MD5Util;

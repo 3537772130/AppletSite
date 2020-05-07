@@ -1,5 +1,6 @@
 package com.applet.manage.controller;
 
+import com.applet.common.entity.other.CheckResult;
 import com.applet.common.util.*;
 import com.applet.common.util.encryption.EncryptionUtil;
 import com.applet.common.util.qiniu.QiNiuUtil;
@@ -355,7 +356,7 @@ public class ManageAppletController {
     public Object uploadAppletFile(@RequestParam("typeZip") MultipartFile multipartFile, Integer id, Integer typeId) {
         try {
             //校验文件信息
-            com.applet.common.entity.CheckResult result = CheckFileUtil.checkZipFile(multipartFile);
+            CheckResult result = CheckFileUtil.checkZipFile(multipartFile);
             if (!result.getBool()) {
                 return AjaxResponse.error(result.getMsg());
             }

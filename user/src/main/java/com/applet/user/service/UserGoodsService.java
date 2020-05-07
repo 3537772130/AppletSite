@@ -22,7 +22,7 @@ import java.util.Map;
  **/
 @SuppressWarnings("ALL")
 @Service
-public class GoodsService {
+public class UserGoodsService {
 
     @Autowired
     private GoodsTypeMapper goodsTypeMapper;
@@ -63,7 +63,7 @@ public class GoodsService {
         example.setPage(page);
         example.setOrderByClause("type_index asc");
         ViewGoodsTypeExample.Criteria c = example.createCriteria();
-        if (NullUtil.isNotNullOrEmpty(appletId)){
+        if (NullUtil.isNotNullOrEmpty(appletId)) {
             c.andAppletIdEqualTo(appletId);
         }
         if (NullUtil.isNotNullOrEmpty(name)) {
@@ -119,7 +119,7 @@ public class GoodsService {
             goodsTypeMapper.insertSelective(record);
         }
 
-        if (record.getTypeStatus()){
+        if (record.getTypeStatus()) {
             // 检查更新小程序页面配置信息
             appletPageService.updatePageContext(record.getAppletId(), record.getUserId(), record, null);
         }
@@ -156,7 +156,7 @@ public class GoodsService {
         GoodsTypeExample example = new GoodsTypeExample();
         example.setOrderByClause("type_index asc");
         GoodsTypeExample.Criteria c = example.createCriteria();
-        if (NullUtil.isNotNullOrEmpty(appletId)){
+        if (NullUtil.isNotNullOrEmpty(appletId)) {
             c.andAppletIdEqualTo(appletId);
         }
         c.andUserIdEqualTo(userId).andTypeStatusEqualTo(true);
@@ -188,7 +188,7 @@ public class GoodsService {
         if (NullUtil.isNotNullOrEmpty(goods.getGoodsStatus())) {
             c.andGoodsStatusEqualTo(goods.getGoodsStatus());
         }
-        if (NullUtil.isNotNullOrEmpty(goods.getIfDiscount())){
+        if (NullUtil.isNotNullOrEmpty(goods.getIfDiscount())) {
             c.andIfDiscountEqualTo(goods.getIfDiscount());
         }
         c.andUserIdEqualTo(goods.getUserId());
@@ -207,9 +207,9 @@ public class GoodsService {
      * @param userId
      * @return
      */
-    public ViewGoodsInfo selectViewGoodsInfo (Integer id, Integer userId){
+    public ViewGoodsInfo selectViewGoodsInfo(Integer id, Integer userId) {
         ViewGoodsInfoExample example = new ViewGoodsInfoExample();
-        example.createCriteria().andIdEqualTo(id). andUserIdEqualTo(userId);
+        example.createCriteria().andIdEqualTo(id).andUserIdEqualTo(userId);
         List<ViewGoodsInfo> list = viewGoodsInfoMapper.selectByExample(example);
         return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
     }
@@ -322,7 +322,7 @@ public class GoodsService {
         record.setId(goods.getId());
         record.setStatus(goods.getGoodsStatus() == 1 ? 0 : 1);
         goodsInfoMapper.updateByPrimaryKeySelective(record);
-        if (goods.getGoodsStatus() == 0){
+        if (goods.getGoodsStatus() == 0) {
             // 检查更新小程序页面配置信息
             appletPageService.updatePageContext(goods.getAppletId(), goods.getUserId(), null, goods);
         }
@@ -330,6 +330,7 @@ public class GoodsService {
 
     /**
      * 删除商品信息
+     *
      * @param goodsId
      */
     public void updateGoodsStatus(Integer goodsId) {
@@ -375,9 +376,16 @@ public class GoodsService {
      */
     public ViewGoodsFile selectFileInfo(Integer fileId, Integer goodsId, Integer userId) {
         ViewGoodsFileExample example = new ViewGoodsFileExample();
-        example.createCriteria().andIdEqualTo(fileId).andGoodsIdEqualTo(goodsId).andUserIdEqualTo(userId);
+        ViewGoodsFileExample.Criteria c = example.createCriteria().andIdEqualTo(fileId).andUserIdEqualTo(userId);
+        if (NullUtil.isNotNullOrEmpty(goodsId)) {
+            c.andGoodsIdEqualTo(goodsId);
+        }
         List<ViewGoodsFile> list = viewGoodsFileMapper.selectByExample(example);
         return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+    }
+
+    public ViewGoodsFile selectFileInfo(Integer fileId, Integer userId) {
+        return selectFileInfo(fileId, userId);
     }
 
     /**
@@ -527,12 +535,13 @@ public class GoodsService {
 
     /**
      * 分页查询用户小程序推荐商品
+     *
      * @param appletId
      * @param goodsName
      * @param page
      * @return
      */
-    public Page selectUserAppletRecommendGoodsByPage(ViewUserAppletRecommendGoods rg, Page page){
+    public Page selectUserAppletRecommendGoodsByPage(ViewUserAppletRecommendGoods rg, Page page) {
         // 异步更新推荐商品状态
         updateupdateUserAppletRecommendGoodsStatus();
 
@@ -540,17 +549,17 @@ public class GoodsService {
         example.setPage(page);
         example.setOrderByClause("update_time desc");
         ViewUserAppletRecommendGoodsExample.Criteria c = example.createCriteria().andUserIdEqualTo(rg.getUserId());
-        if (NullUtil.isNotNullOrEmpty(rg.getAppletId())){
+        if (NullUtil.isNotNullOrEmpty(rg.getAppletId())) {
             c.andAppletIdEqualTo(rg.getAppletId());
         }
-        if (NullUtil.isNotNullOrEmpty(rg.getGoodsName())){
+        if (NullUtil.isNotNullOrEmpty(rg.getGoodsName())) {
             c.andGoodsNameLike("%" + rg.getGoodsName() + "%");
         }
         if (NullUtil.isNotNullOrEmpty(rg.getRecommendStatus())) {
             c.andRecommendStatusEqualTo(rg.getRecommendStatus());
         }
         long count = viewUserAppletRecommendGoodsMapper.countByExample(example);
-        if (count > 0){
+        if (count > 0) {
             page.setTotalCount(count);
             page.setDataSource(viewUserAppletRecommendGoodsMapper.selectByExample(example));
         }
@@ -558,7 +567,7 @@ public class GoodsService {
     }
 
     @Async("taskExecutor")
-    private void updateupdateUserAppletRecommendGoodsStatus(){
+    private void updateupdateUserAppletRecommendGoodsStatus() {
         UserAppletRecommendGoods rg = new UserAppletRecommendGoods();
         rg.setRecommendStatus(false);
         UserAppletRecommendGoodsExample example = new UserAppletRecommendGoodsExample();
@@ -568,11 +577,12 @@ public class GoodsService {
 
     /**
      * 查询小程序推荐商品信息
+     *
      * @param id
      * @param userId
      * @return
      */
-    public UserAppletRecommendGoods selectUserAppletRecommendGoods(Integer id, Integer userId){
+    public UserAppletRecommendGoods selectUserAppletRecommendGoods(Integer id, Integer userId) {
         UserAppletRecommendGoodsExample example = new UserAppletRecommendGoodsExample();
         example.createCriteria().andIdEqualTo(id).andUserIdEqualTo(userId);
         List<UserAppletRecommendGoods> list = userAppletRecommendGoodsMapper.selectByExample(example);
@@ -581,11 +591,12 @@ public class GoodsService {
 
     /**
      * 更新用户小程序推荐商品信息
+     *
      * @param rg
      */
-    public void updateUserAppletRecommendGoods(UserAppletRecommendGoods rg){
+    public void updateUserAppletRecommendGoods(UserAppletRecommendGoods rg) {
         rg.setUpdateTime(new Date());
-        if (NullUtil.isNotNullOrEmpty(rg.getId())){
+        if (NullUtil.isNotNullOrEmpty(rg.getId())) {
             userAppletRecommendGoodsMapper.updateByPrimaryKeySelective(rg);
         } else {
             userAppletRecommendGoodsMapper.insertSelective(rg);

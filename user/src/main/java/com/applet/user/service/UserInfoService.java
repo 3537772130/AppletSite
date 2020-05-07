@@ -1,11 +1,9 @@
 package com.applet.user.service;
 
 import com.applet.common.entity.*;
-import com.applet.common.entity.other.GeoLocation;
 import com.applet.common.mapper.*;
 import com.applet.common.util.*;
 import com.applet.common.util.encryption.EncryptionUtil;
-import com.applet.common.util.http.IpUtil;
 import jodd.datetime.JDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

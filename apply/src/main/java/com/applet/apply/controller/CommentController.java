@@ -5,6 +5,7 @@ import com.applet.apply.config.annotation.SessionScope;
 import com.applet.apply.service.CommentService;
 import com.applet.apply.service.UserService;
 import com.applet.common.entity.*;
+import com.applet.common.entity.other.CheckResult;
 import com.applet.common.util.*;
 import com.applet.common.util.qiniu.QiNiuUtil;
 import lombok.extern.slf4j.Slf4j;

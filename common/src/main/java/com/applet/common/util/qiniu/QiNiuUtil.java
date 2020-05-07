@@ -432,7 +432,7 @@ public class QiNiuUtil {
      * @param bucket
      * @param key
      */
-    public static void deleteFile(String bucket, String key) {
+    private static void deleteFile(String bucket, String key) {
         try {
             if (existsFile(bucket, key)) {
                 bucketManager.delete(bucket, key);

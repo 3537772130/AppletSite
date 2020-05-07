@@ -72,7 +72,6 @@ public class Arith {
         if (scale < 0) {
             throw new IllegalArgumentException("精确度不能小于0！");
         }
-
         BigDecimal b1 = new BigDecimal(Double.toString(s1));
         BigDecimal b2 = new BigDecimal(Double.toString(s2));
         return b1.divide(b2, scale, BigDecimal.ROUND_HALF_UP).doubleValue();
@@ -93,7 +92,6 @@ public class Arith {
         if (scale < 0) {
             throw new IllegalArgumentException("精确度不能小于0！");
         }
-
         BigDecimal b1 = new BigDecimal(Double.toString(s1));
         BigDecimal b2 = new BigDecimal(Double.toString(s2));
         return b1.divide(b2, scale, BigDecimal.ROUND_DOWN).doubleValue();
@@ -109,11 +107,8 @@ public class Arith {
     public static double round(double v, int scale) {
         if (scale < 0) {
             throw new IllegalArgumentException("精确度不能小于0！");
-
         }
-
         BigDecimal b = new BigDecimal(Double.toString(v));
-
         return b.setScale(scale, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
@@ -127,11 +122,8 @@ public class Arith {
     public static double roundDown(double v, int scale) {
         if (scale < 0) {
             throw new IllegalArgumentException("精确度不能小于0！");
-
         }
-
         BigDecimal b = new BigDecimal(Double.toString(v));
-
         return b.setScale(scale, BigDecimal.ROUND_DOWN).doubleValue();
     }
 

@@ -1,12 +1,11 @@
 package com.applet.user.controller;
 
-import com.applet.common.entity.CheckResult;
+import com.applet.common.entity.other.CheckResult;
 import com.applet.user.config.annotation.SessionScope;
 import com.applet.common.entity.*;
 import com.applet.user.service.AppletService;
-import com.applet.user.service.GoodsService;
+import com.applet.user.service.UserGoodsService;
 import com.applet.common.util.*;
-import com.applet.common.util.file.FileUtil;
 import com.applet.common.util.qiniu.QiNiuUtil;
 import jodd.datetime.JDateTime;
 import org.slf4j.Logger;
@@ -37,7 +36,7 @@ import java.util.Map;
 public class UserGoodsController {
     private static final Logger log = LoggerFactory.getLogger(UserGoodsController.class);
     @Autowired
-    private GoodsService goodsService;
+    private UserGoodsService userGoodsService;
     @Autowired
     private AppletService appletService;
 
@@ -85,7 +84,7 @@ public class UserGoodsController {
      */
     @RequestMapping(value = "loadTypePage")
     public Object loadTypePage(@SessionScope(Constants.VUE_USER_INFO) UserInfo user) {
-        int count = goodsService.selectGoodsTypeCount(user.getId());
+        int count = userGoodsService.selectGoodsTypeCount(user.getId());
         if (count >= Constants.GOODS_TYPE_COUNT) {
             return AjaxResponse.error("类型创建数量已达上限");
         }
@@ -104,7 +103,7 @@ public class UserGoodsController {
     public Object queryTypePage(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer appletId, String name, Integer status, HttpServletRequest request) {
         Page page = PageUtil.initPage(request);
         if (NullUtil.isNotNullOrEmpty(appletId)){
-            page = goodsService.selectTypePage(appletId, user.getId(), name, status, page);
+            page = userGoodsService.selectTypePage(appletId, user.getId(), name, status, page);
         }
         return AjaxResponse.success(page);
     }
@@ -118,7 +117,7 @@ public class UserGoodsController {
      */
     @RequestMapping(value = "loadGoodsType")
     public Object loadGoodsType(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer id) {
-        GoodsType goodsType = goodsService.selectGoodsType(id, user.getId());
+        GoodsType goodsType = userGoodsService.selectGoodsType(id, user.getId());
         if (null == goodsType) {
             return AjaxResponse.error("未找到相关信息");
         }
@@ -151,16 +150,16 @@ public class UserGoodsController {
                 goodsType.setTypeName(goodsType.getTypeName().trim());
             }
             if (NullUtil.isNullOrEmpty(goodsType.getId())) {
-                int count = goodsService.selectGoodsTypeCount(user.getId());
+                int count = userGoodsService.selectGoodsTypeCount(user.getId());
                 if (count >= Constants.GOODS_TYPE_COUNT) {
                     return AjaxResponse.error("类型创建数量已达上限");
                 }
                 goodsType.setTypeIndex(count + 1);
             }
             goodsType.setUserId(user.getId());
-            String typeLogo = "/api/image/GTLOGO-" + RandomUtil.getTimeStamp();
+            String typeLogo = "/api/public/GTLOGO-" + RandomUtil.getTimeStamp();
             if (NullUtil.isNotNullOrEmpty(goodsType.getId())) {
-                GoodsType record = goodsService.selectGoodsType(goodsType.getId(), user.getId());
+                GoodsType record = userGoodsService.selectGoodsType(goodsType.getId(), user.getId());
                 if (null == record) {
                     return AjaxResponse.error("信息不符");
                 }
@@ -172,7 +171,7 @@ public class UserGoodsController {
                 this.removeFile(goodsType.getTypeLogo(), typeLogo);
                 goodsType.setTypeLogo(typeLogo);
             }
-            goodsService.updateGoodsType(goodsType);
+            userGoodsService.updateGoodsType(goodsType);
             return AjaxResponse.success("提交成功");
         } catch (Exception e) {
             log.error("更新商品类型信息出错{}", e);
@@ -194,9 +193,9 @@ public class UserGoodsController {
             if (NullUtil.isNullOrEmpty(typeId) || NullUtil.isNullOrEmpty(sort)) {
                 return AjaxResponse.error("参数错误");
             }
-            int count = goodsService.selectGoodsTypeCount(user.getId());
+            int count = userGoodsService.selectGoodsTypeCount(user.getId());
             if (count > 1) {
-                GoodsType type = goodsService.selectGoodsType(typeId, user.getId());
+                GoodsType type = userGoodsService.selectGoodsType(typeId, user.getId());
                 if (null == type) {
                     return AjaxResponse.error("未找到相关记录");
                 }
@@ -208,7 +207,7 @@ public class UserGoodsController {
                 } else {
                     return AjaxResponse.success("参数错误");
                 }
-                goodsService.updateGoodsTypeIndex(type, num);
+                userGoodsService.updateGoodsTypeIndex(type, num);
             }
             return AjaxResponse.success();
         } catch (Exception e) {
@@ -226,7 +225,7 @@ public class UserGoodsController {
      */
     @RequestMapping(value = "queryTypeList")
     public Object queryTypeList(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer appletId) {
-        List<GoodsType> list = goodsService.selectTypeList(appletId, user.getId());
+        List<GoodsType> list = userGoodsService.selectTypeList(appletId, user.getId());
         return AjaxResponse.success(list);
     }
 
@@ -242,7 +241,7 @@ public class UserGoodsController {
     public Object queryInfoToPage(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, ViewGoodsInfo goods, HttpServletRequest request) {
         goods.setUserId(user.getId());
         Page page = PageUtil.initPage(request);
-        page = goodsService.selectInfoPage(goods, page);
+        page = userGoodsService.selectInfoPage(goods, page);
         return AjaxResponse.success(page);
     }
 
@@ -256,10 +255,10 @@ public class UserGoodsController {
     @RequestMapping(value = "loadGoodsInfo")
     public Object loadGoodsInfo(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer id) {
         Map map = new HashMap();
-        List<GoodsType> list = goodsService.selectTypeList(user.getId());
+        List<GoodsType> list = userGoodsService.selectTypeList(user.getId());
         map.put("typeList", list);
         if (NullUtil.isNotNullOrEmpty(id) && id.intValue() != 0) {
-            GoodsInfo goods = goodsService.selectGoodsInfo(id, user.getId());
+            GoodsInfo goods = userGoodsService.selectGoodsInfo(id, user.getId());
             goods.setCoverSrc(goods.getCoverSrc());
             map.put("goods", goods);
             return AjaxResponse.success(map);
@@ -294,7 +293,7 @@ public class UserGoodsController {
             if (NullUtil.isNullOrEmpty(goods.getTypeId())) {
                 return AjaxResponse.error("请选择商品类型");
             }
-            GoodsType type = goodsService.selectGoodsType(goods.getTypeId(), user.getId());
+            GoodsType type = userGoodsService.selectGoodsType(goods.getTypeId(), user.getId());
             if (null == type) {
                 return AjaxResponse.error("商品类型选择错误");
             }
@@ -307,9 +306,9 @@ public class UserGoodsController {
             if (NullUtil.isNotNullOrEmpty(goods.getDescribeStr()) && goods.getDescribeStr().getBytes().length > 300){
                 return AjaxResponse.error("描述输入过长");
             }
-            String coverSrc = "/api/image/GC-" + RandomUtil.getTimeStamp();
+            String coverSrc = "/api/public/GC-" + RandomUtil.getTimeStamp();
             if (NullUtil.isNotNullOrEmpty(goods.getId())) {
-                GoodsInfo record = goodsService.selectGoodsInfo(goods.getId(), user.getId());
+                GoodsInfo record = userGoodsService.selectGoodsInfo(goods.getId(), user.getId());
                 if (null == record){
                     return AjaxResponse.error("信息不符");
                 }
@@ -329,7 +328,7 @@ public class UserGoodsController {
             goods.setMinPrice(null);
             goods.setMaxPrice(null);
             try {
-                goodsService.updateGoodsInfo(goods);
+                userGoodsService.updateGoodsInfo(goods);
             } catch (SQLIntegrityConstraintViolationException e) {
                 log.error("更新商品信息出错{}", e);
                 return AjaxResponse.error("提交失败（商品名称已存在！）");
@@ -356,9 +355,9 @@ public class UserGoodsController {
             if (NullUtil.isNullOrEmpty(goodsId) || NullUtil.isNullOrEmpty(typeId) || NullUtil.isNullOrEmpty(sort)) {
                 return AjaxResponse.error("参数错误");
             }
-            int count = goodsService.selectGoodsCount(typeId, user.getId());
+            int count = userGoodsService.selectGoodsCount(typeId, user.getId());
             if (count > 1) {
-                GoodsInfo goods = goodsService.selectGoodsInfo(goodsId, typeId, user.getId());
+                GoodsInfo goods = userGoodsService.selectGoodsInfo(goodsId, typeId, user.getId());
                 if (null == goods) {
                     return AjaxResponse.error("未找到相关记录");
                 }
@@ -370,7 +369,7 @@ public class UserGoodsController {
                 } else {
                     return AjaxResponse.success("参数错误");
                 }
-                goodsService.updateGoodsIndex(goods, num);
+                userGoodsService.updateGoodsIndex(goods, num);
             }
             return AjaxResponse.success();
         } catch (Exception e) {
@@ -391,23 +390,23 @@ public class UserGoodsController {
         if (NullUtil.isNullOrEmpty(goodsId)) {
             return AjaxResponse.error("参数错误");
         }
-        ViewGoodsInfo goods = goodsService.selectViewGoodsInfo(goodsId, user.getId());
+        ViewGoodsInfo goods = userGoodsService.selectViewGoodsInfo(goodsId, user.getId());
         try {
             if (goods.getGoodsStatus().intValue() == 0) {
-                GoodsType type = goodsService.selectGoodsType(goods.getTypeId(), user.getId());
+                GoodsType type = userGoodsService.selectGoodsType(goods.getTypeId(), user.getId());
                 if (!type.getTypeStatus()) {
                     return AjaxResponse.error("发布失败：该商品的类型已禁用");
                 }
-                int fileCount = goodsService.selectFileCount(goodsId, user.getId());
+                int fileCount = userGoodsService.selectFileCount(goodsId, user.getId());
                 if (fileCount <= 0) {
                     return AjaxResponse.error("发布失败：请提交文件(至少一张图片或短视频)");
                 }
-                int specsCount = goodsService.selectSpecsCount(goodsId, user.getId());
+                int specsCount = userGoodsService.selectSpecsCount(goodsId, user.getId());
                 if (specsCount <= 0) {
                     return AjaxResponse.error("发布失败：请设置至少一条正常规格)");
                 }
             }
-            goodsService.updateGoodsStatus(goods);
+            userGoodsService.updateGoodsStatus(goods);
             return AjaxResponse.success(goods.getGoodsStatus().intValue() == 1 ? "下架成功" : "发布成功");
         } catch (Exception e) {
             log.error("更新商品状态出错{}", e);
@@ -427,9 +426,9 @@ public class UserGoodsController {
             if (NullUtil.isNullOrEmpty(goodsId)) {
                 return AjaxResponse.error("参数错误");
             }
-            ViewGoodsInfo goods = goodsService.selectViewGoodsInfo(goodsId, user.getId());
+            ViewGoodsInfo goods = userGoodsService.selectViewGoodsInfo(goodsId, user.getId());
             if (null != goods) {
-                goodsService.updateGoodsStatus(goodsId);
+                userGoodsService.updateGoodsStatus(goodsId);
                 return AjaxResponse.success("删除成功");
             }
         } catch (Exception e) {
@@ -447,7 +446,7 @@ public class UserGoodsController {
      */
     @RequestMapping(value = "queryFileList")
     public Object queryFileList(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer goodsId) {
-        List<ViewGoodsFile> list = goodsService.selectFileList(goodsId, user.getId());
+        List<ViewGoodsFile> list = userGoodsService.selectFileList(goodsId, user.getId());
         if (NullUtil.isNullOrEmpty(list)) {
             return AjaxResponse.error("未找到相关记录");
         }
@@ -475,20 +474,20 @@ public class UserGoodsController {
             if (NullUtil.isNullOrEmpty(goodsId) || NullUtil.isNullOrEmpty(fileId)) {
                 return AjaxResponse.error("参数错误");
             }
-            GoodsInfo goodsInfo = goodsService.selectGoodsInfo(goodsId, user.getId());
+            GoodsInfo goodsInfo = userGoodsService.selectGoodsInfo(goodsId, user.getId());
             if (null == goodsInfo){
                 return AjaxResponse.error("信息不符");
             }
             if (goodsInfo.getStatus() != 0){
                 return AjaxResponse.error("未下架商品禁止上传图片");
             }
-            ViewGoodsFile record = goodsService.selectFileInfo(fileId, goodsId, user.getId());
+            ViewGoodsFile record = userGoodsService.selectFileInfo(fileId, goodsId, user.getId());
             if (null == record) {
                 return AjaxResponse.error("未找到相关记录");
             }
-            String fileSrc = "/api/image/GI-" + RandomUtil.getTimeStamp();
+            String fileSrc = "/api/public/GI-" + RandomUtil.getTimeStamp();
             QiNiuUtil.uploadFile(multipartFile, fileSrc);
-            goodsService.updateGoodsFile(fileId, fileSrc, true);
+            userGoodsService.updateGoodsFile(fileId, fileSrc, true);
             Map map = new HashMap();
             map.put("src", fileSrc);
             map.put("id", fileId);
@@ -520,21 +519,21 @@ public class UserGoodsController {
             if (NullUtil.isNullOrEmpty(goodsId) || NullUtil.isNullOrEmpty(fileId)) {
                 return AjaxResponse.error("参数错误");
             }
-            GoodsInfo goodsInfo = goodsService.selectGoodsInfo(goodsId, user.getId());
+            GoodsInfo goodsInfo = userGoodsService.selectGoodsInfo(goodsId, user.getId());
             if (null == goodsInfo){
                 return AjaxResponse.error("信息不符");
             }
             if (goodsInfo.getStatus() != 0){
                 return AjaxResponse.error("未下架商品禁止上传视频");
             }
-            ViewGoodsFile record = goodsService.selectFileInfo(fileId, goodsId, user.getId());
+            ViewGoodsFile record = userGoodsService.selectFileInfo(fileId, goodsId, user.getId());
             if (null == record) {
                 return AjaxResponse.error("未找到相关记录");
             }
             String fileSrc = NullUtil.isNotNullOrEmpty(record.getFileSrc()) ?
                     record.getFileSrc() : "/api/video/GV-" + RandomUtil.getTimeStamp();
             QiNiuUtil.uploadFile(multipartFile, fileSrc);
-            goodsService.updateGoodsFile(fileId, fileSrc, true);
+            userGoodsService.updateGoodsFile(fileId, fileSrc, true);
             Map map = new HashMap();
             map.put("src", fileSrc + "?token=" + RandomUtil.getTimeStamp());
             map.put("id", fileId);
@@ -559,12 +558,12 @@ public class UserGoodsController {
             if (NullUtil.isNullOrEmpty(goodsId) || NullUtil.isNullOrEmpty(fileId)) {
                 return AjaxResponse.error("参数错误");
             }
-            ViewGoodsFile record = goodsService.selectFileInfo(fileId, goodsId, user.getId());
+            ViewGoodsFile record = userGoodsService.selectFileInfo(fileId, goodsId, user.getId());
             if (null == record) {
                 return AjaxResponse.error("未找到相关记录");
             }
-            goodsService.updateGoodsFile(fileId, null, false);
-            goodsService.checkGoodsValue(goodsId, user.getId(), false);
+            userGoodsService.updateGoodsFile(fileId, null, false);
+            userGoodsService.checkGoodsValue(goodsId, user.getId(), false);
             return AjaxResponse.success();
         } catch (Exception e) {
             log.error("删除商品文件出错{}", e);
@@ -581,7 +580,7 @@ public class UserGoodsController {
      */
     @RequestMapping(value = "loadSpecsPage")
     public Object loadSpecsPage(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer goodsId) {
-        int count = goodsService.selectSpecsCount(goodsId, user.getId());
+        int count = userGoodsService.selectSpecsCount(goodsId, user.getId());
         if (count >= Constants.GOODS_SPECS_COUNT) {
             return AjaxResponse.msg("-1", goodsId);
         }
@@ -599,7 +598,7 @@ public class UserGoodsController {
     public Object querySpecsPage(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, ViewGoodsSpecs specs, HttpServletRequest request) {
         specs.setUserId(user.getId());
         Page page = PageUtil.initPage(request);
-        page = goodsService.selectSpecsList(specs, page);
+        page = userGoodsService.selectSpecsList(specs, page);
         return AjaxResponse.success(page);
     }
 
@@ -614,8 +613,8 @@ public class UserGoodsController {
     @RequestMapping(value = "loadGoodsSpecs")
     public Object loadGoodsSpecs(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer goodsId, Integer specsId) {
         if (NullUtil.isNotNullOrEmpty(specsId) && specsId.intValue() != 0) {
-            GoodsInfo goodsInfo = goodsService.selectGoodsInfo(goodsId, user.getId());
-            ViewGoodsSpecs record = goodsService.selectSpecsInfo(specsId, goodsId, user.getId());
+            GoodsInfo goodsInfo = userGoodsService.selectGoodsInfo(goodsId, user.getId());
+            ViewGoodsSpecs record = userGoodsService.selectSpecsInfo(specsId, goodsId, user.getId());
             if (null != record) {
                 Map map = new HashMap();
                 map.put("discount", goodsInfo.getDiscount());
@@ -643,7 +642,7 @@ public class UserGoodsController {
             if (NullUtil.isNullOrEmpty(specs.getGoodsId())) {
                 return AjaxResponse.error("参数丢失");
             }
-            GoodsInfo goodsInfo = goodsService.selectGoodsInfo(specs.getGoodsId(), user.getId());
+            GoodsInfo goodsInfo = userGoodsService.selectGoodsInfo(specs.getGoodsId(), user.getId());
             if (null == goodsInfo){
                 return AjaxResponse.error("信息不符");
             }
@@ -666,15 +665,15 @@ public class UserGoodsController {
                 return AjaxResponse.error("折扣描述长度过长");
             }
             if (NullUtil.isNullOrEmpty(specs.getId())) {
-                int count = goodsService.selectGoodsSpecsCount(specs.getGoodsId(), user.getId());
+                int count = userGoodsService.selectGoodsSpecsCount(specs.getGoodsId(), user.getId());
                 if (count >= Constants.GOODS_SPECS_COUNT) {
                     return AjaxResponse.error("商品规格创建数量已达上限");
                 }
             }
             boolean bool = (NullUtil.isNullOrEmpty(specs.getId()) && !specs.getSpecsStatus()) ? false : true;
-            String specsSrc = "/api/image/GS-" + RandomUtil.getTimeStamp();
+            String specsSrc = "/api/public/GS-" + RandomUtil.getTimeStamp();
             if (NullUtil.isNotNullOrEmpty(specs.getId()) && NullUtil.isNotNullOrEmpty(specs.getSpecsSrc())) {
-                ViewGoodsSpecs record = goodsService.selectSpecsInfo(specs.getId(), specs.getGoodsId(), user.getId());
+                ViewGoodsSpecs record = userGoodsService.selectSpecsInfo(specs.getId(), specs.getGoodsId(), user.getId());
                 if (null == record) {
                     return AjaxResponse.error("信息不符");
                 }
@@ -684,9 +683,9 @@ public class UserGoodsController {
                 this.removeFile(specs.getSpecsSrc(), specsSrc);
                 specs.setSpecsSrc(specsSrc);
             }
-            goodsService.updateGoodsSpecs(specs, user.getId());
+            userGoodsService.updateGoodsSpecs(specs, user.getId());
             if (bool) {
-                goodsService.checkGoodsValue(specs.getGoodsId(), user.getId(), true);
+                userGoodsService.checkGoodsValue(specs.getGoodsId(), user.getId(), true);
             }
             return AjaxResponse.success("提交成功");
         } catch (Exception e) {
@@ -711,9 +710,9 @@ public class UserGoodsController {
             if (NullUtil.isNullOrEmpty(goodsId) || NullUtil.isNullOrEmpty(specsId) || NullUtil.isNullOrEmpty(sort)) {
                 return AjaxResponse.error("参数错误");
             }
-            int count = goodsService.selectGoodsSpecsCount(goodsId, user.getId());
+            int count = userGoodsService.selectGoodsSpecsCount(goodsId, user.getId());
             if (count > 1) {
-                ViewGoodsSpecs specs = goodsService.selectSpecsInfo(specsId, goodsId, user.getId());
+                ViewGoodsSpecs specs = userGoodsService.selectSpecsInfo(specsId, goodsId, user.getId());
                 if (null == specs) {
                     return AjaxResponse.error("未找到相关记录");
                 }
@@ -725,7 +724,7 @@ public class UserGoodsController {
                 } else {
                     return AjaxResponse.success("参数错误");
                 }
-                goodsService.updateGoodsSpecsIndex(specs, num);
+                userGoodsService.updateGoodsSpecsIndex(specs, num);
             }
             return AjaxResponse.success();
         } catch (Exception e) {
@@ -746,7 +745,7 @@ public class UserGoodsController {
                                                       ViewUserAppletRecommendGoods rg, HttpServletRequest request){
         rg.setUserId(user.getId());
         Page page = PageUtil.initPage(request);
-        page = goodsService.selectUserAppletRecommendGoodsByPage(rg, page);
+        page = userGoodsService.selectUserAppletRecommendGoodsByPage(rg, page);
         return AjaxResponse.success(page);
     }
 
@@ -758,9 +757,9 @@ public class UserGoodsController {
      */
     @RequestMapping(value = "loadUserAppletRecommendGoodsDetails")
     public Object loadUserAppletRecommendGoodsDetails(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer id){
-        UserAppletRecommendGoods rg = goodsService.selectUserAppletRecommendGoods(id, user.getId());
+        UserAppletRecommendGoods rg = userGoodsService.selectUserAppletRecommendGoods(id, user.getId());
         if (null != rg){
-            ViewGoodsInfo goodsInfo = goodsService.selectViewGoodsInfo(rg.getGoodsId(), user.getId());
+            ViewGoodsInfo goodsInfo = userGoodsService.selectViewGoodsInfo(rg.getGoodsId(), user.getId());
             Map map = new HashMap();
             map.put("info", rg);
             map.put("goods", goodsInfo);
@@ -794,7 +793,7 @@ public class UserGoodsController {
             if (NullUtil.isNullOrEmpty(rg.getGoodsId())){
                 return AjaxResponse.error("请选择关联商品");
             }
-            ViewGoodsInfo goodsInfo = goodsService.selectViewGoodsInfo(rg.getGoodsId(), user.getId());
+            ViewGoodsInfo goodsInfo = userGoodsService.selectViewGoodsInfo(rg.getGoodsId(), user.getId());
             if (null == goodsInfo){
                 return AjaxResponse.error("未找到相关商品");
             }
@@ -817,7 +816,7 @@ public class UserGoodsController {
             rg.setStartTime(start.convertToDate());
             rg.setExpireTime(expire.convertToDate());
             rg.setUserId(user.getId());
-            goodsService.updateUserAppletRecommendGoods(rg);
+            userGoodsService.updateUserAppletRecommendGoods(rg);
             return AjaxResponse.success("提交成功");
         } catch (Exception e) {
             log.error("提交小程序推荐商品信息出错{}", e);
