@@ -485,6 +485,66 @@ public class AppletMaterielInfoExample {
             addCriterion("update_time not between", value1, value2, "updateTime");
             return (Criteria) this;
         }
+
+        public Criteria andMaterielStatusIsNull() {
+            addCriterion("materiel_status is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMaterielStatusIsNotNull() {
+            addCriterion("materiel_status is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMaterielStatusEqualTo(Boolean value) {
+            addCriterion("materiel_status =", value, "materielStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andMaterielStatusNotEqualTo(Boolean value) {
+            addCriterion("materiel_status <>", value, "materielStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andMaterielStatusGreaterThan(Boolean value) {
+            addCriterion("materiel_status >", value, "materielStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andMaterielStatusGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("materiel_status >=", value, "materielStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andMaterielStatusLessThan(Boolean value) {
+            addCriterion("materiel_status <", value, "materielStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andMaterielStatusLessThanOrEqualTo(Boolean value) {
+            addCriterion("materiel_status <=", value, "materielStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andMaterielStatusIn(List<Boolean> values) {
+            addCriterion("materiel_status in", values, "materielStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andMaterielStatusNotIn(List<Boolean> values) {
+            addCriterion("materiel_status not in", values, "materielStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andMaterielStatusBetween(Boolean value1, Boolean value2) {
+            addCriterion("materiel_status between", value1, value2, "materielStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andMaterielStatusNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("materiel_status not between", value1, value2, "materielStatus");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

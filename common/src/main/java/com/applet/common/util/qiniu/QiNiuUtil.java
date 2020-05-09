@@ -1,7 +1,9 @@
 package com.applet.common.util.qiniu;
 
 import com.applet.common.util.Constants;
+import com.applet.common.util.RandomUtil;
 import com.applet.common.util.file.GetImageUtil;
+import com.applet.common.util.file.ImageMergeUtil;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
 import com.qiniu.processing.OperationManager;
@@ -18,7 +20,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 
 /**
  * @program: demo
@@ -46,6 +53,26 @@ public class QiNiuUtil {
         bucketManager = new BucketManager(auth, cfg);
         operationManager = new OperationManager(auth, cfg);
         uploadManager = new UploadManager(cfg);
+    }
+
+    /**
+     * 获取文件后缀
+     * @param key
+     * @return
+     */
+    public static String getFileSuffix(String key) {
+        if (key.indexOf("/public") >= 0) {
+            return ".png";
+        } else if (key.indexOf("/image") >= 0) {
+            return ".png";
+        } else if (key.indexOf("/audio") >= 0) {
+            return ".mp3";
+        } else if (key.indexOf("/video") >= 0) {
+            return ".mp4";
+        } else if (key.indexOf("/zip") >= 0) {
+            return ".zip";
+        }
+        return null;
     }
 
     /**
@@ -187,6 +214,20 @@ public class QiNiuUtil {
             logger.info("java sdk 上传文件：" + response.bodyString());
         } catch (Exception e) {
             logger.error("上传Audit文件出错", e);
+        }
+    }
+
+    public static void uploadFile(byte[] file, String key) throws Exception {
+        if (key.indexOf("/public") >= 0) {
+            uploadFile(file, key, QiNiuConfig.bucketAppletPublic);
+        } else if (key.indexOf("/image") >= 0) {
+            uploadFile(file, key, QiNiuConfig.bucketAppletImage);
+        } else if (key.indexOf("/audio") >= 0) {
+            uploadFile(file, key, QiNiuConfig.bucketAppletAudio);
+        } else if (key.indexOf("/video") >= 0) {
+            uploadFile(file, key, QiNiuConfig.bucketAppletVideo);
+        } else if (key.indexOf("/zip") >= 0) {
+            uploadFile(file, key, QiNiuConfig.bucketAppletZip);
         }
     }
 
@@ -512,6 +553,46 @@ public class QiNiuUtil {
             e.printStackTrace();
         }
         return item;
+    }
+
+    /**
+     * 从七牛云下载文件到浏览器
+     * @param request
+     * @param response
+     * @param filename
+     * @throws IOException
+     */
+    public static void downFileForBrowser(HttpServletRequest request, HttpServletResponse response, String filename) throws IOException {
+        String imgPath = getDownURL(filename);
+        String suffix = getFileSuffix(filename);
+        try {
+            URL url = new URL(imgPath);
+            DataInputStream dataInputStream = new DataInputStream(url.openStream());
+
+            OutputStream fileOutputStream = response.getOutputStream();
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+            response.reset();
+            response.setContentType("application/octet-stream");
+            response.setCharacterEncoding("UTF-8");
+
+            response.setHeader("Content-disposition", "attachment; filename=" + RandomUtil.getTimeStamp() + suffix);
+
+            byte[] buffer = new byte[1024];
+            int length;
+
+            while ((length = dataInputStream.read(buffer)) > 0) {
+                output.write(buffer, 0, length);
+            }
+            byte[] context = output.toByteArray();
+            fileOutputStream.write(output.toByteArray());
+            dataInputStream.close();
+            fileOutputStream.close();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

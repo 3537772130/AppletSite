@@ -346,10 +346,13 @@ public class UserGoodsService {
      * @param goodsId
      * @return
      */
-    public List<ViewGoodsFile> selectFileList(Integer goodsId, Integer userId) {
+    public List<ViewGoodsFile> selectFileList(Integer goodsId, Integer userId, Integer type) {
         ViewGoodsFileExample example = new ViewGoodsFileExample();
         example.setOrderByClause("id asc");
-        example.createCriteria().andGoodsIdEqualTo(goodsId).andUserIdEqualTo(userId);
+        ViewGoodsFileExample.Criteria c = example.createCriteria().andGoodsIdEqualTo(goodsId).andUserIdEqualTo(userId);
+        if (NullUtil.isNotNullOrEmpty(type)){
+            c.andFileTypeEqualTo(type);
+        }
         return viewGoodsFileMapper.selectByExample(example);
     }
 
@@ -385,7 +388,7 @@ public class UserGoodsService {
     }
 
     public ViewGoodsFile selectFileInfo(Integer fileId, Integer userId) {
-        return selectFileInfo(fileId, userId);
+        return selectFileInfo(fileId, null, userId);
     }
 
     /**

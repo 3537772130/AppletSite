@@ -28,6 +28,8 @@ public class GoodsSpreadImage {
     private Integer sizeX;
     // 水印图片垂直高度
     private Integer sizeY;
+    // 是否预览
+    private Integer isPreview;
 
     public Integer getGoodsFileId() {
         return goodsFileId;

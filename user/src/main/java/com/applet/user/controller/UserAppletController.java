@@ -43,11 +43,12 @@ public class UserAppletController {
 
     /**
      * 查询摇号小程序Map信息集合
+     *
      * @param user
      * @return
      */
     @RequestMapping(value = "queryAppletToMap")
-    public Object queryAppletToMap(@SessionScope(Constants.VUE_USER_INFO) UserInfo user){
+    public Object queryAppletToMap(@SessionScope(Constants.VUE_USER_INFO) UserInfo user) {
         List<Map> list = appletService.selectAppletToMap(user.getId());
         if (NullUtil.isNullOrEmpty(list)) {
             return AjaxResponse.error("未找到相关记录");
@@ -85,6 +86,41 @@ public class UserAppletController {
         appletInfo.setUserId(user.getId());
         page = appletService.selectAppletInfoToPage(appletInfo, page);
         return AjaxResponse.success(page);
+    }
+
+    /**
+     * 修改小程序LOGO
+     * @param user
+     * @param multipartFile
+     * @param appletId
+     * @return
+     */
+    @RequestMapping(value = "updateAppletLogo")
+    public Object updateAppletLogo(@SessionScope(Constants.VUE_USER_INFO) UserInfo user,
+                                   @RequestParam("materielImage") MultipartFile multipartFile,
+                                   Integer appletId) {
+        try {
+            ViewAppletInfo appletInfo = appletService.selectViewAppletInfo(appletId, user.getId());
+            if (null == appletInfo) {
+                return AjaxResponse.error("信息不符");
+            }
+            AppletInfo info = new AppletInfo();
+            info.setId(appletInfo.getId());
+            String oldLogo = appletInfo.getAppletLogo();
+            //校验文件信息
+            CheckResult result = CheckFileUtil.checkImageFile(multipartFile);
+            if (!result.getBool()) {
+                return AjaxResponse.error(result.getMsg());
+            }
+            info.setAppletLogo("/api/public/U" + user.getId() + "-AL" + RandomUtil.getTimeStamp());
+            QiNiuUtil.uploadFile(multipartFile, info.getAppletLogo());
+            appletService.updateAppletInfo(info);
+            QiNiuUtil.deleteFile(oldLogo);
+            return AjaxResponse.success("修改成功");
+        } catch (Exception e) {
+            log.error("修改小程序LOGO出错{}", e);
+        }
+        return AjaxResponse.error("修改失败");
     }
 
     /**
@@ -319,23 +355,24 @@ public class UserAppletController {
 
     /**
      * 更新小程序营业状态
+     *
      * @param user
      * @param appletId
      * @return
      */
     @RequestMapping(value = "updateAppletSelling")
-    public Object updateAppletSelling(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer appletId){
+    public Object updateAppletSelling(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer appletId) {
         try {
             AppletInfo appletInfo = appletService.selectAppletInfo(appletId, user.getId());
-            if (null == appletInfo){
+            if (null == appletInfo) {
                 return AjaxResponse.error("未找到相关信息");
             }
-            if (appletInfo.getStatus().intValue() != 1){
+            if (appletInfo.getStatus().intValue() != 1) {
                 return AjaxResponse.error("小程序状态不符");
             }
             if (!appletInfo.getIfSelling()) {
                 List<ViewAppletPageContent> list = appletPageService.selectAppletPageContent(user.getId(), appletInfo.getId());
-                if (NullUtil.isNullOrEmpty(list)){
+                if (NullUtil.isNullOrEmpty(list)) {
                     return AjaxResponse.error("请先编辑页面并保存配置！");
                 }
             }
@@ -377,6 +414,7 @@ public class UserAppletController {
 
     /**
      * 上传小程序支付资料
+     *
      * @param user
      * @param id
      * @param mchId
@@ -385,14 +423,14 @@ public class UserAppletController {
      */
     @PostMapping(value = "uploadAppletPayData")
     public Object uploadAppletPayData(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, @RequestParam("id") String id,
-                                      @RequestParam("mchId") String mchId, @RequestParam("payKey") String payKey){
+                                      @RequestParam("mchId") String mchId, @RequestParam("payKey") String payKey) {
         try {
-            if (NullUtil.isNullOrEmpty(id) || NullUtil.isNullOrEmpty(mchId) || NullUtil.isNullOrEmpty(payKey)){
+            if (NullUtil.isNullOrEmpty(id) || NullUtil.isNullOrEmpty(mchId) || NullUtil.isNullOrEmpty(payKey)) {
                 return AjaxResponse.error("参数缺失");
             }
             Integer appletId = Integer.parseInt(id);
             AppletInfo appletInfo = appletService.selectAppletInfo(appletId, user.getId());
-            if (null == appletInfo){
+            if (null == appletInfo) {
                 return AjaxResponse.error("未找到相关信息");
             }
             AppletInfo info = new AppletInfo();

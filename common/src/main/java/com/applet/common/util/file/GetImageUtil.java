@@ -1,8 +1,13 @@
 package com.applet.common.util.file;
 
+import com.applet.common.util.qiniu.QiNiuUtil;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 /**
  * @program: demo

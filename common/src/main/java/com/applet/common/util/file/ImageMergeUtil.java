@@ -36,7 +36,7 @@ public class ImageMergeUtil {
     private final static Integer GOODS_IMAGE_WIDTH = 800;
 
     /**
-     *
+     * 合成商品推广图片
      * @param fileName 七牛云文件名称（key）
      * @param goodsImage 商品图片
      * @param materielImage 物料图片
@@ -44,7 +44,10 @@ public class ImageMergeUtil {
      * @param positionList 水印百分比位置坐标信息
      * @return
      */
-    public static Boolean mergeGoodsImageToAppletMateriel(String fileName, String goodsImage, String materielImage, int materielType, List<Double> positionList) {
+    public static Boolean mergeGoodsImageToAppletMateriel(String fileName, String goodsImage, String materielImage,
+                                                          int materielType, List<Double> positionList) {
+        goodsImage = QiNiuUtil.getDownURL(goodsImage);
+        materielImage = QiNiuUtil.getDownURL(materielImage);
         if (materielType == 1 || materielType == 2) {
             // 拼接图片 上下
             BufferedImage image1 = getBufferedImage(goodsImage);
@@ -57,7 +60,7 @@ public class ImageMergeUtil {
                 BufferedImage bufferedImage = mergeImages(false, image1, image2);
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 ImageIO.write(bufferedImage, "png", out);
-                QiNiuUtil.uploadFile(out.toByteArray(), fileName, QiNiuConfig.bucketAppletPublic);
+                QiNiuUtil.uploadFile(out.toByteArray(), fileName);
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -73,7 +76,7 @@ public class ImageMergeUtil {
                     bufferedImage = ImageMergeUtil.resizeBufferedImage(bufferedImage, GOODS_IMAGE_WIDTH, height, true);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
                     ImageIO.write(bufferedImage, "png", out);
-                    QiNiuUtil.uploadFile(out.toByteArray(), fileName, QiNiuConfig.bucketAppletPublic);
+                    QiNiuUtil.uploadFile(out.toByteArray(), fileName);
                     return true;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -81,6 +84,50 @@ public class ImageMergeUtil {
             }
         }
         return false;
+    }
+
+    /**
+     * 预览商品推广图片
+     * @param out
+     * @param goodsImage
+     * @param materielImage
+     * @param materielType
+     * @param positionList
+     */
+    public static void previewGoodsImageToAppletMateriel(OutputStream out, String goodsImage,
+                                                            String materielImage, int materielType,
+                                                            List<Double> positionList) {
+        goodsImage = QiNiuUtil.getDownURL(goodsImage);
+        materielImage = QiNiuUtil.getDownURL(materielImage);
+        if (materielType == 1 || materielType == 2) {
+            // 拼接图片 上下
+            BufferedImage image1 = getBufferedImage(goodsImage);
+            int height1 = getHeightToInProportion(image1, GOODS_IMAGE_WIDTH);
+            image1 = resizeBufferedImage(image1, GOODS_IMAGE_WIDTH.intValue(), height1, true);
+            BufferedImage image2 = getBufferedImage(materielImage);
+            int height2 = getHeightToInProportion(image2, GOODS_IMAGE_WIDTH);
+            image2 = resizeBufferedImage(image2, GOODS_IMAGE_WIDTH.intValue(), height2, true);
+            try {
+                BufferedImage bufferedImage = mergeImages(false, image1, image2);
+                ImageIO.write(bufferedImage, "png", out);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            // 合成图片 水印二维码
+            if (NullUtil.isNotNullOrEmpty(positionList)){
+                ImgWatermark imgWatermarkVo = new ImgWatermark();
+                imgWatermarkVo.getWatermarks().add(new ImgWatermark().new Watermark(materielImage, positionList));
+                try {
+                    BufferedImage bufferedImage = watermarkImg(goodsImage, imgWatermarkVo);
+                    int height = getHeightToInProportion(bufferedImage, GOODS_IMAGE_WIDTH);
+                    bufferedImage = ImageMergeUtil.resizeBufferedImage(bufferedImage, GOODS_IMAGE_WIDTH, height, true);
+                    ImageIO.write(bufferedImage, "png", out);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     /**
@@ -184,7 +231,7 @@ public class ImageMergeUtil {
      * @param baseUrl
      * @return
      */
-    private static InputStream getInputStream(String baseUrl) {
+    public static InputStream getInputStream(String baseUrl) {
         if (StringUtils.isBlank(baseUrl)) {
             return null;
         }
@@ -209,7 +256,7 @@ public class ImageMergeUtil {
      * @param baseUrl
      * @return
      */
-    private static BufferedImage getBufferedImage(String baseUrl) {
+    public static BufferedImage getBufferedImage(String baseUrl) {
         if (StringUtils.isBlank(baseUrl)) {
             return null;
         }

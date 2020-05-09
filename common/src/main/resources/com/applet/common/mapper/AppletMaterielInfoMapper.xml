@@ -8,6 +8,7 @@
     <result column="materiel_image" jdbcType="VARCHAR" property="materielImage" />
     <result column="materiel_type" jdbcType="INTEGER" property="materielType" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="materiel_status" jdbcType="BIT" property="materielStatus" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -68,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, user_id, applet_id, materiel_image, materiel_type, update_time
+    id, user_id, applet_id, materiel_image, materiel_type, update_time, materiel_status
   </sql>
   <select id="selectByExample" parameterType="com.applet.common.entity.AppletMaterielInfoExample" resultMap="BaseResultMap">
     select
@@ -103,11 +104,11 @@
   </delete>
   <insert id="insert" parameterType="com.applet.common.entity.AppletMaterielInfo">
     insert into applet_materiel_info (id, user_id, applet_id, 
-      materiel_image, materiel_type, update_time
-      )
+      materiel_image, materiel_type, update_time, 
+      materiel_status)
     values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{appletId,jdbcType=INTEGER}, 
-      #{materielImage,jdbcType=VARCHAR}, #{materielType,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}
-      )
+      #{materielImage,jdbcType=VARCHAR}, #{materielType,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{materielStatus,jdbcType=BIT})
   </insert>
   <insert id="insertSelective" keyProperty="id" parameterType="com.applet.common.entity.AppletMaterielInfo" useGeneratedKeys="true">
     insert into applet_materiel_info
@@ -130,6 +131,9 @@
       <if test="updateTime != null">
         update_time,
       </if>
+      <if test="materielStatus != null">
+        materiel_status,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -149,6 +153,9 @@
       </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="materielStatus != null">
+        #{materielStatus,jdbcType=BIT},
       </if>
     </trim>
   </insert>
@@ -179,6 +186,9 @@
       <if test="record.updateTime != null">
         update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.materielStatus != null">
+        materiel_status = #{record.materielStatus,jdbcType=BIT},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -191,7 +201,8 @@
       applet_id = #{record.appletId,jdbcType=INTEGER},
       materiel_image = #{record.materielImage,jdbcType=VARCHAR},
       materiel_type = #{record.materielType,jdbcType=INTEGER},
-      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      materiel_status = #{record.materielStatus,jdbcType=BIT}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -214,6 +225,9 @@
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="materielStatus != null">
+        materiel_status = #{materielStatus,jdbcType=BIT},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -223,7 +237,8 @@
       applet_id = #{appletId,jdbcType=INTEGER},
       materiel_image = #{materielImage,jdbcType=VARCHAR},
       materiel_type = #{materielType,jdbcType=INTEGER},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      materiel_status = #{materielStatus,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <sql id="PageSuffix">

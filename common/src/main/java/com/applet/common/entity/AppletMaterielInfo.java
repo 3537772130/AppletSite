@@ -19,6 +19,8 @@ public class AppletMaterielInfo implements Serializable {
 
     private Date updateTime;
 
+    private Boolean materielStatus;
+
     private static final long serialVersionUID = 1L;
 
     public Integer getId() {
@@ -67,5 +69,13 @@ public class AppletMaterielInfo implements Serializable {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Boolean getMaterielStatus() {
+        return materielStatus;
+    }
+
+    public void setMaterielStatus(Boolean materielStatus) {
+        this.materielStatus = materielStatus;
     }
 }

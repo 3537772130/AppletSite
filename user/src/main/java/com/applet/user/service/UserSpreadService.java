@@ -37,7 +37,8 @@ public class UserSpreadService {
 
     private List<AppletMaterielInfo> selectAppletMaterielList(Integer id, Integer materielType, Integer appletId, Integer userId) {
         AppletMaterielInfoExample example = new AppletMaterielInfoExample();
-        AppletMaterielInfoExample.Criteria c = example.createCriteria().andUserIdEqualTo(userId);
+        example.setOrderByClause("materiel_type asc");
+        AppletMaterielInfoExample.Criteria c = example.createCriteria().andUserIdEqualTo(userId).andMaterielStatusEqualTo(true);
         if (NullUtil.isNotNullOrEmpty(id)) {
             c.andIdEqualTo(id);
         }
@@ -58,12 +59,7 @@ public class UserSpreadService {
      * @return
      */
     public List<AppletMaterielInfo> selectAppletMaterielList(Integer appletId, Integer userId) {
-        List<AppletMaterielInfo> list = selectAppletMaterielList(null, null, appletId, userId);
-        if (NullUtil.isNullOrEmpty(list)){
-            saveAppletMaterielInfo(appletId, userId);
-            list = selectAppletMaterielList(null, null, appletId, userId);
-        }
-        return list;
+        return selectAppletMaterielList(null, null, appletId, userId);
     }
 
     /**
@@ -93,7 +89,12 @@ public class UserSpreadService {
 
     private List<UserGoodsSpreadImage> selectUserGoodsSpreadImageList(Integer id, Integer goodsId, Integer userId) {
         UserGoodsSpreadImageExample example = new UserGoodsSpreadImageExample();
-        UserGoodsSpreadImageExample.Criteria c = example.createCriteria().andGoodsIdEqualTo(goodsId).andUserIdEqualTo(userId);
+        UserGoodsSpreadImageExample.Criteria c = example.createCriteria()
+                .andUserIdEqualTo(userId)
+                .andSpreadStatusEqualTo(true);
+        if (NullUtil.isNotNullOrEmpty(goodsId)){
+            c.andGoodsIdEqualTo(goodsId);
+        }
         if (NullUtil.isNotNullOrEmpty(id)) {
             c.andIdEqualTo(id);
         }
@@ -124,32 +125,53 @@ public class UserSpreadService {
         return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
     }
 
+    public UserGoodsSpreadImage selectUserGoodsSpreadImage(Integer id, Integer userId) {
+        return selectUserGoodsSpreadImage(id, null, userId);
+    }
+
     /**
      * 初始化小程序物料信息
      * @param appletId
      * @param userId
      */
-    @Transactional(rollbackFor = Exception.class)
-    public void saveAppletMaterielInfo(Integer appletId, Integer userId) {
-        String sql = "INSERT INTO applet_materiel_info (user_id, applet_id, materiel_type)\n" +
-                "VALUES(" + userId + ", " + appletId + ", 1)," +
-                "(" + userId + ", " + appletId + ", 2)," +
-                "(" + userId + ", " + appletId + ", 3)," +
-                "(" + userId + ", " + appletId + ", 4)";
-        commonMapper.insertBatch(sql);
-    }
+//    @Transactional(rollbackFor = Exception.class)
+//    public void saveAppletMaterielInfo(Integer appletId, Integer userId) {
+//        String sql = "INSERT INTO applet_materiel_info (user_id, applet_id, materiel_type)\n" +
+//                "VALUES(" + userId + ", " + appletId + ", 1)," +
+//                "(" + userId + ", " + appletId + ", 2)," +
+//                "(" + userId + ", " + appletId + ", 3)," +
+//                "(" + userId + ", " + appletId + ", 4)";
+//        commonMapper.insertBatch(sql);
+//    }
 
     /**
      * 更新小程序物料信息
+     *
      * @param info
      */
-    public void updateAppletMaterielInfo(AppletMaterielInfo info) {
+    public void saveAppletMaterielInfo(AppletMaterielInfo info) {
         info.setUpdateTime(new Date());
-        appletMaterielInfoMapper.updateByPrimaryKeySelective(info);
+        info.setMaterielStatus(true);
+        appletMaterielInfoMapper.insertSelective(info);
+    }
+
+    /**
+     * 删除小程序物料信息
+     *
+     * @param id
+     * @param userId
+     */
+    public void deleteAppletMaterielInfo(Integer id, Integer userId) {
+        AppletMaterielInfoExample example = new AppletMaterielInfoExample();
+        example.createCriteria().andIdEqualTo(id).andUserIdEqualTo(userId);
+        AppletMaterielInfo info = new AppletMaterielInfo();
+        info.setMaterielStatus(false);
+        appletMaterielInfoMapper.updateByExampleSelective(info, example);
     }
 
     /**
      * 更新商品推广图片信息
+     *
      * @param image
      */
     public void updateUserGoodsSpreadImage(UserGoodsSpreadImage image) {
@@ -164,11 +186,12 @@ public class UserSpreadService {
 
     /**
      * 删除商品推广图片
+     *
      * @param id
      * @param userId
      * @param goodsId
      */
-    public void deletaUserGoodsSpreadImage(Integer id, Integer userId, Integer goodsId){
+    public void deletaUserGoodsSpreadImage(Integer id, Integer userId, Integer goodsId) {
         UserGoodsSpreadImage image = new UserGoodsSpreadImage();
         image.setSpreadStatus(false);
         UserGoodsSpreadImageExample example = new UserGoodsSpreadImageExample();

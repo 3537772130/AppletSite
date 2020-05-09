@@ -446,7 +446,7 @@ public class UserGoodsController {
      */
     @RequestMapping(value = "queryFileList")
     public Object queryFileList(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer goodsId) {
-        List<ViewGoodsFile> list = userGoodsService.selectFileList(goodsId, user.getId());
+        List<ViewGoodsFile> list = userGoodsService.selectFileList(goodsId, user.getId(), null);
         if (NullUtil.isNullOrEmpty(list)) {
             return AjaxResponse.error("未找到相关记录");
         }
