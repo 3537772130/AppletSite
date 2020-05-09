@@ -530,10 +530,12 @@ public class UserGoodsController {
             if (null == record) {
                 return AjaxResponse.error("未找到相关记录");
             }
-            String fileSrc = NullUtil.isNotNullOrEmpty(record.getFileSrc()) ?
-                    record.getFileSrc() : "/api/video/GV-" + RandomUtil.getTimeStamp();
+            String fileSrc = "/api/video/GV-" + RandomUtil.getTimeStamp();
             QiNiuUtil.uploadFile(multipartFile, fileSrc);
             userGoodsService.updateGoodsFile(fileId, fileSrc, true);
+            if (NullUtil.isNotNullOrEmpty(record.getFileSrc())){
+                QiNiuUtil.deleteFile(record.getFileSrc());
+            }
             Map map = new HashMap();
             map.put("src", fileSrc + "?token=" + RandomUtil.getTimeStamp());
             map.put("id", fileId);
@@ -562,6 +564,7 @@ public class UserGoodsController {
             if (null == record) {
                 return AjaxResponse.error("未找到相关记录");
             }
+            QiNiuUtil.deleteFile(record.getFileSrc());
             userGoodsService.updateGoodsFile(fileId, null, false);
             userGoodsService.checkGoodsValue(goodsId, user.getId(), false);
             return AjaxResponse.success();
