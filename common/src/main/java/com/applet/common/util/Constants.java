@@ -19,6 +19,7 @@ public class Constants {
     public static final String DEFAULT_DATE_FORMAT_STAMP = "YYYYMMDDhhmmss";
     public static final String DATE_YMD = "YYYY-MM-DD";
     public static final String DATE_YMD_JDK = "yyyy/MM/dd";
+    public static final String DATE_YMD_JODD = "yyyy-MM-dd";
     public static final String DATE_TIME_ZH = "yyyy年MM月dd日";
     public static final String DATE_TIME_ZH_HM = "YYYY年MM月dd日 hh:mm";
     public static final String JODD_FMT_YYYYMMDD = "YYYYMMDD";

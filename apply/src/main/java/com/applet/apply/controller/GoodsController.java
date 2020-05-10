@@ -74,8 +74,8 @@ public class GoodsController {
                 map.put("fileList", goodsService.selectGoodsFileList(info.getId()));
                 // 商品规格集合
                 map.put("specsList", goodsService.selectGoodsSpecsList(info.getId()));
-                // 优惠券集合
-                map.put("couponList", userCouponService.selectCouponList(appletInfo.getId()));
+//                // 优惠券集合
+//                map.put("couponList", userCouponService.selectCouponList(appletInfo.getId()));
                 // 评论信息集合
                 map.put("commentList", commentService.loadCommentListByGoodsId(goodsId));
                 // 推荐商品集合

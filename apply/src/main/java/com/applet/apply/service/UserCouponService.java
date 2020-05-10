@@ -210,7 +210,7 @@ public class UserCouponService {
         record.setStatus(OrderEnums.UserCouponStatus.UNUSED.getCode());
         userCouponMapper.insertSelective(record);
 
-        int status = (couponInfo.getAlreadyIssueNum().intValue() + 1) == couponInfo.getMakeIssueNum() ? 3 : null;
+        Integer status = (couponInfo.getAlreadyIssueNum().intValue() + 1) == couponInfo.getMakeIssueNum().intValue() ? 3 : null;
         CouponInfo info = new CouponInfo();
         info.setId(couponInfo.getId());
         info.setAlreadyIssueNum(couponInfo.getAlreadyIssueNum() + 1);

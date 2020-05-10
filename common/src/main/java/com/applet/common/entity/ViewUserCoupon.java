@@ -38,7 +38,7 @@ public class ViewUserCoupon implements Serializable {
     @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
     private Date useTime;
 
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_YMD_JODD)
     private Date activityOver;
 
     private Integer status;

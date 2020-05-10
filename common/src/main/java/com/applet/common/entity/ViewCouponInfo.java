@@ -44,10 +44,10 @@ public class ViewCouponInfo implements Serializable {
 
     private Integer alreadyIssueNum;
 
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_ZH)
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_YMD_JODD)
     private Date activityStart;
 
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_ZH)
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_YMD_JODD)
     private Date activityOver;
 
     @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
