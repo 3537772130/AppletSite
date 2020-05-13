@@ -85,11 +85,12 @@ public class UserGoodsService {
      * 查询商品类型总数
      *
      * @param userId
+     * @param appletId
      * @return
      */
-    public int selectGoodsTypeCount(Integer userId) {
+    public int selectGoodsTypeCount(Integer userId, Integer appletId) {
         GoodsTypeExample example = new GoodsTypeExample();
-        example.createCriteria().andUserIdEqualTo(userId);
+        example.createCriteria().andUserIdEqualTo(userId).andAppletIdEqualTo(appletId);
         return (int) goodsTypeMapper.countByExample(example);
     }
 
@@ -97,14 +98,22 @@ public class UserGoodsService {
      * 查询商品类型信息
      *
      * @param id
+     * @param appletId
      * @param userId
      * @return
      */
-    public GoodsType selectGoodsType(Integer id, Integer userId) {
+    public GoodsType selectGoodsType(Integer id, Integer appletId, Integer userId) {
         GoodsTypeExample example = new GoodsTypeExample();
-        example.createCriteria().andIdEqualTo(id).andUserIdEqualTo(userId);
+        GoodsTypeExample.Criteria c = example.createCriteria().andIdEqualTo(id).andUserIdEqualTo(userId);
+        if (NullUtil.isNotNullOrEmpty(appletId)) {
+            c.andAppletIdEqualTo(appletId);
+        }
         List<GoodsType> list = goodsTypeMapper.selectByExample(example);
         return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+    }
+
+    public GoodsType selectGoodsType(Integer id, Integer userId) {
+        return selectGoodsType(id, null, userId);
     }
 
     /**
@@ -268,7 +277,7 @@ public class UserGoodsService {
             goodsInfoMapper.updateByPrimaryKeySelective(record);
         } else {
             int count = this.selectGoodsCount(record.getTypeId(), record.getUserId());
-            record.setGoodsIndex(count + 1);
+            record.setGoodsIndex(count);
             record.setStatus(0);
             try {
                 goodsInfoMapper.insertSelective(record);
@@ -350,7 +359,7 @@ public class UserGoodsService {
         ViewGoodsFileExample example = new ViewGoodsFileExample();
         example.setOrderByClause("id asc");
         ViewGoodsFileExample.Criteria c = example.createCriteria().andGoodsIdEqualTo(goodsId).andUserIdEqualTo(userId);
-        if (NullUtil.isNotNullOrEmpty(type)){
+        if (NullUtil.isNotNullOrEmpty(type)) {
             c.andFileTypeEqualTo(type);
         }
         return viewGoodsFileMapper.selectByExample(example);
@@ -604,5 +613,81 @@ public class UserGoodsService {
         } else {
             userAppletRecommendGoodsMapper.insertSelective(rg);
         }
+    }
+
+    /**
+     * 宣传小程序分类列表 - 排序
+     *
+     * @param userId
+     * @param appletId
+     * @return
+     */
+    public List<Map> selectTypeDraggableList(Integer userId, Integer appletId) {
+        String sql = "SELECT t.id AS id,t.type_logo AS typeLogo,t.type_name AS typeName" +
+                " FROM goods_type AS t" +
+                " WHERE t.user_id = " + userId +
+                " AND t.applet_id = " + appletId;
+        return commonMapper.selectListMap(sql);
+    }
+
+    /**
+     * 批量更新商品分类 - 排序
+     *
+     * @param userId
+     * @param appletId
+     * @param list
+     */
+    public void updateGoodsTypeIndexs(Integer userId, Integer appletId, List<GoodsType> list) {
+        String sql = "UPDATE goods_type" +
+                " SET type_index = CASE id";
+        String idStr = "";
+        for (int i = 0; i < list.size(); i++) {
+            sql += " WHEN " + list.get(i).getId() + " THEN " + i;
+            idStr += list.get(i).getId() + ",";
+        }
+        idStr = idStr.substring(0, idStr.length() - 1);
+        sql += " END WHERE id IN (" + idStr + ") AND applet_id = " + appletId + " AND user_id = " + userId;
+        commonMapper.updateBatch(sql);
+    }
+
+    /**
+     * 查询小程序分类下的商品列表 - 排序
+     *
+     * @param userId
+     * @param appletId
+     * @param typeId
+     * @return
+     */
+    public List<Map> selectGoodsDraggableList(Integer userId, Integer appletId, Integer typeId) {
+        String sql = "SELECT" +
+                " g.id as id,g.cover_src as coverSrc,g.goods_name as goodsName" +
+                " FROM" +
+                " view_goods_info AS g" +
+                " WHERE" +
+                " g.user_id = " + userId +
+                " AND g.applet_id = " + appletId +
+                " AND g.type_id = " + typeId +
+                " ORDER BY g.goods_index ASC";
+        return commonMapper.selectListMap(sql);
+    }
+
+    /**
+     * 批量更新商品 - 排序
+     *
+     * @param userId
+     * @param typeId
+     * @param list
+     */
+    public void updateGoodsIndexs(Integer userId, Integer typeId, List<GoodsInfo> list) {
+        String sql = "UPDATE goods_info" +
+                " SET goods_index = CASE id";
+        String idStr = "";
+        for (int i = 0; i < list.size(); i++) {
+            sql += " WHEN " + list.get(i).getId() + " THEN " + i;
+            idStr += list.get(i).getId() + ",";
+        }
+        idStr = idStr.substring(0, idStr.length() - 1);
+        sql += " END WHERE id IN (" + idStr + ") AND type_id = " + typeId + " AND user_id = " + userId;
+        commonMapper.updateBatch(sql);
     }
 }

@@ -28,7 +28,7 @@
 
 .components > .img-text-title > .img-text-title-text {
   margin: 5px 0px;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
   display: inline-block;
   position: relative;
@@ -46,7 +46,7 @@
 
 /***************************轮播图片*********************************/
 .components > .img-carousel {
-  height: 150px;
+  height: 120px;
 }
 
 .components > .img-carousel:hover {
@@ -62,7 +62,7 @@
 
 /************************普通图片****************************/
 .components > .img-title {
-  height: 120px;
+  height: 100px;
 }
 
 .components > .img-title:hover {
@@ -72,7 +72,7 @@
 
 .components > .img-title > .image {
   width: 100%;
-  height: 120px;
+  height: 100%;
 }
 
 
@@ -94,8 +94,6 @@
   width: 1200px;
   height: 30px;
   line-height: 30px;
-  font-family: '幼圆';
-  font-weight: bold;
   color: #d81e06;
   white-space: nowrap;
   position: relative;
@@ -145,8 +143,8 @@
 }
 
 .components > .notice-bar > .text-trumpet {
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   background-color: #ffffff;
   padding-right: 3px;
   position: relative;
@@ -176,8 +174,8 @@
 }
 
 .components > .type-frame-three > .type-element > div > .type-icon {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   border-radius: 30px;
   margin-top: 10px;
 }
@@ -293,15 +291,15 @@
 }
 
 .components > .goods-two-row > .goods-def > div > .goods-img {
-  width: 140px;
-  height: 140px;
+  width: 120px;
+  height: 120px;
   border-radius: 10px 10px 0px 0px;
   margin-top: 10px;
 }
 
 .components > .goods-two-row > .goods-def > .goods-price {
   margin: auto;
-  width: 140px;
+  width: 120px;
   height: 20px;
   line-height: 20px;
   white-space: nowrap;
@@ -314,7 +312,7 @@
 
 .components > .goods-two-row > .goods-def > .goods-name {
   margin: auto;
-  width: 140px;
+  width: 120px;
   height: 32px;
   font-size: 12px;
   overflow: hidden;
@@ -350,15 +348,15 @@
 }
 
 .components > .goods-three-row > .goods-def > div > .goods-img {
-  width: 95px;
-  height: 95px;
-  border-radius: 5px 0px 5px 0px;
+  width: 75px;
+  height: 75px;
+  border-radius: 5px 5px 0px 0px;
   margin-top: 10px;
 }
 
 .components > .goods-three-row > .goods-def > .goods-price {
   margin: auto;
-  width: 95px;
+  width: 75px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -369,24 +367,24 @@
 
 .components > .goods-three-row > .goods-def > .goods-name {
   margin: auto;
-  width: 95px;
-  height: 32px;
+  width: 75px;
+  height: 28px;
+  text-align: left;
   font-size: 10px;
+  border-bottom: 1px #e6e6e6 solid;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  border-bottom: 1px #e6e6e6 solid;
-  text-align: left;
 }
 
 
 /**************************搜索栏*****************************/
 .components > .goods-search {
-  height: 45px;
   margin: auto;
   padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .components > .goods-search:hover {
@@ -395,13 +393,13 @@
 }
 
 .components > .goods-search > .search-part {
-  width: 90%;
-  height: 40px;
-  line-height: 40px;
+  width: 80%;
+  height: 26px;
+  line-height: 26px;
   margin: auto;
-  border-radius: 5px;
+  border-radius: 13px;
   background-color: #FFFFFF;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   color: #cdcdcd;
   text-align: left;
@@ -555,7 +553,12 @@
   display: inline-block;
 }
 
-.components > .goodsX-scroll > .bscroll-container > .goods-def > div > .goods-price {
+.components > .goodsX-scroll > .bscroll-container > .goods-def > .content {
+  position: relative;
+  top: -15px;
+}
+
+.components > .goodsX-scroll > .bscroll-container > .goods-def > .content > .goods-price {
   margin: auto;
   width: 120px;
   height: 20px;
@@ -564,18 +567,18 @@
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: left;
-  font-size: 14px;
+  font-size: 12px;
 }
 
-.components > .goodsX-scroll > .bscroll-container > .goods-def > div > .goods-price > span {
-  font-size: 16px;
+.components > .goodsX-scroll > .bscroll-container > .goods-def > .content > .goods-price > span {
+  font-size: 14px;
   color: #f76a24;
 }
 
-.components > .goodsX-scroll > .bscroll-container > .goods-def > div > .goods-name {
+.components > .goodsX-scroll > .bscroll-container > .goods-def > .content > .goods-name {
   margin: auto;
   width: 120px;
-  height: 49px;
+  height: 55px;
   font-size: 14px;
   white-space: normal;
   overflow: hidden;
@@ -586,3 +589,19 @@
   text-align: left;
 }
 
+.components > .goodsX-scroll > .bscroll-container > .goods-def > .content > .shopping {
+  width: 120px;
+  height: 30px;
+  line-height: 30px;
+  display: inline-block;
+  text-align: right;
+}
+
+.components > .goodsX-scroll > .bscroll-container > .goods-def > .content > .shopping > label{
+  padding: 5px 10px;
+  color: #FFFFFF;
+  background-color: #f76a24;
+  font-size: 12px;
+  border-radius: 14px;
+  margin-right: 15px;
+}

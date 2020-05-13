@@ -1,5 +1,7 @@
 package com.applet.user.controller;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.applet.common.entity.other.CheckResult;
 import com.applet.user.config.annotation.SessionScope;
 import com.applet.common.entity.*;
@@ -84,7 +86,7 @@ public class UserGoodsController {
      */
     @RequestMapping(value = "loadTypePage")
     public Object loadTypePage(@SessionScope(Constants.VUE_USER_INFO) UserInfo user) {
-        int count = userGoodsService.selectGoodsTypeCount(user.getId());
+        int count = userGoodsService.selectGoodsTypeCount(user.getId(), null);
         if (count >= Constants.GOODS_TYPE_COUNT) {
             return AjaxResponse.error("类型创建数量已达上限");
         }
@@ -141,6 +143,9 @@ public class UserGoodsController {
             if (NullUtil.isNullOrEmpty(goodsType.getAppletId())){
                 return AjaxResponse.error("参数丢失");
             }
+            if (NullUtil.isNullOrEmpty(goodsType.getTypeLogo())) {
+                return AjaxResponse.error("类类型图标不能为空");
+            }
             if (NullUtil.isNullOrEmpty(goodsType.getTypeName())) {
                 return AjaxResponse.error("类型名称不能为空");
             }
@@ -150,26 +155,23 @@ public class UserGoodsController {
                 goodsType.setTypeName(goodsType.getTypeName().trim());
             }
             if (NullUtil.isNullOrEmpty(goodsType.getId())) {
-                int count = userGoodsService.selectGoodsTypeCount(user.getId());
+                int count = userGoodsService.selectGoodsTypeCount(user.getId(), goodsType.getAppletId());
                 if (count >= Constants.GOODS_TYPE_COUNT) {
                     return AjaxResponse.error("类型创建数量已达上限");
                 }
-                goodsType.setTypeIndex(count + 1);
+                goodsType.setTypeIndex(count);
             }
             goodsType.setUserId(user.getId());
-            String typeLogo = "/api/public/GTLOGO-" + RandomUtil.getTimeStamp();
+            String typeLogo = null;
             if (NullUtil.isNotNullOrEmpty(goodsType.getId())) {
                 GoodsType record = userGoodsService.selectGoodsType(goodsType.getId(), user.getId());
                 if (null == record) {
                     return AjaxResponse.error("信息不符");
                 }
-                if (NullUtil.isNotNullOrEmpty(record.getTypeLogo())) {
-                    typeLogo = goodsType.getTypeLogo().equals(record.getTypeLogo()) ? null : record.getTypeLogo();
-                }
+                typeLogo = record.getTypeLogo();
             }
             if (NullUtil.isNotNullOrEmpty(typeLogo)) {
-                this.removeFile(goodsType.getTypeLogo(), typeLogo);
-                goodsType.setTypeLogo(typeLogo);
+                QiNiuUtil.deleteFile(typeLogo);
             }
             userGoodsService.updateGoodsType(goodsType);
             return AjaxResponse.success("提交成功");
@@ -188,21 +190,22 @@ public class UserGoodsController {
      * @return
      */
     @RequestMapping(value = "updateGoodsTypeIndex")
-    public Object updateGoodsTypeIndex(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer typeId, String sort) {
+    public Object updateGoodsTypeIndex(@SessionScope(Constants.VUE_USER_INFO) UserInfo user,
+                                       Integer typeId, String sort, Integer appletId) {
         try {
-            if (NullUtil.isNullOrEmpty(typeId) || NullUtil.isNullOrEmpty(sort)) {
+            if (NullUtil.isNullOrEmpty(typeId) || NullUtil.isNullOrEmpty(sort) || NullUtil.isNullOrEmpty(appletId)) {
                 return AjaxResponse.error("参数错误");
             }
-            int count = userGoodsService.selectGoodsTypeCount(user.getId());
+            int count = userGoodsService.selectGoodsTypeCount(user.getId(), appletId);
             if (count > 1) {
                 GoodsType type = userGoodsService.selectGoodsType(typeId, user.getId());
                 if (null == type) {
                     return AjaxResponse.error("未找到相关记录");
                 }
                 Integer num = null;
-                if (sort.equals("top") && type.getTypeIndex() - 1 > 0) {
+                if (sort.equals("top") && type.getTypeIndex() - 1 >= 0) {
                     num = -1;
-                } else if (sort.equals("bot") && type.getTypeIndex() + 1 <= count) {
+                } else if (sort.equals("bot") && type.getTypeIndex() + 1 < count) {
                     num = 1;
                 } else {
                     return AjaxResponse.success("参数错误");
@@ -362,9 +365,9 @@ public class UserGoodsController {
                     return AjaxResponse.error("未找到相关记录");
                 }
                 Integer num = null;
-                if (sort.equals("top") && goods.getGoodsIndex().intValue() - 1 > 0) {
+                if (sort.equals("top") && goods.getGoodsIndex().intValue() - 1 >= 0) {
                     num = -1;
-                } else if (sort.equals("bot") && goods.getGoodsIndex().intValue() + 1 <= count) {
+                } else if (sort.equals("bot") && goods.getGoodsIndex().intValue() + 1 < count) {
                     num = 1;
                 } else {
                     return AjaxResponse.success("参数错误");
@@ -823,6 +826,96 @@ public class UserGoodsController {
             return AjaxResponse.success("提交成功");
         } catch (Exception e) {
             log.error("提交小程序推荐商品信息出错{}", e);
+        }
+        return AjaxResponse.error("提交失败");
+    }
+
+    /**
+     * 加载小程序分类列表 - 排序
+     * @param user
+     * @param appletId
+     * @return
+     */
+    @RequestMapping(value = "loadGoodsTypeDraggableList")
+    public Object loadGoodsTypeDraggableList(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer appletId) {
+        AppletInfo appletInfo = appletService.selectAppletInfo(appletId, user.getId());
+        if (null == appletInfo){
+            return AjaxResponse.error("信息不符");
+        }
+        List<Map> list = userGoodsService.selectTypeDraggableList(user.getId(), appletId);
+        return AjaxResponse.success(list);
+    }
+
+    /**
+     * 批量更新商品类型 - 排序
+     * @param user
+     * @param appletId
+     * @param json
+     * @return
+     */
+    @RequestMapping(value = "updateGoodsTypeIndexList")
+    public Object updateGoodsTypeIndexList (@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer appletId,
+                                            String json){
+        try {
+            if (NullUtil.isNullOrEmpty(appletId) || NullUtil.isNullOrEmpty(json)){
+                return AjaxResponse.error("参数错误");
+            }
+            AppletInfo appletInfo = appletService.selectAppletInfo(appletId, user.getId());
+            if (null == appletInfo){
+                return AjaxResponse.error("信息不符");
+            }
+            JSONArray arrayList= JSONArray.parseArray(json);
+            List<GoodsType> list = JSONObject.parseArray(arrayList.toJSONString(), GoodsType.class);
+            userGoodsService.updateGoodsTypeIndexs(user.getId(), appletId, list);
+            return AjaxResponse.success("提交成功");
+        } catch (Exception e) {
+            log.error("批量更新商品分类排序出错{}", e);
+        }
+        return AjaxResponse.error("提交失败");
+    }
+
+
+    /**
+     * 加载小程序分类下的商品列表 - 排序
+     * @param user
+     * @param appletId
+     * @param typeId
+     * @return
+     */
+    @RequestMapping(value = "loadGoodsDraggableList")
+    public Object loadGoodsDraggableList(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer appletId, Integer typeId){
+        GoodsType goodsType = userGoodsService.selectGoodsType(typeId,  appletId, user.getId());
+        if (null == goodsType){
+            return AjaxResponse.error("信息不符");
+        }
+        List<Map> list = userGoodsService.selectGoodsDraggableList(user.getId(), appletId, typeId);
+        return AjaxResponse.success(list);
+    }
+
+    /**
+     * 批量更新商品 - 排序
+     * @param user
+     * @param typeId
+     * @param json
+     * @return
+     */
+    @RequestMapping(value = "updateGoodsIndexList")
+    public Object updateGoodsIndexList(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer typeId,
+                                       String json){
+        try {
+            if (NullUtil.isNullOrEmpty(typeId) || NullUtil.isNullOrEmpty(json)){
+                return AjaxResponse.error("参数错误");
+            }
+            GoodsType goodsType = userGoodsService.selectGoodsType(typeId, user.getId());
+            if (null == goodsType){
+                return AjaxResponse.error("信息不符");
+            }
+            JSONArray arrayList= JSONArray.parseArray(json);
+            List<GoodsInfo> list = JSONObject.parseArray(arrayList.toJSONString(), GoodsInfo.class);
+            userGoodsService.updateGoodsIndexs(user.getId(), typeId, list);
+            return AjaxResponse.success("提交成功");
+        } catch (Exception e) {
+            log.error("批量更新商品排序出错{}", e);
         }
         return AjaxResponse.error("提交失败");
     }

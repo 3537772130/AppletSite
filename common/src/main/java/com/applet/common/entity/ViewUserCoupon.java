@@ -32,10 +32,10 @@ public class ViewUserCoupon implements Serializable {
 
     private Double denomination;
 
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_YMD_JODD)
     private Date gainTime;
 
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_TIME_JDK)
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_YMD_JODD)
     private Date useTime;
 
     @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = Constants.DATE_YMD_JODD)
