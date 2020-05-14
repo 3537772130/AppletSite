@@ -55,7 +55,7 @@ public class ManageAppletController {
      */
     @RequestMapping(value = "loadAppletType")
     public Object loadAppletType(Integer id) {
-        if (NullUtil.isNotNullOrEmpty(id) && id.intValue() != 0) {
+        if (NullUtil.isNotNullOrEmpty(id)) {
             return AjaxResponse.success(appletService.selectAppletTypeById(id));
         }
         return AjaxResponse.error("未找到相关信息");

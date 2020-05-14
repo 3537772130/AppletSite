@@ -59,6 +59,8 @@ public class ImageController {
         if (NullUtil.isNullOrEmpty(info.getText())) {
             throw new Exception("生成图片失败，缺少内容");
         }
+        Integer color = Integer.parseInt(info.getColor(),16);
+        info.setColor(color.toString());
         // 设置头信息
         response.setDateHeader("Expires", 0);
         response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
