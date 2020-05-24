@@ -69,6 +69,9 @@ public class AppletPageController {
     public Object loadGoodsClassify(@SessionScope("appletInfo") ViewAppletInfo appletInfo) {
         try {
             GoodsClassify gc = appletPageService.selectGoodsClassify(appletInfo.getId(), appletInfo.getAppletCode());
+            if (null == gc){
+                return AjaxResponse.error("未找到相关记录");
+            }
             return AjaxResponse.success(gc);
         } catch (Exception e) {
             log.error("加载小程序分类页面信息出错{}", e);

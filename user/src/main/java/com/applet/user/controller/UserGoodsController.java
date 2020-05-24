@@ -229,6 +229,9 @@ public class UserGoodsController {
     @RequestMapping(value = "queryTypeList")
     public Object queryTypeList(@SessionScope(Constants.VUE_USER_INFO) UserInfo user, Integer appletId) {
         List<GoodsType> list = userGoodsService.selectTypeList(appletId, user.getId());
+        if (NullUtil.isNullOrEmpty(list)) {
+            return AjaxResponse.error("未找到相关记录");
+        }
         return AjaxResponse.success(list);
     }
 

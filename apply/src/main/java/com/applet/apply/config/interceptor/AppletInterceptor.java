@@ -35,6 +35,12 @@ public class AppletInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         try {
+            HandlerMethod handleMethod = (HandlerMethod) handler;
+            CancelAuth ca = handleMethod.getMethodAnnotation(CancelAuth.class);
+            if (null != ca && request.getRequestURI().equals("/api/applet/pay/orderPayNotice")){
+                return true;
+            }
+
             String ipAddress = request.getHeader("ipAddress");
             if (NullUtil.isNotNullOrEmpty(ipAddress)){
                 request.getSession().setAttribute(Constants.CLIENT_PUBLIC_IP, ipAddress);
@@ -80,8 +86,6 @@ public class AppletInterceptor extends HandlerInterceptorAdapter {
 
             // 检查登录用户信息
             // 取消用户登录认证
-            HandlerMethod handleMethod = (HandlerMethod) handler;
-            CancelAuth ca = handleMethod.getMethodAnnotation(CancelAuth.class);
             String loginCode = request.getParameter("loginCode");
             String wxCode = request.getHeader("wxCode");
             if (NullUtil.isNotNullOrEmpty(loginCode) && ca != null) {

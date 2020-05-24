@@ -3,9 +3,7 @@ package com.applet.user.controller;
 import com.applet.common.entity.other.CheckResult;
 import com.applet.user.config.annotation.SessionScope;
 import com.applet.common.entity.*;
-import com.applet.user.service.AppletPageService;
-import com.applet.user.service.AppletService;
-import com.applet.user.service.ManagerService;
+import com.applet.user.service.*;
 import com.applet.common.util.*;
 import com.applet.common.util.encryption.EncryptionUtil;
 import com.applet.common.util.qiniu.QiNiuUtil;
@@ -40,6 +38,8 @@ public class UserAppletController {
     private ManagerService managerService;
     @Autowired
     private AppletPageService appletPageService;
+    @Autowired
+    private RedisService redisService;
 
     /**
      * 查询摇号小程序Map信息集合
@@ -90,6 +90,7 @@ public class UserAppletController {
 
     /**
      * 修改小程序LOGO
+     *
      * @param user
      * @param multipartFile
      * @param appletId
@@ -342,6 +343,7 @@ public class UserAppletController {
                 QiNiuUtil.removeFile(appletInfo.getLicenseSrc(), licenseSrc);
                 appletInfo.setLicenseSrc(licenseSrc);
             }
+            appletInfo.setSystemColor("#1296db");
 
             // 保存小程序信息
             appletService.saveAppletInfo(appletInfo);
@@ -377,6 +379,15 @@ public class UserAppletController {
                 }
             }
             appletService.updateAppletSelling(appletInfo.getId(), appletInfo.getUserId(), appletInfo.getIfSelling());
+
+            ViewAppletInfo viewAppletInfo = appletService.selectViewAppletInfo(appletInfo.getId(), user.getId());
+            if (viewAppletInfo != null) {
+                try {
+                    redisService.setValue(viewAppletInfo.getAppletCode(), viewAppletInfo);
+                } catch (Exception e) {
+                    log.error("设置redis出错(小程序信息){}", e);
+                }
+            }
             return AjaxResponse.success("更新成功");
         } catch (Exception e) {
             log.error("更新小程序营业状态出错{}", e);

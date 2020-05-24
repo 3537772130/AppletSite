@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -477,10 +478,19 @@ public class UserOrderService {
      * @return
      */
     public ViewUserOrderCount countUserOrder(Integer userId) {
-        ViewUserOrderCountExample example = new ViewUserOrderCountExample();
-        example.createCriteria().andUserIdEqualTo(userId);
-        List<ViewUserOrderCount> list = viewUserOrderCountMapper.selectByExample(example);
-        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+        if (NullUtil.isNotNullOrEmpty(userId)){
+            ViewUserOrderCountExample example = new ViewUserOrderCountExample();
+            example.createCriteria().andUserIdEqualTo(userId);
+            List<ViewUserOrderCount> list = viewUserOrderCountMapper.selectByExample(example);
+            return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+        } else {
+            ViewUserOrderCount count = new ViewUserOrderCount();
+            count.setFinishCount(BigDecimal.ZERO);
+            count.setIncompleteCount(BigDecimal.ZERO);
+            count.setWaitCollectCount(BigDecimal.ZERO);
+            count.setWaitMeetCount(BigDecimal.ZERO);
+            return count;
+        }
     }
 
     /**

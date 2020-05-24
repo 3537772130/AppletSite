@@ -1,4 +1,4 @@
-package com.applet.common.util;
+package com.applet.common.util.wechant;
 
 import com.alibaba.fastjson.JSONObject;
 import com.applet.common.entity.pay.WxUnifiedOrder;
@@ -172,10 +172,10 @@ public class WeChatAppletUtil {
             }
         }
         sbkey = sbkey.append("key=" + key);
-        log.info("统一下单信息DATA字符串:{}", sbkey.toString());
+//        log.info("统一下单信息DATA字符串:{}", sbkey.toString());
         //MD5加密,结果转换为大写字符
         String sign = MD5Util.MD5(sbkey.toString()).toUpperCase();
-        log.info("MD5加密值:{}", sign);
+//        log.info("MD5加密值:{}", sign);
         return sign;
     }
 

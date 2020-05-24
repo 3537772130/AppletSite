@@ -6,6 +6,7 @@ import com.applet.common.entity.pay.WxUnifiedOrderResult;
 import com.applet.common.util.enums.OrderEnums;
 import com.applet.common.util.*;
 import com.applet.common.util.encryption.EncryptionUtil;
+import com.applet.common.util.wechant.WeChatAppletUtil;
 import jodd.datetime.JDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,34 +52,35 @@ public class WeChantPayService {
     public String sendWeChantUnifiedOrder(ViewOrderPayData data, String goodsId, String ipAddress) {
         // 设置微信统一下单信息
         WxUnifiedOrder wo = new WxUnifiedOrder();
-        wo.setOutTradeNo(data.getOrderNo());
+        wo.setOut_trade_no(data.getOrderNo());
         wo.setBody(data.getOrderNo() + "-订单支付");
-        wo.setDeviceInfo(data.getAppletCode());
+        wo.setDevice_info(data.getAppletCode());
         wo.setAttach(data.getAppletName());
         wo.setAppid(data.getAppId());
-        wo.setMchId(data.getMchId());
-        wo.setTotalFee((int) Arith.mul(data.getActualAmount(), 100.0d));
-        wo.setTradeType(data.getPayChannel());
+        wo.setMch_id(data.getMchId());
+        wo.setTotal_fee((int) Arith.mul(data.getActualAmount(), 100.0d));
+        wo.setTrade_type(data.getPayChannel());
         wo.setOpenid(data.getOpenId());
 
-        wo.setProductId(goodsId);
-        wo.setNonceStr(RandomUtil.getRandomStr32());
-        wo.setSignType("MD5");
+        wo.setProduct_id(goodsId);
+        wo.setNonce_str(RandomUtil.getRandomStr32());
+        wo.setSign_type("MD5");
         wo.setDetail(null);
-        wo.setFeeType("CNY");
-        wo.setSpbillCreateIp(ipAddress);
+        wo.setFee_type("CNY");
+        wo.setSpbill_create_ip(ipAddress);
         JDateTime time = new JDateTime(new Date());
-        wo.setTimeStart(time.toString(Constants.DEFAULT_DATE_FORMAT_STAMP));
-        wo.setTimeExpire(time.addHour(2).toString(Constants.DEFAULT_DATE_FORMAT_STAMP));
-        wo.setGoodsTag(null);
-        wo.setNotifyUrl(NullUtil.getWebSite() + "/api/applet/orderPayNotice");
-        wo.setLimitPay(null);
+        wo.setTime_start(time.toString(Constants.DEFAULT_DATE_FORMAT_STAMP));
+        wo.setTime_expire(time.addHour(2).toString(Constants.DEFAULT_DATE_FORMAT_STAMP));
+        wo.setGoods_tag(null);
+        wo.setNotify_url(NullUtil.getWebSite() + "/api/applet/pay/orderPayNotice");
+        wo.setLimit_pay(null);
         wo.setReceipt(null);
-        wo.setSceneInfo(null);
+        wo.setScene_info(null);
 
         wo.setSign(WeChatAppletUtil.getUnifiedSign(wo, data.getPayKey()));
         // 将订单信息转换成XML
         String xml = JaxbUtil.convertToXmlIgnoreXmlHead(wo, "UTF-8");
+//        System.out.println(xml);
         // 发送微信统一下单请求
         String resultXML = WeChatAppletUtil.sendWeChantUnifiedOrderToPOST(xml);
         WxUnifiedOrderResult result = JaxbUtil.converyToJavaBean(resultXML, WxUnifiedOrderResult.class);
@@ -98,9 +100,9 @@ public class WeChantPayService {
         Boolean bool = false;
         OrderRequestRecord record = new OrderRequestRecord();
         record.setOrderId(orderId);
-        record.setOrderNo(wo.getOutTradeNo());
-        record.setDeviceNo(wo.getDeviceInfo());
-        record.setRequestType("WX_" + wo.getTradeType() + "_REQUEST" + (NullUtil.isNullOrEmpty(orderId) ? "_TEST" : ""));
+        record.setOrderNo(wo.getOut_trade_no());
+        record.setDeviceNo(wo.getDevice_info());
+        record.setRequestType("WX_" + wo.getTrade_type() + "_REQUEST" + (NullUtil.isNullOrEmpty(orderId) ? "_TEST" : ""));
         record.setResultCode(result.getReturnCode());
         if (result.getReturnCode().equals("SUCCESS")) {
             if (result.getResultCode().equals("SUCCESS")) {

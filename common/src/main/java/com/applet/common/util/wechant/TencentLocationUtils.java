@@ -1,4 +1,4 @@
-package com.applet.common.util;
+package com.applet.common.util.wechant;
 
 import com.alibaba.fastjson.JSONObject;
 import com.applet.common.util.http.HttpUtil;

@@ -4,7 +4,7 @@ import com.applet.common.entity.*;
 import com.applet.common.mapper.*;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.RandomUtil;
-import com.applet.common.util.TencentLocationUtils;
+import com.applet.common.util.wechant.TencentLocationUtils;
 import com.applet.common.util.encryption.DesUtil;
 import com.applet.common.util.encryption.MD5Util;
 import com.applet.common.util.enums.UserOperationType;

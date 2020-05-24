@@ -10,6 +10,7 @@ import com.applet.common.util.encryption.DesUtil;
 import com.applet.common.util.encryption.MD5Util;
 import com.applet.common.util.enums.SMSEnum;
 import com.applet.common.util.qiniu.QiNiuUtil;
+import com.applet.common.util.wechant.TencentLocationUtils;
 import jodd.datetime.JDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

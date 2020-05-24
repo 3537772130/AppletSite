@@ -6,6 +6,7 @@ import com.applet.apply.service.*;
 import com.applet.common.util.*;
 import com.applet.common.entity.*;
 import com.applet.common.util.enums.SMSEnum;
+import com.applet.common.util.wechant.WeChatAppletUtil;
 import jodd.datetime.JDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

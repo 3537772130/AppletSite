@@ -57,14 +57,18 @@ public class AppletPageService {
      */
     public GoodsClassify selectGoodsClassify(Integer appletId, String appletCode) {
         List<ViewGoodsType> typeList = goodsService.selectGoodsTypeList(appletId);
-        List<Integer> typeIdList = new ArrayList<>();
-        for (ViewGoodsType type : typeList) {
-            typeIdList.add(type.getId());
+        GoodsClassify gc = null;
+        if (NullUtil.isNotNullOrEmpty(typeList)){
+            List<Integer> typeIdList = new ArrayList<>();
+            for (ViewGoodsType type : typeList) {
+                typeIdList.add(type.getId());
+            }
+            gc = new GoodsClassify();
+            gc.setTypeList(typeList);
+            gc.setInfoList(goodsService.selectGoodsInfoList(appletId, typeIdList));
+            gc.setCouponList(userCouponService.selectCouponList(appletId));
         }
-        GoodsClassify gc = new GoodsClassify();
-        gc.setTypeList(typeList);
-        gc.setInfoList(goodsService.selectGoodsInfoList(appletId, typeIdList));
-        gc.setCouponList(userCouponService.selectCouponList(appletId));
+
         return gc;
     }
 

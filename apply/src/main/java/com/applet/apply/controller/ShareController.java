@@ -78,7 +78,7 @@ public class ShareController {
      */
     @RequestMapping(value = "appletNotRelease")
     public Object appletNotRelease(){
-        return AjaxResponse.error("非常抱歉，小程序正在整顿中，请下来再来！");
+        return AjaxResponse.error("非常抱歉，小程序正在整顿中，敬请期待哟！");
     }
 
     /**
