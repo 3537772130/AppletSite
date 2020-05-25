@@ -85,4 +85,15 @@ public class AppletService {
         info.setSystemColor(color);
         appletInfoMapper.updateByPrimaryKeySelective(info);
     }
+
+    /**
+     * 更新小程序的支付开通状态
+     * @param id
+     */
+    public void updateAppletIFPayOpen(Integer id){
+        AppletInfo info = new AppletInfo();
+        info.setId(id);
+        info.setIfOpenPay(true);
+        appletInfoMapper.updateByPrimaryKeySelective(info);
+    }
 }

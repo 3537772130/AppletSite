@@ -11,6 +11,7 @@ import jodd.datetime.JDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +36,8 @@ public class WeChantPayService {
     private UserCartService userCartService;
     @Autowired
     private UserCouponService userCouponService;
+    @Autowired
+    private AppletService appletService;
 
 
     public String sendWeChantUnifiedOrder(ViewOrderPayData data, String ipAddress) {
@@ -154,44 +157,64 @@ public class WeChantPayService {
     public WxUnifiedOrderResult orderPayNoticeHandle(String xml) throws Exception {
         WxUnifiedOrderResult result = JaxbUtil.converyToJavaBean(xml, WxUnifiedOrderResult.class);
         if (result.getReturnCode().equals("SUCCESS")) {
-            String outTradeNo = result.getOutTradeNo();
-            ViewOrderPayData data = userOrderService.selectOrderData(outTradeNo);
-            if (null != data) {
-                data.setAppId(EncryptionUtil.decryptAppletRSA(data.getAppId()));
-                data.setMchId(EncryptionUtil.decryptAppletRSA(data.getMchId()));
-                data.setPayKey(EncryptionUtil.decryptAppletRSA(data.getPayKey()));
-                Integer totalFee = (int) Arith.mul(data.getActualAmount(), 100.0d);
-                // 对支付回调的信息进行校验
-                if (data.getAppId().equals(result.getAppid()) && data.getMchId().equals(result.getMchId())
-                        && data.getAppletCode().equals(result.getDeviceInfo())
-                        && !data.getPayRelationId().equals(result.getTransactionId())
-                        && totalFee.toString().equals(result.getTotalFee())) {
-                    // 校验通过
+            ViewOrderDetails order = userOrderService.selectOrderInfoByOrderNo(result.getOutTradeNo());
+            if (null != order) {
+                if (order.getPayStatus().intValue() != OrderEnums.PayStatus.WAIT.getCode().intValue()
+                        && order.getOrderStatus().intValue() != OrderEnums.OrderStatus.WAIT.getCode().intValue()) {
+                    log.info("订单状态已更新，此次微信支付回调不做处理！");
                     result = new WxUnifiedOrderResult();
                     result.setReturnCode("SUCCESS");
                     result.setReturnMsg("OK");
+                    return result;
+                }
+
+                AppletInfo appletInfo = appletService.selectAppletInfo(order.getAppletId(), order.getUserId());
+                // 测试订单
+                log.info("此次是商家测试订单回调，订单号为：{}", order.getOrderNo());
+                appletInfo.setAppId(EncryptionUtil.decryptAppletRSA(appletInfo.getAppId()));
+                appletInfo.setMchId(EncryptionUtil.decryptAppletRSA(appletInfo.getMchId()));
+                appletInfo.setPayKey(EncryptionUtil.decryptAppletRSA(appletInfo.getPayKey()));
+                Integer totalFee = (int) Arith.mul(order.getActualAmount(), 100.0d);
+                // 对支付回调的信息进行校验
+                if (appletInfo.getAppId().equals(result.getAppid())
+                        && appletInfo.getMchId().equals(result.getMchId())
+                        && appletInfo.getAppletCode().equals(result.getDeviceInfo())
+                        && !order.getPayRelationId().equals(result.getTransactionId())
+                        && totalFee.toString().equals(result.getTotalFee())) {
                     // 添加支付请求记录，并更新订单支付状态
                     OrderRequestRecord record = new OrderRequestRecord();
-                    record.setOrderId(data.getId());
-                    record.setOrderNo(data.getOrderNo());
-                    record.setDeviceNo(data.getAppletCode());
+                    record.setOrderId(order.getId());
+                    record.setOrderNo(order.getOrderNo());
+                    record.setDeviceNo(appletInfo.getAppletCode());
                     record.setRequestType("WX_" + result.getTradeType() + "_BACK");
                     record.setResultCode(result.getResultCode());
                     record.setErrCode(result.getErrCode());
                     record.setErrCodeDes(result.getErrCodeDes());
                     record.setRequestResultMsg(xml);
-                    OrderInfo info = new OrderInfo();
-                    info.setId(data.getId());
-                    info.setPayStatus(-1);
                     if (result.getResultCode().equals("SUCCESS")) {
-                        info.setPayStatus(1);
+                        if (!appletInfo.getIfOpenPay() && order.getUserId().intValue() == appletInfo.getUserId().intValue()) {
+                            // 测试订单交易成功，更新小程序交易开通状态
+                            appletService.updateAppletIFPayOpen(order.getAppletId());
+                        }
+                        // 更新订单状态
+                        order.setPayStatus(OrderEnums.PayStatus.SUCCESS.getCode());
+                        order.setOrderStatus(OrderEnums.OrderStatus.SUCCESS.getCode());
+                        userCouponService.userGainCoupon(order, appletInfo.getUserId());
+                    } else {
+                        order.setPayStatus(OrderEnums.PayStatus.FAIL.getCode());
+//                        order.setOrderStatus(OrderEnums.OrderStatus.FAIL.getCode());
                     }
-                    userOrderService.updateOrder(record, info);
+                    userOrderService.updateOrderStatusByUser(order);
+
+                    // 校验通过
+                    result = new WxUnifiedOrderResult();
+                    result.setReturnCode("SUCCESS");
+                    result.setReturnMsg("OK");
                 } else {
                     // 信息校验不通过
                     result = new WxUnifiedOrderResult();
                     result.setReturnCode("FAIL");
-                    result.setReturnMsg("签名失败");
+                    result.setReturnMsg("Signature verification failed");
                 }
             } else {
                 // 交易已成功处理，直接返回
@@ -203,25 +226,6 @@ public class WeChantPayService {
         }
         return null;
     }
-
-    /**
-     * 支付成功，更新预下订单操作记录
-     * @param order
-     * @return
-     */
-    public void updateOrderStatusByPaySuccess(ViewOrderDetails order) {
-        userOrderService.updateOrderStatusByUser(order.getId(), order.getUserId(), OrderEnums.OperateStatus.SUBMIT.getCode());
-    }
-
-    /**
-     * 支付失败，更新预下订单操作记录
-     * @param order
-     * @return
-     */
-    public void updateOrderStatusByPayFail(ViewOrderDetails order) {
-        userOrderService.updateOrderStatusByUser(order.getId(), order.getUserId(), OrderEnums.OperateStatus.SUBMIT_FAIL.getCode());
-    }
-
 
     public static void main(String[] arge) {
         String resultXML = "<xml>\n" +

@@ -60,6 +60,24 @@ public class UserOrderService {
     private CommonMapper commonMapper;
 
     /**
+     * 添加测试订单信息，并更新相关记录
+     * @param info
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void addOrderInfoToTest(OrderInfo info) {
+        info.setCreateTime(new Date());
+        info.setUpdateTime(new Date());
+        orderInfoMapper.insertSelective(info);
+        // 添加订单操作记录
+        OrderOperateRecord record = new OrderOperateRecord();
+        record.setOrderId(info.getId());
+        record.setOperateUserId(info.getUserId());
+        record.setOperateTime(new Date());
+        record.setOperateStatus(OrderEnums.OperateStatus.MAKE.getCode());
+        addOrderOperateRecord(record);
+    }
+
+    /**
      * 添加订单信息，并更新相关记录
      *
      * @param info
@@ -85,10 +103,10 @@ public class UserOrderService {
         list.forEach(it -> it.setOrderId(info.getId()));
         orderDetailsMapper.batchInsert(list);
         // 更新优惠券状态
-        userCouponService.updateUserCouponStatus(info.getUserCouponId(), OrderEnums.UserCouponStatus.USING.getCode());
+        if (NullUtil.isNotNullOrEmpty(info.getUserCouponId())){
+            userCouponService.updateUserCouponStatus(info.getUserCouponId(), OrderEnums.UserCouponStatus.USING.getCode());
+        }
     }
-
-
 
     /**
      * 查询订单信息
@@ -121,10 +139,10 @@ public class UserOrderService {
      * @param id
      * @return
      */
-    public OrderInfo selectOrderInfoByOrderNo(String orderNo) {
-        OrderInfoExample example = new OrderInfoExample();
+    public ViewOrderDetails selectOrderInfoByOrderNo(String orderNo) {
+        ViewOrderDetailsExample example = new ViewOrderDetailsExample();
         example.createCriteria().andOrderNoEqualTo(orderNo).andPayStatusEqualTo(OrderEnums.PayStatus.WAIT.getCode());
-        List<OrderInfo> list = orderInfoMapper.selectByExample(example);
+        List<ViewOrderDetails> list = viewOrderDetailsMapper.selectByExample(example);
         return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
     }
 
@@ -218,19 +236,20 @@ public class UserOrderService {
     @Async("taskExecutor")
     public void updateOrderSeeRecord(Integer orderId, Boolean userStatus, Boolean storeStatus) {
         OrderSeeRecord record = selectOrderSeeRecord(orderId);
-
-        OrderSeeRecordExample example = new OrderSeeRecordExample();
-        example.createCriteria().andOrderIdEqualTo(orderId);
-        OrderSeeRecord record1 = new OrderSeeRecord();
-        record1.setUserSeeStatus(userStatus);
-        if (NullUtil.isNotNullOrEmpty(userStatus) && !record.getUserSeeStatus()) {
-            record1.setUserSeeTime(new Date());
+        if (null != record){
+            OrderSeeRecordExample example = new OrderSeeRecordExample();
+            example.createCriteria().andOrderIdEqualTo(orderId);
+            OrderSeeRecord record1 = new OrderSeeRecord();
+            record1.setUserSeeStatus(userStatus);
+            if (NullUtil.isNotNullOrEmpty(userStatus) && !record.getUserSeeStatus()) {
+                record1.setUserSeeTime(new Date());
+            }
+            record1.setStoreSeeStatus(storeStatus);
+            if (NullUtil.isNotNullOrEmpty(storeStatus) && !record.getStoreSeeStatus()) {
+                record1.setStoreSeeTime(new Date());
+            }
+            orderSeeRecordMapper.updateByExampleSelective(record1, example);
         }
-        record1.setStoreSeeStatus(storeStatus);
-        if (NullUtil.isNotNullOrEmpty(storeStatus) && !record.getStoreSeeStatus()) {
-            record1.setStoreSeeTime(new Date());
-        }
-        orderSeeRecordMapper.updateByExampleSelective(record1, example);
     }
 
     /**
@@ -456,9 +475,15 @@ public class UserOrderService {
      * @param operateStatus
      * @param remark
      */
+    @Async
+    @Transactional(rollbackFor = Exception.class)
     public void updateOrderStatusByUser(Integer id, Integer userId, Integer userCouponId, Integer operateStatus) {
         updateOrderRelevant(id, userId, userCouponId, operateStatus, null);
         updateOrderSeeRecord(id, true, false);
+    }
+
+    public void updateOrderStatusByUser(Integer id, Integer userId,  Integer operateStatus) {
+        updateOrderStatusByUser(id, userId, null, operateStatus);
     }
 
     /**
@@ -467,8 +492,12 @@ public class UserOrderService {
      * @param userId
      * @param operateStatus
      */
-    public void updateOrderStatusByUser(Integer id, Integer userId, Integer operateStatus) {
-        updateOrderStatusByUser(id, userId, null, operateStatus);
+    public void updateOrderStatusByUser(ViewOrderDetails order) {
+        if (order.getPayStatus().intValue() == OrderEnums.PayStatus.SUCCESS.getCode().intValue()){
+            updateOrderStatusByUser(order.getId(), order.getUserId(), order.getUserCouponId(), OrderEnums.OperateStatus.SUBMIT.getCode());
+        } else if (order.getPayStatus().intValue() == OrderEnums.PayStatus.FAIL.getCode().intValue()) {
+            updateOrderStatusByUser(order.getId(), order.getUserId(), order.getUserCouponId(), OrderEnums.OperateStatus.SUBMIT_FAIL.getCode());
+        }
     }
 
     /**

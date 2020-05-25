@@ -11,10 +11,11 @@ import com.applet.common.util.encryption.EncryptionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -68,9 +69,24 @@ public class WeChantPayController {
                 return AjaxResponse.msg("0", "您交易所需资料缺失，请上传【微信支付-商家平台】资料。");
             }
             WeChantInfo w = weChantService.selectWeChantInfo(a.getId(), weChantInfo.getUserId());
+            //创建测试订单
+            OrderInfo order = new OrderInfo();
+            order.setOrderNo(RandomUtil.getTimeStamp());
+            order.setAppletId(a.getId());
+            order.setWxId(w.getId());
+            order.setUserId(w.getUserId());
+            order.setUserRemark("商家支付测试");
+            order.setTotalAmount(0.01d);
+            order.setActualAmount(0.01d);
+            order.setOrderStatus(0);
+            order.setCreateTime(new Date());
+            order.setPayType(1);
+            order.setPayStatus(0);
+            order.setPayChannel(OrderEnums.PayChannel.WX_JSAPI.getName());
+
             ViewOrderPayData data = new ViewOrderPayData();
-            data.setOrderNo(RandomUtil.getTimeStamp());
-            data.setActualAmount(0.01d);
+            data.setOrderNo(order.getOrderNo());
+            data.setActualAmount(order.getActualAmount());
             data.setAppletCode(a.getAppletCode());
             data.setAppletName(NullUtil.isNotNullOrEmpty(a.getAppletSimple()) ? a.getAppletSimple() : a.getAppletName());
             data.setAppId(EncryptionUtil.decryptAppletRSA(a.getAppId()));
@@ -80,6 +96,10 @@ public class WeChantPayController {
             data.setOpenId(w.getOpenId());
             String prepayId = weChantPayService.sendWeChantUnifiedOrder(data, ipAddress);
             if (NullUtil.isNotNullOrEmpty(prepayId)) {
+                // 保存测试订单信息
+                order.setPayRelationId(prepayId);
+                userOrderService.addOrderInfoToTest(order);
+                // 获取小程序支付信息，并进行加密
                 String msg = EncryptionUtil.encryptAppletPayInfoAES(data.getAppId(), data.getPayKey(), prepayId);
                 return AjaxResponse.success(msg);
             }
@@ -141,15 +161,11 @@ public class WeChantPayController {
                 return AjaxResponse.error("参数错误");
             }
             Integer orderId = Integer.parseInt(id);
-            ViewOrderDetails order = userOrderService.selectViewOrderDetailsByReady(appletInfo.getId(), weChantInfo.getUserId(), orderId);
-            if (null != order) {
-                weChantPayService.updateOrderStatusByPaySuccess(order);
-                boolean bool = userCouponService.userGainCoupon(order.getAppletId(), order.getUserId(), order.getId(), order.getTotalAmount());
-                if (bool) {
-                    return AjaxResponse.msg("0", "下单成功");
-                }
-                return AjaxResponse.success("下单成功");
+            long count = userCouponService.selectUserCouponCountByOrder(weChantInfo.getUserId(), orderId);
+            if (count > 0) {
+                return AjaxResponse.msg("0", "下单成功");
             }
+            return AjaxResponse.success("下单成功");
         } catch (NumberFormatException e) {
             log.error("更新预下单状态出错{}", e);
         }
@@ -175,7 +191,8 @@ public class WeChantPayController {
             Integer orderId = Integer.parseInt(id);
             ViewOrderDetails order = userOrderService.selectViewOrderDetailsByReady(appletInfo.getId(), weChantInfo.getUserId(), orderId);
             if (null != order) {
-                weChantPayService.updateOrderStatusByPayFail(order);
+                order.setPayStatus(OrderEnums.PayStatus.FAIL.getCode());
+                userOrderService.updateOrderStatusByUser(order);
                 return AjaxResponse.error("支付失败");
             }
         } catch (NumberFormatException e) {
@@ -187,25 +204,26 @@ public class WeChantPayController {
     /**
      * 微信订单支付回调通知
      *
-     * @param object
+     * @param xml
      * @return
      */
     @RequestMapping(value = "orderPayNotice")
     @CancelAuth
-    public Object orderPayNotice(Object object) {
+    public Object orderPayNotice(@RequestBody String xml) {
         WxUnifiedOrderResult result = null;
         try {
-            String xml = object.toString();
-            log.info("微信订单支付回调信息\n{}", xml);
-            result = weChantPayService.orderPayNoticeHandle(xml);
+            log.info("微信订单支付回调信息：{}", xml);
+            if (NullUtil.isNotNullOrEmpty(xml) && !xml.equals("null")){
+                result = weChantPayService.orderPayNoticeHandle(xml);
+            }
         } catch (Exception e) {
             log.error("微信订单支付回调出错{}", e);
             result = new WxUnifiedOrderResult();
             result.setReturnCode("FAIL");
-            result.setReturnMsg("参数格式校验错误");
+            result.setReturnMsg("Parameter format check error");
         }
         if (null == result) {
-            return null;
+            return "";
         }
         String resultXML = JaxbUtil.convertToXmlIgnoreXmlHead(result, "UTF-8");
         return resultXML;

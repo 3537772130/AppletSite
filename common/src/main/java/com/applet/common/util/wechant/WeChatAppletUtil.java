@@ -142,7 +142,7 @@ public class WeChatAppletUtil {
             url = "https://api2.mch.weixin.qq.com/pay/unifiedorder";
             context = HttpUtil.doPost(url, xml, "UTF-8");
         }
-        log.info("【微信统一下单回执】\n{}", context);
+//        log.info("【微信统一下单回执】\n{}", context);
         return context;
     }
 

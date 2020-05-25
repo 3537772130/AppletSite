@@ -179,9 +179,9 @@ public class CouponInfo implements Serializable {
 
     public Map getCouponMap(){
         Map map = new HashMap();
-        map.put("id", this.id);
-        map.put("makeIssueNum", this.makeIssueNum);
-        map.put("alreadyIssueNum", this.alreadyIssueNum);
+        map.put("id", this.getId());
+        map.put("makeIssueNum", this.getMakeIssueNum());
+        map.put("alreadyIssueNum", this.getAlreadyIssueNum());
         return map;
     }
 }

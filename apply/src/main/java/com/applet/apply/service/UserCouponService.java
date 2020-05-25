@@ -7,6 +7,7 @@ import com.applet.common.util.NullUtil;
 import com.applet.common.util.Page;
 import jodd.datetime.JDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,6 +79,23 @@ public class UserCouponService {
     }
 
     /**
+     * 查询用户订单获取的优惠券数量
+     * @param userId
+     * @param orderId
+     * @return
+     */
+    public long selectUserCouponCountByOrder(Integer userId, Integer orderId){
+        ViewUserCouponExample example = new ViewUserCouponExample();
+        example.setOrderByClause("denomination desc");
+        example.createCriteria()
+                .andUserIdEqualTo(userId)
+                .andOrderIdEqualTo(orderId)
+                .andActivityOverGreaterThan(new Date())
+                .andStatusEqualTo(0);
+        return viewUserCouponMapper.countByExample(example);
+    }
+
+    /**
      * 查询用户订单获取的优惠券集合
      * @param userId
      * @param orderId
@@ -127,48 +145,22 @@ public class UserCouponService {
     }
 
     /**
-     * 订单支付成功，查询小程序当前可获取的优惠券
-     * 最大面额 (商家自己发布的满送优惠券)
-     * @param appletId
-     * @return
-     */
-    public CouponInfo selectCouponListByPaySuccessToMy(Integer appletId, Double totalAmount){
-        CouponInfoExample example = new CouponInfoExample();
-        example.setOrderByClause("denomination desc");
-        example.createCriteria()
-                .andCouponTypeEqualTo(3)
-                .andGainTypeEqualTo(2)
-                .andGainAppletIdEqualTo(appletId)
-                .andGainPriceLessThanOrEqualTo(totalAmount)
-                .andUseAppletIdEqualTo(appletId)
-                .andActivityStartLessThan(new Date())
-                .andActivityOverGreaterThan(new Date())
-                .andStatusEqualTo(1);
-        List<CouponInfo> list = couponInfoMapper.selectByExample(example);
-        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
-    }
-
-    public List<Map> selectCouponListByPaySuccessToOther(Integer appletId, Double totalAmount){
-
-        return new ArrayList<>();
-    }
-
-    /**
      * 用户支付成功，被动获取优惠券
      * @param appletId
      * @param userId
      * @param totalAmount
      */
+    @Async
     @Transactional(rollbackFor = Exception.class)
-    public boolean userGainCoupon(Integer appletId, Integer userId, Integer orderId, Double totalAmount){
+    public void userGainCoupon(ViewOrderDetails order, Integer storeUserId){
         // 查询其它商家发布的点对点优惠券
-        List<Map> list = selectCouponListByPaySuccessToOther(appletId, totalAmount);
+//        List<Map> list = selectCouponListByOrderToOther(order, storeUserId);
         // 查询商家自己发布的满送优惠券
-        CouponInfo couponInfo = selectCouponListByPaySuccessToMy(appletId, totalAmount);
+        List<Map> list = new ArrayList<>();
+        CouponInfo couponInfo = selectCouponListByOrder(order, storeUserId);
         if (null != couponInfo){
             list.add(couponInfo.getCouponMap());
         }
-        List<Integer> userCouponIdList = new ArrayList<>();
         for (Map map:list) {
             int makeIssueNum = Integer.parseInt(map.get("makeIssueNum").toString());
             int alreadyIssueNum = Integer.parseInt(map.get("alreadyIssueNum").toString());
@@ -176,13 +168,12 @@ public class UserCouponService {
                 int couponId = Integer.parseInt(map.get("id").toString());
                 // 存在可以获取的优惠券，并且不限量或未派发完毕
                 UserCoupon record = new UserCoupon();
-                record.setUserId(userId);
-                record.setOrderId(orderId);
+                record.setUserId(order.getUserId());
+                record.setOrderId(order.getId());
                 record.setCouponId(couponId);
                 record.setGainTime(new Date());
                 record.setStatus(OrderEnums.UserCouponStatus.UNUSED.getCode());
                 userCouponMapper.insertSelective(record);
-                userCouponIdList.add(record.getId());
 
                 int status = (alreadyIssueNum + 1) == makeIssueNum ? 3 : null;
                 CouponInfo info = new CouponInfo();
@@ -192,7 +183,6 @@ public class UserCouponService {
                 couponInfoMapper.updateByPrimaryKeySelective(info);
             }
         }
-        return list.size() > 0;
     }
 
 
@@ -202,9 +192,10 @@ public class UserCouponService {
      * @param userId
      */
     @Transactional(rollbackFor = Exception.class)
-    public void addUserCoupon(CouponInfo couponInfo, Integer userId){
+    public void addUserCoupon(CouponInfo couponInfo, Integer userId, Integer orderId){
         UserCoupon record = new UserCoupon();
         record.setUserId(userId);
+        record.setOrderId(orderId);
         record.setCouponId(couponInfo.getId());
         record.setGainTime(new Date());
         record.setStatus(OrderEnums.UserCouponStatus.UNUSED.getCode());
@@ -216,6 +207,10 @@ public class UserCouponService {
         info.setAlreadyIssueNum(couponInfo.getAlreadyIssueNum() + 1);
         info.setStatus(status);
         couponInfoMapper.updateByPrimaryKeySelective(info);
+    }
+
+    public void addUserCoupon(CouponInfo couponInfo, Integer userId){
+        addUserCoupon(couponInfo, userId, null);
     }
 
     /**
@@ -233,6 +228,44 @@ public class UserCouponService {
                 .andActivityOverGreaterThan(new Date())
                 .andStatusEqualTo(1);
         return viewCouponInfoMapper.selectByExample(example);
+    }
+
+    /**
+     * 查询商家自己发布的有效的被动获取优惠券集合
+     * @param order
+     * @param storeUserId
+     * @return
+     */
+    public CouponInfo selectCouponListByOrder(ViewOrderDetails order, Integer storeUserId){
+        CouponInfoExample example = new CouponInfoExample();
+        example.setOrderByClause("denomination desc");
+        example.createCriteria().andUserIdEqualTo(storeUserId)
+                .andGainTypeEqualTo(2)
+                .andGainAppletIdEqualTo(order.getAppletId())
+                .andGainPriceLessThanOrEqualTo(order.getTotalAmount())
+                .andActivityOverGreaterThanOrEqualTo(new Date())
+                .andStatusEqualTo(1);
+        List<CouponInfo> list = couponInfoMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+    }
+
+    /**
+     * 查询其它商家发布的有效被动获取优惠券集合
+     * @param order
+     * @param storeUserId
+     * @return
+     */
+    public CouponInfo selectCouponListByOrderToOther(ViewOrderDetails order, Integer storeUserId){
+        CouponInfoExample example = new CouponInfoExample();
+        example.setOrderByClause("denomination desc");
+        example.createCriteria().andUserIdNotEqualTo(storeUserId)
+                .andGainTypeEqualTo(2)
+                .andGainAppletIdEqualTo(order.getAppletId())
+                .andGainPriceLessThanOrEqualTo(order.getTotalAmount())
+                .andActivityOverGreaterThanOrEqualTo(new Date())
+                .andStatusEqualTo(1);
+        List<CouponInfo> list = couponInfoMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
     }
 
     /**

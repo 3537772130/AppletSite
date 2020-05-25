@@ -130,8 +130,10 @@ public class AppletInterceptor extends HandlerInterceptorAdapter {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         log.info("清除访问者信息...");
-        request.getSession().removeAttribute("appletInfo");
-        request.getSession().removeAttribute("weChantInfo");
-        request.getSession().removeAttribute(Constants.CLIENT_PUBLIC_IP);
+        if (!request.getRequestURI().equals("/api/applet/pay/orderPayNotice")){
+            request.getSession().removeAttribute("appletInfo");
+            request.getSession().removeAttribute("weChantInfo");
+            request.getSession().removeAttribute(Constants.CLIENT_PUBLIC_IP);
+        }
     }
 }

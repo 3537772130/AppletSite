@@ -90,7 +90,7 @@ public class WeChantController {
             if (weChantInfo.getStatus().intValue() == 0) {
                 return AjaxResponse.error("您的账户已经冻结，请联系客服进行处理");
             }
-            if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId())
+            if (NullUtil.isNotNullOrEmpty(weChantInfo.getUserId()) && NullUtil.isNotNullOrEmpty(ipAddress)
                     && NullUtil.isNotNullOrEmpty(lon) && NullUtil.isNotNullOrEmpty(lat)){
                 weChantService.saveUserLoginLog(weChantInfo.getUserId(), ipAddress, lon, lat);
             }
