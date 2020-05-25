@@ -182,10 +182,12 @@ public class WeChantPayService {
                     record.setErrCode(result.getErrCode());
                     record.setErrCodeDes(result.getErrCodeDes());
                     record.setRequestResultMsg(xml);
+                    boolean isTest = false;
                     if (result.getResultCode().equals("SUCCESS")) {
                         if (!appletInfo.getIfOpenPay() && order.getUserId().intValue() == appletInfo.getUserId().intValue()) {
                             // 测试订单交易成功，更新小程序交易开通状态
                             appletService.updateAppletIFPayOpen(order.getAppletId());
+                            isTest = true;
                         }
                         // 更新订单状态
                         order.setPayStatus(OrderEnums.PayStatus.SUCCESS.getCode());
@@ -195,8 +197,12 @@ public class WeChantPayService {
                         order.setPayStatus(OrderEnums.PayStatus.FAIL.getCode());
 //                        order.setOrderStatus(OrderEnums.OrderStatus.FAIL.getCode());
                     }
-                    userOrderService.updateOrderStatusByUser(order);
-
+                    if (isTest){
+                        // 测试订单，设置操作状态为删除
+                        userOrderService.updateOrderStatusByUser(order, OrderEnums.OperateStatus.DELETE.getCode());
+                    } else {
+                        userOrderService.updateOrderStatusByUser(order);
+                    }
                     // 校验通过
                     result = new WxUnifiedOrderResult();
                     result.setReturnCode("SUCCESS");
@@ -207,6 +213,7 @@ public class WeChantPayService {
                     result.setReturnCode("FAIL");
                     result.setReturnMsg("Signature verification failed");
                 }
+                log.info("已对订单【{}】的支付回调进行处理，处理结果为：{}", order.getOrderNo(), result.getReturnCode());
             } else {
                 // 交易已成功处理，直接返回
                 log.info("订单状态已更新，此次微信支付回调不做处理！");
@@ -214,7 +221,6 @@ public class WeChantPayService {
                 result.setReturnCode("SUCCESS");
                 result.setReturnMsg("OK");
             }
-            log.info("已对订单【{}】的支付回调进行处理", order.getOrderNo());
             return result;
         }
         return null;

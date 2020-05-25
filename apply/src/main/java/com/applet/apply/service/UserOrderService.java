@@ -492,12 +492,19 @@ public class UserOrderService {
      * @param userId
      * @param operateStatus
      */
-    public void updateOrderStatusByUser(ViewOrderDetails order) {
-        if (order.getPayStatus().intValue() == OrderEnums.PayStatus.SUCCESS.getCode().intValue()){
+    public void updateOrderStatusByUser(ViewOrderDetails order, Integer operateStatus) {
+        if (NullUtil.isNotNullOrEmpty(operateStatus)){
+            // 自定义操作状态
+            updateOrderStatusByUser(order.getId(), order.getUserId(), order.getUserCouponId(), operateStatus);
+        } else if (order.getPayStatus().intValue() == OrderEnums.PayStatus.SUCCESS.getCode().intValue()){
             updateOrderStatusByUser(order.getId(), order.getUserId(), order.getUserCouponId(), OrderEnums.OperateStatus.SUBMIT.getCode());
         } else if (order.getPayStatus().intValue() == OrderEnums.PayStatus.FAIL.getCode().intValue()) {
             updateOrderStatusByUser(order.getId(), order.getUserId(), order.getUserCouponId(), OrderEnums.OperateStatus.SUBMIT_FAIL.getCode());
         }
+    }
+
+    public void updateOrderStatusByUser(ViewOrderDetails order) {
+        updateOrderStatusByUser(order, null);
     }
 
     /**
