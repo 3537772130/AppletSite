@@ -159,15 +159,6 @@ public class WeChantPayService {
         if (result.getReturnCode().equals("SUCCESS")) {
             ViewOrderDetails order = userOrderService.selectOrderInfoByOrderNo(result.getOutTradeNo());
             if (null != order) {
-                if (order.getPayStatus().intValue() != OrderEnums.PayStatus.WAIT.getCode().intValue()
-                        && order.getOrderStatus().intValue() != OrderEnums.OrderStatus.WAIT.getCode().intValue()) {
-                    log.info("订单状态已更新，此次微信支付回调不做处理！");
-                    result = new WxUnifiedOrderResult();
-                    result.setReturnCode("SUCCESS");
-                    result.setReturnMsg("OK");
-                    return result;
-                }
-
                 AppletInfo appletInfo = appletService.selectAppletInfo(order.getAppletId(), order.getUserId());
                 // 测试订单
                 log.info("此次是商家测试订单回调，订单号为：{}", order.getOrderNo());
@@ -218,10 +209,12 @@ public class WeChantPayService {
                 }
             } else {
                 // 交易已成功处理，直接返回
+                log.info("订单状态已更新，此次微信支付回调不做处理！");
                 result = new WxUnifiedOrderResult();
                 result.setReturnCode("SUCCESS");
                 result.setReturnMsg("OK");
             }
+            log.info("已对订单【{}】的支付回调进行处理", order.getOrderNo());
             return result;
         }
         return null;
