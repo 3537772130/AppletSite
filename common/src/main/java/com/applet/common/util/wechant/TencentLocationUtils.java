@@ -33,6 +33,7 @@ public class TencentLocationUtils {
         resultMap.put("nation", adInfo.get("nation"));
         resultMap.put("nationCode", adInfo.get("nation_code"));
         resultMap.put("province", adInfo.get("province"));
+        resultMap.put("provinceCode", adInfo.get("adcode"));
         resultMap.put("city", adInfo.get("city"));
         resultMap.put("district", adInfo.get("district"));
         String cityCode = adInfo.get("city_code").toString();

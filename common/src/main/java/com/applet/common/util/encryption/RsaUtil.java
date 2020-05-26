@@ -1,6 +1,5 @@
 package com.applet.common.util.encryption;
 
-import com.applet.common.util.file.PathUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,20 +20,24 @@ import java.security.spec.X509EncodedKeySpec;
  **/
 public class RsaUtil {
     public static final Logger logger = LoggerFactory.getLogger(RsaUtil.class);
-
-    public static final String APPLET_MANAGE_PUBLIC_PATH = "/encrypt/userAppletInfo/rsa_public_key_pkcs8.pem";
-    public static final String APPLET_MANAGE_PRIVATE_PATH = "/encrypt/userAppletInfo/rsa_private_key_pkcs8.pem";
+    // 系统信息加解密文件
+    public static final String SYSTEM_MANAGE_PUBLIC_PATH = "/encrypt/userAppletInfo/system_public_key_pkcs8.pem";
+    public static final String SYSTEM_MANAGE_PRIVATE_PATH = "/encrypt/userAppletInfo/system_private_key_pkcs8.pem";
+    // 小程序信息加解密文件
+    public static final String APPLET_MANAGE_PUBLIC_PATH = "/encrypt/userAppletInfo/applet_public_key_pkcs8.pem";
+    public static final String APPLET_MANAGE_PRIVATE_PATH = "/encrypt/userAppletInfo/applet_private_key_pkcs8.pem";
 
     public static void main(String[] args) throws Exception {
         // TODO Auto-generated method stub
-        String classPath = PathUtil.getClassPath("encrypt\\applet\\manage\\");
-        PrivateKey pri = getPriKey(classPath + "rsa_private_key_pkcs8.pem", "RSA");
-        PublicKey pub = getPubKey(classPath + "rsa_public_key_pkcs8.pem", "RSA");
-        String str = "{\"topUpAmount\":\"" + 1000 + "\",\"givingAmount\":\"" + 250 + "\"}";
+        // 加密
+        PublicKey pub = getPubKey(SYSTEM_MANAGE_PUBLIC_PATH, "RSA");
+        String str = "电饭锅森岛帆高是大法官";
         byte[] estr = encrypt(str.getBytes(), pub, 2048, 11, "RSA/ECB/PKCS1Padding");
-        System.out.println(new String(estr));
         String result = Base64.encode(estr);
+        System.out.println(result);
+        // 解密
         byte[] bytes = Base64.decode(result);
+        PrivateKey pri = getPriKey(SYSTEM_MANAGE_PRIVATE_PATH, "RSA");
         byte[] dstr = decrypt(bytes, pri, 2048, 11, "RSA/ECB/PKCS1Padding");
         System.out.println("解密后：" + new String(dstr));
     }

@@ -14,6 +14,7 @@ import com.aliyuncs.exceptions.ServerException;
 import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
+import com.applet.common.util.encryption.EncryptionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,13 +36,13 @@ public class SmsUtil {
     private static final Logger logger = LoggerFactory.getLogger(SmsUtil.class);
 
     //产品名称:云通信短信API产品,开发者无需替换
-    static final String product = "Dysmsapi";
+    private static final String product = "Dysmsapi";
     //产品域名,开发者无需替换
-    static final String domain = "dysmsapi.aliyuncs.com";
+    private static final String domain = "dysmsapi.aliyuncs.com";
 
     // TODO 此处需要替换成开发者自己的AK(在阿里云访问控制台寻找)
-    static final String accessKeyId = "LTAI4GFNWptq23epHgWrQswK";
-    static final String accessKeySecret = "DAjnGG0yNuDp5ZdkxtMVf0BF8WEG5d";
+    private static final String ACCESS_KEY_ID = "NMvkdVo7C//TLzjEWOSbE1KxGA9oYLtOUiXJVGouj7bVTP5ggY8CMB9oMMVmKz+QHemnDqHZXWe25ksCDU3srEmkhNKGl8+pbct4gAXOV1IREqPEI22wJCkF3AgMQaLfyE/YXyzjVz9X8EFduRiLTVS4wCTfJhp2DjfEBTxurKc=";
+    private static final String ACCESS_KEY_SECRET = "bAZ6XJjrJlEtZT7azdxmlGk1MGQ2MbjLu4GLX1F3vqZDhqZ4bgS7z/Qxb9EMbWYbOzvDFkY6Tl+qCAqD/3gLJm6VqsKl6RBWNiQHBPcNg/vCiV2oFSXxvgefsKi1ELlmiXQMiH+a8BIzj0hhE4X3150XKc/HI+Z2ffnPUmsccGM=";
 
     /**
      * 发送短信
@@ -52,7 +53,9 @@ public class SmsUtil {
      * @return
      * @throws ClientException
      */
-    public static SendSmsResponse sendSms(String mobile, String singName, String templeteCode, String templateParam) throws ClientException {
+    public static SendSmsResponse sendSms(String mobile, String singName, String templeteCode, String templateParam) throws Exception {
+        String accessKeyId = EncryptionUtil.decryptSystemRSA(ACCESS_KEY_ID);
+        String accessKeySecret = EncryptionUtil.decryptSystemRSA(ACCESS_KEY_SECRET);
         //可自助调整超时时间
         System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
         System.setProperty("sun.net.client.defaultReadTimeout", "10000");
@@ -87,7 +90,9 @@ public class SmsUtil {
      * @return
      * @throws ClientException
      */
-    public static QuerySendDetailsResponse querySendDetails(String bizId) throws ClientException {
+    public static QuerySendDetailsResponse querySendDetails(String bizId) throws Exception {
+        String accessKeyId = EncryptionUtil.decryptSystemRSA(ACCESS_KEY_ID);
+        String accessKeySecret = EncryptionUtil.decryptSystemRSA(ACCESS_KEY_SECRET);
         //可自助调整超时时间
         System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
         System.setProperty("sun.net.client.defaultReadTimeout", "10000");
@@ -113,7 +118,7 @@ public class SmsUtil {
         return querySendDetailsResponse;
     }
 
-    public static void main(String[] args) throws ClientException, InterruptedException {
+    public static void main(String[] args) throws Exception {
 
         //发短信
         SendSmsResponse response = sendSms("17601301913", "程序坞", "SMS_137689866", "{\"code\":\"123456\"}");
@@ -146,7 +151,7 @@ public class SmsUtil {
             System.out.println("RequestId=" + querySendDetailsResponse.getRequestId());
         }
 
-//        DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", accessKeyId, accessKeySecret);
+//        DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", ACCESS_KEY_ID, ACCESS_KEY_SECRET);
 //        IAcsClient client = new DefaultAcsClient(profile);
 //
 //        CommonRequest request = new CommonRequest();

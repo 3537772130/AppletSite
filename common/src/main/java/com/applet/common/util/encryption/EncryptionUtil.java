@@ -32,6 +32,35 @@ public class EncryptionUtil {
     }
 
     /**
+     * 系统 RSA加密
+     *
+     * @param str
+     * @return
+     * @throws Exception
+     */
+    public static String encryptSystemRSA(String str) throws Exception {
+        String publicKeyPath = RsaUtil.SYSTEM_MANAGE_PUBLIC_PATH;
+        PublicKey pub = RsaUtil.getPubKey(publicKeyPath, "RSA");
+        byte[] estr = RsaUtil.encrypt(str.getBytes(), pub, 2048, 11, "RSA/ECB/PKCS1Padding");
+        return Base64.encode(estr);
+    }
+
+    /**
+     * 系统 RSA解密
+     *
+     * @param str
+     * @return
+     * @throws Exception
+     */
+    public static String decryptSystemRSA(String str) throws Exception {
+        String privateKeyPath = RsaUtil.SYSTEM_MANAGE_PRIVATE_PATH;
+        PrivateKey pri = RsaUtil.getPriKey(privateKeyPath, "RSA");
+        byte[] bytes = Base64.decode(str);
+        byte[] dstr = RsaUtil.decrypt(bytes, pri, 2048, 11, "RSA/ECB/PKCS1Padding");
+        return new String(dstr);
+    }
+
+    /**
      * 小程序信息 RSA加密
      *
      * @param str

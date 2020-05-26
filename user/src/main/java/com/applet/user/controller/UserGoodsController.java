@@ -67,18 +67,6 @@ public class UserGoodsController {
     }
 
     /**
-     * 转移存储空间文件
-     *
-     * @param oldKey
-     * @param newKey
-     * @throws Exception
-     */
-    @Async("taskExecutor")
-    public void removeFile(String oldKey, String newKey) throws Exception {
-        QiNiuUtil.removeFile(oldKey, newKey);
-    }
-
-    /**
      * 加载商品类型列表
      *
      * @param user
@@ -658,6 +646,9 @@ public class UserGoodsController {
             if (goodsInfo.getStatus() != 0){
                 return AjaxResponse.error("未下架商品禁止修改信息");
             }
+            if (NullUtil.isNullOrEmpty(specs.getSpecsSrc())){
+                return AjaxResponse.error("请上传规格图片");
+            }
             if (NullUtil.isNotNullOrEmpty(specs.getSpecsText()) && specs.getSpecsText().length() > 100) {
                 return AjaxResponse.error("商品规格长度过长");
             }
@@ -680,17 +671,15 @@ public class UserGoodsController {
                 }
             }
             boolean bool = (NullUtil.isNullOrEmpty(specs.getId()) && !specs.getSpecsStatus()) ? false : true;
-            String specsSrc = "/api/public/GS-" + RandomUtil.getTimeStamp();
+            String oldSrc = null;
             if (NullUtil.isNotNullOrEmpty(specs.getId()) && NullUtil.isNotNullOrEmpty(specs.getSpecsSrc())) {
                 ViewGoodsSpecs record = userGoodsService.selectSpecsInfo(specs.getId(), specs.getGoodsId(), user.getId());
-                if (null == record) {
-                    return AjaxResponse.error("信息不符");
+                if (null != record && !specs.getSpecsSrc().equals(record.getSpecsSrc())){
+                    oldSrc = record.getSpecsSrc();
                 }
-                specsSrc = specs.getSpecsSrc().equals(record.getSpecsSrc()) ? null : record.getSpecsSrc();
             }
-            if (NullUtil.isNotNullOrEmpty(specsSrc)) {
-                this.removeFile(specs.getSpecsSrc(), specsSrc);
-                specs.setSpecsSrc(specsSrc);
+            if (NullUtil.isNotNullOrEmpty(oldSrc)) {
+                QiNiuUtil.deleteFile(oldSrc);
             }
             userGoodsService.updateGoodsSpecs(specs, user.getId());
             if (bool) {

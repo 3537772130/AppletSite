@@ -28,13 +28,13 @@ public class RsaUtil {
     public static void main(String[] args) throws Exception {
         String classPath = PathUtil.getClassPath("encrypt\\userAppletInfo\\");
          // 加载公钥文件，并使用公钥对信息进行加密
-        PublicKey pub = getPubKey(classPath + "pub_pkcs8.pem", "RSA");
+        PublicKey pub = getPubKey(classPath + "system_public_key_pkcs8.pem", "RSA");
         String str = "{\"name\":\"周华虎\",\"age\":\"25\"}";
         byte[] estr = encrypt(str.getBytes(), pub, 2048, 11, "RSA/ECB/PKCS1Padding");
         System.out.println("加密后：" + Base64.encode(estr));
 
         // 加载私钥文件，并使用私钥对加密信息进行解密
-        PrivateKey pri = getPriKey(classPath + "pri_pkcs8.pem", "RSA");
+        PrivateKey pri = getPriKey(classPath + "system_private_key_pkcs8.pem", "RSA");
         String result = Base64.encode(estr);
         byte[] bytes = Base64.decode(result);
         byte[] dstr = decrypt(bytes, pri, 2048, 11, "RSA/ECB/PKCS1Padding");
