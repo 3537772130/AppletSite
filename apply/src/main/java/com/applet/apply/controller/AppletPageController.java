@@ -68,7 +68,7 @@ public class AppletPageController {
     @CancelAuth
     public Object loadGoodsClassify(@SessionScope("appletInfo") ViewAppletInfo appletInfo) {
         try {
-            GoodsClassify gc = appletPageService.selectGoodsClassify(appletInfo.getId(), appletInfo.getAppletCode());
+            GoodsClassify gc = appletPageService.selectGoodsClassify(appletInfo.getId());
             if (null == gc){
                 return AjaxResponse.error("未找到相关记录");
             }

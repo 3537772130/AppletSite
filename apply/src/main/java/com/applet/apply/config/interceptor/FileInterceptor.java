@@ -24,7 +24,7 @@ public class FileInterceptor implements HandlerInterceptor {
     private static final Logger log = LoggerFactory.getLogger(FileInterceptor.class);
 
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String uri = request.getRequestURI();
+        String uri = request.getRequestURI() + "?" + RandomUtil.getRandomStr32();
         if (NullUtil.isNotNullOrEmpty(uri)) {
             String url = "";
             if (uri.indexOf("/public") >= 0) {

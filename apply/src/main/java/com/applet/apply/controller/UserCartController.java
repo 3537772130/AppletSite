@@ -3,6 +3,7 @@ package com.applet.apply.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.applet.apply.config.annotation.SessionScope;
+import com.applet.apply.service.GoodsService;
 import com.applet.common.entity.*;
 import com.applet.apply.service.UserCartService;
 import com.applet.apply.service.UserCouponService;
@@ -37,6 +38,8 @@ public class UserCartController {
     private UserCouponService userCouponService;
     @Autowired
     private UserCartService userCartService;
+    @Autowired
+    private GoodsService goodsService;
 //    @Autowired
 //    private FreightDeployService
 
@@ -66,7 +69,11 @@ public class UserCartController {
             if (cart.getAmount().intValue() < 1 || cart.getAmount().intValue() > 999) {
                 return AjaxResponse.error("选购数量只能为1-999");
             }
-            ViewUserCart userCart = userCartService.selectUserCartInfo(weChantInfo.getId(), weChantInfo.getAppletId(), cart.getSpecsId());
+            ViewGoodsInfo info = goodsService.selectGoodsInfo(weChantInfo.getAppletId(), cart.getGoodsId());
+            if (info.getGoodsStatus().intValue() != 1){
+                return AjaxResponse.error("宝贝更新中");
+            }
+            ViewUserCart userCart = userCartService.selectUserCartInfo(weChantInfo.getId(), weChantInfo.getAppletId(), cart.getSpecsId(), cart.getSpecsType());
             if (null != userCart) {
                 cart.setId(userCart.getId());
             }
@@ -166,7 +173,7 @@ public class UserCartController {
         // 检测是否可以使用优惠券
         Boolean ifCoupon = true;
         for (ViewUserCart cart : cartList) {
-            if (!cart.getIfDiscount()) {
+            if (!cart.getIfCoupon()) {
                 ifCoupon = false;
                 break;
             }

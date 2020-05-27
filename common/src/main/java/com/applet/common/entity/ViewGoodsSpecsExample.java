@@ -435,73 +435,73 @@ public class ViewGoodsSpecsExample {
             return (Criteria) this;
         }
 
-        public Criteria andSpecsSizeStrIsNull() {
-            addCriterion("specs_size_str is null");
+        public Criteria andSpecsTypeListIsNull() {
+            addCriterion("specs_type_list is null");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsSizeStrIsNotNull() {
-            addCriterion("specs_size_str is not null");
+        public Criteria andSpecsTypeListIsNotNull() {
+            addCriterion("specs_type_list is not null");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsSizeStrEqualTo(String value) {
-            addCriterion("specs_size_str =", value, "specsSizeStr");
+        public Criteria andSpecsTypeListEqualTo(String value) {
+            addCriterion("specs_type_list =", value, "specsTypeList");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsSizeStrNotEqualTo(String value) {
-            addCriterion("specs_size_str <>", value, "specsSizeStr");
+        public Criteria andSpecsTypeListNotEqualTo(String value) {
+            addCriterion("specs_type_list <>", value, "specsTypeList");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsSizeStrGreaterThan(String value) {
-            addCriterion("specs_size_str >", value, "specsSizeStr");
+        public Criteria andSpecsTypeListGreaterThan(String value) {
+            addCriterion("specs_type_list >", value, "specsTypeList");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsSizeStrGreaterThanOrEqualTo(String value) {
-            addCriterion("specs_size_str >=", value, "specsSizeStr");
+        public Criteria andSpecsTypeListGreaterThanOrEqualTo(String value) {
+            addCriterion("specs_type_list >=", value, "specsTypeList");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsSizeStrLessThan(String value) {
-            addCriterion("specs_size_str <", value, "specsSizeStr");
+        public Criteria andSpecsTypeListLessThan(String value) {
+            addCriterion("specs_type_list <", value, "specsTypeList");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsSizeStrLessThanOrEqualTo(String value) {
-            addCriterion("specs_size_str <=", value, "specsSizeStr");
+        public Criteria andSpecsTypeListLessThanOrEqualTo(String value) {
+            addCriterion("specs_type_list <=", value, "specsTypeList");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsSizeStrLike(String value) {
-            addCriterion("specs_size_str like", value, "specsSizeStr");
+        public Criteria andSpecsTypeListLike(String value) {
+            addCriterion("specs_type_list like", value, "specsTypeList");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsSizeStrNotLike(String value) {
-            addCriterion("specs_size_str not like", value, "specsSizeStr");
+        public Criteria andSpecsTypeListNotLike(String value) {
+            addCriterion("specs_type_list not like", value, "specsTypeList");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsSizeStrIn(List<String> values) {
-            addCriterion("specs_size_str in", values, "specsSizeStr");
+        public Criteria andSpecsTypeListIn(List<String> values) {
+            addCriterion("specs_type_list in", values, "specsTypeList");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsSizeStrNotIn(List<String> values) {
-            addCriterion("specs_size_str not in", values, "specsSizeStr");
+        public Criteria andSpecsTypeListNotIn(List<String> values) {
+            addCriterion("specs_type_list not in", values, "specsTypeList");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsSizeStrBetween(String value1, String value2) {
-            addCriterion("specs_size_str between", value1, value2, "specsSizeStr");
+        public Criteria andSpecsTypeListBetween(String value1, String value2) {
+            addCriterion("specs_type_list between", value1, value2, "specsTypeList");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsSizeStrNotBetween(String value1, String value2) {
-            addCriterion("specs_size_str not between", value1, value2, "specsSizeStr");
+        public Criteria andSpecsTypeListNotBetween(String value1, String value2) {
+            addCriterion("specs_type_list not between", value1, value2, "specsTypeList");
             return (Criteria) this;
         }
 

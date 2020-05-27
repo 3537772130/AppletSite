@@ -80,7 +80,7 @@ public class UserOrderController {
             details.setGoodsName(cart.getGoodsName());
             details.setGoodsDiscount(cart.getDiscount());
             details.setGoodsSpecsId(cart.getSpecsId());
-            details.setGoodsSpecsName(cart.getSpecsText());
+            details.setGoodsSpecsName(cart.getSpecsName());
             details.setGoodsSpecsPic(cart.getSpecsSrc());
             details.setGoodsNumber(cart.getAmount());
             details.setSellPrice(cart.getSellPrice());

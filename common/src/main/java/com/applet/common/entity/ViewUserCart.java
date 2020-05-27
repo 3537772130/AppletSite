@@ -32,7 +32,7 @@ public class ViewUserCart implements Serializable {
 
     private String specsName;
 
-    private String specsSize;
+    private String specsType;
 
     private Double sellPrice;
 
@@ -131,12 +131,12 @@ public class ViewUserCart implements Serializable {
         this.specsName = specsName == null ? null : specsName.trim();
     }
 
-    public String getSpecsSize() {
-        return specsSize;
+    public String getSpecsType() {
+        return specsType;
     }
 
-    public void setSpecsSize(String specsSize) {
-        this.specsSize = specsSize == null ? null : specsSize.trim();
+    public void setSpecsType(String specsType) {
+        this.specsType = specsType == null ? null : specsType.trim();
     }
 
     public Double getSellPrice() {

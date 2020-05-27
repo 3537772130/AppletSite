@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,8 @@ import java.util.Map;
 @Service
 public class UserGoodsService {
 
+    @Autowired
+    private AppletPageService appletPageService;
     @Autowired
     private GoodsTypeMapper goodsTypeMapper;
     @Autowired
@@ -45,9 +48,10 @@ public class UserGoodsService {
     @Autowired
     private ViewUserAppletRecommendGoodsMapper viewUserAppletRecommendGoodsMapper;
     @Autowired
-    private CommonMapper commonMapper;
+    private UserCartMapper userCartMapper;
     @Autowired
-    private AppletPageService appletPageService;
+    private CommonMapper commonMapper;
+
 
     /**
      * 分页查询商品类型
@@ -197,8 +201,8 @@ public class UserGoodsService {
         if (NullUtil.isNotNullOrEmpty(goods.getGoodsStatus())) {
             c.andGoodsStatusEqualTo(goods.getGoodsStatus());
         }
-        if (NullUtil.isNotNullOrEmpty(goods.getIfDiscount())) {
-            c.andIfDiscountEqualTo(goods.getIfDiscount());
+        if (NullUtil.isNotNullOrEmpty(goods.getIfCoupon())) {
+            c.andIfCouponEqualTo(goods.getIfCoupon());
         }
         c.andUserIdEqualTo(goods.getUserId());
         long count = viewGoodsInfoMapper.countByExample(example);
@@ -442,10 +446,17 @@ public class UserGoodsService {
      * @param userId
      * @return
      */
-    public ViewGoodsSpecs selectSpecsInfo(Integer id, Integer goodsId, Integer userId) {
+    public ViewGoodsSpecs selectViewSpecsInfo(Integer id, Integer goodsId, Integer userId) {
         ViewGoodsSpecsExample example = new ViewGoodsSpecsExample();
         example.createCriteria().andIdEqualTo(id).andGoodsIdEqualTo(goodsId).andUserIdEqualTo(userId);
         List<ViewGoodsSpecs> list = viewGoodsSpecsMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+    }
+
+    public GoodsSpecs selectSpecsInfo(Integer id, Integer goodsId) {
+        GoodsSpecsExample example = new GoodsSpecsExample();
+        example.createCriteria().andIdEqualTo(id).andGoodsIdEqualTo(goodsId);
+        List<GoodsSpecs> list = goodsSpecsMapper.selectByExample(example);
         return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
     }
 
@@ -464,6 +475,15 @@ public class UserGoodsService {
         } else {
             goodsSpecsMapper.updateByPrimaryKeySelective(specs);
         }
+    }
+
+    /**
+     * 删除商品规格
+     * @param id
+     * @param goodsId
+     */
+    public void deleteGoodsSpecs(Integer id){
+        goodsSpecsMapper.deleteByPrimaryKey(id);
     }
 
     /**
@@ -509,9 +529,10 @@ public class UserGoodsService {
      */
     public int selectGoodsSpecsCount(Integer goodsId, Integer userId) {
         ViewGoodsSpecsExample example = new ViewGoodsSpecsExample();
-        example.createCriteria().andGoodsIdEqualTo(goodsId).andUserIdEqualTo(userId);
+        example.createCriteria().andGoodsIdEqualTo(goodsId).andUserIdEqualTo(userId).andSpecsStatusEqualTo(true);
         return (int) viewGoodsSpecsMapper.countByExample(example);
     }
+
 
     /**
      * 检查商品信息 更新商品信息
@@ -521,29 +542,52 @@ public class UserGoodsService {
      */
     @Async("taskExecutor")
     @Transactional(rollbackFor = Exception.class)
-    public void checkGoodsValue(Integer goodsId, Integer userId, boolean ifPrice) {
+    public void checkGoodsValueAndCart(Integer userId, GoodsSpecs specs) {
         GoodsInfo goods = new GoodsInfo();
-        goods.setId(goodsId);
-        if (ifPrice) {
-            String sql = "SELECT goods_id,min(sell_price) as mix_price, max(sell_price) as max_price " +
-                    "FROM goods_specs " +
-                    "WHERE goods_id = " + goodsId + " " +
-                    "GROUP BY goods_id";
-            Map map = commonMapper.selectSingleLine(sql);
-            goods.setMinPrice(Double.parseDouble(map.get("mix_price").toString()));
-            goods.setMaxPrice(Double.parseDouble(map.get("max_price").toString()));
-        }
-
-        int fileCount = this.selectFileCount(goodsId, userId);
-        int specsCount = this.selectSpecsCount(goodsId, userId);
-        if (fileCount <= 0 || specsCount <= 0) {
-            goods.setStatus(0);
-        }
+        goods.setId(specs.getGoodsId());
+        String sql = "SELECT goods_id,min(sell_price) as mix_price, max(sell_price) as max_price " +
+                "FROM goods_specs " +
+                "WHERE goods_id = " + specs.getGoodsId() + " " +
+                "GROUP BY goods_id";
+        Map map = commonMapper.selectSingleLine(sql);
+        goods.setMinPrice(Double.parseDouble(map.get("mix_price").toString()));
+        goods.setMaxPrice(Double.parseDouble(map.get("max_price").toString()));
         goodsInfoMapper.updateByPrimaryKeySelective(goods);
 
+        // 更新所有用户购物车中此商品规格信息
+        UserCartExample example = new UserCartExample();
+        example.createCriteria().andGoodsIdEqualTo(specs.getGoodsId()).andSpecsIdEqualTo(specs.getId()).andStatusEqualTo(true);
+        List<UserCart> list = userCartMapper.selectByExample(example);
+        if (NullUtil.isNotNullOrEmpty(list)){
+            List<Integer> cartIdList = new ArrayList<>();
+            if (specs.getSpecsStatus()){
+                // 所有购物车中，此规格类型已不存在的自动删除
+                String specsTypeList = specs.getSpecsTypeList() + ";";
+                for (UserCart cart: list) {
+                    if (specsTypeList.indexOf(cart.getSpecsType() + ";") < 0){
+                        cartIdList.add(cart.getId());
+                    }
+                }
+
+            } else {
+                // 此规格禁用或删除，所有购物车中记录皆自动删除
+                for (UserCart cart: list) {
+                    cartIdList.add(cart.getId());
+                }
+            }
+            UserCart cart = new UserCart();
+            cart.setStatus(false);
+            example = new UserCartExample();
+            example.createCriteria().andIdIn(cartIdList);
+            userCartMapper.updateByExampleSelective(cart, example);
+        }
 //        ViewGoodsInfo goodsInfo = selectViewGoodsInfo(goodsId, userId);
 //        appletPageService.updatePageContext(goodsInfo.getAppletId(), goodsInfo.getUserId(), null, goodsInfo);
     }
+
+//    public void checkGoodsValue(Integer goodsId, Integer userId) {
+//        checkGoodsValueAndCart(goodsId, userId, null);
+//    }
 
     /**
      * 分页查询用户小程序推荐商品

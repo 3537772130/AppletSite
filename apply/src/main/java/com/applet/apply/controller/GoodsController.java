@@ -3,6 +3,7 @@ package com.applet.apply.controller;
 import com.applet.apply.config.annotation.CancelAuth;
 import com.applet.apply.config.annotation.SessionScope;
 import com.applet.apply.service.CommentService;
+import com.applet.apply.service.UserCartService;
 import com.applet.common.entity.*;
 import com.applet.apply.service.GoodsService;
 import com.applet.apply.service.UserCouponService;
@@ -37,6 +38,8 @@ public class GoodsController {
     private UserCouponService userCouponService;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private UserCartService userCartService;
 
     /**
      * 加载商品详情信息
@@ -47,7 +50,7 @@ public class GoodsController {
     @RequestMapping(value = "loadGoodsDetails")
     @CancelAuth
     public Object loadGoodsDetails(@SessionScope("appletInfo") ViewAppletInfo appletInfo, Integer goodsId){
-        return queryGoodsDetails(appletInfo, goodsId);
+        return queryGoodsDetails(appletInfo, new ViewWeChantInfo(), goodsId);
     }
 
     /**
@@ -57,15 +60,16 @@ public class GoodsController {
      * @return
      */
     @RequestMapping(value = "loadUserGoodsDetails")
-    public Object loadUserGoodsDetails(@SessionScope("appletInfo") ViewAppletInfo appletInfo, Integer goodsId){
-        return queryGoodsDetails(appletInfo, goodsId);
+    public Object loadUserGoodsDetails(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
+                                       @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer goodsId){
+        return queryGoodsDetails(appletInfo, weChantInfo, goodsId);
     }
 
-    public Object queryGoodsDetails(ViewAppletInfo appletInfo, Integer goodsId){
+    public Object queryGoodsDetails(ViewAppletInfo appletInfo, ViewWeChantInfo weChantInfo, Integer goodsId){
         try {
             ViewGoodsInfo info = goodsService.selectGoodsInfo(appletInfo.getId(), goodsId);
             if (null != info){
-                if (info.getGoodsStatus().intValue() == 0){
+                if (info.getGoodsStatus().intValue() == -1){
                     return AjaxResponse.error("sorry，该宝贝已经下架咯");
                 }
                 Map map = new HashMap();
@@ -80,6 +84,9 @@ public class GoodsController {
                 map.put("commentList", commentService.loadCommentListByGoodsId(goodsId));
                 // 推荐商品集合
                 map.put("recommendGoodsList", goodsService.selectGoodsSellCountList(info.getId(), appletInfo.getId(), appletInfo.getUserId()));
+                // 购物选购商品种类数量
+                long cartCount = userCartService.countUserCart(appletInfo.getId(), weChantInfo.getId());
+                map.put("userCartCount", cartCount > 99 ? "99+" : cartCount);
                 return AjaxResponse.success(map);
             }
         } catch (Exception e) {

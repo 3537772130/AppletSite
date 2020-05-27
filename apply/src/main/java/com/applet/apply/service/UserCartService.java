@@ -65,10 +65,14 @@ public class UserCartService {
      * @param specsId
      * @return
      */
-    public ViewUserCart selectUserCartInfo(Integer wxId, Integer appletId, Integer specsId){
+    public ViewUserCart selectUserCartInfo(Integer wxId, Integer appletId, Integer specsId, String specsType){
         ViewUserCartExample example = new ViewUserCartExample();
         example.setOrderByClause("update_time desc");
-        example.createCriteria().andWxIdEqualTo(wxId).andAppletIdEqualTo(appletId).andSpecsIdEqualTo(specsId);
+        example.createCriteria()
+                .andWxIdEqualTo(wxId)
+                .andAppletIdEqualTo(appletId)
+                .andSpecsIdEqualTo(specsId)
+                .andSpecsTypeEqualTo(specsType);
         List<ViewUserCart> list = viewUserCartMapper.selectByExample(example);
         return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
     }
@@ -152,5 +156,20 @@ public class UserCartService {
         record.setStatus(false);
         userCartMapper.updateByExampleSelective(record, example);
         userOrderService.addOrderSeeRecord(orderId);
+    }
+
+    /**
+     * 统计用户购物车有效数量
+     * @param appletId
+     * @param wxId
+     * @return
+     */
+    public long countUserCart(Integer appletId, Integer wxId){
+        if (NullUtil.isNotNullOrEmpty(wxId)){
+            UserCartExample example = new UserCartExample();
+            example.createCriteria().andAppletIdEqualTo(appletId).andWxIdEqualTo(wxId).andStatusEqualTo(true);
+            return userCartMapper.countByExample(example);
+        }
+        return 0;
     }
 }

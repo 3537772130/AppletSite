@@ -55,7 +55,7 @@ public class AppletPageService {
      * @param appletId
      * @param appletCode
      */
-    public GoodsClassify selectGoodsClassify(Integer appletId, String appletCode) {
+    public GoodsClassify selectGoodsClassify(Integer appletId) {
         List<ViewGoodsType> typeList = goodsService.selectGoodsTypeList(appletId);
         GoodsClassify gc = null;
         if (NullUtil.isNotNullOrEmpty(typeList)){
@@ -68,7 +68,6 @@ public class AppletPageService {
             gc.setInfoList(goodsService.selectGoodsInfoList(appletId, typeIdList));
             gc.setCouponList(userCouponService.selectCouponList(appletId));
         }
-
         return gc;
     }
 

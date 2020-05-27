@@ -16,7 +16,7 @@ public class ViewGoodsSpecs implements Serializable {
 
     private String specsName;
 
-    private String specsSizeStr;
+    private String specsTypeList;
 
     private Double sellPrice;
 
@@ -68,12 +68,12 @@ public class ViewGoodsSpecs implements Serializable {
         this.specsName = specsName == null ? null : specsName.trim();
     }
 
-    public String getSpecsSizeStr() {
-        return specsSizeStr;
+    public String getSpecsTypeList() {
+        return specsTypeList;
     }
 
-    public void setSpecsSizeStr(String specsSizeStr) {
-        this.specsSizeStr = specsSizeStr == null ? null : specsSizeStr.trim();
+    public void setSpecsTypeList(String specsTypeList) {
+        this.specsTypeList = specsTypeList == null ? null : specsTypeList.trim();
     }
 
     public Double getSellPrice() {

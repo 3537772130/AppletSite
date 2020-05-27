@@ -59,7 +59,7 @@ public class GoodsService {
     public List<ViewGoodsInfo> selectGoodsInfoList(Integer appletId, List<Integer> typeIdList) {
         ViewGoodsInfoExample example = new ViewGoodsInfoExample();
         example.setOrderByClause("goods_index asc");
-        example.createCriteria().andAppletIdEqualTo(appletId).andTypeIdIn(typeIdList).andGoodsStatusEqualTo(1);
+        example.createCriteria().andAppletIdEqualTo(appletId).andTypeIdIn(typeIdList).andGoodsStatusNotEqualTo(-1);
         return viewGoodsInfoMapper.selectByExample(example);
     }
 

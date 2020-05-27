@@ -13,7 +13,7 @@
     <result column="specs_id" jdbcType="INTEGER" property="specsId" />
     <result column="specs_src" jdbcType="VARCHAR" property="specsSrc" />
     <result column="specs_name" jdbcType="VARCHAR" property="specsName" />
-    <result column="specs_size" jdbcType="VARCHAR" property="specsSize" />
+    <result column="specs_type" jdbcType="VARCHAR" property="specsType" />
     <result column="sell_price" jdbcType="DOUBLE" property="sellPrice" />
     <result column="amount" jdbcType="INTEGER" property="amount" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -49,7 +49,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, wx_id, applet_id, goods_id, goods_name, discount, if_coupon, describe_str, specs_id,
-    specs_src, specs_name, specs_size, sell_price, amount, update_time
+    specs_src, specs_name, specs_type, sell_price, amount, update_time
   </sql>
   <select id="selectByExample" parameterType="com.applet.common.entity.ViewUserCartExample" resultMap="BaseResultMap">
     select

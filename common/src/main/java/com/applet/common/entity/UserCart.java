@@ -20,7 +20,7 @@ public class UserCart implements Serializable {
 
     private Integer specsId;
 
-    private String specsSize;
+    private String specsType;
 
     private Integer amount;
 
@@ -71,12 +71,12 @@ public class UserCart implements Serializable {
         this.specsId = specsId;
     }
 
-    public String getSpecsSize() {
-        return specsSize;
+    public String getSpecsType() {
+        return specsType;
     }
 
-    public void setSpecsSize(String specsSize) {
-        this.specsSize = specsSize == null ? null : specsSize.trim();
+    public void setSpecsType(String specsType) {
+        this.specsType = specsType == null ? null : specsType.trim();
     }
 
     public Integer getAmount() {
