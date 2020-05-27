@@ -5,7 +5,8 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="goods_id" jdbcType="INTEGER" property="goodsId" />
     <result column="specs_src" jdbcType="VARCHAR" property="specsSrc" />
-    <result column="specs_text" jdbcType="VARCHAR" property="specsText" />
+    <result column="specs_name" jdbcType="VARCHAR" property="specsName" />
+    <result column="specs_size_str" jdbcType="VARCHAR" property="specsSizeStr" />
     <result column="sell_price" jdbcType="DOUBLE" property="sellPrice" />
     <result column="describe_str" jdbcType="VARCHAR" property="describeStr" />
     <result column="specs_index" jdbcType="INTEGER" property="specsIndex" />
@@ -70,7 +71,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, goods_id, specs_src, specs_text, sell_price, describe_str, specs_index, specs_status
+    id, goods_id, specs_src, specs_name, specs_size_str, sell_price, describe_str, specs_index, 
+    specs_status
   </sql>
   <select id="selectByExample" parameterType="com.applet.common.entity.GoodsSpecsExample" resultMap="BaseResultMap">
     select
@@ -105,11 +107,13 @@
   </delete>
   <insert id="insert" parameterType="com.applet.common.entity.GoodsSpecs">
     insert into goods_specs (id, goods_id, specs_src, 
-      specs_text, sell_price, describe_str, 
-      specs_index, specs_status)
+      specs_name, specs_size_str, sell_price, 
+      describe_str, specs_index, specs_status
+      )
     values (#{id,jdbcType=INTEGER}, #{goodsId,jdbcType=INTEGER}, #{specsSrc,jdbcType=VARCHAR}, 
-      #{specsText,jdbcType=VARCHAR}, #{sellPrice,jdbcType=DOUBLE}, #{describeStr,jdbcType=VARCHAR}, 
-      #{specsIndex,jdbcType=INTEGER}, #{specsStatus,jdbcType=BIT})
+      #{specsName,jdbcType=VARCHAR}, #{specsSizeStr,jdbcType=VARCHAR}, #{sellPrice,jdbcType=DOUBLE}, 
+      #{describeStr,jdbcType=VARCHAR}, #{specsIndex,jdbcType=INTEGER}, #{specsStatus,jdbcType=BIT}
+      )
   </insert>
   <insert id="insertSelective" keyProperty="id" parameterType="com.applet.common.entity.GoodsSpecs" useGeneratedKeys="true">
     insert into goods_specs
@@ -123,8 +127,11 @@
       <if test="specsSrc != null">
         specs_src,
       </if>
-      <if test="specsText != null">
-        specs_text,
+      <if test="specsName != null">
+        specs_name,
+      </if>
+      <if test="specsSizeStr != null">
+        specs_size_str,
       </if>
       <if test="sellPrice != null">
         sell_price,
@@ -149,8 +156,11 @@
       <if test="specsSrc != null">
         #{specsSrc,jdbcType=VARCHAR},
       </if>
-      <if test="specsText != null">
-        #{specsText,jdbcType=VARCHAR},
+      <if test="specsName != null">
+        #{specsName,jdbcType=VARCHAR},
+      </if>
+      <if test="specsSizeStr != null">
+        #{specsSizeStr,jdbcType=VARCHAR},
       </if>
       <if test="sellPrice != null">
         #{sellPrice,jdbcType=DOUBLE},
@@ -184,8 +194,11 @@
       <if test="record.specsSrc != null">
         specs_src = #{record.specsSrc,jdbcType=VARCHAR},
       </if>
-      <if test="record.specsText != null">
-        specs_text = #{record.specsText,jdbcType=VARCHAR},
+      <if test="record.specsName != null">
+        specs_name = #{record.specsName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.specsSizeStr != null">
+        specs_size_str = #{record.specsSizeStr,jdbcType=VARCHAR},
       </if>
       <if test="record.sellPrice != null">
         sell_price = #{record.sellPrice,jdbcType=DOUBLE},
@@ -209,7 +222,8 @@
     set id = #{record.id,jdbcType=INTEGER},
       goods_id = #{record.goodsId,jdbcType=INTEGER},
       specs_src = #{record.specsSrc,jdbcType=VARCHAR},
-      specs_text = #{record.specsText,jdbcType=VARCHAR},
+      specs_name = #{record.specsName,jdbcType=VARCHAR},
+      specs_size_str = #{record.specsSizeStr,jdbcType=VARCHAR},
       sell_price = #{record.sellPrice,jdbcType=DOUBLE},
       describe_str = #{record.describeStr,jdbcType=VARCHAR},
       specs_index = #{record.specsIndex,jdbcType=INTEGER},
@@ -227,8 +241,11 @@
       <if test="specsSrc != null">
         specs_src = #{specsSrc,jdbcType=VARCHAR},
       </if>
-      <if test="specsText != null">
-        specs_text = #{specsText,jdbcType=VARCHAR},
+      <if test="specsName != null">
+        specs_name = #{specsName,jdbcType=VARCHAR},
+      </if>
+      <if test="specsSizeStr != null">
+        specs_size_str = #{specsSizeStr,jdbcType=VARCHAR},
       </if>
       <if test="sellPrice != null">
         sell_price = #{sellPrice,jdbcType=DOUBLE},
@@ -249,7 +266,8 @@
     update goods_specs
     set goods_id = #{goodsId,jdbcType=INTEGER},
       specs_src = #{specsSrc,jdbcType=VARCHAR},
-      specs_text = #{specsText,jdbcType=VARCHAR},
+      specs_name = #{specsName,jdbcType=VARCHAR},
+      specs_size_str = #{specsSizeStr,jdbcType=VARCHAR},
       sell_price = #{sellPrice,jdbcType=DOUBLE},
       describe_str = #{describeStr,jdbcType=VARCHAR},
       specs_index = #{specsIndex,jdbcType=INTEGER},

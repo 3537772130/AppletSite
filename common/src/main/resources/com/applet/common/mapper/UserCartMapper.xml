@@ -7,6 +7,7 @@
     <result column="applet_id" jdbcType="INTEGER" property="appletId" />
     <result column="goods_id" jdbcType="INTEGER" property="goodsId" />
     <result column="specs_id" jdbcType="INTEGER" property="specsId" />
+    <result column="specs_size" jdbcType="VARCHAR" property="specsSize" />
     <result column="amount" jdbcType="INTEGER" property="amount" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="status" jdbcType="BIT" property="status" />
@@ -70,7 +71,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, wx_id, applet_id, goods_id, specs_id, amount, update_time, status
+    id, wx_id, applet_id, goods_id, specs_id, specs_size, amount, update_time, status
   </sql>
   <select id="selectByExample" parameterType="com.applet.common.entity.UserCartExample" resultMap="BaseResultMap">
     select
@@ -105,11 +106,13 @@
   </delete>
   <insert id="insert" parameterType="com.applet.common.entity.UserCart">
     insert into user_cart (id, wx_id, applet_id, 
-      goods_id, specs_id, amount, 
-      update_time, status)
+      goods_id, specs_id, specs_size, 
+      amount, update_time, status
+      )
     values (#{id,jdbcType=INTEGER}, #{wxId,jdbcType=INTEGER}, #{appletId,jdbcType=INTEGER}, 
-      #{goodsId,jdbcType=INTEGER}, #{specsId,jdbcType=INTEGER}, #{amount,jdbcType=INTEGER}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=BIT})
+      #{goodsId,jdbcType=INTEGER}, #{specsId,jdbcType=INTEGER}, #{specsSize,jdbcType=VARCHAR}, 
+      #{amount,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=BIT}
+      )
   </insert>
   <insert id="insertSelective" keyProperty="id" parameterType="com.applet.common.entity.UserCart" useGeneratedKeys="true">
     insert into user_cart
@@ -128,6 +131,9 @@
       </if>
       <if test="specsId != null">
         specs_id,
+      </if>
+      <if test="specsSize != null">
+        specs_size,
       </if>
       <if test="amount != null">
         amount,
@@ -154,6 +160,9 @@
       </if>
       <if test="specsId != null">
         #{specsId,jdbcType=INTEGER},
+      </if>
+      <if test="specsSize != null">
+        #{specsSize,jdbcType=VARCHAR},
       </if>
       <if test="amount != null">
         #{amount,jdbcType=INTEGER},
@@ -190,6 +199,9 @@
       <if test="record.specsId != null">
         specs_id = #{record.specsId,jdbcType=INTEGER},
       </if>
+      <if test="record.specsSize != null">
+        specs_size = #{record.specsSize,jdbcType=VARCHAR},
+      </if>
       <if test="record.amount != null">
         amount = #{record.amount,jdbcType=INTEGER},
       </if>
@@ -211,6 +223,7 @@
       applet_id = #{record.appletId,jdbcType=INTEGER},
       goods_id = #{record.goodsId,jdbcType=INTEGER},
       specs_id = #{record.specsId,jdbcType=INTEGER},
+      specs_size = #{record.specsSize,jdbcType=VARCHAR},
       amount = #{record.amount,jdbcType=INTEGER},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       status = #{record.status,jdbcType=BIT}
@@ -233,6 +246,9 @@
       <if test="specsId != null">
         specs_id = #{specsId,jdbcType=INTEGER},
       </if>
+      <if test="specsSize != null">
+        specs_size = #{specsSize,jdbcType=VARCHAR},
+      </if>
       <if test="amount != null">
         amount = #{amount,jdbcType=INTEGER},
       </if>
@@ -251,6 +267,7 @@
       applet_id = #{appletId,jdbcType=INTEGER},
       goods_id = #{goodsId,jdbcType=INTEGER},
       specs_id = #{specsId,jdbcType=INTEGER},
+      specs_size = #{specsSize,jdbcType=VARCHAR},
       amount = #{amount,jdbcType=INTEGER},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       status = #{status,jdbcType=BIT}

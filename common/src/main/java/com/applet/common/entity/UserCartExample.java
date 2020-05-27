@@ -416,6 +416,76 @@ public class UserCartExample {
             return (Criteria) this;
         }
 
+        public Criteria andSpecsSizeIsNull() {
+            addCriterion("specs_size is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeIsNotNull() {
+            addCriterion("specs_size is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeEqualTo(String value) {
+            addCriterion("specs_size =", value, "specsSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeNotEqualTo(String value) {
+            addCriterion("specs_size <>", value, "specsSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeGreaterThan(String value) {
+            addCriterion("specs_size >", value, "specsSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeGreaterThanOrEqualTo(String value) {
+            addCriterion("specs_size >=", value, "specsSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeLessThan(String value) {
+            addCriterion("specs_size <", value, "specsSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeLessThanOrEqualTo(String value) {
+            addCriterion("specs_size <=", value, "specsSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeLike(String value) {
+            addCriterion("specs_size like", value, "specsSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeNotLike(String value) {
+            addCriterion("specs_size not like", value, "specsSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeIn(List<String> values) {
+            addCriterion("specs_size in", values, "specsSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeNotIn(List<String> values) {
+            addCriterion("specs_size not in", values, "specsSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeBetween(String value1, String value2) {
+            addCriterion("specs_size between", value1, value2, "specsSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeNotBetween(String value1, String value2) {
+            addCriterion("specs_size not between", value1, value2, "specsSize");
+            return (Criteria) this;
+        }
+
         public Criteria andAmountIsNull() {
             addCriterion("amount is null");
             return (Criteria) this;

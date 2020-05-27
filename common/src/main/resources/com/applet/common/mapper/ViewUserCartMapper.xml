@@ -8,11 +8,12 @@
     <result column="goods_id" jdbcType="INTEGER" property="goodsId" />
     <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
     <result column="discount" jdbcType="INTEGER" property="discount" />
-    <result column="if_discount" jdbcType="BIT" property="ifDiscount" />
+    <result column="if_coupon" jdbcType="BIT" property="ifCoupon" />
     <result column="describe_str" jdbcType="VARCHAR" property="describeStr" />
     <result column="specs_id" jdbcType="INTEGER" property="specsId" />
     <result column="specs_src" jdbcType="VARCHAR" property="specsSrc" />
-    <result column="specs_text" jdbcType="VARCHAR" property="specsText" />
+    <result column="specs_name" jdbcType="VARCHAR" property="specsName" />
+    <result column="specs_size" jdbcType="VARCHAR" property="specsSize" />
     <result column="sell_price" jdbcType="DOUBLE" property="sellPrice" />
     <result column="amount" jdbcType="INTEGER" property="amount" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -47,8 +48,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, wx_id, applet_id, goods_id, goods_name, discount, if_discount, describe_str,
-    specs_id, specs_src, specs_text, sell_price, amount, update_time
+    id, wx_id, applet_id, goods_id, goods_name, discount, if_coupon, describe_str, specs_id,
+    specs_src, specs_name, specs_size, sell_price, amount, update_time
   </sql>
   <select id="selectByExample" parameterType="com.applet.common.entity.ViewUserCartExample" resultMap="BaseResultMap">
     select

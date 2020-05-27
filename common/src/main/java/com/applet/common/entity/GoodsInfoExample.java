@@ -686,63 +686,63 @@ public class GoodsInfoExample {
             return (Criteria) this;
         }
 
-        public Criteria andIfDiscountIsNull() {
-            addCriterion("if_discount is null");
+        public Criteria andIfCouponIsNull() {
+            addCriterion("if_coupon is null");
             return (Criteria) this;
         }
 
-        public Criteria andIfDiscountIsNotNull() {
-            addCriterion("if_discount is not null");
+        public Criteria andIfCouponIsNotNull() {
+            addCriterion("if_coupon is not null");
             return (Criteria) this;
         }
 
-        public Criteria andIfDiscountEqualTo(Boolean value) {
-            addCriterion("if_discount =", value, "ifDiscount");
+        public Criteria andIfCouponEqualTo(Boolean value) {
+            addCriterion("if_coupon =", value, "ifCoupon");
             return (Criteria) this;
         }
 
-        public Criteria andIfDiscountNotEqualTo(Boolean value) {
-            addCriterion("if_discount <>", value, "ifDiscount");
+        public Criteria andIfCouponNotEqualTo(Boolean value) {
+            addCriterion("if_coupon <>", value, "ifCoupon");
             return (Criteria) this;
         }
 
-        public Criteria andIfDiscountGreaterThan(Boolean value) {
-            addCriterion("if_discount >", value, "ifDiscount");
+        public Criteria andIfCouponGreaterThan(Boolean value) {
+            addCriterion("if_coupon >", value, "ifCoupon");
             return (Criteria) this;
         }
 
-        public Criteria andIfDiscountGreaterThanOrEqualTo(Boolean value) {
-            addCriterion("if_discount >=", value, "ifDiscount");
+        public Criteria andIfCouponGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("if_coupon >=", value, "ifCoupon");
             return (Criteria) this;
         }
 
-        public Criteria andIfDiscountLessThan(Boolean value) {
-            addCriterion("if_discount <", value, "ifDiscount");
+        public Criteria andIfCouponLessThan(Boolean value) {
+            addCriterion("if_coupon <", value, "ifCoupon");
             return (Criteria) this;
         }
 
-        public Criteria andIfDiscountLessThanOrEqualTo(Boolean value) {
-            addCriterion("if_discount <=", value, "ifDiscount");
+        public Criteria andIfCouponLessThanOrEqualTo(Boolean value) {
+            addCriterion("if_coupon <=", value, "ifCoupon");
             return (Criteria) this;
         }
 
-        public Criteria andIfDiscountIn(List<Boolean> values) {
-            addCriterion("if_discount in", values, "ifDiscount");
+        public Criteria andIfCouponIn(List<Boolean> values) {
+            addCriterion("if_coupon in", values, "ifCoupon");
             return (Criteria) this;
         }
 
-        public Criteria andIfDiscountNotIn(List<Boolean> values) {
-            addCriterion("if_discount not in", values, "ifDiscount");
+        public Criteria andIfCouponNotIn(List<Boolean> values) {
+            addCriterion("if_coupon not in", values, "ifCoupon");
             return (Criteria) this;
         }
 
-        public Criteria andIfDiscountBetween(Boolean value1, Boolean value2) {
-            addCriterion("if_discount between", value1, value2, "ifDiscount");
+        public Criteria andIfCouponBetween(Boolean value1, Boolean value2) {
+            addCriterion("if_coupon between", value1, value2, "ifCoupon");
             return (Criteria) this;
         }
 
-        public Criteria andIfDiscountNotBetween(Boolean value1, Boolean value2) {
-            addCriterion("if_discount not between", value1, value2, "ifDiscount");
+        public Criteria andIfCouponNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("if_coupon not between", value1, value2, "ifCoupon");
             return (Criteria) this;
         }
 

@@ -15,7 +15,7 @@
     <result column="min_price" jdbcType="DOUBLE" property="minPrice" />
     <result column="max_price" jdbcType="DOUBLE" property="maxPrice" />
     <result column="describe_str" jdbcType="VARCHAR" property="describeStr" />
-    <result column="if_discount" jdbcType="INTEGER" property="ifDiscount" />
+    <result column="if_coupon" jdbcType="INTEGER" property="ifCoupon" />
     <result column="goods_index" jdbcType="INTEGER" property="goodsIndex" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="goods_status" jdbcType="INTEGER" property="goodsStatus" />
@@ -51,7 +51,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, applet_id, user_id, user_mobile, user_nick_name, type_id, type_name, goods_name, 
-    cover_src, discount, min_price, max_price, describe_str, if_discount, goods_index, 
+    cover_src, discount, min_price, max_price, describe_str, if_coupon, goods_index, 
     update_time, goods_status
   </sql>
   <select id="selectByExample" parameterType="com.applet.common.entity.ViewGoodsInfoExample" resultMap="BaseResultMap">

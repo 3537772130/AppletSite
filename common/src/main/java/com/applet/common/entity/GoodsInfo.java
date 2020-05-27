@@ -28,7 +28,7 @@ public class GoodsInfo implements Serializable {
 
     private String describeStr;
 
-    private Boolean ifDiscount;
+    private Boolean ifCoupon;
 
     private Integer goodsIndex;
 
@@ -111,12 +111,12 @@ public class GoodsInfo implements Serializable {
         this.describeStr = describeStr == null ? null : describeStr.trim();
     }
 
-    public Boolean getIfDiscount() {
-        return ifDiscount;
+    public Boolean getIfCoupon() {
+        return ifCoupon;
     }
 
-    public void setIfDiscount(Boolean ifDiscount) {
-        this.ifDiscount = ifDiscount;
+    public void setIfCoupon(Boolean ifCoupon) {
+        this.ifCoupon = ifCoupon;
     }
 
     public Integer getGoodsIndex() {

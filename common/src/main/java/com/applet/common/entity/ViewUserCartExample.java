@@ -486,63 +486,63 @@ public class ViewUserCartExample {
             return (Criteria) this;
         }
 
-        public Criteria andIfDiscountIsNull() {
-            addCriterion("if_discount is null");
+        public Criteria andIfCouponIsNull() {
+            addCriterion("if_coupon is null");
             return (Criteria) this;
         }
 
-        public Criteria andIfDiscountIsNotNull() {
-            addCriterion("if_discount is not null");
+        public Criteria andIfCouponIsNotNull() {
+            addCriterion("if_coupon is not null");
             return (Criteria) this;
         }
 
-        public Criteria andIfDiscountEqualTo(Boolean value) {
-            addCriterion("if_discount =", value, "ifDiscount");
+        public Criteria andIfCouponEqualTo(Boolean value) {
+            addCriterion("if_coupon =", value, "ifCoupon");
             return (Criteria) this;
         }
 
-        public Criteria andIfDiscountNotEqualTo(Boolean value) {
-            addCriterion("if_discount <>", value, "ifDiscount");
+        public Criteria andIfCouponNotEqualTo(Boolean value) {
+            addCriterion("if_coupon <>", value, "ifCoupon");
             return (Criteria) this;
         }
 
-        public Criteria andIfDiscountGreaterThan(Boolean value) {
-            addCriterion("if_discount >", value, "ifDiscount");
+        public Criteria andIfCouponGreaterThan(Boolean value) {
+            addCriterion("if_coupon >", value, "ifCoupon");
             return (Criteria) this;
         }
 
-        public Criteria andIfDiscountGreaterThanOrEqualTo(Boolean value) {
-            addCriterion("if_discount >=", value, "ifDiscount");
+        public Criteria andIfCouponGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("if_coupon >=", value, "ifCoupon");
             return (Criteria) this;
         }
 
-        public Criteria andIfDiscountLessThan(Boolean value) {
-            addCriterion("if_discount <", value, "ifDiscount");
+        public Criteria andIfCouponLessThan(Boolean value) {
+            addCriterion("if_coupon <", value, "ifCoupon");
             return (Criteria) this;
         }
 
-        public Criteria andIfDiscountLessThanOrEqualTo(Boolean value) {
-            addCriterion("if_discount <=", value, "ifDiscount");
+        public Criteria andIfCouponLessThanOrEqualTo(Boolean value) {
+            addCriterion("if_coupon <=", value, "ifCoupon");
             return (Criteria) this;
         }
 
-        public Criteria andIfDiscountIn(List<Boolean> values) {
-            addCriterion("if_discount in", values, "ifDiscount");
+        public Criteria andIfCouponIn(List<Boolean> values) {
+            addCriterion("if_coupon in", values, "ifCoupon");
             return (Criteria) this;
         }
 
-        public Criteria andIfDiscountNotIn(List<Boolean> values) {
-            addCriterion("if_discount not in", values, "ifDiscount");
+        public Criteria andIfCouponNotIn(List<Boolean> values) {
+            addCriterion("if_coupon not in", values, "ifCoupon");
             return (Criteria) this;
         }
 
-        public Criteria andIfDiscountBetween(Boolean value1, Boolean value2) {
-            addCriterion("if_discount between", value1, value2, "ifDiscount");
+        public Criteria andIfCouponBetween(Boolean value1, Boolean value2) {
+            addCriterion("if_coupon between", value1, value2, "ifCoupon");
             return (Criteria) this;
         }
 
-        public Criteria andIfDiscountNotBetween(Boolean value1, Boolean value2) {
-            addCriterion("if_discount not between", value1, value2, "ifDiscount");
+        public Criteria andIfCouponNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("if_coupon not between", value1, value2, "ifCoupon");
             return (Criteria) this;
         }
 
@@ -746,73 +746,143 @@ public class ViewUserCartExample {
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextIsNull() {
-            addCriterion("specs_text is null");
+        public Criteria andSpecsNameIsNull() {
+            addCriterion("specs_name is null");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextIsNotNull() {
-            addCriterion("specs_text is not null");
+        public Criteria andSpecsNameIsNotNull() {
+            addCriterion("specs_name is not null");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextEqualTo(String value) {
-            addCriterion("specs_text =", value, "specsText");
+        public Criteria andSpecsNameEqualTo(String value) {
+            addCriterion("specs_name =", value, "specsName");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextNotEqualTo(String value) {
-            addCriterion("specs_text <>", value, "specsText");
+        public Criteria andSpecsNameNotEqualTo(String value) {
+            addCriterion("specs_name <>", value, "specsName");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextGreaterThan(String value) {
-            addCriterion("specs_text >", value, "specsText");
+        public Criteria andSpecsNameGreaterThan(String value) {
+            addCriterion("specs_name >", value, "specsName");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextGreaterThanOrEqualTo(String value) {
-            addCriterion("specs_text >=", value, "specsText");
+        public Criteria andSpecsNameGreaterThanOrEqualTo(String value) {
+            addCriterion("specs_name >=", value, "specsName");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextLessThan(String value) {
-            addCriterion("specs_text <", value, "specsText");
+        public Criteria andSpecsNameLessThan(String value) {
+            addCriterion("specs_name <", value, "specsName");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextLessThanOrEqualTo(String value) {
-            addCriterion("specs_text <=", value, "specsText");
+        public Criteria andSpecsNameLessThanOrEqualTo(String value) {
+            addCriterion("specs_name <=", value, "specsName");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextLike(String value) {
-            addCriterion("specs_text like", value, "specsText");
+        public Criteria andSpecsNameLike(String value) {
+            addCriterion("specs_name like", value, "specsName");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextNotLike(String value) {
-            addCriterion("specs_text not like", value, "specsText");
+        public Criteria andSpecsNameNotLike(String value) {
+            addCriterion("specs_name not like", value, "specsName");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextIn(List<String> values) {
-            addCriterion("specs_text in", values, "specsText");
+        public Criteria andSpecsNameIn(List<String> values) {
+            addCriterion("specs_name in", values, "specsName");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextNotIn(List<String> values) {
-            addCriterion("specs_text not in", values, "specsText");
+        public Criteria andSpecsNameNotIn(List<String> values) {
+            addCriterion("specs_name not in", values, "specsName");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextBetween(String value1, String value2) {
-            addCriterion("specs_text between", value1, value2, "specsText");
+        public Criteria andSpecsNameBetween(String value1, String value2) {
+            addCriterion("specs_name between", value1, value2, "specsName");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextNotBetween(String value1, String value2) {
-            addCriterion("specs_text not between", value1, value2, "specsText");
+        public Criteria andSpecsNameNotBetween(String value1, String value2) {
+            addCriterion("specs_name not between", value1, value2, "specsName");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeIsNull() {
+            addCriterion("specs_size is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeIsNotNull() {
+            addCriterion("specs_size is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeEqualTo(String value) {
+            addCriterion("specs_size =", value, "specsSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeNotEqualTo(String value) {
+            addCriterion("specs_size <>", value, "specsSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeGreaterThan(String value) {
+            addCriterion("specs_size >", value, "specsSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeGreaterThanOrEqualTo(String value) {
+            addCriterion("specs_size >=", value, "specsSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeLessThan(String value) {
+            addCriterion("specs_size <", value, "specsSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeLessThanOrEqualTo(String value) {
+            addCriterion("specs_size <=", value, "specsSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeLike(String value) {
+            addCriterion("specs_size like", value, "specsSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeNotLike(String value) {
+            addCriterion("specs_size not like", value, "specsSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeIn(List<String> values) {
+            addCriterion("specs_size in", values, "specsSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeNotIn(List<String> values) {
+            addCriterion("specs_size not in", values, "specsSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeBetween(String value1, String value2) {
+            addCriterion("specs_size between", value1, value2, "specsSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeNotBetween(String value1, String value2) {
+            addCriterion("specs_size not between", value1, value2, "specsSize");
             return (Criteria) this;
         }
 

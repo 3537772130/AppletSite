@@ -2,6 +2,9 @@ package com.applet.common.entity;
 
 import java.io.Serializable;
 
+/**
+ * 商品规格信息 - 视图
+ */
 public class ViewGoodsSpecs implements Serializable {
     private Integer id;
 
@@ -11,7 +14,9 @@ public class ViewGoodsSpecs implements Serializable {
 
     private String specsSrc;
 
-    private String specsText;
+    private String specsName;
+
+    private String specsSizeStr;
 
     private Double sellPrice;
 
@@ -55,12 +60,20 @@ public class ViewGoodsSpecs implements Serializable {
         this.specsSrc = specsSrc == null ? null : specsSrc.trim();
     }
 
-    public String getSpecsText() {
-        return specsText;
+    public String getSpecsName() {
+        return specsName;
     }
 
-    public void setSpecsText(String specsText) {
-        this.specsText = specsText == null ? null : specsText.trim();
+    public void setSpecsName(String specsName) {
+        this.specsName = specsName == null ? null : specsName.trim();
+    }
+
+    public String getSpecsSizeStr() {
+        return specsSizeStr;
+    }
+
+    public void setSpecsSizeStr(String specsSizeStr) {
+        this.specsSizeStr = specsSizeStr == null ? null : specsSizeStr.trim();
     }
 
     public Double getSellPrice() {

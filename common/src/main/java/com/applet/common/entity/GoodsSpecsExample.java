@@ -305,73 +305,143 @@ public class GoodsSpecsExample {
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextIsNull() {
-            addCriterion("specs_text is null");
+        public Criteria andSpecsNameIsNull() {
+            addCriterion("specs_name is null");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextIsNotNull() {
-            addCriterion("specs_text is not null");
+        public Criteria andSpecsNameIsNotNull() {
+            addCriterion("specs_name is not null");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextEqualTo(String value) {
-            addCriterion("specs_text =", value, "specsText");
+        public Criteria andSpecsNameEqualTo(String value) {
+            addCriterion("specs_name =", value, "specsName");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextNotEqualTo(String value) {
-            addCriterion("specs_text <>", value, "specsText");
+        public Criteria andSpecsNameNotEqualTo(String value) {
+            addCriterion("specs_name <>", value, "specsName");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextGreaterThan(String value) {
-            addCriterion("specs_text >", value, "specsText");
+        public Criteria andSpecsNameGreaterThan(String value) {
+            addCriterion("specs_name >", value, "specsName");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextGreaterThanOrEqualTo(String value) {
-            addCriterion("specs_text >=", value, "specsText");
+        public Criteria andSpecsNameGreaterThanOrEqualTo(String value) {
+            addCriterion("specs_name >=", value, "specsName");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextLessThan(String value) {
-            addCriterion("specs_text <", value, "specsText");
+        public Criteria andSpecsNameLessThan(String value) {
+            addCriterion("specs_name <", value, "specsName");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextLessThanOrEqualTo(String value) {
-            addCriterion("specs_text <=", value, "specsText");
+        public Criteria andSpecsNameLessThanOrEqualTo(String value) {
+            addCriterion("specs_name <=", value, "specsName");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextLike(String value) {
-            addCriterion("specs_text like", value, "specsText");
+        public Criteria andSpecsNameLike(String value) {
+            addCriterion("specs_name like", value, "specsName");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextNotLike(String value) {
-            addCriterion("specs_text not like", value, "specsText");
+        public Criteria andSpecsNameNotLike(String value) {
+            addCriterion("specs_name not like", value, "specsName");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextIn(List<String> values) {
-            addCriterion("specs_text in", values, "specsText");
+        public Criteria andSpecsNameIn(List<String> values) {
+            addCriterion("specs_name in", values, "specsName");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextNotIn(List<String> values) {
-            addCriterion("specs_text not in", values, "specsText");
+        public Criteria andSpecsNameNotIn(List<String> values) {
+            addCriterion("specs_name not in", values, "specsName");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextBetween(String value1, String value2) {
-            addCriterion("specs_text between", value1, value2, "specsText");
+        public Criteria andSpecsNameBetween(String value1, String value2) {
+            addCriterion("specs_name between", value1, value2, "specsName");
             return (Criteria) this;
         }
 
-        public Criteria andSpecsTextNotBetween(String value1, String value2) {
-            addCriterion("specs_text not between", value1, value2, "specsText");
+        public Criteria andSpecsNameNotBetween(String value1, String value2) {
+            addCriterion("specs_name not between", value1, value2, "specsName");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeStrIsNull() {
+            addCriterion("specs_size_str is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeStrIsNotNull() {
+            addCriterion("specs_size_str is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeStrEqualTo(String value) {
+            addCriterion("specs_size_str =", value, "specsSizeStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeStrNotEqualTo(String value) {
+            addCriterion("specs_size_str <>", value, "specsSizeStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeStrGreaterThan(String value) {
+            addCriterion("specs_size_str >", value, "specsSizeStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeStrGreaterThanOrEqualTo(String value) {
+            addCriterion("specs_size_str >=", value, "specsSizeStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeStrLessThan(String value) {
+            addCriterion("specs_size_str <", value, "specsSizeStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeStrLessThanOrEqualTo(String value) {
+            addCriterion("specs_size_str <=", value, "specsSizeStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeStrLike(String value) {
+            addCriterion("specs_size_str like", value, "specsSizeStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeStrNotLike(String value) {
+            addCriterion("specs_size_str not like", value, "specsSizeStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeStrIn(List<String> values) {
+            addCriterion("specs_size_str in", values, "specsSizeStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeStrNotIn(List<String> values) {
+            addCriterion("specs_size_str not in", values, "specsSizeStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeStrBetween(String value1, String value2) {
+            addCriterion("specs_size_str between", value1, value2, "specsSizeStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andSpecsSizeStrNotBetween(String value1, String value2) {
+            addCriterion("specs_size_str not between", value1, value2, "specsSizeStr");
             return (Criteria) this;
         }
 

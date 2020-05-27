@@ -6,6 +6,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 用户购物车信息 - 视图
+ */
 public class ViewUserCart implements Serializable {
     private Integer id;
 
@@ -19,7 +22,7 @@ public class ViewUserCart implements Serializable {
 
     private Integer discount;
 
-    private Boolean ifDiscount;
+    private Boolean ifCoupon;
 
     private String describeStr;
 
@@ -27,7 +30,9 @@ public class ViewUserCart implements Serializable {
 
     private String specsSrc;
 
-    private String specsText;
+    private String specsName;
+
+    private String specsSize;
 
     private Double sellPrice;
 
@@ -86,12 +91,12 @@ public class ViewUserCart implements Serializable {
         this.discount = discount;
     }
 
-    public Boolean getIfDiscount() {
-        return ifDiscount;
+    public Boolean getIfCoupon() {
+        return ifCoupon;
     }
 
-    public void setIfDiscount(Boolean ifDiscount) {
-        this.ifDiscount = ifDiscount;
+    public void setIfCoupon(Boolean ifCoupon) {
+        this.ifCoupon = ifCoupon;
     }
 
     public String getDescribeStr() {
@@ -118,12 +123,20 @@ public class ViewUserCart implements Serializable {
         this.specsSrc = specsSrc == null ? null : specsSrc.trim();
     }
 
-    public String getSpecsText() {
-        return specsText;
+    public String getSpecsName() {
+        return specsName;
     }
 
-    public void setSpecsText(String specsText) {
-        this.specsText = specsText == null ? null : specsText.trim();
+    public void setSpecsName(String specsName) {
+        this.specsName = specsName == null ? null : specsName.trim();
+    }
+
+    public String getSpecsSize() {
+        return specsSize;
+    }
+
+    public void setSpecsSize(String specsSize) {
+        this.specsSize = specsSize == null ? null : specsSize.trim();
     }
 
     public Double getSellPrice() {

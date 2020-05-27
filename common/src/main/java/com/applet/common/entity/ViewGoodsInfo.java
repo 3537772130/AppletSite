@@ -6,6 +6,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 商品信息 - 视图
+ */
 public class ViewGoodsInfo implements Serializable {
     private Integer id;
 
@@ -33,7 +36,7 @@ public class ViewGoodsInfo implements Serializable {
 
     private String describeStr;
 
-    private Integer ifDiscount;
+    private Integer ifCoupon;
 
     private Integer goodsIndex;
 
@@ -148,12 +151,12 @@ public class ViewGoodsInfo implements Serializable {
         this.describeStr = describeStr == null ? null : describeStr.trim();
     }
 
-    public Integer getIfDiscount() {
-        return ifDiscount;
+    public Integer getIfCoupon() {
+        return ifCoupon;
     }
 
-    public void setIfDiscount(Integer ifDiscount) {
-        this.ifDiscount = ifDiscount;
+    public void setIfCoupon(Integer ifCoupon) {
+        this.ifCoupon = ifCoupon;
     }
 
     public Integer getGoodsIndex() {

@@ -6,6 +6,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 用户购物车信息
+ */
 public class UserCart implements Serializable {
     private Integer id;
 
@@ -16,6 +19,8 @@ public class UserCart implements Serializable {
     private Integer goodsId;
 
     private Integer specsId;
+
+    private String specsSize;
 
     private Integer amount;
 
@@ -64,6 +69,14 @@ public class UserCart implements Serializable {
 
     public void setSpecsId(Integer specsId) {
         this.specsId = specsId;
+    }
+
+    public String getSpecsSize() {
+        return specsSize;
+    }
+
+    public void setSpecsSize(String specsSize) {
+        this.specsSize = specsSize == null ? null : specsSize.trim();
     }
 
     public Integer getAmount() {

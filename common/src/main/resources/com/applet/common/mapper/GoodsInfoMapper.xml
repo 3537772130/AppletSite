@@ -11,7 +11,7 @@
     <result column="max_price" jdbcType="DOUBLE" property="maxPrice" />
     <result column="discount" jdbcType="INTEGER" property="discount" />
     <result column="describe_str" jdbcType="VARCHAR" property="describeStr" />
-    <result column="if_discount" jdbcType="BIT" property="ifDiscount" />
+    <result column="if_coupon" jdbcType="BIT" property="ifCoupon" />
     <result column="goods_index" jdbcType="INTEGER" property="goodsIndex" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="status" jdbcType="INTEGER" property="status" />
@@ -76,7 +76,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, user_id, type_id, goods_name, cover_src, min_price, max_price, discount, describe_str, 
-    if_discount, goods_index, update_time, status
+    if_coupon, goods_index, update_time, status
   </sql>
   <select id="selectByExample" parameterType="com.applet.common.entity.GoodsInfoExample" resultMap="BaseResultMap">
     select
@@ -113,12 +113,12 @@
     insert into goods_info (id, user_id, type_id, 
       goods_name, cover_src, min_price, 
       max_price, discount, describe_str, 
-      if_discount, goods_index, update_time, 
+      if_coupon, goods_index, update_time, 
       status)
     values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{typeId,jdbcType=INTEGER}, 
       #{goodsName,jdbcType=VARCHAR}, #{coverSrc,jdbcType=VARCHAR}, #{minPrice,jdbcType=DOUBLE}, 
       #{maxPrice,jdbcType=DOUBLE}, #{discount,jdbcType=INTEGER}, #{describeStr,jdbcType=VARCHAR}, 
-      #{ifDiscount,jdbcType=BIT}, #{goodsIndex,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{ifCoupon,jdbcType=BIT}, #{goodsIndex,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{status,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" keyProperty="id" parameterType="com.applet.common.entity.GoodsInfo" useGeneratedKeys="true">
@@ -151,8 +151,8 @@
       <if test="describeStr != null">
         describe_str,
       </if>
-      <if test="ifDiscount != null">
-        if_discount,
+      <if test="ifCoupon != null">
+        if_coupon,
       </if>
       <if test="goodsIndex != null">
         goods_index,
@@ -192,8 +192,8 @@
       <if test="describeStr != null">
         #{describeStr,jdbcType=VARCHAR},
       </if>
-      <if test="ifDiscount != null">
-        #{ifDiscount,jdbcType=BIT},
+      <if test="ifCoupon != null">
+        #{ifCoupon,jdbcType=BIT},
       </if>
       <if test="goodsIndex != null">
         #{goodsIndex,jdbcType=INTEGER},
@@ -242,8 +242,8 @@
       <if test="record.describeStr != null">
         describe_str = #{record.describeStr,jdbcType=VARCHAR},
       </if>
-      <if test="record.ifDiscount != null">
-        if_discount = #{record.ifDiscount,jdbcType=BIT},
+      <if test="record.ifCoupon != null">
+        if_coupon = #{record.ifCoupon,jdbcType=BIT},
       </if>
       <if test="record.goodsIndex != null">
         goods_index = #{record.goodsIndex,jdbcType=INTEGER},
@@ -270,7 +270,7 @@
       max_price = #{record.maxPrice,jdbcType=DOUBLE},
       discount = #{record.discount,jdbcType=INTEGER},
       describe_str = #{record.describeStr,jdbcType=VARCHAR},
-      if_discount = #{record.ifDiscount,jdbcType=BIT},
+      if_coupon = #{record.ifCoupon,jdbcType=BIT},
       goods_index = #{record.goodsIndex,jdbcType=INTEGER},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       status = #{record.status,jdbcType=INTEGER}
@@ -305,8 +305,8 @@
       <if test="describeStr != null">
         describe_str = #{describeStr,jdbcType=VARCHAR},
       </if>
-      <if test="ifDiscount != null">
-        if_discount = #{ifDiscount,jdbcType=BIT},
+      <if test="ifCoupon != null">
+        if_coupon = #{ifCoupon,jdbcType=BIT},
       </if>
       <if test="goodsIndex != null">
         goods_index = #{goodsIndex,jdbcType=INTEGER},
@@ -330,7 +330,7 @@
       max_price = #{maxPrice,jdbcType=DOUBLE},
       discount = #{discount,jdbcType=INTEGER},
       describe_str = #{describeStr,jdbcType=VARCHAR},
-      if_discount = #{ifDiscount,jdbcType=BIT},
+      if_coupon = #{ifCoupon,jdbcType=BIT},
       goods_index = #{goodsIndex,jdbcType=INTEGER},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       status = #{status,jdbcType=INTEGER}
