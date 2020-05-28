@@ -583,7 +583,7 @@ public class UserOrderService {
         example.createCriteria()
                 .andAppletIdEqualTo(appletId)
                 .andStoreUserIdEqualTo(userId)
-                .andOperateIdEqualTo(status)
+                .andOperateStatusEqualTo(status)
                 .andPayStatusEqualTo(1);
         long count = viewOrderInfoMapper.countByExample(example);
         if (count > 0) {

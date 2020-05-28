@@ -20,6 +20,14 @@
     <result column="wx_nick_name" jdbcType="VARCHAR" property="wxNickName" />
     <result column="user_coupon_id" jdbcType="INTEGER" property="userCouponId" />
     <result column="actual_amount" jdbcType="DOUBLE" property="actualAmount" />
+    <result column="receiver_name" jdbcType="VARCHAR" property="receiverName" />
+    <result column="receiver_mobile" jdbcType="VARCHAR" property="receiverMobile" />
+    <result column="receiver_province" jdbcType="VARCHAR" property="receiverProvince" />
+    <result column="receiver_city" jdbcType="VARCHAR" property="receiverCity" />
+    <result column="receiver_county" jdbcType="VARCHAR" property="receiverCounty" />
+    <result column="receiver_address" jdbcType="VARCHAR" property="receiverAddress" />
+    <result column="receiver_lat" jdbcType="VARCHAR" property="receiverLat" />
+    <result column="receiver_lon" jdbcType="VARCHAR" property="receiverLon" />
     <result column="operate_id" jdbcType="INTEGER" property="operateId" />
     <result column="operate_status" jdbcType="INTEGER" property="operateStatus" />
     <result column="order_status" jdbcType="INTEGER" property="orderStatus" />
@@ -66,9 +74,10 @@
   <sql id="Base_Column_List">
     id, order_no, courier_no, applet_id, applet_name, store_user_id, applet_logo, applet_lat, 
     applet_lon, applet_telephone, user_id, user_mobile, user_nick_name, avatar_url, wx_id, 
-    wx_nick_name, user_coupon_id, actual_amount, operate_id, operate_status, order_status, 
-    create_time, update_time, pay_type, pay_status, pay_channel, pay_relation_id, user_see_time, 
-    user_see_status, store_see_time, store_see_status
+    wx_nick_name, user_coupon_id, actual_amount, receiver_name, receiver_mobile, receiver_province, 
+    receiver_city, receiver_county, receiver_address, receiver_lat, receiver_lon, operate_id, 
+    operate_status, order_status, create_time, update_time, pay_type, pay_status, pay_channel, 
+    pay_relation_id, user_see_time, user_see_status, store_see_time, store_see_status
   </sql>
   <select id="selectByExample" parameterType="com.applet.common.entity.ViewOrderInfoExample" resultMap="BaseResultMap">
     select

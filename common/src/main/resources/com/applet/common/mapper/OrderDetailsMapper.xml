@@ -346,14 +346,13 @@
     <selectKey resultType="java.lang.Integer" keyProperty="orderId" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into order_details (order_id, cart_id, goods_id, goods_name, goods_discount,goods_specs_id,
-    goods_specs_name, goods_specs_pic,goods_number, sell_price, actual_price)
+    insert into order_details (order_id, cart_id, goods_id, goods_name, goods_discount,
+    goods_specs_id,goods_specs_name, goods_specs_type, goods_specs_pic,goods_number, sell_price, actual_price)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.orderId,jdbcType=INTEGER}, #{item.cartId,jdbcType=INTEGER}, #{item.goodsId,jdbcType=INTEGER}, #{item.goodsName,jdbcType=VARCHAR}, #{item.goodsDiscount,jdbcType=INTEGER},
       #{item.goodsSpecsId,jdbcType=INTEGER}, #{item.goodsSpecsName,jdbcType=VARCHAR},#{item.goodsSpecsType,jdbcType=VARCHAR}, #{item.goodsSpecsPic,jdbcType=VARCHAR},
-      #{item.goodsNumber,jdbcType=INTEGER}, #{item.sellPrice,jdbcType=DOUBLE}, #{item.actualPrice,jdbcType=DOUBLE}
-      )
+      #{item.goodsNumber,jdbcType=INTEGER}, #{item.sellPrice,jdbcType=DOUBLE}, #{item.actualPrice,jdbcType=DOUBLE})
     </foreach>
   </insert>
 </mapper>

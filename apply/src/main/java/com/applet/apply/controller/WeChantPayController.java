@@ -124,18 +124,21 @@ public class WeChantPayController {
     @PostMapping(value = "sendWeChantUnifiedOrder")
     public Object sendWeChantUnifiedOrder(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo,
                                           @SessionScope(Constants.CLIENT_PUBLIC_IP) String ipAddress,
-                                          @RequestParam("orderId") Integer orderId) {
+                                          @RequestParam("id") String id) {
         try {
-            ViewOrderPayData data = userOrderService.selectOrderData(orderId, weChantInfo.getAppletId(), weChantInfo.getId());
-            if (null != data && data.getPayStatus().intValue() == OrderEnums.PayStatus.WAIT.getCode()) {
-                data.setPayChannel(OrderEnums.PayChannel.WX_JSAPI.getCode());
-                data.setAppId(EncryptionUtil.decryptAppletRSA(data.getAppId()));
-                data.setMchId(EncryptionUtil.decryptAppletRSA(data.getMchId()));
-                data.setPayKey(EncryptionUtil.decryptAppletRSA(data.getPayKey()));
-                String prepayId = weChantPayService.sendWeChantUnifiedOrder(data, ipAddress);
-                if (NullUtil.isNotNullOrEmpty(prepayId)) {
-                    String msg = EncryptionUtil.encryptAppletPayInfoAES(data.getAppId(), data.getPayKey(), prepayId);
-                    return AjaxResponse.success(msg);
+            if (NullUtil.isNotNullOrEmpty(id)){
+                Integer orderId = Integer.parseInt(id);
+                ViewOrderPayData data = userOrderService.selectOrderData(orderId, weChantInfo.getAppletId(), weChantInfo.getId());
+                if (null != data && data.getPayStatus().intValue() == OrderEnums.PayStatus.WAIT.getCode()) {
+                    data.setPayChannel(OrderEnums.PayChannel.WX_JSAPI.getCode());
+                    data.setAppId(EncryptionUtil.decryptAppletRSA(data.getAppId()));
+                    data.setMchId(EncryptionUtil.decryptAppletRSA(data.getMchId()));
+                    data.setPayKey(EncryptionUtil.decryptAppletRSA(data.getPayKey()));
+                    String prepayId = weChantPayService.sendWeChantUnifiedOrder(data, ipAddress);
+                    if (NullUtil.isNotNullOrEmpty(prepayId)) {
+                        String msg = EncryptionUtil.encryptAppletPayInfoAES(data.getAppId(), data.getPayKey(), prepayId);
+                        return AjaxResponse.success(msg);
+                    }
                 }
             }
         } catch (Exception e) {

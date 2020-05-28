@@ -147,11 +147,13 @@ public class UserCartService {
      * @param status
      */
     public void updateUserCartStatus(Integer appletId, Integer wxId, List<Integer> cartIdList, boolean status){
-        UserCartExample example = new UserCartExample();
-        example.createCriteria().andAppletIdEqualTo(appletId).andWxIdEqualTo(wxId).andIdIn(cartIdList);
-        UserCart record = new UserCart();
-        record.setStatus(status);
-        userCartMapper.updateByExampleSelective(record, example);
+        if (NullUtil.isNotNullOrEmpty(cartIdList)){
+            UserCartExample example = new UserCartExample();
+            example.createCriteria().andAppletIdEqualTo(appletId).andWxIdEqualTo(wxId).andIdIn(cartIdList);
+            UserCart record = new UserCart();
+            record.setStatus(status);
+            userCartMapper.updateByExampleSelective(record, example);
+        }
     }
 
     /**

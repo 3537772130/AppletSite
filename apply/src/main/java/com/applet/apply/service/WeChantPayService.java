@@ -178,7 +178,7 @@ public class WeChantPayService {
                     // 设置操作状态默认为删除
                     Integer operateStatus = OrderEnums.OperateStatus.DELETE.getCode();
                     if (result.getResultCode().equals("SUCCESS")) {
-                        if (!appletInfo.getIfOpenPay() && order.getUserId().intValue() == appletInfo.getUserId().intValue()) {
+                        if (order.getUserRemark().equals(Constants.TEST_ORDER_REMARK)) {
                             // 测试订单交易成功，更新小程序交易开通状态
                             appletService.updateAppletIFPayOpen(order.getAppletId());
                         } else {

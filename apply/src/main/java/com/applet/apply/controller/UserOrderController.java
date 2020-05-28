@@ -69,103 +69,107 @@ public class UserOrderController {
                               @RequestParam("cartIdJson") String cartIdJson, @RequestParam("addressIdStr") String addressIdStr,
                               @RequestParam("payTypeStr") String payTypeStr, @RequestParam("couponIdStr") String couponIdStr,
                               @RequestParam("userRemark") String userRemark, @RequestParam("distanceStr") String distanceStr) {
-        if (NullUtil.isNullOrEmpty(cartIdJson) || NullUtil.isNullOrEmpty(addressIdStr) || NullUtil.isNullOrEmpty(payTypeStr)) {
-            return AjaxResponse.error("参数缺失");
-        }
-        List<Integer> cartIdList = JSON.parseArray(cartIdJson, Integer.class);
-        Integer addressId = Integer.parseInt(addressIdStr);
-        Integer payType = Integer.parseInt(payTypeStr);
-        Integer couponId = NullUtil.isNotNullOrEmpty(couponIdStr) ? Integer.parseInt(couponIdStr) : null;
-        Integer distance = NullUtil.isNotNullOrEmpty(distanceStr) ? Integer.parseInt(distanceStr) : null;
-        userRemark = userRemark.equals("null") ? "" : userRemark;
-        // 订单详情
-        List<ViewUserCart> cartList = userCartService.selectUserCartList(cartIdList, appletInfo.getId(), weChantInfo.getId());
-        if (NullUtil.isNullOrEmpty(cartList)) {
-            return AjaxResponse.error("未找到相关商品记录");
-        }
-        List<OrderDetails> detailsList = new ArrayList<>();
-        Double goodsAmount = 0.0d;
-        for (ViewUserCart cart : cartList) {
-            OrderDetails details = new OrderDetails();
-            details.setCartId(cart.getId());
-            details.setGoodsId(cart.getGoodsId());
-            details.setGoodsName(cart.getGoodsName());
-            details.setGoodsDiscount(cart.getDiscount());
-            details.setGoodsSpecsId(cart.getSpecsId());
-            details.setGoodsSpecsName(cart.getSpecsName());
-            details.setGoodsSpecsType(cart.getSpecsType());
-            details.setGoodsSpecsPic(cart.getSpecsSrc());
-            details.setGoodsNumber(cart.getAmount());
-            details.setSellPrice(cart.getSellPrice());
-            Double price = Arith.mul(cart.getSellPrice(), cart.getDiscount().doubleValue());
-            details.setActualPrice(Arith.div(price, 100.0d, 2));
-            detailsList.add(details);
-            // 统计商品金额总值
-            goodsAmount = Arith.add(goodsAmount, details.getActualPrice());
-        }
-
-        // 收货地址
-        ReceiveAddress address = userService.selectReceiveAddressInfo(addressId, weChantInfo.getUserId());
-        if (null == address) {
-            return AjaxResponse.error("地址已失效，请重新选择");
-        }
-
-        // 优惠券
-        ViewUserCoupon userCoupon = null;
-        if (NullUtil.isNotNullOrEmpty(couponId)) {
-            userCoupon = userCouponService.selectUserCouponInfo(couponId, weChantInfo.getUserId());
-            if (null == userCoupon) {
-                return AjaxResponse.error("未找到相关优惠券");
+        try {
+            if (NullUtil.isNullOrEmpty(cartIdJson) || NullUtil.isNullOrEmpty(addressIdStr) || NullUtil.isNullOrEmpty(payTypeStr)) {
+                return AjaxResponse.error("参数缺失");
             }
-            Date now = new Date();
-            if (userCoupon.getActivityOver().getTime() < now.getTime()) {
-                return AjaxResponse.error("优惠卷已过期");
+            List<Integer> cartIdList = JSON.parseArray(cartIdJson, Integer.class);
+            Integer addressId = Integer.parseInt(addressIdStr);
+            Integer payType = Integer.parseInt(payTypeStr);
+            Integer couponId = NullUtil.isNotNullOrEmpty(couponIdStr) ? Integer.parseInt(couponIdStr) : null;
+            Integer distance = NullUtil.isNotNullOrEmpty(distanceStr) ? Integer.parseInt(distanceStr) : null;
+            userRemark = userRemark.equals("null") ? "" : userRemark;
+            // 订单详情
+            List<ViewUserCart> cartList = userCartService.selectUserCartList(cartIdList, appletInfo.getId(), weChantInfo.getId());
+            if (NullUtil.isNullOrEmpty(cartList)) {
+                return AjaxResponse.error("未找到相关商品记录");
             }
-        }
-
-        // 运费
-        Double freightFee = 0.0d;
-        if (NullUtil.isNotNullOrEmpty(distance)) {
-            freightFee = userCouponService.countFreight(appletInfo.getId(), distance, goodsAmount);
-            if (freightFee < 0) {
-                return AjaxResponse.error("超出配送范围");
+            List<OrderDetails> detailsList = new ArrayList<>();
+            Double goodsAmount = 0.0d;
+            for (ViewUserCart cart : cartList) {
+                OrderDetails details = new OrderDetails();
+                details.setCartId(cart.getId());
+                details.setGoodsId(cart.getGoodsId());
+                details.setGoodsName(cart.getGoodsName());
+                details.setGoodsDiscount(cart.getDiscount());
+                details.setGoodsSpecsId(cart.getSpecsId());
+                details.setGoodsSpecsName(cart.getSpecsName());
+                details.setGoodsSpecsType(cart.getSpecsType());
+                details.setGoodsSpecsPic(cart.getSpecsSrc());
+                details.setGoodsNumber(cart.getAmount());
+                details.setSellPrice(cart.getSellPrice());
+                Double price = Arith.mul(cart.getSellPrice(), cart.getDiscount().doubleValue());
+                details.setActualPrice(Arith.div(price, 100.0d, 2));
+                detailsList.add(details);
+                // 统计商品金额总值
+                goodsAmount = Arith.add(goodsAmount, details.getActualPrice());
             }
+
+            // 收货地址
+            ReceiveAddress address = userService.selectReceiveAddressInfo(addressId, weChantInfo.getUserId());
+            if (null == address) {
+                return AjaxResponse.error("地址已失效，请重新选择");
+            }
+
+            // 优惠券
+            ViewUserCoupon userCoupon = null;
+            if (NullUtil.isNotNullOrEmpty(couponId)) {
+                userCoupon = userCouponService.selectUserCouponInfo(couponId, weChantInfo.getUserId());
+                if (null == userCoupon) {
+                    return AjaxResponse.error("未找到相关优惠券");
+                }
+                Date now = new Date();
+                if (userCoupon.getActivityOver().getTime() < now.getTime()) {
+                    return AjaxResponse.error("优惠卷已过期");
+                }
+            }
+
+            // 运费
+            Double freightFee = 0.0d;
+            if (NullUtil.isNotNullOrEmpty(distance)) {
+                freightFee = userCouponService.countFreight(appletInfo.getId(), distance, goodsAmount);
+                if (freightFee < 0) {
+                    return AjaxResponse.error("超出配送范围");
+                }
+            }
+
+            // 订单信息
+            OrderInfo info = new OrderInfo();
+            info.setOrderNo(RandomUtil.getTimeStamp());
+            info.setAppletId(appletInfo.getId());
+            info.setUserId(weChantInfo.getUserId());
+            info.setWxId(weChantInfo.getId());
+            info.setUserRemark(userRemark);
+            info.setOrderStatus(OrderEnums.OrderStatus.WAIT.getCode());
+            info.setCouponAmount(0.0d);
+            if (null != userCoupon) {
+                info.setUserCouponId(userCoupon.getId());
+                info.setCouponAmount(userCoupon.getDenomination());
+            }
+            info.setFreightAmount(freightFee);
+            info.setTotalAmount(goodsAmount);
+            Double actualAmount = Arith.sub(Arith.sub(goodsAmount, freightFee), info.getCouponAmount());
+            info.setActualAmount(actualAmount);
+            info.setPayStatus(OrderEnums.PayStatus.WAIT.getCode());
+            info.setPayType(payType);
+            info.setPayChannel(OrderEnums.PayChannel.WX_JSAPI.getName());
+
+            OrderReceiver receiver = new OrderReceiver();
+            receiver.setReceiverName(address.getName());
+            receiver.setReceiverMobile(address.getMobile());
+            receiver.setReceiverProvince(address.getProvince());
+            receiver.setReceiverCity(address.getCity());
+            receiver.setReceiverCounty(address.getCounty());
+            receiver.setReceiverAddress(address.getAddress());
+            receiver.setReceiverLat(address.getLat());
+            receiver.setReceiverLon(address.getLon());
+
+            userOrderService.addOrderInfo(info, detailsList, receiver);
+            return AjaxResponse.success(info.getId());
+        } catch (NumberFormatException e) {
+            log.error("创建订单出错{}", e);
         }
-
-        // 订单信息
-        OrderInfo info = new OrderInfo();
-        info.setOrderNo(RandomUtil.getTimeStamp());
-        info.setAppletId(appletInfo.getId());
-        info.setUserId(weChantInfo.getUserId());
-        info.setWxId(weChantInfo.getId());
-        info.setUserRemark(userRemark);
-        info.setOrderStatus(OrderEnums.OrderStatus.WAIT.getCode());
-        info.setCouponAmount(0.0d);
-        if (null != userCoupon) {
-            info.setUserCouponId(userCoupon.getId());
-            info.setCouponAmount(userCoupon.getDenomination());
-        }
-        info.setFreightAmount(freightFee);
-        info.setTotalAmount(goodsAmount);
-        Double actualAmount = Arith.sub(Arith.sub(goodsAmount, freightFee), info.getCouponAmount());
-        info.setActualAmount(actualAmount);
-        info.setPayStatus(OrderEnums.PayStatus.WAIT.getCode());
-        info.setPayType(payType);
-        info.setPayChannel(OrderEnums.PayChannel.WX_JSAPI.getName());
-
-        OrderReceiver receiver = new OrderReceiver();
-        receiver.setReceiverName(address.getName());
-        receiver.setReceiverMobile(address.getMobile());
-        receiver.setReceiverProvince(address.getProvince());
-        receiver.setReceiverCity(address.getCity());
-        receiver.setReceiverCounty(address.getCounty());
-        receiver.setReceiverAddress(address.getAddress());
-        receiver.setReceiverLat(address.getLat());
-        receiver.setReceiverLon(address.getLon());
-
-        userOrderService.addOrderInfo(info, detailsList, receiver);
-
-        return AjaxResponse.success(info.getId());
+        return AjaxResponse.error("创建订单失败");
     }
 
 
@@ -433,14 +437,13 @@ public class UserOrderController {
      * @param appletInfo
      * @param weChantInfo
      * @param id
-     * @param status
      * @param remark
      * @return
      */
     @RequestMapping(value = "updateOrderStatusByStore")
     public Object updateOrderStatusByStore(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
                                            @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo,
-                                           Integer id, Integer status, String remark) {
+                                           Integer id, String remark) {
         try {
             ViewOrderInfo order = userOrderService.selectViewOrderInfoByStore(id, appletInfo.getId(), weChantInfo.getUserId());
             if (null != order) {
@@ -449,21 +452,21 @@ public class UserOrderController {
                     return AjaxResponse.error("消费者已取消订单");
                 } else {
                     OrderInfo info = userOrderService.selectOrderInfoById(order.getId());
-                    if (order.getOperateStatus().intValue() == OrderEnums.OperateStatus.SUBMIT.getCode() && status.intValue() == 2) {
+                    if (order.getOperateStatus().intValue() == OrderEnums.OperateStatus.SUBMIT.getCode()) {
                         userOrderService.updateOrderRelevant(info, OrderEnums.OperateStatus.MERCHANT_CONFIRM.getCode());
                         return AjaxResponse.success("已成功接受订单，准备好商品去配送吧 ^_^");
-                    } else if (order.getOperateStatus().intValue() == OrderEnums.OperateStatus.SUBMIT.getCode() && status.intValue() == 3) {
+                    } else if (order.getOperateStatus().intValue() == OrderEnums.OperateStatus.SUBMIT.getCode()) {
                         if (NullUtil.isNullOrEmpty(remark)) {
                             return AjaxResponse.success("请填写拒绝订单的原由");
                         }
                         userOrderService.updateOrderRelevant(info, OrderEnums.OperateStatus.CANCEL.getCode(), remark);
                         return AjaxResponse.success("已成功取消订单");
-                    } else if (order.getOperateStatus().intValue() == OrderEnums.OperateStatus.MERCHANT_CONFIRM.getCode() && status.intValue() == 4) {
+                    } else if (order.getOperateStatus().intValue() == OrderEnums.OperateStatus.MERCHANT_CONFIRM.getCode()) {
                         userOrderService.updateOrderRelevant(info, OrderEnums.OperateStatus.MERCHANT_DELIVERY.getCode());
                         return AjaxResponse.success("准备准备，咱就开始配送吧 ^_^");
                     } else if ((order.getOperateStatus().intValue() == OrderEnums.OperateStatus.MERCHANT_DELIVERY.getCode()
                             || order.getOperateStatus().intValue() == OrderEnums.OperateStatus.INSTANT_DELIVERY.getCode()
-                            || order.getOperateStatus().intValue() == OrderEnums.OperateStatus.LOGISTICS_DELIVERY.getCode()) && status.intValue() == 5) {
+                            || order.getOperateStatus().intValue() == OrderEnums.OperateStatus.LOGISTICS_DELIVERY.getCode())) {
                         userOrderService.updateOrderRelevant(info, OrderEnums.OperateStatus.CONFIRM_ARRIVE.getCode());
                         return AjaxResponse.success("辛苦啦，又完成了一单 ^_^");
                     }
