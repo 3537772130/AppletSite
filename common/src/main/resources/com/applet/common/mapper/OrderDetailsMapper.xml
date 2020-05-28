@@ -9,6 +9,7 @@
     <result column="goods_discount" jdbcType="INTEGER" property="goodsDiscount" />
     <result column="goods_specs_id" jdbcType="INTEGER" property="goodsSpecsId" />
     <result column="goods_specs_name" jdbcType="VARCHAR" property="goodsSpecsName" />
+    <result column="goods_specs_type" jdbcType="VARCHAR" property="goodsSpecsType" />
     <result column="goods_specs_pic" jdbcType="VARCHAR" property="goodsSpecsPic" />
     <result column="goods_number" jdbcType="INTEGER" property="goodsNumber" />
     <result column="sell_price" jdbcType="DOUBLE" property="sellPrice" />
@@ -74,7 +75,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, order_id, goods_id, goods_name, goods_discount, goods_specs_id, goods_specs_name,
-    goods_specs_pic, goods_number, sell_price, actual_price
+    goods_specs_type, goods_specs_pic, goods_number, sell_price, actual_price
   </sql>
   <select id="selectByExample" parameterType="com.applet.common.entity.OrderDetailsExample" resultMap="BaseResultMap">
     select
@@ -110,12 +111,14 @@
   <insert id="insert" parameterType="com.applet.common.entity.OrderDetails">
     insert into order_details (id, order_id, goods_id,
       goods_name, goods_discount, goods_specs_id,
-      goods_specs_name, goods_specs_pic, goods_number,
-      sell_price, actual_price)
+      goods_specs_name, goods_specs_type, goods_specs_pic,
+      goods_number, sell_price, actual_price
+      )
     values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{goodsId,jdbcType=INTEGER},
       #{goodsName,jdbcType=VARCHAR}, #{goodsDiscount,jdbcType=INTEGER}, #{goodsSpecsId,jdbcType=INTEGER},
-      #{goodsSpecsName,jdbcType=VARCHAR}, #{goodsSpecsPic,jdbcType=VARCHAR}, #{goodsNumber,jdbcType=INTEGER},
-      #{sellPrice,jdbcType=DOUBLE}, #{actualPrice,jdbcType=DOUBLE})
+      #{goodsSpecsName,jdbcType=VARCHAR}, #{goodsSpecsType,jdbcType=VARCHAR}, #{goodsSpecsPic,jdbcType=VARCHAR},
+      #{goodsNumber,jdbcType=INTEGER}, #{sellPrice,jdbcType=DOUBLE}, #{actualPrice,jdbcType=DOUBLE}
+      )
   </insert>
   <insert id="insertSelective" keyProperty="id" parameterType="com.applet.common.entity.OrderDetails" useGeneratedKeys="true">
     insert into order_details
@@ -140,6 +143,9 @@
       </if>
       <if test="goodsSpecsName != null">
         goods_specs_name,
+      </if>
+      <if test="goodsSpecsType != null">
+        goods_specs_type,
       </if>
       <if test="goodsSpecsPic != null">
         goods_specs_pic,
@@ -175,6 +181,9 @@
       </if>
       <if test="goodsSpecsName != null">
         #{goodsSpecsName,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsSpecsType != null">
+        #{goodsSpecsType,jdbcType=VARCHAR},
       </if>
       <if test="goodsSpecsPic != null">
         #{goodsSpecsPic,jdbcType=VARCHAR},
@@ -220,6 +229,9 @@
       <if test="record.goodsSpecsName != null">
         goods_specs_name = #{record.goodsSpecsName,jdbcType=VARCHAR},
       </if>
+      <if test="record.goodsSpecsType != null">
+        goods_specs_type = #{record.goodsSpecsType,jdbcType=VARCHAR},
+      </if>
       <if test="record.goodsSpecsPic != null">
         goods_specs_pic = #{record.goodsSpecsPic,jdbcType=VARCHAR},
       </if>
@@ -246,6 +258,7 @@
       goods_discount = #{record.goodsDiscount,jdbcType=INTEGER},
       goods_specs_id = #{record.goodsSpecsId,jdbcType=INTEGER},
       goods_specs_name = #{record.goodsSpecsName,jdbcType=VARCHAR},
+      goods_specs_type = #{record.goodsSpecsType,jdbcType=VARCHAR},
       goods_specs_pic = #{record.goodsSpecsPic,jdbcType=VARCHAR},
       goods_number = #{record.goodsNumber,jdbcType=INTEGER},
       sell_price = #{record.sellPrice,jdbcType=DOUBLE},
@@ -275,6 +288,9 @@
       <if test="goodsSpecsName != null">
         goods_specs_name = #{goodsSpecsName,jdbcType=VARCHAR},
       </if>
+      <if test="goodsSpecsType != null">
+        goods_specs_type = #{goodsSpecsType,jdbcType=VARCHAR},
+      </if>
       <if test="goodsSpecsPic != null">
         goods_specs_pic = #{goodsSpecsPic,jdbcType=VARCHAR},
       </if>
@@ -298,6 +314,7 @@
       goods_discount = #{goodsDiscount,jdbcType=INTEGER},
       goods_specs_id = #{goodsSpecsId,jdbcType=INTEGER},
       goods_specs_name = #{goodsSpecsName,jdbcType=VARCHAR},
+      goods_specs_type = #{goodsSpecsType,jdbcType=VARCHAR},
       goods_specs_pic = #{goodsSpecsPic,jdbcType=VARCHAR},
       goods_number = #{goodsNumber,jdbcType=INTEGER},
       sell_price = #{sellPrice,jdbcType=DOUBLE},
@@ -319,7 +336,7 @@
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.orderId,jdbcType=INTEGER}, #{item.goodsId,jdbcType=INTEGER}, #{item.goodsName,jdbcType=VARCHAR}, #{item.goodsDiscount,jdbcType=INTEGER},
-      #{item.goodsSpecsId,jdbcType=INTEGER}, #{item.goodsSpecsName,jdbcType=VARCHAR}, #{item.goodsSpecsPic,jdbcType=VARCHAR},
+      #{item.goodsSpecsId,jdbcType=INTEGER}, #{item.goodsSpecsName,jdbcType=VARCHAR},#{item.goodsSpecsType,jdbcType=VARCHAR}, #{item.goodsSpecsPic,jdbcType=VARCHAR},
       #{item.goodsNumber,jdbcType=INTEGER}, #{item.sellPrice,jdbcType=DOUBLE}, #{item.actualPrice,jdbcType=DOUBLE}
       )
     </foreach>

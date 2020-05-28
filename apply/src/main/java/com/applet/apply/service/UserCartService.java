@@ -25,9 +25,6 @@ public class UserCartService {
     private UserCartMapper userCartMapper;
     @Autowired
     private ViewUserCartMapper viewUserCartMapper;
-    @Autowired
-    @Lazy
-    private UserOrderService userOrderService;
 
     /**
      * 添加购物车信息
@@ -149,13 +146,12 @@ public class UserCartService {
      * @param wxId
      * @param specsIdList
      */
-    public void updateUserCartStatus(Integer orderId, Integer appletId, Integer wxId, List<Integer> specsIdList){
+    public void updateUserCartStatus(Integer orderId, Integer appletId, Integer wxId, List<Integer> cartIdList){
         UserCartExample example = new UserCartExample();
-        example.createCriteria().andAppletIdEqualTo(appletId).andWxIdEqualTo(wxId).andSpecsIdIn(specsIdList);
+        example.createCriteria().andAppletIdEqualTo(appletId).andWxIdEqualTo(wxId).andIdIn(cartIdList);
         UserCart record = new UserCart();
         record.setStatus(false);
         userCartMapper.updateByExampleSelective(record, example);
-        userOrderService.addOrderSeeRecord(orderId);
     }
 
     /**

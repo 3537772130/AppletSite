@@ -81,6 +81,7 @@ public class UserOrderController {
             details.setGoodsDiscount(cart.getDiscount());
             details.setGoodsSpecsId(cart.getSpecsId());
             details.setGoodsSpecsName(cart.getSpecsName());
+            details.setGoodsSpecsType(cart.getSpecsType());
             details.setGoodsSpecsPic(cart.getSpecsSrc());
             details.setGoodsNumber(cart.getAmount());
             details.setSellPrice(cart.getSellPrice());
@@ -231,7 +232,8 @@ public class UserOrderController {
             ViewOrderInfo order = userOrderService.selectViewOrderInfoByUser(id, weChantInfo.getUserId());
             if (null != order && order.getOrderStatus().intValue() == OrderEnums.OrderStatus.WAIT.getCode()) {
                 if (order.getOrderStatus().intValue() == OrderEnums.OperateStatus.SUBMIT.getCode()) {
-                    userOrderService.updateOrderStatusByUser(order.getId(), weChantInfo.getUserId(), order.getUserCouponId(), OrderEnums.OperateStatus.CANCEL.getCode());
+                    OrderInfo info = userOrderService.selectOrderInfoById(order.getId());
+                    userOrderService.updateOrderRelevant(info, OrderEnums.OperateStatus.CANCEL.getCode());
                     return AjaxResponse.success("取消成功");
                 } else if (order.getOrderStatus().intValue() == OrderEnums.OperateStatus.MERCHANT_CONFIRM.getCode()) {
                     return AjaxResponse.error("商家已接单，有问题请联系商家");
@@ -258,8 +260,9 @@ public class UserOrderController {
         try {
             ViewOrderInfo order = userOrderService.selectViewOrderInfoByUser(id, weChantInfo.getUserId());
             if (null != order && order.getOrderStatus().intValue() == OrderEnums.OrderStatus.WAIT.getCode()) {
+                OrderInfo info = userOrderService.selectOrderInfoById(order.getId());
                 if (order.getOperateStatus().intValue() == OrderEnums.OperateStatus.CONFIRM_ARRIVE.getCode()) {
-                    userOrderService.updateOrderStatusByUser(order.getId(), weChantInfo.getUserId(), OrderEnums.OperateStatus.SIGN_FOR.getCode());
+                    userOrderService.updateOrderRelevant(info, OrderEnums.OperateStatus.SIGN_FOR.getCode());
                     return AjaxResponse.success("签收成功");
                 }
             }
@@ -389,7 +392,7 @@ public class UserOrderController {
      */
     @RequestMapping(value = "queryOrderDetailsByStore")
     public Object queryOrderDetailsByStore(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
-                                               @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer orderId) {
+                                           @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo, Integer orderId) {
         ViewOrderInfo order = userOrderService.selectViewOrderInfoByStore(orderId, appletInfo.getId(), weChantInfo.getUserId());
         if (null != order) {
             //更新订单查看记录
@@ -430,29 +433,28 @@ public class UserOrderController {
             ViewOrderInfo order = userOrderService.selectViewOrderInfoByStore(id, appletInfo.getId(), weChantInfo.getUserId());
             if (null != order) {
                 if (order.getOrderStatus().intValue() != OrderEnums.OrderStatus.WAIT.getCode() ||
-                        order.getOperateStatus().intValue() == OrderEnums.OperateStatus.CANCEL.getCode()){
+                        order.getOperateStatus().intValue() == OrderEnums.OperateStatus.CANCEL.getCode()) {
                     return AjaxResponse.error("消费者已取消订单");
-
-                } else if (order.getOperateStatus().intValue() == OrderEnums.OperateStatus.SUBMIT.getCode() && status.intValue() == 2) {
-                    userOrderService.updateOrderStatusByStore(order.getId(), weChantInfo.getUserId(), OrderEnums.OperateStatus.MERCHANT_CONFIRM.getCode());
-                    return AjaxResponse.success("已成功接受订单，准备好商品去配送吧 ^_^");
-
-                } else if (order.getOperateStatus().intValue() == OrderEnums.OperateStatus.SUBMIT.getCode() && status.intValue() == 3) {
-                    if (NullUtil.isNullOrEmpty(remark)){
-                        return AjaxResponse.success("请填写拒绝订单的原由");
+                } else {
+                    OrderInfo info = userOrderService.selectOrderInfoById(order.getId());
+                    if (order.getOperateStatus().intValue() == OrderEnums.OperateStatus.SUBMIT.getCode() && status.intValue() == 2) {
+                        userOrderService.updateOrderRelevant(info, OrderEnums.OperateStatus.MERCHANT_CONFIRM.getCode());
+                        return AjaxResponse.success("已成功接受订单，准备好商品去配送吧 ^_^");
+                    } else if (order.getOperateStatus().intValue() == OrderEnums.OperateStatus.SUBMIT.getCode() && status.intValue() == 3) {
+                        if (NullUtil.isNullOrEmpty(remark)) {
+                            return AjaxResponse.success("请填写拒绝订单的原由");
+                        }
+                        userOrderService.updateOrderRelevant(info, OrderEnums.OperateStatus.CANCEL.getCode(), remark);
+                        return AjaxResponse.success("已成功取消订单");
+                    } else if (order.getOperateStatus().intValue() == OrderEnums.OperateStatus.MERCHANT_CONFIRM.getCode() && status.intValue() == 4) {
+                        userOrderService.updateOrderRelevant(info, OrderEnums.OperateStatus.MERCHANT_DELIVERY.getCode());
+                        return AjaxResponse.success("准备准备，咱就开始配送吧 ^_^");
+                    } else if ((order.getOperateStatus().intValue() == OrderEnums.OperateStatus.MERCHANT_DELIVERY.getCode()
+                            || order.getOperateStatus().intValue() == OrderEnums.OperateStatus.INSTANT_DELIVERY.getCode()
+                            || order.getOperateStatus().intValue() == OrderEnums.OperateStatus.LOGISTICS_DELIVERY.getCode()) && status.intValue() == 5) {
+                        userOrderService.updateOrderRelevant(info, OrderEnums.OperateStatus.CONFIRM_ARRIVE.getCode());
+                        return AjaxResponse.success("辛苦啦，又完成了一单 ^_^");
                     }
-                    userOrderService.updateOrderStatusByStore(order.getId(),  weChantInfo.getUserId(), order.getUserCouponId(), OrderEnums.OperateStatus.CANCEL.getCode(), remark);
-                    return AjaxResponse.success("已成功取消订单");
-
-                } else if (order.getOperateStatus().intValue() == OrderEnums.OperateStatus.MERCHANT_CONFIRM.getCode() && status.intValue() == 4) {
-                    userOrderService.updateOrderStatusByStore(order.getId(), weChantInfo.getUserId(), OrderEnums.OperateStatus.MERCHANT_DELIVERY.getCode());
-                    return AjaxResponse.success("准备准备，咱就开始配送吧 ^_^");
-
-                } else if ((order.getOperateStatus().intValue() == OrderEnums.OperateStatus.MERCHANT_DELIVERY.getCode()
-                        || order.getOperateStatus().intValue() == OrderEnums.OperateStatus.INSTANT_DELIVERY.getCode()
-                        || order.getOperateStatus().intValue() == OrderEnums.OperateStatus.LOGISTICS_DELIVERY.getCode()) && status.intValue() == 5) {
-                    userOrderService.updateOrderStatusByStore(order.getId(), weChantInfo.getUserId(), OrderEnums.OperateStatus.CONFIRM_ARRIVE.getCode());
-                    return AjaxResponse.success("辛苦啦，又完成了一单 ^_^");
                 }
             }
         } catch (Exception e) {

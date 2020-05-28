@@ -146,18 +146,16 @@ public class UserCouponService {
 
     /**
      * 用户支付成功，被动获取优惠券
-     * @param appletId
-     * @param userId
-     * @param totalAmount
+     * @param order
      */
     @Async
     @Transactional(rollbackFor = Exception.class)
-    public void userGainCoupon(ViewOrderDetails order, Integer storeUserId){
+    public void userGainCoupon(OrderInfo order){
         // 查询其它商家发布的点对点优惠券
 //        List<Map> list = selectCouponListByOrderToOther(order, storeUserId);
         // 查询商家自己发布的满送优惠券
         List<Map> list = new ArrayList<>();
-        CouponInfo couponInfo = selectCouponListByOrder(order, storeUserId);
+        CouponInfo couponInfo = selectCouponListByOrder(order);
         if (null != couponInfo){
             list.add(couponInfo.getCouponMap());
         }
@@ -236,10 +234,10 @@ public class UserCouponService {
      * @param storeUserId
      * @return
      */
-    public CouponInfo selectCouponListByOrder(ViewOrderDetails order, Integer storeUserId){
+    public CouponInfo selectCouponListByOrder(OrderInfo order){
         CouponInfoExample example = new CouponInfoExample();
         example.setOrderByClause("denomination desc");
-        example.createCriteria().andUserIdEqualTo(storeUserId)
+        example.createCriteria()
                 .andGainTypeEqualTo(2)
                 .andGainAppletIdEqualTo(order.getAppletId())
                 .andGainPriceLessThanOrEqualTo(order.getTotalAmount())

@@ -80,7 +80,7 @@ public class UserCartController {
             cart.setWxId(weChantInfo.getId());
             cart.setAppletId(weChantInfo.getAppletId());
             userCartService.addUserCart(cart);
-            return AjaxResponse.success("加入成功");
+            return AjaxResponse.success(userCartService.countUserCart(weChantInfo.getAppletId(), weChantInfo.getId()));
         } catch (Exception e) {
             log.error("加入购物车出错{}", e);
             return AjaxResponse.error("加入失败");

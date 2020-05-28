@@ -127,21 +127,13 @@ public class WeChantPayService {
             order.setId(orderInfo.getId());
             order.setPayRelationId(result.getPrepayId());
             order.setPayChannel(record.getRequestType());
-            // 添加订单操作记录 - 发起支付
-            OrderOperateRecord record1 = new OrderOperateRecord();
-            record1.setOrderId(orderInfo.getId());
-            record1.setOperateUserId(orderInfo.getUserId());
-            record1.setOperateTime(new Date());
-            record1.setOperateStatus(OrderEnums.OperateStatus.LAUNCH_PAY.getCode());
-            userOrderService.addOrderOperateRecord(record1);
             if (!bool) {
                 // 统一下单成功和余额不足以外的状况，则订单不再继续，支付失败且订单失败
                 order.setPayStatus(OrderEnums.PayStatus.FAIL.getCode());
                 order.setOrderStatus(OrderEnums.OrderStatus.FAIL.getCode());
             }
         }
-        // 添加订单支付请求记录，并更新订单信息
-        userOrderService.updateOrder(record, order);
+        userOrderService.updateOrderRelevant(order, record, OrderEnums.OperateStatus.LAUNCH_PAY.getCode());
         return bool;
     }
 
@@ -157,8 +149,10 @@ public class WeChantPayService {
     public WxUnifiedOrderResult orderPayNoticeHandle(String xml) throws Exception {
         WxUnifiedOrderResult result = JaxbUtil.converyToJavaBean(xml, WxUnifiedOrderResult.class);
         if (result.getReturnCode().equals("SUCCESS")) {
-            ViewOrderDetails order = userOrderService.selectOrderInfoByOrderNo(result.getOutTradeNo());
-            if (null != order) {
+            OrderInfo order = userOrderService.selectOrderInfo(result.getOutTradeNo());
+            if (null != order
+                    && order.getOrderStatus().intValue() == OrderEnums.OrderStatus.WAIT.getCode().intValue()
+                    && order.getPayStatus().intValue() == OrderEnums.PayStatus.WAIT.getCode().intValue()) {
                 AppletInfo appletInfo = appletService.selectAppletInfo(order.getAppletId(), order.getUserId());
                 // 测试订单
                 log.info("此次是商家测试订单回调，订单号为：{}", order.getOrderNo());
@@ -182,27 +176,19 @@ public class WeChantPayService {
                     record.setErrCode(result.getErrCode());
                     record.setErrCodeDes(result.getErrCodeDes());
                     record.setRequestResultMsg(xml);
-                    boolean isTest = false;
+                    // 设置操作状态默认为删除
+                    Integer operateStatus = OrderEnums.OperateStatus.DELETE.getCode();
                     if (result.getResultCode().equals("SUCCESS")) {
                         if (!appletInfo.getIfOpenPay() && order.getUserId().intValue() == appletInfo.getUserId().intValue()) {
                             // 测试订单交易成功，更新小程序交易开通状态
                             appletService.updateAppletIFPayOpen(order.getAppletId());
-                            isTest = true;
+                        } else {
+                            operateStatus = OrderEnums.OperateStatus.SUBMIT.getCode();
                         }
-                        // 更新订单状态
-                        order.setPayStatus(OrderEnums.PayStatus.SUCCESS.getCode());
-                        order.setOrderStatus(OrderEnums.OrderStatus.SUCCESS.getCode());
-                        userCouponService.userGainCoupon(order, appletInfo.getUserId());
                     } else {
-                        order.setPayStatus(OrderEnums.PayStatus.FAIL.getCode());
-//                        order.setOrderStatus(OrderEnums.OrderStatus.FAIL.getCode());
+                        operateStatus = OrderEnums.OperateStatus.SUBMIT_FAIL.getCode();
                     }
-                    if (isTest){
-                        // 测试订单，设置操作状态为删除
-                        userOrderService.updateOrderStatusByUser(order, OrderEnums.OperateStatus.DELETE.getCode());
-                    } else {
-                        userOrderService.updateOrderStatusByUser(order);
-                    }
+                    userOrderService.updateOrderRelevant(order, record, operateStatus);
                     // 校验通过
                     result = new WxUnifiedOrderResult();
                     result.setReturnCode("SUCCESS");

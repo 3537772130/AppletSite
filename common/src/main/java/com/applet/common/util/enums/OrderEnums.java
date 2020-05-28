@@ -78,7 +78,8 @@ public interface OrderEnums {
     enum OrderStatus implements BaseEnum {
         FAIL( -1, "订单失败"),
         WAIT(0, "预下单"),
-        SUCCESS( 1, "订单成功"),
+        UNDERWAY(1, "进行中"),
+        SUCCESS( 2, "订单完成"),
         ;
 
         private Integer code;

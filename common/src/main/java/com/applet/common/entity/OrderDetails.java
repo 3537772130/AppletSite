@@ -20,6 +20,8 @@ public class OrderDetails implements Serializable {
 
     private String goodsSpecsName;
 
+    private String goodsSpecsType;
+
     private String goodsSpecsPic;
 
     private Integer goodsNumber;
@@ -84,6 +86,14 @@ public class OrderDetails implements Serializable {
 
     public void setGoodsSpecsName(String goodsSpecsName) {
         this.goodsSpecsName = goodsSpecsName == null ? null : goodsSpecsName.trim();
+    }
+
+    public String getGoodsSpecsType() {
+        return goodsSpecsType;
+    }
+
+    public void setGoodsSpecsType(String goodsSpecsType) {
+        this.goodsSpecsType = goodsSpecsType == null ? null : goodsSpecsType.trim();
     }
 
     public String getGoodsSpecsPic() {

@@ -555,6 +555,76 @@ public class OrderDetailsExample {
             return (Criteria) this;
         }
 
+        public Criteria andGoodsSpecsTypeIsNull() {
+            addCriterion("goods_specs_type is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodsSpecsTypeIsNotNull() {
+            addCriterion("goods_specs_type is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodsSpecsTypeEqualTo(String value) {
+            addCriterion("goods_specs_type =", value, "goodsSpecsType");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodsSpecsTypeNotEqualTo(String value) {
+            addCriterion("goods_specs_type <>", value, "goodsSpecsType");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodsSpecsTypeGreaterThan(String value) {
+            addCriterion("goods_specs_type >", value, "goodsSpecsType");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodsSpecsTypeGreaterThanOrEqualTo(String value) {
+            addCriterion("goods_specs_type >=", value, "goodsSpecsType");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodsSpecsTypeLessThan(String value) {
+            addCriterion("goods_specs_type <", value, "goodsSpecsType");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodsSpecsTypeLessThanOrEqualTo(String value) {
+            addCriterion("goods_specs_type <=", value, "goodsSpecsType");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodsSpecsTypeLike(String value) {
+            addCriterion("goods_specs_type like", value, "goodsSpecsType");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodsSpecsTypeNotLike(String value) {
+            addCriterion("goods_specs_type not like", value, "goodsSpecsType");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodsSpecsTypeIn(List<String> values) {
+            addCriterion("goods_specs_type in", values, "goodsSpecsType");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodsSpecsTypeNotIn(List<String> values) {
+            addCriterion("goods_specs_type not in", values, "goodsSpecsType");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodsSpecsTypeBetween(String value1, String value2) {
+            addCriterion("goods_specs_type between", value1, value2, "goodsSpecsType");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodsSpecsTypeNotBetween(String value1, String value2) {
+            addCriterion("goods_specs_type not between", value1, value2, "goodsSpecsType");
+            return (Criteria) this;
+        }
+
         public Criteria andGoodsSpecsPicIsNull() {
             addCriterion("goods_specs_pic is null");
             return (Criteria) this;

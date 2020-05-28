@@ -83,6 +83,7 @@ public class WeChantPayController {
             order.setPayType(1);
             order.setPayStatus(0);
             order.setPayChannel(OrderEnums.PayChannel.WX_JSAPI.getName());
+            userOrderService.updateOrderRelevant(order, OrderEnums.OperateStatus.MAKE.getCode());
 
             ViewOrderPayData data = new ViewOrderPayData();
             data.setOrderNo(order.getOrderNo());
@@ -96,9 +97,6 @@ public class WeChantPayController {
             data.setOpenId(w.getOpenId());
             String prepayId = weChantPayService.sendWeChantUnifiedOrder(data, ipAddress);
             if (NullUtil.isNotNullOrEmpty(prepayId)) {
-                // 保存测试订单信息
-                order.setPayRelationId(prepayId);
-                userOrderService.addOrderInfoToTest(order);
                 // 获取小程序支付信息，并进行加密
                 String msg = EncryptionUtil.encryptAppletPayInfoAES(data.getAppId(), data.getPayKey(), prepayId);
                 return AjaxResponse.success(msg);
@@ -145,22 +143,21 @@ public class WeChantPayController {
 
 
     /**
-     * 支付成功，更新预下单状态
+     * 支付成功，检测订单支付状态
      *
-     * @param appletInfo
      * @param weChantInfo
      * @param id
      * @return
      */
-    @RequestMapping(value = "updateOrderOperateStatusByPaySuccess")
-    public Object updateOrderOperateStatusByPaySuccess(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
-                                                       @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo,
+    @RequestMapping(value = "checkOrderPayStatusByPaySuccess")
+    public Object checkOrderPayStatusByPaySuccess(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo,
                                                        @RequestParam("id") String id) {
         try {
-            if (NullUtil.isNullOrEmpty(appletInfo.getId()) || NullUtil.isNullOrEmpty(weChantInfo.getUserId()) || NullUtil.isNullOrEmpty(id)) {
+            if (NullUtil.isNullOrEmpty(weChantInfo.getAppletId()) || NullUtil.isNullOrEmpty(weChantInfo.getUserId()) || NullUtil.isNullOrEmpty(id)) {
                 return AjaxResponse.error("参数错误");
             }
             Integer orderId = Integer.parseInt(id);
+//            OrderInfo order  = userOrderService.selectOrderInfo(orderId, weChantInfo.getAppletId(), weChantInfo.getUserId());
             long count = userCouponService.selectUserCouponCountByOrder(weChantInfo.getUserId(), orderId);
             if (count > 0) {
                 return AjaxResponse.msg("0", "下单成功");
@@ -170,35 +167,6 @@ public class WeChantPayController {
             log.error("更新预下单状态出错{}", e);
         }
         return AjaxResponse.success("下单异常");
-    }
-
-    /**
-     * 支付失败，更新预下单状态
-     *
-     * @param appletInfo
-     * @param weChantInfo
-     * @param id
-     * @return
-     */
-    @RequestMapping(value = "updateOrderOperateStatusByPayFail")
-    public Object updateOrderOperateStatusByPayFail(@SessionScope("appletInfo") ViewAppletInfo appletInfo,
-                                                    @SessionScope("weChantInfo") ViewWeChantInfo weChantInfo,
-                                                    @RequestParam("id") String id) {
-        try {
-            if (NullUtil.isNullOrEmpty(appletInfo.getId()) || NullUtil.isNullOrEmpty(weChantInfo.getUserId()) || NullUtil.isNullOrEmpty(id)) {
-                return AjaxResponse.error("参数错误");
-            }
-            Integer orderId = Integer.parseInt(id);
-            ViewOrderDetails order = userOrderService.selectViewOrderDetailsByReady(appletInfo.getId(), weChantInfo.getUserId(), orderId);
-            if (null != order) {
-                order.setPayStatus(OrderEnums.PayStatus.FAIL.getCode());
-                userOrderService.updateOrderStatusByUser(order);
-                return AjaxResponse.error("支付失败");
-            }
-        } catch (NumberFormatException e) {
-            log.error("订单支付失败，更新订单记录出错{}", e);
-        }
-        return AjaxResponse.error("订单出错");
     }
 
     /**

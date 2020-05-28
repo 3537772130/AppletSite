@@ -60,24 +60,6 @@ public class UserOrderService {
     private CommonMapper commonMapper;
 
     /**
-     * 添加测试订单信息，并更新相关记录
-     * @param info
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public void addOrderInfoToTest(OrderInfo info) {
-        info.setCreateTime(new Date());
-        info.setUpdateTime(new Date());
-        orderInfoMapper.insertSelective(info);
-        // 添加订单操作记录
-        OrderOperateRecord record = new OrderOperateRecord();
-        record.setOrderId(info.getId());
-        record.setOperateUserId(info.getUserId());
-        record.setOperateTime(new Date());
-        record.setOperateStatus(OrderEnums.OperateStatus.MAKE.getCode());
-        addOrderOperateRecord(record);
-    }
-
-    /**
      * 添加订单信息，并更新相关记录
      *
      * @param info
@@ -103,9 +85,13 @@ public class UserOrderService {
         list.forEach(it -> it.setOrderId(info.getId()));
         orderDetailsMapper.batchInsert(list);
         // 更新优惠券状态
-        if (NullUtil.isNotNullOrEmpty(info.getUserCouponId())){
+        if (NullUtil.isNotNullOrEmpty(info.getUserCouponId())) {
             userCouponService.updateUserCouponStatus(info.getUserCouponId(), OrderEnums.UserCouponStatus.USING.getCode());
         }
+        // 更新购物车记录信息状态
+        userCartService.updateUserCartStatus(info.getId(), info.getAppletId(), info.getWxId(), cartIdList);
+        // 添加订单查看记录
+        addOrderSeeRecord(info.getId());
     }
 
     /**
@@ -119,6 +105,19 @@ public class UserOrderService {
     public OrderInfo selectOrderInfo(Integer id, Integer appletId, Integer userId) {
         OrderInfoExample example = new OrderInfoExample();
         example.createCriteria().andIdEqualTo(id).andAppletIdEqualTo(appletId).andUserIdEqualTo(userId);
+        List<OrderInfo> list = orderInfoMapper.selectByExample(example);
+        return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
+    }
+
+    /**
+     * 查询订单信息
+     *
+     * @param orderNo
+     * @return
+     */
+    public OrderInfo selectOrderInfo(String orderNo) {
+        OrderInfoExample example = new OrderInfoExample();
+        example.createCriteria().andOrderNoEqualTo(orderNo);
         List<OrderInfo> list = orderInfoMapper.selectByExample(example);
         return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
     }
@@ -236,7 +235,7 @@ public class UserOrderService {
     @Async("taskExecutor")
     public void updateOrderSeeRecord(Integer orderId, Boolean userStatus, Boolean storeStatus) {
         OrderSeeRecord record = selectOrderSeeRecord(orderId);
-        if (null != record){
+        if (null != record) {
             OrderSeeRecordExample example = new OrderSeeRecordExample();
             example.createCriteria().andOrderIdEqualTo(orderId);
             OrderSeeRecord record1 = new OrderSeeRecord();
@@ -291,7 +290,7 @@ public class UserOrderService {
     public ViewOrderDetails selectViewOrderDetailsByUser(Integer appletId, Integer userId, Integer orderId, String orderNo) {
         ViewOrderDetailsExample example = new ViewOrderDetailsExample();
         ViewOrderDetailsExample.Criteria c = example.createCriteria().andUserIdEqualTo(userId);
-        if (NullUtil.isNotNullOrEmpty(appletId)){
+        if (NullUtil.isNotNullOrEmpty(appletId)) {
             c.andAppletIdEqualTo(appletId);
         }
         if (NullUtil.isNotNullOrEmpty(orderId)) {
@@ -314,12 +313,13 @@ public class UserOrderService {
 
     /**
      * 查询预备订单
+     *
      * @param appletId
      * @param userId
      * @param orderId
      * @return
      */
-    public ViewOrderDetails selectViewOrderDetailsByReady(Integer appletId, Integer userId, Integer orderId){
+    public ViewOrderDetails selectViewOrderDetailsByReady(Integer appletId, Integer userId, Integer orderId) {
         ViewOrderDetailsExample example = new ViewOrderDetailsExample();
         example.createCriteria()
                 .andIdEqualTo(orderId)
@@ -330,8 +330,6 @@ public class UserOrderService {
         List<ViewOrderDetails> list = viewOrderDetailsMapper.selectByExample(example);
         return NullUtil.isNotNullOrEmpty(list) ? list.get(0) : null;
     }
-
-
 
 
     /**
@@ -379,6 +377,7 @@ public class UserOrderService {
 
     /**
      * 更新订单信息
+     *
      * @param info
      */
     public void updateOrderInfo(OrderInfo info) {
@@ -387,124 +386,121 @@ public class UserOrderService {
 
     /**
      * 添加订单操作记录
+     *
      * @param record
      */
-    public void addOrderOperateRecord(OrderOperateRecord record){
+    public void addOrderOperateRecord(OrderOperateRecord record) {
         orderOperateRecordMapper.insertSelective(record);
     }
 
     /**
      * 更新订单相关
-     * @param id
-     * @param userId
-     * @param userCouponId
+     *
+     * @param order
+     * @param record
      * @param operateStatus
      * @param remark
      */
-    public void updateOrderRelevant(Integer id, Integer userId, Integer userCouponId, Integer operateStatus, String remark) {
-        OrderInfo order = new OrderInfo();
-        order.setId(id);
-        if (operateStatus.intValue() == OrderEnums.OperateStatus.SUBMIT.getCode()){
-            // 订单提交成功处理
+    @Transactional(rollbackFor = Exception.class)
+    public void updateOrderRelevant(OrderInfo order, OrderRequestRecord record, Integer operateStatus, String remark) {
+        order.setUpdateTime(new Date());
+        if (operateStatus.intValue() == OrderEnums.OperateStatus.MAKE.getCode()) {
+            // 预下单处理
+            if (NullUtil.isNullOrEmpty(order.getId())) {
+                order.setCreateTime(new Date());
+                orderInfoMapper.insertSelective(order);
+            }
+        } else if (operateStatus.intValue() == OrderEnums.OperateStatus.LAUNCH_PAY.getCode()) {
+            // 发起支付处理
+            updateOrderInfo(order);
+            // 添加订单支付请求记录
+            record.setCreateTime(new Date());
+            orderRequestRecordMapper.insertSelective(record);
+        } else if (operateStatus.intValue() == OrderEnums.OperateStatus.SUBMIT.getCode()) {
+            // 支付成功，订单提交成功处理
             order.setPayStatus(OrderEnums.PayStatus.SUCCESS.getCode());
-            // 更新购物车状态
-            List<OrderDetails> list = selectOrderDetailsList(order.getId());
-            List<Integer> idList = new ArrayList<>();
-            for (OrderDetails details : list) {
-                idList.add(details.getGoodsSpecsId());
+            updateOrderInfo(order);
+            // 添加订单支付回调记录
+            record.setCreateTime(new Date());
+            orderRequestRecordMapper.insertSelective(record);
+            // 更新用户优惠券状态
+            if (NullUtil.isNotNullOrEmpty(order.getUserCouponId())) {
+                userCouponService.updateUserCouponStatus(order.getUserCouponId(), OrderEnums.UserCouponStatus.USED.getCode());
             }
-            if (NullUtil.isNotNullOrEmpty(userCouponId)){
-                // 更新用户优惠券状态
-                userCouponService.updateUserCouponStatus(userCouponId, OrderEnums.UserCouponStatus.USED.getCode());
-            }
+            // 更新订单查看记录
+            updateOrderSeeRecord(order.getId(), true, false);
         } else if (operateStatus.intValue() == OrderEnums.OperateStatus.SUBMIT_FAIL.getCode()) {
-            // 订单提交失败处理
+            // 支付失败，订单提交失败处理
             order.setPayStatus(OrderEnums.PayStatus.FAIL.getCode());
+            updateOrderInfo(order);
+            // 添加订单支付回调记录
+            record.setCreateTime(new Date());
+            orderRequestRecordMapper.insertSelective(record);
+        } else if (operateStatus.intValue() == OrderEnums.OperateStatus.MERCHANT_CONFIRM.getCode()) {
+            // 商家接单处理
+            order.setOrderStatus(OrderEnums.OrderStatus.UNDERWAY.getCode());
+            updateOrderInfo(order);
+            // 更新订单查看记录
+            updateOrderSeeRecord(order.getId(), false, true);
+        } else if (operateStatus.intValue() == OrderEnums.OperateStatus.MERCHANT_DELIVERY.getCode()
+                || operateStatus.intValue() == OrderEnums.OperateStatus.INSTANT_DELIVERY.getCode()
+                || operateStatus.intValue() == OrderEnums.OperateStatus.LOGISTICS_DELIVERY.getCode()
+                || operateStatus.intValue() == OrderEnums.OperateStatus.CONFIRM_ARRIVE.getCode()) {
+            // 商家配送、即时配送、物流配送、确认送达处理
+            // 更新订单查看记录
+            updateOrderSeeRecord(order.getId(), false, true);
         } else if (operateStatus.intValue() == OrderEnums.OperateStatus.SIGN_FOR.getCode()) {
             // 订单签收处理
             order.setOrderStatus(OrderEnums.OrderStatus.SUCCESS.getCode());
+            updateOrderInfo(order);
+            // 更新订单查看记录
+            updateOrderSeeRecord(order.getId(), true, false);
+            // 检测用户此订单可获取的优惠券
+            userCouponService.userGainCoupon(order);
         } else if (operateStatus.intValue() == OrderEnums.OperateStatus.CANCEL.getCode()) {
             // 订单取消处理
             order.setOrderStatus(OrderEnums.OrderStatus.FAIL.getCode());
-            if (NullUtil.isNotNullOrEmpty(userCouponId)){
-                // 更新用户优惠券状态
-                userCouponService.updateUserCouponStatus(userCouponId, OrderEnums.UserCouponStatus.UNUSED.getCode());
+            updateOrderInfo(order);
+            if (NullUtil.isNotNullOrEmpty(remark)){
+                // 更新订单查看记录
+                updateOrderSeeRecord(order.getId(), false, true);
+            }
+            // 更新用户优惠券状态
+            if (NullUtil.isNotNullOrEmpty(order.getUserCouponId())) {
+                userCouponService.updateUserCouponStatus(order.getUserCouponId(), OrderEnums.UserCouponStatus.UNUSED.getCode());
+            }
+
+            // 退款功能尚未开发！！！
+        } else if (operateStatus.intValue() != OrderEnums.OperateStatus.DELETE.getCode().intValue()) {
+            // 订单删除处理
+            order.setOrderStatus(OrderEnums.OrderStatus.FAIL.getCode());
+            updateOrderInfo(order);
+            if (null != record){
+                // 添加订单支付请求记录，并更新订单信息
+                record.setCreateTime(new Date());
+                orderRequestRecordMapper.insertSelective(record);
             }
         }
-        order.setUpdateTime(new Date());
-        updateOrderInfo(order);
 
-        OrderOperateRecord record = new OrderOperateRecord();
-        record.setOrderId(id);
-        record.setOperateUserId(userId);
-        record.setOperateTime(new Date());
-        record.setOperateRemark(remark);
-        record.setOperateStatus(operateStatus);
-        addOrderOperateRecord(record);
+        OrderOperateRecord operate = new OrderOperateRecord();
+        operate.setOrderId(order.getId());
+        operate.setOperateUserId(order.getUserId());
+        operate.setOperateTime(new Date());
+        operate.setOperateRemark(remark);
+        operate.setOperateStatus(operateStatus);
+        addOrderOperateRecord(operate);
     }
 
-    /**
-     * 更新订单状态 - 商家取消
-     * @param id
-     * @param storeUserId
-     * @param userCouponId
-     * @param operateStatus
-     * @param remark
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public void updateOrderStatusByStore(Integer id, Integer storeUserId, Integer userCouponId, Integer operateStatus, String remark) {
-        updateOrderRelevant(id, storeUserId, userCouponId, operateStatus, remark);
-        updateOrderSeeRecord(id, false, true);
+    public void updateOrderRelevant(OrderInfo order, Integer operateStatus, String remark) {
+        updateOrderRelevant(order, null, operateStatus, remark);
     }
 
-    /**
-     * 更新订单状态 - 商家进行
-     * @param id
-     * @param storeUserId
-     * @param operateStatus
-     */
-    public void updateOrderStatusByStore(Integer id, Integer storeUserId, Integer operateStatus) {
-        updateOrderStatusByStore(id, storeUserId, null, operateStatus, null);
+    public void updateOrderRelevant(OrderInfo order, OrderRequestRecord record, Integer operateStatus) {
+        updateOrderRelevant(order, record, operateStatus, null);
     }
 
-    /**
-     * 更新订单状态 - 消费者取消
-     * @param id
-     * @param userId
-     * @param userCouponId
-     * @param operateStatus
-     * @param remark
-     */
-    @Async
-    @Transactional(rollbackFor = Exception.class)
-    public void updateOrderStatusByUser(Integer id, Integer userId, Integer userCouponId, Integer operateStatus) {
-        updateOrderRelevant(id, userId, userCouponId, operateStatus, null);
-        updateOrderSeeRecord(id, true, false);
-    }
-
-    public void updateOrderStatusByUser(Integer id, Integer userId,  Integer operateStatus) {
-        updateOrderStatusByUser(id, userId, null, operateStatus);
-    }
-
-    /**
-     * 更新订单状态 - 消费者进行
-     * @param id
-     * @param userId
-     * @param operateStatus
-     */
-    public void updateOrderStatusByUser(ViewOrderDetails order, Integer operateStatus) {
-        if (NullUtil.isNotNullOrEmpty(operateStatus)){
-            // 自定义操作状态
-            updateOrderStatusByUser(order.getId(), order.getUserId(), order.getUserCouponId(), operateStatus);
-        } else if (order.getPayStatus().intValue() == OrderEnums.PayStatus.SUCCESS.getCode().intValue()){
-            updateOrderStatusByUser(order.getId(), order.getUserId(), order.getUserCouponId(), OrderEnums.OperateStatus.SUBMIT.getCode());
-        } else if (order.getPayStatus().intValue() == OrderEnums.PayStatus.FAIL.getCode().intValue()) {
-            updateOrderStatusByUser(order.getId(), order.getUserId(), order.getUserCouponId(), OrderEnums.OperateStatus.SUBMIT_FAIL.getCode());
-        }
-    }
-
-    public void updateOrderStatusByUser(ViewOrderDetails order) {
-        updateOrderStatusByUser(order, null);
+    public void updateOrderRelevant(OrderInfo order, Integer operateStatus) {
+        updateOrderRelevant(order, null, operateStatus, null);
     }
 
     /**
@@ -514,7 +510,7 @@ public class UserOrderService {
      * @return
      */
     public ViewUserOrderCount countUserOrder(Integer userId) {
-        if (NullUtil.isNotNullOrEmpty(userId)){
+        if (NullUtil.isNotNullOrEmpty(userId)) {
             ViewUserOrderCountExample example = new ViewUserOrderCountExample();
             example.createCriteria().andUserIdEqualTo(userId);
             List<ViewUserOrderCount> list = viewUserOrderCountMapper.selectByExample(example);
