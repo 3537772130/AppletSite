@@ -120,20 +120,19 @@ public class WeChantPayService {
             record.setErrCodeDes(result.getReturnMsg());
         }
         record.setRequestResultMsg(resultXML);
-        OrderInfo order = null;
-        if (NullUtil.isNotNullOrEmpty(orderId)) {
-            OrderInfo orderInfo = userOrderService.selectOrderInfoById(orderId);
-            order = new OrderInfo();
-            order.setId(orderInfo.getId());
+        OrderInfo order = userOrderService.selectOrderInfoById(orderId);
+        if (null != order) {
+            order.setId(orderId);
             order.setPayRelationId(result.getPrepayId());
             order.setPayChannel(record.getRequestType());
-            if (!bool) {
+            if (bool) {
+                userOrderService.updateOrderRelevant(order, record, OrderEnums.OperateStatus.LAUNCH_PAY.getCode());
+            } else {
                 // 统一下单成功和余额不足以外的状况，则订单不再继续，支付失败且订单失败
-                order.setPayStatus(OrderEnums.PayStatus.FAIL.getCode());
                 order.setOrderStatus(OrderEnums.OrderStatus.FAIL.getCode());
+                userOrderService.updateOrderRelevant(order, record, OrderEnums.OperateStatus.SUBMIT_FAIL.getCode());
             }
         }
-        userOrderService.updateOrderRelevant(order, record, OrderEnums.OperateStatus.LAUNCH_PAY.getCode());
         return bool;
     }
 

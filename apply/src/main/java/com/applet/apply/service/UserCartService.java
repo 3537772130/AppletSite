@@ -141,16 +141,16 @@ public class UserCartService {
 
     /**
      * 更新购物车信息状态
-     * @param orderId
      * @param appletId
      * @param wxId
      * @param specsIdList
+     * @param status
      */
-    public void updateUserCartStatus(Integer orderId, Integer appletId, Integer wxId, List<Integer> cartIdList){
+    public void updateUserCartStatus(Integer appletId, Integer wxId, List<Integer> cartIdList, boolean status){
         UserCartExample example = new UserCartExample();
         example.createCriteria().andAppletIdEqualTo(appletId).andWxIdEqualTo(wxId).andIdIn(cartIdList);
         UserCart record = new UserCart();
-        record.setStatus(false);
+        record.setStatus(status);
         userCartMapper.updateByExampleSelective(record, example);
     }
 

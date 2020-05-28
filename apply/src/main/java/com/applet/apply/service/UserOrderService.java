@@ -2,6 +2,7 @@ package com.applet.apply.service;
 
 import com.applet.common.entity.*;
 import com.applet.common.mapper.*;
+import com.applet.common.util.Constants;
 import com.applet.common.util.enums.OrderEnums;
 import com.applet.common.util.NullUtil;
 import com.applet.common.util.Page;
@@ -60,14 +61,35 @@ public class UserOrderService {
     private CommonMapper commonMapper;
 
     /**
+     * 统计
+     * @param appletId
+     * @param wxId
+     * @param userId
+     * @return
+     */
+    public long countTestOrder(Integer appletId, Integer wxId, Integer userId) {
+        OrderInfoExample example = new OrderInfoExample();
+        OrderInfoExample.Criteria c = example.createCriteria()
+                .andAppletIdEqualTo(appletId)
+                .andWxIdEqualTo(wxId)
+                .andUserIdEqualTo(userId)
+                .andUserRemarkEqualTo(Constants.TEST_ORDER_REMARK);
+        JDateTime time = new JDateTime(new Date());
+        time.setHour(0).setMinute(0).setSecond(0);
+        c.andCreateTimeGreaterThanOrEqualTo(time.convertToDate());
+        time.setHour(23).setMinute(59).setSecond(59);
+        c.andCreateTimeLessThanOrEqualTo(time.convertToDate());
+        return orderInfoMapper.countByExample(example);
+    }
+
+    /**
      * 添加订单信息，并更新相关记录
      *
      * @param info
      * @param list
-     * @param cartIdList
      */
     @Transactional(rollbackFor = Exception.class)
-    public void addOrderInfo(OrderInfo info, List<OrderDetails> list, List<Integer> cartIdList, OrderReceiver receiver) {
+    public void addOrderInfo(OrderInfo info, List<OrderDetails> list, OrderReceiver receiver) {
         info.setCreateTime(new Date());
         info.setUpdateTime(new Date());
         orderInfoMapper.insertSelective(info);
@@ -88,8 +110,6 @@ public class UserOrderService {
         if (NullUtil.isNotNullOrEmpty(info.getUserCouponId())) {
             userCouponService.updateUserCouponStatus(info.getUserCouponId(), OrderEnums.UserCouponStatus.USING.getCode());
         }
-        // 更新购物车记录信息状态
-        userCartService.updateUserCartStatus(info.getId(), info.getAppletId(), info.getWxId(), cartIdList);
         // 添加订单查看记录
         addOrderSeeRecord(info.getId());
     }
@@ -427,6 +447,13 @@ public class UserOrderService {
             if (NullUtil.isNotNullOrEmpty(order.getUserCouponId())) {
                 userCouponService.updateUserCouponStatus(order.getUserCouponId(), OrderEnums.UserCouponStatus.USED.getCode());
             }
+            // 更新购物车记录信息状态
+            List<OrderDetails> list = selectOrderDetailsList(order.getId());
+            List<Integer> cartIdList = new ArrayList<>();
+            for (OrderDetails details : list) {
+                cartIdList.add(details.getCartId());
+            }
+            userCartService.updateUserCartStatus(order.getAppletId(), order.getWxId(), cartIdList, false);
             // 更新订单查看记录
             updateOrderSeeRecord(order.getId(), true, false);
         } else if (operateStatus.intValue() == OrderEnums.OperateStatus.SUBMIT_FAIL.getCode()) {
@@ -459,23 +486,26 @@ public class UserOrderService {
             userCouponService.userGainCoupon(order);
         } else if (operateStatus.intValue() == OrderEnums.OperateStatus.CANCEL.getCode()) {
             // 订单取消处理
-            order.setOrderStatus(OrderEnums.OrderStatus.FAIL.getCode());
-            updateOrderInfo(order);
-            if (NullUtil.isNotNullOrEmpty(remark)){
-                // 更新订单查看记录
+            // 更新订单查看记录
+            if (NullUtil.isNotNullOrEmpty(remark)) {
                 updateOrderSeeRecord(order.getId(), false, true);
             }
             // 更新用户优惠券状态
             if (NullUtil.isNotNullOrEmpty(order.getUserCouponId())) {
                 userCouponService.updateUserCouponStatus(order.getUserCouponId(), OrderEnums.UserCouponStatus.UNUSED.getCode());
             }
-
-            // 退款功能尚未开发！！！
+            // 发起退款
+            if (order.getPayStatus().intValue() == OrderEnums.PayStatus.SUCCESS.getCode().intValue()) {
+                // 退款功能尚未开发！！！
+                order.setPayStatus(OrderEnums.PayStatus.CANCEL.getCode().intValue());
+            }
+            order.setOrderStatus(OrderEnums.OrderStatus.FAIL.getCode());
+            updateOrderInfo(order);
         } else if (operateStatus.intValue() != OrderEnums.OperateStatus.DELETE.getCode().intValue()) {
             // 订单删除处理
             order.setOrderStatus(OrderEnums.OrderStatus.FAIL.getCode());
             updateOrderInfo(order);
-            if (null != record){
+            if (null != record) {
                 // 添加订单支付请求记录，并更新订单信息
                 record.setCreateTime(new Date());
                 orderRequestRecordMapper.insertSelective(record);
@@ -634,19 +664,5 @@ public class UserOrderService {
         OrderDetailsExample example = new OrderDetailsExample();
         example.createCriteria().andOrderIdEqualTo(orderId);
         return orderDetailsMapper.selectByExample(example);
-    }
-
-    /**
-     * 统计一个小时以内，微信支付请求（同类型请求）发送的次数
-     *
-     * @param requestType
-     * @return
-     */
-    public long countOrderRequestRecordByHour(String requestType) {
-        JDateTime time = new JDateTime(new Date());
-        time.addHour(-1);
-        OrderRequestRecordExample example = new OrderRequestRecordExample();
-        example.createCriteria().andRequestTypeEqualTo(requestType).andCreateTimeGreaterThan(time.convertToDate());
-        return orderRequestRecordMapper.countByExample(example);
     }
 }

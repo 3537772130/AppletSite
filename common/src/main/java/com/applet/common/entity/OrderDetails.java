@@ -10,6 +10,8 @@ public class OrderDetails implements Serializable {
 
     private Integer orderId;
 
+    private Integer cartId;
+
     private Integer goodsId;
 
     private String goodsName;
@@ -46,6 +48,14 @@ public class OrderDetails implements Serializable {
 
     public void setOrderId(Integer orderId) {
         this.orderId = orderId;
+    }
+
+    public Integer getCartId() {
+        return cartId;
+    }
+
+    public void setCartId(Integer cartId) {
+        this.cartId = cartId;
     }
 
     public Integer getGoodsId() {

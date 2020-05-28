@@ -35,9 +35,10 @@ public interface OrderEnums {
     @AllArgsConstructor
     enum PayStatus implements BaseEnum {
 
+        FAIL( -1, "付款失败"),
         WAIT( 0, "待付款"),
         SUCCESS( 1, "付款成功"),
-        FAIL( -1, "付款失败"),
+        CANCEL(-2, "已退款")
         ;
 
         private Integer code;

@@ -40,6 +40,17 @@ public class UserOrderController {
     private CommentService commentService;
 
     /**
+     * 查询测试订单总数（当天）
+     * @param weChantInfo
+     * @return
+     */
+    @RequestMapping(value = "queryTestOrderCountToDay")
+    public Object queryTestOrderCountToDay(@SessionScope("weChantInfo") ViewWeChantInfo weChantInfo){
+        long count = userOrderService.countTestOrder(weChantInfo.getAppletId(), weChantInfo.getId(), weChantInfo.getUserId());
+        return AjaxResponse.success(count);
+    }
+
+    /**
      * 小程序创建订单
      *
      * @param appletInfo
@@ -76,6 +87,7 @@ public class UserOrderController {
         Double goodsAmount = 0.0d;
         for (ViewUserCart cart : cartList) {
             OrderDetails details = new OrderDetails();
+            details.setCartId(cart.getId());
             details.setGoodsId(cart.getGoodsId());
             details.setGoodsName(cart.getGoodsName());
             details.setGoodsDiscount(cart.getDiscount());
@@ -151,7 +163,7 @@ public class UserOrderController {
         receiver.setReceiverLat(address.getLat());
         receiver.setReceiverLon(address.getLon());
 
-        userOrderService.addOrderInfo(info, detailsList, cartIdList, receiver);
+        userOrderService.addOrderInfo(info, detailsList, receiver);
 
         return AjaxResponse.success(info.getId());
     }

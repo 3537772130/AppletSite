@@ -119,5 +119,7 @@ public class Constants {
             put(3, "二维码");
         }
     };
+
+    public static final String TEST_ORDER_REMARK = "商家支付测试";
 }
 
